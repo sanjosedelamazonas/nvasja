@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-//import org.sanjose.samples.AttributeExtension;
+import org.sanjose.samples.AttributeExtension;
 
 import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.ui.TextField;
@@ -17,9 +17,9 @@ public class NumberField extends TextField {
     public NumberField() {
         // Mark the field as numeric.
         // This affects the virtual keyboard shown on mobile devices.
-  //      AttributeExtension ae = new AttributeExtension();
-  //      ae.extend(this);
-  //      ae.setAttribute("type", "number");
+        AttributeExtension ae = new AttributeExtension();
+        ae.extend(this);
+        ae.setAttribute("type", "number");
 
         setConverter(new StringToIntegerConverter() {
             @Override

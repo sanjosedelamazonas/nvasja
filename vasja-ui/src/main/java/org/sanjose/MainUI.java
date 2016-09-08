@@ -26,9 +26,9 @@ import com.vaadin.ui.themes.ValoTheme;
  * layouts.
  */
 @SpringUI(path="/*")
-@Viewport("user-scalable=no,initial-scale=1.0")
+@Viewport("user-scalable=yes,initial-scale=1.0")
 @Theme("mytheme")
-@Widgetset("org.sanjose.vasja.MyAppWidgetset")
+@Widgetset("org.sanjose.MyAppWidgetset")
 public class MainUI extends UI {
 
     private AccessControl accessControl = new BasicAccessControl();

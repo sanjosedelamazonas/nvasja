@@ -131,7 +131,6 @@
 	</profiles>
   <modules>
     <module>vasja-widgetset</module>
-    <module>vasja-backend</module>
     <module>vasja-ui</module>
     <module>vasja-production</module>
   </modules>
