@@ -19,10 +19,10 @@ import com.vaadin.ui.HorizontalLayout;
 @SpringComponent
 @UIScope
 public class MainScreen extends HorizontalLayout {
-    private Menu menu;
-
+    private Menu menu;   
+    
     @Autowired
-    public MainScreen(MainUI ui, ConfiguracionCtaCajaBancoView confView) {  
+    public MainScreen(MainUI ui, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView) {  
     		//VsjConfiguractacajabancoRep repo) {
 
         setStyleName("main-screen");
@@ -34,6 +34,8 @@ public class MainScreen extends HorizontalLayout {
         final Navigator navigator = new Navigator(ui, viewContainer);
         navigator.setErrorView(ErrorView.class);
         menu = new Menu(navigator);
+        menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
+        		CajaGridView.VIEW_NAME, FontAwesome.EDIT);
         menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
         		ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
         //menu.addView(new SampleCrudView(), SampleCrudView.VIEW_NAME,

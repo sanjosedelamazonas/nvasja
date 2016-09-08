@@ -48,7 +48,7 @@ public class Menu extends CssLayout {
         top.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
         top.addStyleName(ValoTheme.MENU_TITLE);
         top.setSpacing(true);
-        Label title = new Label("My CRUD");
+        Label title = new Label("VASJA");
         title.addStyleName(ValoTheme.LABEL_H3);
         title.setSizeUndefined();
         Image image = new Image(null, new ThemeResource("img/table-logo.png"));
@@ -59,7 +59,7 @@ public class Menu extends CssLayout {
 
         // logout menu item
         MenuBar logoutMenu = new MenuBar();
-        logoutMenu.addItem("Logout", FontAwesome.SIGN_OUT, new Command() {
+        logoutMenu.addItem("Cerrar", FontAwesome.SIGN_OUT, new Command() {
 
             @Override
             public void menuSelected(MenuItem selectedItem) {

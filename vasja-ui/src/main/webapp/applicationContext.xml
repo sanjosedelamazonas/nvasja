@@ -13,5 +13,5 @@
 
   <!-- Location for automatically scanned beans -->
   <context:component-scan
-      base-package="org.sanjose.vasja" />
+      base-package="org.sanjose" />
 </beans>
