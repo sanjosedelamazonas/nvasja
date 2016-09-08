@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout spacing id="verticalMain" margin> 
+   <vaadin-horizontal-layout spacing margin _id="horizontalFechas"> 
+    <vaadin-date-field _id="fechaDesde"></vaadin-date-field> 
+    <vaadin-label size-auto plain-text>
+      - 
+    </vaadin-label> 
+    <vaadin-date-field _id="fechaHasta"></vaadin-date-field> 
+   </vaadin-horizontal-layout> 
+   <vaadin-vertical-layout width="1179px"> 
+    <vaadin-grid editor-cancel-caption="Anular" width-full height="347px" editable _id="gridCaja" :middle :center></vaadin-grid> 
+   </vaadin-vertical-layout> 
+   <vaadin-horizontal-layout spacing _id="horizontalSaldos"> 
+    <vaadin-vertical-layout caption="Saldo Inicial" size-auto _id="verticalSaldoInicial"> 
+     <vaadin-grid width="393px" height="169px" _id="gridSaldoInicial"></vaadin-grid> 
+    </vaadin-vertical-layout> 
+    <vaadin-vertical-layout caption="Saldo Final" spacing size-auto _id="verticalSaldoFinal"> 
+     <vaadin-grid editor-save-caption="Guardar" editor-cancel-caption="Anular" width="500px" height="169px" _id="gridSaldoFInal"></vaadin-grid> 
+    </vaadin-vertical-layout> 
+    <vaadin-vertical-layout spacing size-auto margin _id="verticalButtons"> 
+     <vaadin-button plain-text _id="btnEnviar">
+       Enviar Todo a la Contabilidad 
+     </vaadin-button> 
+     <vaadin-button plain-text _id="btnReporteCaja">
+       Imprimir Reporte de Caja 
+     </vaadin-button> 
+    </vaadin-vertical-layout> 
+   </vaadin-horizontal-layout> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>

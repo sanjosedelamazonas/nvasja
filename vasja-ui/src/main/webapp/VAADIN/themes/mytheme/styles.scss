@@ -1,0 +1,26 @@
+$v-font-size: 14px;
+$v-unit-size: 24px;
+
+@import "mytheme.scss";
+@import "addons.scss";
+
+// This should be in the Valo theme as a shorthand
+$v-layout-margin: $v-layout-margin-top $v-layout-margin-right $v-layout-margin-bottom $v-layout-margin-left !default;
+
+// This file prefixes all rules with the theme name to avoid causing conflicts with other themes.
+// The actual styles should be defined in mytheme.scss
+
+.mytheme {
+  @include addons;
+  @include mytheme;
+}
+
+//@import "../valo/valo";
+
+//.mytheme {
+//  @include valo;
+//}
+
+.v-grid-row.grayed {
+    color: gray;
+}
