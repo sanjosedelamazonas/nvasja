@@ -1,4 +1,4 @@
-package org.sanjose.vasja.samples.crud;
+package org.sanjose.vasja.helper;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

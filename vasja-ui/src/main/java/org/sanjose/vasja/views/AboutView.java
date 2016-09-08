@@ -1,4 +1,4 @@
-package org.sanjose.vasja.samples.about;
+package org.sanjose.vasja.views;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;

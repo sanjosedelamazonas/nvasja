@@ -1,4 +1,4 @@
-package org.sanjose.vasja.samples.authentication;
+package org.sanjose.vasja.authentication;
 
 /**
  * Default mock implementation of {@link AccessControl}. This implementation

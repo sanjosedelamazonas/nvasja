@@ -1,9 +1,6 @@
 package org.sanjose.vasja.views;
 
 import org.sanjose.vasja.MainUI;
-import org.sanjose.vasja.VsjConfiguractacajabancoRep;
-import org.sanjose.vasja.samples.about.AboutView;
-import org.sanjose.vasja.samples.crud.SampleCrudView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.navigator.Navigator;

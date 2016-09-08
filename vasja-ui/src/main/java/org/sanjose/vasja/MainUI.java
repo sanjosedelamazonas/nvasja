@@ -1,24 +1,19 @@
 package org.sanjose.vasja;
 
-import javax.servlet.annotation.WebServlet;
-
-import org.sanjose.vasja.samples.authentication.AccessControl;
-import org.sanjose.vasja.samples.authentication.BasicAccessControl;
-import org.sanjose.vasja.samples.authentication.LoginScreen;
-import org.sanjose.vasja.samples.authentication.LoginScreen.LoginListener;
+import org.sanjose.vasja.authentication.AccessControl;
+import org.sanjose.vasja.authentication.BasicAccessControl;
+import org.sanjose.vasja.authentication.LoginScreen;
+import org.sanjose.vasja.authentication.LoginScreen.LoginListener;
 import org.sanjose.vasja.views.ConfiguracionCtaCajaBancoView;
 import org.sanjose.vasja.views.MainScreen;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Viewport;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.spring.server.SpringVaadinServlet;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 

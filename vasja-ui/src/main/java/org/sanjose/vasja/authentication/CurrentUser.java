@@ -1,4 +1,4 @@
-package org.sanjose.vasja.samples.authentication;
+package org.sanjose.vasja.authentication;
 
 import java.io.Serializable;
 
