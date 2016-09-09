@@ -1,16 +1,20 @@
 package org.sanjose.views;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.ui.PopupDateField;
 import org.sanjose.helper.BooleanTrafficLight;
 import org.sanjose.helper.DataFilterUtil;
+import org.sanjose.helper.DateToTimestampConverter;
 import org.sanjose.helper.GenUtil;
 import org.sanjose.model.ScpPlancontableRep;
 import org.sanjose.model.ScpPlanespecialRep;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.model.VsjCajabancoRep;
-import org.sanjose.model.VsjConfiguractacajabanco;
-import org.sanjose.model.VsjConfiguractacajabancoRep;
+import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.VsjCajabancoRep;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -50,61 +54,55 @@ public class CajaGridView extends CajaGridUI implements View {
     public VsjCajabancoRep repo;
     
     @Autowired
-    public CajaGridView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configRepo, ScpPlancontableRep planRepo, ScpPlanespecialRep planEspRepo) {
+    public CajaGridView(VsjCajabancoRep repo, VsjCajabancoRep configRepo, ScpPlancontableRep planRepo, ScpPlanespecialRep planEspRepo) {
     	this.repo = repo;
         setSizeFull();
-        //addStyleName("crud-view");
+        addStyleName("crud-view");
 
-       /* BeanItemContainer<VsjConfiguractacajabanco> container = new BeanItemContainer(VsjConfiguractacajabanco.class, repo.findAll());
-        gridConfigCtaCajaBanco
+        BeanItemContainer<VsjCajabanco> container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
+        
+        gridCaja
         	.setContainerDataSource(container);
-        gridConfigCtaCajaBanco.setColumnOrder("activo", "codTipocuenta", "txtTipocuenta", "codCtacontablecaja",
-                "codCtacontablegasto", "codCtaespecial", "paraCaja", "paraBanco", "paraProyecto", "paraTercero");
+///        gridCaja.setColumnOrder("activo", "codTipocuenta", "txtTipocuenta", "codCtacontablecaja",
+   //             "codCtacontablegasto", "codCtaespecial", "paraCaja", "paraBanco", "paraProyecto", "paraTercero");
         
         
-        gridConfigCtaCajaBanco.getDefaultHeaderRow().getCell("codTipocuenta").setText("Codigo");
+      //  gridCaja.getDefaultHeaderRow().getCell("codTipocuenta").setText("Codigo");
         
-        gridConfigCtaCajaBanco.getColumn("txtTipocuenta").setWidth(120);
-        //gridConfigCtaCajaBanco.setCol
+     //   gridCaja.getColumn("txtTipocuenta").setWidth(120);
+        //gridCaja.setCol
         
-        gridConfigCtaCajaBanco.getColumn("codTipocuenta").setEditable(false);
+        //gridCaja.getColumn("codTipocuenta").setEditable(false);
                
-        gridConfigCtaCajaBanco.setSelectionMode(SelectionMode.MULTI);
-        HeaderRow filterRow = gridConfigCtaCajaBanco.appendHeaderRow();
+        gridCaja.setSelectionMode(SelectionMode.MULTI);
+        HeaderRow filterRow = gridCaja.appendHeaderRow();
         
-        gridConfigCtaCajaBanco.setEditorFieldGroup(
-        	    new BeanFieldGroup<VsjConfiguractacajabanco>(VsjConfiguractacajabanco.class));
-        
-        ComboBox selCtacontablecaja = new ComboBox();  
+        gridCaja.setEditorFieldGroup(
+        	    new BeanFieldGroup<VsjCajabanco>(VsjCajabanco.class));
+
+
+
+        PopupDateField pdf = new PopupDateField();
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
+        pdf.setPropertyDataSource(prop);
+        pdf.setConverter(DateToTimestampConverter.INSTANCE);
+        gridCaja.getColumn("fecFecha").setEditorField(pdf);
+
+       /* ComboBox selCtacontablecaja = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
-        gridConfigCtaCajaBanco.getColumn("codCtacontablecaja").setEditorField(selCtacontablecaja);
+        gridCaja.getColumn("codCtacontablecaja").setEditorField(selCtacontablecaja);
         
         ComboBox selCtacontablegasto = new ComboBox();  
         DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()), "Sel cta contable", "txtDescctacontable");
-        gridConfigCtaCajaBanco.getColumn("codCtacontablegasto").setEditorField(selCtacontablegasto);
+        gridCaja.getColumn("codCtacontablegasto").setEditorField(selCtacontablegasto);
         
         ComboBox selCtaespecial = new ComboBox();  
         DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial", planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()), "Sel cta especial", "txtDescctaespecial");
-        gridConfigCtaCajaBanco.getColumn("codCtaespecial").setEditorField(selCtaespecial);
-        
-        gridConfigCtaCajaBanco.getColumn("activo").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCtaCajaBanco.getColumn("paraProyecto").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCtaCajaBanco.getColumn("paraTercero").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCtaCajaBanco.getColumn("paraBanco").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCtaCajaBanco.getColumn("paraCaja").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        
-        // Grey out inactive rows
-        gridConfigCtaCajaBanco.setRowStyleGenerator(rowRef -> {// Java 8
-		  if (! ((Boolean) rowRef.getItem()
-					.getItemProperty("activo")
-					.getValue()).booleanValue())
-		      return "grayed";
-		  else
-		      return null;
-		});
-        
+        gridCaja.getColumn("codCtaespecial").setEditorField(selCtaespecial);
+         */
         // Set up a filter for all columns
-	     for (Object pid: gridConfigCtaCajaBanco.getContainerDataSource()
+	     for (Object pid: gridCaja.getContainerDataSource()
 	                          .getContainerPropertyIds()) {
 	         HeaderCell cell = filterRow.getCell(pid);
 	
@@ -128,7 +126,6 @@ public class CajaGridView extends CajaGridUI implements View {
 	         });
 	         cell.setComponent(filterField);
 	     }
-        */
         viewLogic.init();
     }
     

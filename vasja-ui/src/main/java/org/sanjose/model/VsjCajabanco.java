@@ -2,6 +2,7 @@ package org.sanjose.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -30,6 +31,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_contraparte")
 	private String codContraparte;
 
+	@NotNull
 	@Column(name="cod_ctacontable")
 	private String codCtacontable;
 
@@ -39,9 +41,11 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_ctaproyecto")
 	private String codCtaproyecto;
 
+	@NotNull
 	@Column(name="cod_destino")
 	private String codDestino;
 
+	@NotNull
 	@Column(name="cod_destinoitem")
 	private String codDestinoitem;
 
@@ -63,6 +67,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_tipocomprobantepago")
 	private String codTipocomprobantepago;
 
+	@NotNull
 	@Column(name="cod_tipomoneda")
 	private String codTipomoneda;
 
@@ -78,6 +83,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="fec_factualiza")
 	private Timestamp fecFactualiza;
 
+	@NotNull
 	@Column(name="fec_fecha")
 	private Timestamp fecFecha;
 
@@ -89,6 +95,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="flg_enviado")
 	private String flgEnviado;
 
+	@NotNull
 	@Column(name="ind_tipocuenta")
 	private String indTipocuenta;
 
@@ -104,6 +111,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="num_habersol")
 	private BigDecimal numHabersol;
 
+	@NotNull
 	@Column(name="txt_anoproceso")
 	private String txtAnoproceso;
 
@@ -113,6 +121,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="txt_correlativo")
 	private String txtCorrelativo;
 
+	@NotNull
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
 
