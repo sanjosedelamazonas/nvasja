@@ -8,4 +8,6 @@ public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
 
 	List<ScpDestino> findByIndTipodestino(String s);
 
+	List<ScpDestino> findByIndTipodestinoNot(String s);
+
 }

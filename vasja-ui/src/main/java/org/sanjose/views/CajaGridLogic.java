@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.ui.Notification;
 import org.sanjose.MainUI;
 import org.sanjose.model.VsjCajabanco;
 
@@ -40,10 +41,12 @@ public class CajaGridLogic implements Serializable {
 
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         // register save listener
+        //view.gridCaja.getEditorFieldGroup().
+
+
         view.gridCaja.getEditorFieldGroup().addCommitHandler(new CommitHandler() {
             @Override
             public void preCommit(CommitEvent commitEvent) throws CommitException {
-            	//Notification.show("Item " + view.gridCaja.getEditedItemId() + " was edited PRE.");                
             }
             @Override
             public void postCommit(CommitEvent commitEvent) throws CommitException {

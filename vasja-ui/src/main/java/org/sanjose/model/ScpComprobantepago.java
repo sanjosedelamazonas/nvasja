@@ -9,12 +9,14 @@ import java.sql.Timestamp;
  * The persistent class for the scp_comprobantepago database table.
  * 
  */
-//@Entity
-//@Table(name="scp_comprobantepago")
-//@NamedQuery(name="ScpComprobantepago.findAll", query="SELECT s FROM ScpComprobantepago s")
+@Entity
+@Table(name="scp_comprobantepago")
+@NamedQuery(name="ScpComprobantepago.findAll", query="SELECT s FROM ScpComprobantepago s")
 public class ScpComprobantepago implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="cod_tipocomprobantepago")
 	private String codTipocomprobantepago;
 

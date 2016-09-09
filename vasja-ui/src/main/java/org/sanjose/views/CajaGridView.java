@@ -4,11 +4,10 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
-import org.sanjose.helper.BooleanTrafficLight;
-import org.sanjose.helper.DataFilterUtil;
-import org.sanjose.helper.DateToTimestampConverter;
-import org.sanjose.helper.GenUtil;
+import com.vaadin.ui.renderers.DateRenderer;
+import org.sanjose.helper.*;
 import org.sanjose.model.*;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.model.VsjCajabancoRep;
@@ -59,14 +58,16 @@ public class CajaGridView extends CajaGridUI implements View {
             "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
             "Enviado", "Origen", "Comprobante"
     };
+    String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
     
     @Autowired
-    public CajaGridView(VsjCajabancoRep repo, VsjCajabancoRep configRepo, ScpPlancontableRep planRepo,
-                        ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo) {
+    public CajaGridView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
+                        ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
+                        ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
+                        ScpPlanproyectoRep planproyectoRepo) {
     	this.repo = repo;
         setSizeFull();
         addStyleName("crud-view");
-        //gridCaja.set
 
         BeanItemContainer<VsjCajabanco> container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
         
@@ -77,53 +78,93 @@ public class CajaGridView extends CajaGridUI implements View {
             colNames.put(VISIBLE_COLUMN_IDS[i], VISIBLE_COLUMN_NAMES[i]);
         }
 
-/*        log.info("getting cols: " + gridCaja.getColumns());
-        List<String> colList = new ArrayList<String>();
-        for (String col: VISIBLE_COLUMN_IDS)
-            colList.add(col);
-        for (Grid.Column column : gridCaja.getColumns()) {
-            if (!colList.contains(column.getPropertyId()))
-                gridCaja.removeColumn(column.getPropertyId());
-        }*/
         gridCaja.setColumns(VISIBLE_COLUMN_IDS);
         gridCaja.setColumnOrder(VISIBLE_COLUMN_IDS);
+
+        //gridCaja.getColumn("fecFecha").setRenderer()
 
         for (String colId : colNames.keySet()) {
             gridCaja.getDefaultHeaderRow().getCell(colId).setText(colNames.get(colId));
         }
 
      //   gridCaja.getColumn("txtTipocuenta").setWidth(120);
-        //gridCaja.setCol
-        
-        gridCaja.getColumn("txtCorrelativo").setEditable(false);
-               
+        for (String colId : NONEDITABLE_COLUMN_IDS) {
+            gridCaja.getColumn(colId).setEditable(false);
+        }
+
         gridCaja.setSelectionMode(SelectionMode.MULTI);
         HeaderRow filterRow = gridCaja.appendHeaderRow();
         
         gridCaja.setEditorFieldGroup(
         	    new BeanFieldGroup<VsjCajabanco>(VsjCajabanco.class));
 
-
+        /*PopupDateField pdf = new PopupDateField();
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
+        pdf.setPropertyDataSource(prop);
+        pdf.setConverter(DateToTimestampConverter.INSTANCE);
+        pdf.setResolution(Resolution.MINUTE);
+        gridCaja.getColumn("fecFecha").setEditorField(pdf);*/
 
         PopupDateField pdf = new PopupDateField();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
         pdf.setPropertyDataSource(prop);
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
+        pdf.setResolution(Resolution.MINUTE);
         gridCaja.getColumn("fecFecha").setEditorField(pdf);
 
-        ComboBox selCtacontablecaja = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
-        gridCaja.getColumn("codContracta").setEditorField(selCtacontablecaja);
 
-        ComboBox selTercero = new ComboBox();
-        DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
-        gridCaja.getColumn("codTercero").setEditorField(selTercero);
+
+        gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+
 
         ComboBox selProyecto = new ComboBox();
         DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
         gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
+        ComboBox selTercero = new ComboBox();
+        DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
+        gridCaja.getColumn("codTercero").setEditorField(selTercero);
+
+        ComboBox selCtacontablecaja = new ComboBox();
+        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+        gridCaja.getColumn("codContracta").setEditorField(selCtacontablecaja);
+
+        ComboBox selCtacontable = new ComboBox();
+        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+        gridCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
+
+        ComboBox selCtaespecial = new ComboBox();
+        DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial",
+                planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
+                "Sel cta especial", "txtDescctaespecial");
+        gridCaja.getColumn("codCtaespecial").setEditorField(selCtaespecial);
+
+        ComboBox selResponsable = new ComboBox();
+        DataFilterUtil.bindComboBox(selResponsable, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
+                "Sel Responsable", "txtNombredestino");
+        gridCaja.getColumn("codDestinoitem").setEditorField(selResponsable);
+
+        ComboBox selComprobantepago = new ComboBox();
+        DataFilterUtil.bindComboBox(selComprobantepago, "codTipocomprobantepago", comprobantepagoRepo.findAll(),
+                "Sel Tipo", "txtDescripcion");
+        gridCaja.getColumn("codTipocomprobantepago").setEditorField(selComprobantepago);
+
+
+        ComboBox selFinanciera = new ComboBox();
+        DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraRepo.findAll(),
+                "Sel Fuente", "txtDescfinanciera");
+        gridCaja.getColumn("codFinanciera").setEditorField(selFinanciera);
+
+
+        ComboBox selPlanproyecto = new ComboBox();
+        DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
+                planproyectoRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
+                "Sel Rubro proy", "txtDescctaproyecto");
+        gridCaja.getColumn("codCtaproyecto").setEditorField(selPlanproyecto);
+
+        //financieraRepo
 
        /* ComboBox selCtacontablegasto = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()), "Sel cta contable", "txtDescctacontable");
@@ -140,7 +181,7 @@ public class CajaGridView extends CajaGridUI implements View {
 	
 	         // Have an input field to use for filter
 	         TextField filterField = new TextField();
-	         if (pid.toString().contains("para") || pid.toString().contains("activo"))
+	         if (pid.toString().contains("flgEnviado") || pid.toString().contains("codTipocomprobantepago"))
 	        	 filterField.setColumns(2);
 	         else
 	        	 filterField.setColumns(6);
@@ -164,14 +205,6 @@ public class CajaGridView extends CajaGridUI implements View {
     @Override
     public void enter(ViewChangeEvent event) {
         viewLogic.enter(event.getParameters());
-    }
-
-    public void showError(String msg) {
-        Notification.show(msg, Type.ERROR_MESSAGE);
-    }
-
-    public void showSaveNotification(String msg) {
-        Notification.show(msg, Type.TRAY_NOTIFICATION);
     }
 
     public void clearSelection() {

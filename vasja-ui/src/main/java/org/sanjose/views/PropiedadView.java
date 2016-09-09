@@ -17,6 +17,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TextField;
+import org.sanjose.helper.ConfigurationUtil;
 import org.sanjose.helper.DateToTimestampConverter;
 import org.sanjose.model.ScpPlancontableRep;
 import org.sanjose.model.ScpPlanespecialRep;
@@ -48,11 +49,18 @@ public class PropiedadView extends PropiedadUI implements View {
     @Autowired
     public PropiedadView(VsjPropiedadRep repo) {
     	this.repo = repo;
+        ConfigurationUtil.setPropiedadRepo(repo);
+        if (ConfigurationUtil.getProperty("LOCALE")==null) {
+            Notification.show("Initializing Configuracion del Sistema", Notification.Type.ERROR_MESSAGE);
+            ConfigurationUtil.storeDefaultProperties();
+        }
+
         setSizeFull();
         addStyleName("crud-view");
 
         BeanItemContainer<VsjPropiedad> container = new BeanItemContainer(VsjPropiedad.class, repo.findAll());
-        
+
+        gridPropiedad.setSelectionMode(SelectionMode.MULTI);
         gridPropiedad
         	.setContainerDataSource(container);
         Object[] VISIBLE_COLUMN_IDS = new String[]{"nombre", "valor"};

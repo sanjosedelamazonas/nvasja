@@ -36,28 +36,21 @@ public class PropiedadLogic implements Serializable {
 
     public void init() {
         view.btnNuevaPropiedad.addClickListener(e -> newPropiedad());
+        view.btnEliminar.addClickListener(e -> deletePropiedad());
         // register save listener
         view.gridPropiedad.getEditorFieldGroup().addCommitHandler(new CommitHandler() {
             @Override
             public void preCommit(CommitEvent commitEvent) throws CommitException {
-            	//Notification.show("Item " + view.gridPropiedad.getEditedItemId() + " was edited PRE.");                
             }
             @Override
             public void postCommit(CommitEvent commitEvent) throws CommitException {
                 // You can persist your data here
-                //Notification.show("Item " + view.gridPropiedad.getEditedItemId() + " was edited.");
                 Object item = view.gridPropiedad.getContainerDataSource().getItem(view.gridPropiedad.getEditedItemId());
                 if (item!=null) 
                 	view.repo.save((VsjPropiedad)((BeanItem)item).getBean());
             }
         });
                
-    }
-
-    public void cancelProduct() {
-        setFragmentParameter("");
-        view.clearSelection();
-//        view.editProduct(null);
     }
 
     /**
@@ -80,14 +73,10 @@ public class PropiedadLogic implements Serializable {
         if (productId != null && !productId.isEmpty()) {
         	log.info("Configuracion Logic getting: " + productId);
             if (productId.equals("new")) {
-     //       	newConfiguracion();
+            	newPropiedad();
             } else {
-                // Ensure this is selected even if coming directly here from
-                // login
                 try {
                     int pid = Integer.parseInt(productId);
-  //                  Product product = findProduct(pid);
-    //                view.selectRow(product);
                 } catch (NumberFormatException e) {
                 }
             }
@@ -102,20 +91,15 @@ public class PropiedadLogic implements Serializable {
     }
 
 
-    public void deleteConfiguracion() {
+    public void deletePropiedad() {
         List<VsjPropiedad> rows = new ArrayList<VsjPropiedad>();
-    	
         for (Object vsj : view.getSelectedRow()) {
-        	log.info("Got selected: " + vsj);
         	if (vsj instanceof VsjPropiedad)
         		rows.add((VsjPropiedad)vsj);
         }
         view.clearSelection();
-        //setFragmentParameter("new");
         for (VsjPropiedad vsj : rows) {
-        	log.info("Removing: " + vsj.getCodPropiedad());
         	view.removeRow(vsj);
         }
-        //view.gridPropiedad.getContainerDataSource().removeItem(itemId)
-    }    
+    }
 }

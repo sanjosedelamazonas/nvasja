@@ -208,8 +208,6 @@ public class DataFilterUtil {
 		});
 	}
 	
-	
-	
 	public static void bindComboBox(final ComboBox combo, String column, List elements, 
 			final String prompt, String concatenatedColumn) {
 		
@@ -277,8 +275,6 @@ public class DataFilterUtil {
 		});
 	}	
 
-	
-	
 /*
 	public static void bindComboBox(final ComboBox combo, String column,
 			final String prompt, Class clas) {

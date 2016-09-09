@@ -6,6 +6,7 @@ import org.sanjose.authentication.BasicAccessControl;
 import org.sanjose.authentication.LoginScreen;
 import org.sanjose.authentication.LoginScreen.LoginListener;
 import org.sanjose.helper.ConfigurationUtil;
+import org.sanjose.model.VsjCajabancoRep;
 import org.sanjose.model.VsjPropiedad;
 import org.sanjose.model.VsjPropiedadRep;
 import org.sanjose.views.CajaGridView;
@@ -46,8 +47,10 @@ public class MainUI extends UI {
     private PropiedadView propiedadView;
 
     private VsjPropiedadRep propRepo;
+
     @Autowired
-    private MainUI(VsjPropiedadRep propRepo, PropiedadView propiedadView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView) {
+    private MainUI(VsjPropiedadRep propRepo, PropiedadView propiedadView, CajaGridView cajaGridView,
+                   ConfiguracionCtaCajaBancoView confView) {
     	this.confView = confView;
     	this.cajaGridView = cajaGridView;
         this.propiedadView = propiedadView;
@@ -57,10 +60,6 @@ public class MainUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         ConfigurationUtil.setPropiedadRepo(propRepo);
-        if (ConfigurationUtil.getProperty("LOCALE")==null) {
-            Notification.show("Initializing Configuracion del Sistema", Notification.Type.ERROR_MESSAGE);
-            ConfigurationUtil.storeDefaultProperties();
-        }
         Responsive.makeResponsive(this);
         setLocale(ConfigurationUtil.getLocale());
         getPage().setTitle("Main");
@@ -89,14 +88,4 @@ public class MainUI extends UI {
     public AccessControl getAccessControl() {
         return accessControl;
     }
-
-    /*@WebServlet(urlPatterns = "/*", name = "MainUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = MainUI.class, productionMode = false)
-    public static class MainUIServlet extends SpringVaadinServlet {
-    }*/
-
-    /*    @WebServlet(urlPatterns = "/*", name = "MainUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = MainUI.class, productionMode = false)
-    public static class MainUIServlet extends VaadinServlet {
-    }*/
 }
