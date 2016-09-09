@@ -3,7 +3,9 @@ package org.sanjose.views;
 import java.sql.Timestamp;
 import java.util.*;
 
+import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -47,25 +49,35 @@ public class CajaGridView extends CajaGridUI implements View {
     public VsjCajabancoRep repo;
 
     String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
-            "codContracta", "txtGlosaitem", "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar",
-            "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago", "txtSeriecomprobantepago",
-            "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
+            "codContracta", "txtGlosaitem", "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "codTipomoneda",
+            "codDestino", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
+            "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
     String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
-            "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $",
-            "Cod. Aux", "Cta Contable", "Rubro Inst.", "Tipo Doc", "Serie",
-            "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
+            "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "S/$",
+            "Responsable", "Cod. Aux", "Cta Contable", "Rubro Inst.", "Tipo Doc",
+            "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
             "Enviado", "Origen", "Comprobante"
     };
     String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
+
+    public ScpPlanproyectoRep planproyectoRepo;
+
+    public ScpFinancieraRep financieraRepo;
+
+    public Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
     
     @Autowired
     public CajaGridView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
                         ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                         ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                        ScpPlanproyectoRep planproyectoRepo) {
+                        ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
+                        ScpTipomonedaRep tipomonedaRepo) {
     	this.repo = repo;
+        this.planproyectoRepo = planproyectoRepo;
+        this.financieraRepo = financieraRepo;
+        this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
         setSizeFull();
         addStyleName("crud-view");
 
@@ -78,6 +90,7 @@ public class CajaGridView extends CajaGridUI implements View {
             colNames.put(VISIBLE_COLUMN_IDS[i], VISIBLE_COLUMN_NAMES[i]);
         }
 
+        //gridCaja.setH
         gridCaja.setColumns(VISIBLE_COLUMN_IDS);
         gridCaja.setColumnOrder(VISIBLE_COLUMN_IDS);
 
@@ -114,66 +127,78 @@ public class CajaGridView extends CajaGridUI implements View {
         pdf.setResolution(Resolution.MINUTE);
         gridCaja.getColumn("fecFecha").setEditorField(pdf);
 
-
-
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
 
+        // Proyecto
         ComboBox selProyecto = new ComboBox();
         DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
+        selProyecto.addValueChangeListener(event -> setProyectoLogic(event));
         gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
+        // Tercero
         ComboBox selTercero = new ComboBox();
         DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
         gridCaja.getColumn("codTercero").setEditorField(selTercero);
 
+        // Cta Caja
         ComboBox selCtacontablecaja = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codContracta").setEditorField(selCtacontablecaja);
 
+        // Tipo Moneda
+        ComboBox selTipomoneda = new ComboBox();
+        DataFilterUtil.bindComboBox(selTipomoneda, "codTipomoneda", tipomonedaRepo.findAll(), "Moneda", "txtDescripcion");
+        gridCaja.getColumn("codTipomoneda").setEditorField(selTipomoneda);
+
+        // Cta Contable
         ComboBox selCtacontable = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
 
+        // Rubro inst
         ComboBox selCtaespecial = new ComboBox();
         DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial",
                 planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel cta especial", "txtDescctaespecial");
         gridCaja.getColumn("codCtaespecial").setEditorField(selCtaespecial);
 
+        // Responsable
         ComboBox selResponsable = new ComboBox();
         DataFilterUtil.bindComboBox(selResponsable, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
-                "Sel Responsable", "txtNombredestino");
-        gridCaja.getColumn("codDestinoitem").setEditorField(selResponsable);
+                "Responsable", "txtNombredestino");
+        gridCaja.getColumn("codDestino").setEditorField(selResponsable);
 
+        // Cod. Auxiliar
+        ComboBox selAuxiliar = new ComboBox();
+        DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
+                "Auxiliar", "txtNombredestino");
+        gridCaja.getColumn("codDestinoitem").setEditorField(selAuxiliar);
+
+        // Tipo doc
         ComboBox selComprobantepago = new ComboBox();
         DataFilterUtil.bindComboBox(selComprobantepago, "codTipocomprobantepago", comprobantepagoRepo.findAll(),
                 "Sel Tipo", "txtDescripcion");
         gridCaja.getColumn("codTipocomprobantepago").setEditorField(selComprobantepago);
 
-
-        ComboBox selFinanciera = new ComboBox();
-        DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraRepo.findAll(),
-                "Sel Fuente", "txtDescfinanciera");
-        gridCaja.getColumn("codFinanciera").setEditorField(selFinanciera);
-
-
+        // Rubro Proy
         ComboBox selPlanproyecto = new ComboBox();
         DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
                 planproyectoRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel Rubro proy", "txtDescctaproyecto");
         gridCaja.getColumn("codCtaproyecto").setEditorField(selPlanproyecto);
 
-        //financieraRepo
+        // Fuente
+        ComboBox selFinanciera = new ComboBox();
+        DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraRepo.findAll(),
+                "Sel Fuente", "txtDescfinanciera");
+        gridCaja.getColumn("codFinanciera").setEditorField(selFinanciera);
 
-       /* ComboBox selCtacontablegasto = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()), "Sel cta contable", "txtDescctacontable");
-        gridCaja.getColumn("codCtacontablegasto").setEditorField(selCtacontablegasto);
-        
-        ComboBox selCtaespecial = new ComboBox();  
-        DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial", planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()), "Sel cta especial", "txtDescctaespecial");
-        gridCaja.getColumn("codCtaespecial").setEditorField(selCtaespecial);
-         */
+
+        //gridCaja.getEditorFieldGroup().
+
+        gridCaja.addItemClickListener(event ->  setItemLogic(event));
+
         // Set up a filter for all columns
 	     for (Grid.Column column: gridCaja.getColumns()) {
 	         Object pid = column.getPropertyId();
@@ -181,8 +206,10 @@ public class CajaGridView extends CajaGridUI implements View {
 	
 	         // Have an input field to use for filter
 	         TextField filterField = new TextField();
-	         if (pid.toString().contains("flgEnviado") || pid.toString().contains("codTipocomprobantepago"))
-	        	 filterField.setColumns(2);
+	         if (pid.toString().contains("flgEnviado")
+                     || pid.toString().contains("codTipocomprobantepago")
+                     || pid.toString().contains("codTipomoneda"))
+	        	 filterField.setColumns(3);
 	         else
 	        	 filterField.setColumns(6);
 	
@@ -201,6 +228,65 @@ public class CajaGridView extends CajaGridUI implements View {
 	     }
         viewLogic.init();
     }
+
+    public void setProyectoLogic(Property.ValueChangeEvent event) {
+        if (event.getProperty().getValue()!=null)
+            setEditorLogic(event.getProperty().getValue().toString());
+    }
+
+
+    public void setItemLogic(ItemClickEvent event) {
+        //gridCaja.isEditorEnabled()
+        String proyecto = null;
+        Object objProyecto = event.getItem().getItemProperty("codProyecto").getValue();
+        if (objProyecto !=null && !objProyecto.toString().isEmpty())
+            proyecto = objProyecto.toString();
+
+        setEditorLogic(proyecto);
+        //if (gridCaja.getEditedItemId()!=null) {
+           // log.info("Got to item: " + event.getItem() + "\n" + event.getPropertyId());
+        //}
+    }
+
+    public void setEditorLogic(String codProyecto) {
+        ComboBox selFinanciera = (ComboBox)gridCaja.getColumn("codFinanciera").getEditorField();
+        ComboBox selPlanproyecto = (ComboBox) gridCaja.getColumn("codCtaproyecto").getEditorField();
+
+        if (codProyecto!=null && !codProyecto.isEmpty()) {
+            DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
+                    planproyectoRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
+                            "N", GenUtil.getCurYear(), codProyecto),
+                    "Sel Rubro proy", "txtDescctaproyecto");
+            List<Scp_ProyectoPorFinanciera>
+                    proyectoPorFinancieraList = proyectoPorFinancieraRepo.findById_CodProyecto(codProyecto);
+
+            // Filter financiera if exists in Proyecto Por Financiera
+            List<ScpFinanciera> financieraList = financieraRepo.findAll();
+            List<ScpFinanciera> financieraEfectList = new ArrayList<>();
+            if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
+                List<String> codFinancieraList = new ArrayList<>();
+                for (Scp_ProyectoPorFinanciera proyectoPorFinanciera : proyectoPorFinancieraList)
+                    codFinancieraList.add(proyectoPorFinanciera.getId().getCodFinanciera());
+
+                for (ScpFinanciera financiera : financieraList) {
+                    if (financiera.getCodFinanciera()!=null &&
+                            codFinancieraList.contains(financiera.getCodFinanciera())) {
+                        financieraEfectList.add(financiera);
+                    }
+                }
+            } else {
+                financieraEfectList = financieraList;
+            }
+            DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
+                    "Sel Fuente", "txtDescfinanciera");
+        } else {
+            DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", new ArrayList<ScpFinanciera>(),
+                    "-------", null);
+            DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto", new ArrayList<ScpPlanproyecto>(),
+                    "-------", null);
+        }
+    }
+
 
     @Override
     public void enter(ViewChangeEvent event) {
