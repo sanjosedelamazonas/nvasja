@@ -51,12 +51,12 @@
 		    <artifactId>vaadin-spring</artifactId>        
 		</dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>vasja-backend</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+-->
         <!-- Custom components -->
         <dependency>
             <groupId>${project.groupId}</groupId>
