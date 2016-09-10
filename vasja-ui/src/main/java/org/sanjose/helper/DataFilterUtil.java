@@ -2,8 +2,7 @@ package org.sanjose.helper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -114,6 +113,33 @@ public class DataFilterUtil {
 		combo.setInvalidAllowed(false);
 		combo.setInputPrompt(prompt);
 		combo.setFilteringMode(ComboBox.FILTERINGMODE_CONTAINS);
+	}
+
+	public static void bindTipoMonedaComboBox(final ComboBox combo, String column,
+										   final String prompt) {
+
+		Map<String, String> valMap = new TreeMap<>();
+		valMap.put("0","S/");
+		valMap.put("1","$");
+		valMap.put("2","€");
+
+		// propietarios.setWidth(ConfigurationUtil.get("COMMON_FIELD_WIDTH"));
+		IndexedContainer c = new IndexedContainer();
+		c.addContainerProperty(column, String.class, "");
+
+		int i = 0;
+		for (String value : new String[] { "0", "1", "2"}) {
+			Item item = c.addItem(value);
+			item.getItemProperty(column)
+					.setValue(value + " " + valMap.get(value));
+			i++;
+		}
+		combo.setContainerDataSource(c);
+		combo.setItemCaptionPropertyId(column);
+		combo.setImmediate(true);
+		combo.setInvalidAllowed(false);
+		combo.setInputPrompt(prompt);
+		combo.setFilteringMode(FilteringMode.CONTAINS);
 	}
 /*
 	public static void bindBooleanComboBox(final ComboBox combo, final String column,

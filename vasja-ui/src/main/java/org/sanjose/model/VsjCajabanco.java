@@ -31,7 +31,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_contraparte")
 	private String codContraparte;
 
-	@NotNull
+	//@NotNull
 	@Column(name="cod_ctacontable")
 	private String codCtacontable;
 
@@ -41,11 +41,11 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_ctaproyecto")
 	private String codCtaproyecto;
 
-	@NotNull
+	//@NotNull
 	@Column(name="cod_destino")
 	private String codDestino;
 
-	@NotNull
+	//@NotNull
 	@Column(name="cod_destinoitem")
 	private String codDestinoitem;
 
@@ -67,7 +67,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_tipocomprobantepago")
 	private String codTipocomprobantepago;
 
-	@NotNull
+	//@NotNull
 	@Column(name="cod_tipomoneda")
 	private String codTipomoneda;
 
@@ -95,7 +95,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="flg_enviado")
 	private String flgEnviado;
 
-	@NotNull
+	//@NotNull
 	@Column(name="ind_tipocuenta")
 	private String indTipocuenta;
 
@@ -111,7 +111,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="num_habersol")
 	private BigDecimal numHabersol;
 
-	@NotNull
+	//@NotNull
 	@Column(name="txt_anoproceso")
 	private String txtAnoproceso;
 
@@ -121,7 +121,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="txt_correlativo")
 	private String txtCorrelativo;
 
-	@NotNull
+	//@NotNull
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
 

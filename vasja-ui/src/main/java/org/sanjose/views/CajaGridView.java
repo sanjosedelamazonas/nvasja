@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.shared.ui.datefield.Resolution;
@@ -72,8 +73,7 @@ public class CajaGridView extends CajaGridUI implements View {
     public CajaGridView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
                         ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                         ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                        ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                        ScpTipomonedaRep tipomonedaRepo) {
+                        ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -111,14 +111,7 @@ public class CajaGridView extends CajaGridUI implements View {
         gridCaja.setEditorFieldGroup(
         	    new BeanFieldGroup<VsjCajabanco>(VsjCajabanco.class));
 
-        /*PopupDateField pdf = new PopupDateField();
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
-        ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
-        pdf.setPropertyDataSource(prop);
-        pdf.setConverter(DateToTimestampConverter.INSTANCE);
-        pdf.setResolution(Resolution.MINUTE);
-        gridCaja.getColumn("fecFecha").setEditorField(pdf);*/
-
+        // Fecha
         PopupDateField pdf = new PopupDateField();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
@@ -126,19 +119,29 @@ public class CajaGridView extends CajaGridUI implements View {
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
         pdf.setResolution(Resolution.MINUTE);
         gridCaja.getColumn("fecFecha").setEditorField(pdf);
-
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
+        // Fecha Doc
+        pdf = new PopupDateField();
+        prop = new ObjectProperty<Timestamp>(ts);
+        pdf.setPropertyDataSource(prop);
+        pdf.setConverter(DateToTimestampConverter.INSTANCE);
+        pdf.setResolution(Resolution.MINUTE);
+        gridCaja.getColumn("fecComprobantepago").setEditorField(pdf);
+        gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
         // Proyecto
+        ComboBox selTercero = new ComboBox();
         ComboBox selProyecto = new ComboBox();
         DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
         selProyecto.addValueChangeListener(event -> setProyectoLogic(event));
+        selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
         gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
         // Tercero
-        ComboBox selTercero = new ComboBox();
         DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
+        selTercero.addValueChangeListener(event -> setTerceroLogic(event));
+        selTercero.addValidator(new TwoCombosValidator(selProyecto, true, null));
         gridCaja.getColumn("codTercero").setEditorField(selTercero);
 
         // Cta Caja
@@ -148,7 +151,7 @@ public class CajaGridView extends CajaGridUI implements View {
 
         // Tipo Moneda
         ComboBox selTipomoneda = new ComboBox();
-        DataFilterUtil.bindComboBox(selTipomoneda, "codTipomoneda", tipomonedaRepo.findAll(), "Moneda", "txtDescripcion");
+        DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "codTipomoneda", "Moneda");
         gridCaja.getColumn("codTipomoneda").setEditorField(selTipomoneda);
 
         // Cta Contable
@@ -232,6 +235,22 @@ public class CajaGridView extends CajaGridUI implements View {
     public void setProyectoLogic(Property.ValueChangeEvent event) {
         if (event.getProperty().getValue()!=null)
             setEditorLogic(event.getProperty().getValue().toString());
+
+        //ComboBox selTercero = (ComboBox)gridCaja.getColumn("codTercero").getEditorField();
+        //selTercero.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
+
+
+        log.info("ch proy");
+        ComboBox selProyecto = (ComboBox)gridCaja.getColumn("codProyecto").getEditorField();
+        selProyecto.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
+    }
+
+    public void setTerceroLogic(Property.ValueChangeEvent event) {
+        ComboBox selTercero = (ComboBox)gridCaja.getColumn("codTercero").getEditorField();
+        log.info("ch ter");
+        //ComboBox selProyecto = (ComboBox)gridCaja.getColumn("codProyecto").getEditorField();
+        //selProyecto.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
+        selTercero.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
 
