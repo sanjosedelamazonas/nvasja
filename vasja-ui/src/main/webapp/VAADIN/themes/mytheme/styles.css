@@ -12761,128 +12761,33 @@ div.v-layout.v-horizontal.v-widget {
 	outline: none;
 }
 
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part {
-	background-color: #3b3f42;
-	min-width: 36px;
-	max-width: 54px;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-title {
-	font-size: 8px;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-title .v-label-undef-w {
-	white-space: normal;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .v-menubar-user-menu {
-	margin-left: 0;
-	margin-right: 0;
-	font-size: 8px;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .v-menubar-user-menu img.v-icon {
-	width: 14px;
-	height: 14px;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part [class*="subtitle"] {
-	margin: 5px 0 0;
-	padding: 4px 12px 4px 5px;
-	line-height: 1;
-	border: none;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	background: #2d3032;
-	font-size: 9px;
-	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part [class*="subtitle"] [class*="badge"] {
-	right: 5px;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part [class*="subtitle"]  + .valo-menu-item {
-	border-top: none;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-item {
-	display: block;
-	font-size: 18px;
-	line-height: 1;
-	padding: 6px;
-	text-align: center;
-	border-top: 1px solid #464a4d;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-item:first-child {
-	border-top: none;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-item [class*="caption"] {
-	display: block;
-	width: auto;
-	margin: 0.3em 0 0;
-	padding: 0;
-	font-size: 8px;
-	line-height: 1.3;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-item .v-icon {
-	margin: 0;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-item span.v-icon {
-	opacity: 0.8;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-item.selected {
-	background: #34373a;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-item.selected .v-icon {
-	opacity: 1;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-item.selected [class*="badge"] {
-	border-color: #34373a;
-}
-
-.mytheme .valo-menu-responsive[width-range~="801px-1100px"] .valo-menu-part .valo-menu-item [class*="badge"] {
-	padding-left: 2px;
-	padding-right: 2px;
-	top: 4px;
-	right: 4px;
-	border: 2px solid #3b3f42;
-}
-
-.mytheme .valo-menu-responsive[width-range~="0-800px"] {
+.mytheme .v-ui[width-range~="0-"] {
 	padding-top: 18px;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"] .v-loading-indicator {
+.mytheme .v-ui[width-range~="0-"] .v-loading-indicator {
 	top: 18px;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"]  > .v-widget {
+.mytheme .v-ui[width-range~="0-"]  > .v-widget {
 	position: relative !important;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"] .valo-menu {
+.mytheme .v-ui[width-range~="0-"] .valo-menu {
 	border-right: none;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"] .valo-menu-part {
+.mytheme .v-ui[width-range~="0-"] .valo-menu-part {
 	overflow: visible;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"] .valo-menu-toggle {
+.mytheme .v-ui[width-range~="0-"] .valo-menu-toggle {
 	display: inline-block;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"] .valo-menu-title {
+.mytheme .v-ui[width-range~="0-"] .valo-menu-title {
 	position: fixed;
 	z-index: 100;
 	top: 0;
@@ -12894,7 +12799,7 @@ div.v-layout.v-horizontal.v-widget {
 	-webkit-backface-visibility: hidden;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"] .valo-menu .v-menubar-user-menu {
+.mytheme .v-ui[width-range~="0-"] .valo-menu .v-menubar-user-menu {
 	position: fixed;
 	z-index: 100;
 	top: 0;
@@ -12907,12 +12812,12 @@ div.v-layout.v-horizontal.v-widget {
 	-webkit-backface-visibility: hidden;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"] .valo-menu .v-menubar-user-menu .v-menubar-menuitem {
+.mytheme .v-ui[width-range~="0-"] .valo-menu .v-menubar-user-menu .v-menubar-menuitem {
 	line-height: 17px;
 	white-space: nowrap;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"] .valo-menu .v-menubar-user-menu img.v-icon {
+.mytheme .v-ui[width-range~="0-"] .valo-menu .v-menubar-user-menu img.v-icon {
 	display: inline-block;
 	margin: 0 3px 0 0;
 	width: 9px;
@@ -12921,7 +12826,7 @@ div.v-layout.v-horizontal.v-widget {
 	border: none;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"] .valo-menuitems {
+.mytheme .v-ui[width-range~="0-"] .valo-menuitems {
 	height: 100%;
 	background-color: #3b3f42;
 	background-image: -webkit-linear-gradient(right, #313537 0%, #3b3f42 5px);
@@ -12932,7 +12837,7 @@ div.v-layout.v-horizontal.v-widget {
 	border-right: 1px solid #2e3134;
 	white-space: nowrap;
 	position: fixed;
-	z-index: 9000;
+	z-index: 200;
 	top: 18px;
 	bottom: 0;
 	height: auto;
@@ -12949,7 +12854,7 @@ div.v-layout.v-horizontal.v-widget {
 	transition: all 300ms;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-800px"] .valo-menu-visible .valo-menuitems {
+.mytheme .v-ui[width-range~="0-"] .valo-menu-visible .valo-menuitems {
 	-webkit-transform: translatex(0%);
 	-moz-transform: translatex(0%);
 	-ms-transform: translatex(0%);
@@ -12957,11 +12862,11 @@ div.v-layout.v-horizontal.v-widget {
 	transform: translatex(0%);
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-500px"] .valo-menu-toggle .v-button-caption {
+.mytheme .v-ui[width-range~="0-500px"] .valo-menu-toggle .v-button-caption {
 	display: none;
 }
 
-.mytheme .valo-menu-responsive[width-range~="0-500px"] .valo-menu .v-menubar-user-menu .v-menubar-menuitem-caption {
+.mytheme .v-ui[width-range~="0-500px"] .valo-menu .v-menubar-user-menu .v-menubar-menuitem-caption {
 	display: inline-block;
 	width: 9px;
 	overflow: hidden;

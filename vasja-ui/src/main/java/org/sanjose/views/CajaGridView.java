@@ -10,6 +10,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.sanjose.helper.*;
 import org.sanjose.model.*;
 import org.sanjose.model.VsjCajabanco;
