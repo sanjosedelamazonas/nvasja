@@ -1,0 +1,9 @@
+/Vasja2/build/
+/Vasja2/dist/
+/Vasja2/nbproject/private
+/NVasja/build/
+build
+target
+/*/target/
+.idea
+*.iml
