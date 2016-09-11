@@ -58,9 +58,15 @@ public class CajaGridView extends CajaGridUI implements View {
     };
     String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "S/$",
-            "Responsable", "Cod. Aux", "Cta Contable", "Rubro Inst.", "Tipo Doc",
+            "Responsable", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
-            "Enviado", "Origen", "Comprobante"
+            "Env", "Origen", "Comprobante"
+    };
+    int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
+            5, 10, 6, 6, 6, 6, 2, // S/$
+            6, 6, 5, 5, 2, // Tipo Doc
+            4, 5, 5, 5, 4, // Fuente
+            2, 6, 6
     };
     String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
 
@@ -199,7 +205,11 @@ public class CajaGridView extends CajaGridUI implements View {
         gridCaja.getColumn("codFinanciera").setEditorField(selFinanciera);
 
 
-        //gridCaja.getEditorFieldGroup().
+        Map<String, Integer> filCols = new HashMap<>();
+        for (int i=0;i<FILTER_WIDTH.length;i++) {
+            filCols.put(VISIBLE_COLUMN_IDS[i], FILTER_WIDTH[i]);
+        }
+
 
         gridCaja.addItemClickListener(event ->  setItemLogic(event));
 
@@ -207,16 +217,14 @@ public class CajaGridView extends CajaGridUI implements View {
 	     for (Grid.Column column: gridCaja.getColumns()) {
 	         Object pid = column.getPropertyId();
 	         HeaderCell cell = filterRow.getCell(pid);
-	
-	         // Have an input field to use for filter
+
+
+             // Have an input field to use for filter
 	         TextField filterField = new TextField();
-	         if (pid.toString().contains("flgEnviado")
-                     || pid.toString().contains("codTipocomprobantepago")
-                     || pid.toString().contains("codTipomoneda"))
-	        	 filterField.setColumns(3);
-	         else
-	        	 filterField.setColumns(6);
-	
+
+             // Set filter width according to table
+             filterField.setColumns(filCols.get(pid));
+
 	         // Update filter When the filter input is changed
 	         filterField.addTextChangeListener(change -> {
 	             // Can't modify filters so need to replace
@@ -236,21 +244,12 @@ public class CajaGridView extends CajaGridUI implements View {
     public void setProyectoLogic(Property.ValueChangeEvent event) {
         if (event.getProperty().getValue()!=null)
             setEditorLogic(event.getProperty().getValue().toString());
-
-        //ComboBox selTercero = (ComboBox)gridCaja.getColumn("codTercero").getEditorField();
-        //selTercero.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
-
-
-        log.info("ch proy");
         ComboBox selProyecto = (ComboBox)gridCaja.getColumn("codProyecto").getEditorField();
         selProyecto.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
     public void setTerceroLogic(Property.ValueChangeEvent event) {
         ComboBox selTercero = (ComboBox)gridCaja.getColumn("codTercero").getEditorField();
-        log.info("ch ter");
-        //ComboBox selProyecto = (ComboBox)gridCaja.getColumn("codProyecto").getEditorField();
-        //selProyecto.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
         selTercero.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 

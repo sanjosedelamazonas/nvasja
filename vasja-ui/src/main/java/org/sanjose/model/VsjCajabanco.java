@@ -1,5 +1,7 @@
 package org.sanjose.model;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -32,6 +34,7 @@ public class VsjCajabanco implements Serializable {
 	private String codContraparte;
 
 	//@NotNull
+	@NotBlank
 	@Column(name="cod_ctacontable")
 	private String codCtacontable;
 
@@ -42,10 +45,12 @@ public class VsjCajabanco implements Serializable {
 	private String codCtaproyecto;
 
 	//@NotNull
+	@NotBlank
 	@Column(name="cod_destino")
 	private String codDestino;
 
 	//@NotNull
+	@NotBlank
 	@Column(name="cod_destinoitem")
 	private String codDestinoitem;
 
@@ -68,6 +73,7 @@ public class VsjCajabanco implements Serializable {
 	private String codTipocomprobantepago;
 
 	//@NotNull
+	@NotBlank
 	@Column(name="cod_tipomoneda")
 	private String codTipomoneda;
 
@@ -83,7 +89,8 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="fec_factualiza")
 	private Timestamp fecFactualiza;
 
-	@NotNull
+	//@NotNull
+	//@NotBlank
 	@Column(name="fec_fecha")
 	private Timestamp fecFecha;
 

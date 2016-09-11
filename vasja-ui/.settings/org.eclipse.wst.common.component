@@ -4,9 +4,6 @@
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <dependent-module archiveName="vasja-widgetset-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/vasja-widgetset/vasja-widgetset">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="context-root" value="vasja-ui"/>
         <property name="java-output-path" value="/vasja-ui/target/classes"/>
         <property name="component.exclusion.patterns" value="WEB-INF/classes/VAADIN/gwt-unitCache/**,WEB-INF/classes/VAADIN/widgetsets/WEB-INF/**"/>
