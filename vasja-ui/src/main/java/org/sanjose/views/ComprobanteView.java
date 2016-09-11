@@ -10,6 +10,7 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Page;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
@@ -68,9 +69,11 @@ public class ComprobanteView extends ComprobanteUI implements View {
     public ScpFinancieraRep financieraRepo;
 
     public Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
+
+    public VsjConfiguractacajabancoRep configuractacajabancoRepo;
     
     @Autowired
-    public ComprobanteView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
+    public ComprobanteView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
                            ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                            ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                            ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo) {
@@ -78,6 +81,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
         this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
+        this.configuractacajabancoRepo = configuractacajabancoRepo;
         setSizeFull();
         addStyleName("crud-view");
 
@@ -91,7 +95,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
         pdf.setPropertyDataSource(prop);
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
-        pdf.setResolution(Resolution.MINUTE);
+        pdf.setResolution(Resolution.DAY);
         //gridCaja.getColumn("fecFecha").setEditorField(pdf);
         //gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
@@ -100,7 +104,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         prop = new ObjectProperty<Timestamp>(ts);
         pdf.setPropertyDataSource(prop);
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
-        pdf.setResolution(Resolution.MINUTE);
+        pdf.setResolution(Resolution.DAY);
         //gridCaja.getColumn("fecComprobantepago").setEditorField(pdf);
         //gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
@@ -110,6 +114,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
         DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
         selProyecto.addValueChangeListener(event -> setProyectoLogic(event));
         selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
+//        selProyecto.setId("my-custom-combobox");
+
+                //"setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
         //gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
         // Tercero
@@ -119,25 +126,37 @@ public class ComprobanteView extends ComprobanteUI implements View {
         //gridCaja.getColumn("codTercero").setEditorField(selTercero);
 
         // Cta Caja
-        ComboBox selCtacontablecaja = selCaja;
-        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+        selCaja.setEnabled(false);
         //gridCaja.getColumn("codContracta").setEditorField(selCtacontablecaja);
 
         // Tipo Moneda
-        OptionGroup selTipomoneda = selMoneda;
-        //DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "codTipomoneda", "Moneda");
+        DataFilterUtil.bindTipoMonedaOptionGroup(selMoneda, "codTipomoneda");
+        selMoneda.addValueChangeListener(event -> {
+
+
+            if (event.getProperty().getValue().toString().equals("0")) {
+                // Soles
+                DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
+                        findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
+                                "N", GenUtil.getCurYear(), "N", "101"), "Sel Caja", "txtDescctacontable");
+                selCaja.setEnabled(true);
+            } else {
+                // Dolares
+                DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
+                        findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
+                                "N", GenUtil.getCurYear(), "D", "101"), "Sel Caja", "txtDescctacontable");
+                selCaja.setEnabled(true);
+            }
+        });
         //gridCaja.getColumn("codTipomoneda").setEditorField(selTipomoneda);
 
-        // Cta Contable
-        ComboBox selCtacontable = selCtaContable;
-        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
-        //gridCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
+        //ingreso.add
+        ingreso.setPropertyDataSource(new DoubleDecimalFormatter(ingreso.getPropertyDataSource(), ConfigurationUtil.get("DECIMAL_FORMAT")));
+        //ingreso.setValue("0.00");
 
-        // Rubro inst
-        ComboBox selCtaespecial = selRubroInst;
-        DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial",
-                planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
-                "Sel cta especial", "txtDescctaespecial");
+        egreso.setPropertyDataSource(new DoubleDecimalFormatter(egreso.getPropertyDataSource(), ConfigurationUtil.get("DECIMAL_FORMAT")));
+        //egreso.setValue("0.00");
+
         //gridCaja.getColumn("codCtaespecial").setEditorField(selCtaespecial);
 
         // Responsable
@@ -158,18 +177,45 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 "Sel Tipo", "txtDescripcion");
         //gridCaja.getColumn("codTipocomprobantepago").setEditorField(selComprobantepago);
 
+
+        // Cta Contable
+        selCtaContable.setEnabled(false);
+        DataFilterUtil.bindComboBox(selCtaContable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+        //gridCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
+
+        // Rubro inst
+        selRubroInst.setEnabled(false);
+        DataFilterUtil.bindComboBox(selRubroInst, "id.codCtaespecial",
+                planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
+                "Sel cta especial", "txtDescctaespecial");
+
         // Rubro Proy
-        ComboBox selPlanproyecto = selRubroProy;
-        DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
+        selRubroProy.setEnabled(false);
+        DataFilterUtil.bindComboBox(selRubroProy, "id.codCtaproyecto",
                 planproyectoRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel Rubro proy", "txtDescctaproyecto");
         //gridCaja.getColumn("codCtaproyecto").setEditorField(selPlanproyecto);
 
         // Fuente
+        selFuente.setEnabled(false);
         ComboBox selFinanciera = selFuente;
         DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraRepo.findAll(),
                 "Sel Fuente", "txtDescfinanciera");
         //gridCaja.getColumn("codFinanciera").setEditorField(selFinanciera);
+
+        DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta", configuractacajabancoRepo.findByActivoAndParaCaja(true, true),
+                "Sel Tipo de Movimiento", "txtTipocuenta");
+        selTipoMov.setEnabled(false);
+        selTipoMov.addValueChangeListener(event -> {
+            if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                String tipoMov = event.getProperty().getValue().toString();
+                VsjConfiguractacajabanco config = configuractacajabancoRepo.findByCodTipocuenta(Integer.parseInt(tipoMov));
+                log.info("selected config: " + config);
+                selCtaContable.setValue(config.getCodCtacontablegasto());
+                selRubroInst.setValue(config.getCodCtaespecial());
+            }
+
+        });
         viewLogic.init();
     }
 
@@ -181,8 +227,25 @@ public class ComprobanteView extends ComprobanteUI implements View {
     }
 
     public void setTerceroLogic(Property.ValueChangeEvent event) {
+
+        selRubroInst.setEnabled(true);
+        selCtaContable.setEnabled(true);
+        // Sel Tipo Movimiento
+        selTipoMov.setEnabled(true);
+        DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta",
+                configuractacajabancoRepo.findByActivoAndParaCajaAndParaTercero(true, true, true),
+                "Sel Tipo de Movimiento", "txtTipocuenta");
         //ComboBox selTercero = (ComboBox)gridCaja.getColumn("codTercero").getEditorField();
         selTercero.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
+        selFuente.setEnabled(false);
+        selFuente.setValue("");
+        // Reset those fields
+        selCtaContable.setValue(null);
+        selRubroInst.setValue(null);
+        //DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto", new ArrayList<ScpPlanproyecto>(),
+        //        "-------", null);
+        selRubroProy.setEnabled(false);
+        selRubroProy.setValue("");
     }
 
 
@@ -191,6 +254,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
         ComboBox selPlanproyecto = selRubroProy;
 
         if (codProyecto!=null && !codProyecto.isEmpty()) {
+            selFinanciera.setEnabled(true);
+            selPlanproyecto.setEnabled(true);
             DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
                     planproyectoRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
                             "N", GenUtil.getCurYear(), codProyecto),
@@ -212,16 +277,35 @@ public class ComprobanteView extends ComprobanteUI implements View {
                         financieraEfectList.add(financiera);
                     }
                 }
+
+                // Sel Tipo Movimiento
+                DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta",
+                        configuractacajabancoRepo.findByActivoAndParaCajaAndParaProyecto(true, true, true),
+                        "Sel Tipo de Movimiento", "txtTipocuenta");
+                // Reset those fields
+                selCtaContable.setValue(null);
+                selRubroInst.setValue(null);
+                selTipoMov.setEnabled(true);
+                selRubroInst.setEnabled(true);
+                selCtaContable.setEnabled(true);
             } else {
                 financieraEfectList = financieraList;
             }
             DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
                     "Sel Fuente", "txtDescfinanciera");
         } else {
-            DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", new ArrayList<ScpFinanciera>(),
-                    "-------", null);
-            DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto", new ArrayList<ScpPlanproyecto>(),
-                    "-------", null);
+            //DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta",
+            //        configuractacajabancoRepo.findByParaCajaAndParaTercero(true, true),
+            //        "Sel Tipo de Movimiento", "txtTipocuenta");
+            //DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", new ArrayList<ScpFinanciera>(),
+            //        "-------", null);
+            log.info("disabling fin y planproy");
+            selFinanciera.setEnabled(false);
+            selFinanciera.setValue("");
+            //DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto", new ArrayList<ScpPlanproyecto>(),
+            //        "-------", null);
+            selPlanproyecto.setEnabled(false);
+            selPlanproyecto.setValue("");
         }
     }
 

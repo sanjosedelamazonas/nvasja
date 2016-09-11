@@ -7,11 +7,11 @@
   <vaadin-vertical-layout description="---" spacing size-full margin> 
    <vaadin-vertical-layout width="1024px" _id="editarComprobante"> 
     <vaadin-horizontal-layout spacing width="1024px" margin _id="horizontalProyectoTercero" :middle :center> 
-     <vaadin-combo-box caption="Proyecto" item-caption-mode="id" _id="selProyecto"> 
+     <vaadin-combo-box caption="Proyecto" item-caption-mode="id" width="69px" _id="selProyecto"> 
       <option>Option 1</option> 
       <option>Option 2</option> 
      </vaadin-combo-box> 
-     <vaadin-combo-box caption="Tercero" item-caption-mode="id" _id="selTercero"> 
+     <vaadin-combo-box caption="Tercero" item-caption-mode="id" width="71px" _id="selTercero"> 
       <option>Option 1</option> 
       <option>Option 2</option> 
      </vaadin-combo-box> 
@@ -20,13 +20,13 @@
      <vaadin-text-field caption="$" enabled="false" width="60px" _id="saldoProyUSD"></vaadin-text-field> 
      <vaadin-text-field caption="€" enabled="false" width="60px" _id="saldoProyEUR"></vaadin-text-field> 
     </vaadin-horizontal-layout> 
-    <vaadin-vertical-layout caption="Detalles" spacing size-full margin _id="verticalDetalles"> 
+    <vaadin-vertical-layout caption="Detalles" spacing height="93.98%" margin _id="verticalDetalles"> 
      <vaadin-horizontal-layout spacing width="742px" _id="horizontalMonedaCaja"> 
       <vaadin-option-group item-caption-mode="id" width="94px" height="37px" _id="selMoneda"> 
        <option>Soles</option> 
        <option>Dolares</option> 
       </vaadin-option-group> 
-      <vaadin-combo-box caption="Caja" item-caption-mode="id" _id="selCaja"> 
+      <vaadin-combo-box caption="Caja" item-caption-mode="id" width="137px" _id="selCaja"> 
        <option>Option 1</option> 
        <option>Option 2</option> 
       </vaadin-combo-box> 
@@ -43,18 +43,18 @@
       <vaadin-text-field caption="Glosa" width-full _id="glosa" :expand></vaadin-text-field> 
      </vaadin-horizontal-layout> 
      <vaadin-horizontal-layout spacing width="548px" _id="horizontalIngresoGlosa2"> 
-      <vaadin-combo-box caption="Responsable" item-caption-mode="id" _id="selResponsable"> 
+      <vaadin-combo-box caption="Responsable" item-caption-mode="id" width="188px" _id="selResponsable"> 
        <option>Option 1</option> 
        <option>Option 2</option> 
       </vaadin-combo-box> 
-      <vaadin-combo-box caption="Lugar de gasto" item-caption-mode="id" _id="selLugarGasto"> 
+      <vaadin-combo-box caption="Lugar de gasto" item-caption-mode="id" width="210px" _id="selLugarGasto"> 
        <option>Option 1</option> 
        <option>Option 2</option> 
       </vaadin-combo-box> 
      </vaadin-horizontal-layout> 
      <vaadin-vertical-layout caption="Documento" size-full _id="verticalDocumento"> 
       <vaadin-horizontal-layout spacing width="1011px" _id="horizontalFechaVoucher2"> 
-       <vaadin-combo-box caption="Cod. Auxiliar" item-caption-mode="id" _id="selCodAuxiliar"> 
+       <vaadin-combo-box caption="Cod. Auxiliar" item-caption-mode="id" width="190px" _id="selCodAuxiliar"> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
@@ -67,23 +67,23 @@
        <vaadin-popup-date-field caption="Fecha Doc" _id="fechaDoc"></vaadin-popup-date-field> 
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout spacing width="1024px" _id="horizontalIngresoGlosa3"> 
-       <vaadin-combo-box caption="Tipo de movimiento" item-caption-mode="id" _id="selTipoMov"> 
+       <vaadin-combo-box caption="Tipo de movimiento" item-caption-mode="id" width="190px" _id="selTipoMov"> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
-       <vaadin-combo-box caption="Cta contable" item-caption-mode="id" _id="selCtaContable"> 
+       <vaadin-combo-box caption="Cta contable" item-caption-mode="id" width="187px" _id="selCtaContable"> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
-       <vaadin-combo-box caption="Rubro inst" item-caption-mode="id" _id="selRubroInst"> 
+       <vaadin-combo-box caption="Rubro inst" item-caption-mode="id" width="189px" _id="selRubroInst"> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
-       <vaadin-combo-box caption="Rubro proy." item-caption-mode="id" _id="selRubroProy"> 
+       <vaadin-combo-box caption="Rubro proy." item-caption-mode="id" width="196px" _id="selRubroProy"> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
-       <vaadin-combo-box caption="Fuente" item-caption-mode="id" _id="selFuente"> 
+       <vaadin-combo-box caption="Fuente" item-caption-mode="id" width="168px" _id="selFuente"> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
@@ -92,6 +92,9 @@
     </vaadin-vertical-layout> 
     <vaadin-vertical-layout size-auto _id="verticalButtons" :middle :center> 
      <vaadin-horizontal-layout spacing _id="horizontalButtons" :middle :center> 
+      <vaadin-button plain-text _id="nuevoComprobante">
+        Nuevo Comprobante 
+      </vaadin-button> 
       <vaadin-button plain-text _id="anularBtn">
         Anular 
       </vaadin-button> 

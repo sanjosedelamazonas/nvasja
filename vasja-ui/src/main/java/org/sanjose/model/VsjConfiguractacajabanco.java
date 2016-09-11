@@ -134,4 +134,19 @@ public class VsjConfiguractacajabanco implements Serializable {
 		this.txtTipocuenta = txtTipocuenta;
 	}
 
+	@Override
+	public String toString() {
+		return "VsjConfiguractacajabanco{" +
+				"codTipocuenta=" + codTipocuenta +
+				", activo=" + activo +
+				", codCtacontablecaja='" + codCtacontablecaja + '\'' +
+				", codCtacontablegasto='" + codCtacontablegasto + '\'' +
+				", codCtaespecial='" + codCtaespecial + '\'' +
+				", paraBanco=" + paraBanco +
+				", paraCaja=" + paraCaja +
+				", paraProyecto=" + paraProyecto +
+				", paraTercero=" + paraTercero +
+				", txtTipocuenta='" + txtTipocuenta + '\'' +
+				'}';
+	}
 }

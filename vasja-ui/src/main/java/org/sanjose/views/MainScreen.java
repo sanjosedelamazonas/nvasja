@@ -1,5 +1,6 @@
 package org.sanjose.views;
 
+import com.vaadin.ui.JavaScript;
 import org.sanjose.MainUI;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,6 +27,7 @@ public class MainScreen extends HorizontalLayout {
                       PropiedadView propiedadView, ComprobanteView comprobanteView) {
 
         setStyleName("main-screen");
+        JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
 
         CssLayout viewContainer = new CssLayout();
         viewContainer.addStyleName("valo-content");
@@ -65,6 +67,7 @@ public class MainScreen extends HorizontalLayout {
         @Override
         public void afterViewChange(ViewChangeEvent event) {
             menu.setActiveView(event.getViewName());
+            JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
         }
 
     };

@@ -27,12 +27,6 @@
 		    <artifactId>sqljdbc4</artifactId>
 		    <version>4.0</version>
 		</dependency>
-        <!-- Versions for these are configured in the parent POM -->
-<!--         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency> -->
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-server</artifactId>

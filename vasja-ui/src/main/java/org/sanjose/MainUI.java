@@ -1,5 +1,6 @@
 package org.sanjose;
 
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Notification;
 import org.sanjose.authentication.AccessControl;
 import org.sanjose.authentication.BasicAccessControl;

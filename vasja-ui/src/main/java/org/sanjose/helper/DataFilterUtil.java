@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Logger;
 
+import com.vaadin.ui.JavaScript;
+import com.vaadin.ui.OptionGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /*import org.sanjose.model.CentroCosto;
@@ -113,6 +115,33 @@ public class DataFilterUtil {
 		combo.setInvalidAllowed(false);
 		combo.setInputPrompt(prompt);
 		combo.setFilteringMode(ComboBox.FILTERINGMODE_CONTAINS);
+	}
+
+
+
+	/**
+	 * Bind Combo to a boolean type of field.
+	 * @values contains string values that represent true and false - in this order
+	 */
+	public static void bindTipoMonedaOptionGroup(final OptionGroup combo, String column) {
+
+		Map<String, String> valMap = new TreeMap<>();
+		valMap.put("0","Soles");
+		valMap.put("1","Dolares");
+		IndexedContainer c = new IndexedContainer();
+		c.addContainerProperty(column, String.class, "");
+
+		int i = 0;
+		for (String value : new String[] { "0", "1" }) {
+			Item item = c.addItem(value);
+			item.getItemProperty(column)
+					.setValue(valMap.get(value));
+			i++;
+		}
+		combo.setContainerDataSource(c);
+		combo.setItemCaptionPropertyId(column);
+		combo.setImmediate(true);
+		combo.setInvalidAllowed(false);
 	}
 
 	public static void bindTipoMonedaComboBox(final ComboBox combo, String column,
@@ -287,6 +316,7 @@ public class DataFilterUtil {
 		combo.setInvalidAllowed(false);
 		combo.setInputPrompt(prompt);
 		combo.setFilteringMode(FilteringMode.CONTAINS);
+		combo.setId("my-custom-combobox");
 		combo.addValueChangeListener(
 				new ValueChangeListener() {			
 			@Override
