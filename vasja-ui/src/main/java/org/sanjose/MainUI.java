@@ -9,10 +9,7 @@ import org.sanjose.helper.ConfigurationUtil;
 import org.sanjose.model.VsjCajabancoRep;
 import org.sanjose.model.VsjPropiedad;
 import org.sanjose.model.VsjPropiedadRep;
-import org.sanjose.views.CajaGridView;
-import org.sanjose.views.ConfiguracionCtaCajaBancoView;
-import org.sanjose.views.MainScreen;
-import org.sanjose.views.PropiedadView;
+import org.sanjose.views.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.annotations.Theme;
@@ -48,13 +45,16 @@ public class MainUI extends UI {
 
     private VsjPropiedadRep propRepo;
 
+    private ComprobanteView comprobanteView;
+
     @Autowired
     private MainUI(VsjPropiedadRep propRepo, PropiedadView propiedadView, CajaGridView cajaGridView,
-                   ConfiguracionCtaCajaBancoView confView) {
+                   ConfiguracionCtaCajaBancoView confView, ComprobanteView comprobanteView) {
     	this.confView = confView;
     	this.cajaGridView = cajaGridView;
         this.propiedadView = propiedadView;
         this.propRepo = propRepo;
+        this.comprobanteView = comprobanteView;
     }
     
     @Override
@@ -77,7 +77,7 @@ public class MainUI extends UI {
 
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
-        setContent(new MainScreen(MainUI.this, cajaGridView, confView, propiedadView));
+        setContent(new MainScreen(MainUI.this, cajaGridView, confView, propiedadView, comprobanteView));
         getNavigator().navigateTo(getNavigator().getState());
     }
 

@@ -23,7 +23,7 @@ public class MainScreen extends HorizontalLayout {
 
     @Autowired
     public MainScreen(MainUI ui, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
-                      PropiedadView propiedadView) {
+                      PropiedadView propiedadView, ComprobanteView comprobanteView) {
 
         setStyleName("main-screen");
 
@@ -36,6 +36,8 @@ public class MainScreen extends HorizontalLayout {
         menu = new Menu(navigator);
         menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
         		CajaGridView.VIEW_NAME, FontAwesome.EDIT);
+        menu.addView(comprobanteView, ComprobanteView.VIEW_NAME,
+                ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
         menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
         		ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
         menu.addView(propiedadView, PropiedadView.VIEW_NAME,
