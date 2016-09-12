@@ -52,19 +52,19 @@ public class CajaGridView extends CajaGridUI implements View {
 
     String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "codTipomoneda",
-            "codDestino", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
+            "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
     String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "S/$",
-            "Responsable", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
+            "Responsable", "Lug. Gasto", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
             "Env", "Origen", "Comprobante"
     };
     int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
             5, 10, 6, 6, 6, 6, 2, // S/$
-            6, 6, 5, 5, 2, // Tipo Doc
+            6, 4, 6, 5, 5, 2, // Tipo Doc
             4, 5, 5, 5, 4, // Fuente
             2, 6, 6
     };
@@ -80,7 +80,8 @@ public class CajaGridView extends CajaGridUI implements View {
     public CajaGridView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
                         ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                         ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                        ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo) {
+                        ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
+                        Scp_ContraparteRep contraparteRepo) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -178,6 +179,11 @@ public class CajaGridView extends CajaGridUI implements View {
         DataFilterUtil.bindComboBox(selResponsable, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
                 "Responsable", "txtNombredestino");
         gridCaja.getColumn("codDestino").setEditorField(selResponsable);
+
+        ComboBox selLugarGasto = new ComboBox();
+        DataFilterUtil.bindComboBox(selLugarGasto, "codContraparte", contraparteRepo.findAll(),
+                "Sel Lugar de Gasto", "txt_DescContraparte");
+        gridCaja.getColumn("codContraparte").setEditorField(selLugarGasto);
 
         // Cod. Auxiliar
         ComboBox selAuxiliar = new ComboBox();

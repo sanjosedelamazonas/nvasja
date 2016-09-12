@@ -6,16 +6,14 @@
  <body> 
   <vaadin-vertical-layout spacing size-full margin> 
    <vaadin-horizontal-layout spacing _id="horizontalCabeza"> 
-    <vaadin-button plain-text _id="nuevoComprobante">
-      Nuevo 
+    <vaadin-button plain-text _id="btnNuevaConfig" :middle :center>
+      Nueva Configuracion 
     </vaadin-button> 
-    <vaadin-date-field></vaadin-date-field> 
-    <vaadin-label size-auto plain-text _id="labFechas">
-      - 
-    </vaadin-label> 
-    <vaadin-date-field></vaadin-date-field> 
+    <vaadin-button plain-text _id="btnEliminar">
+      Eliminar 
+    </vaadin-button> 
    </vaadin-horizontal-layout> 
-   <vaadin-grid caption="Operaciones de Caja" editor-save-caption="Guardar" editor-cancel-caption="Anular" size-full editable _id="gridCaja" :expand></vaadin-grid> 
+   <vaadin-grid caption="Configuracion Caja" editor-save-caption="Guardar" editor-cancel-caption="Anular" size-full editable _id="gridConfigCaja" :expand></vaadin-grid> 
   </vaadin-vertical-layout>  
  </body>
 </html>

@@ -23,7 +23,6 @@ import com.vaadin.ui.renderers.DateRenderer;
 import org.sanjose.helper.*;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.csvalidation.CSValidator;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -79,7 +78,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
     public ComprobanteView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
                            ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                            ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                           ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo) {
+                           ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
+                           Scp_ContraparteRep contraparteRepo) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -130,6 +130,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
         // Cta Caja
         selCaja.setEnabled(false);
+        selLugarGasto.setEnabled(false);
         //gridCaja.getColumn("codContracta").setEditorField(selCtacontablecaja);
 
         // Tipo Moneda
@@ -225,6 +226,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
         DataFilterUtil.bindComboBox(selResponsable, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
                 "Responsable", "txtNombredestino");
         //gridCaja.getColumn("codDestino").setEditorField(selResponsable);
+        // Lugar de gasto
+        DataFilterUtil.bindComboBox(selLugarGasto, "codContraparte", contraparteRepo.findAll(),
+                "Sel Lugar de Gasto", "txt_DescContraparte");
 
         // Cod. Auxiliar
         ComboBox selAuxiliar = selCodAuxiliar;
@@ -291,6 +295,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
         selRubroInst.setEnabled(true);
         selCtaContable.setEnabled(true);
+        selLugarGasto.setEnabled(true);
         // Sel Tipo Movimiento
         selTipoMov.setEnabled(true);
         DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta",
@@ -317,6 +322,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         if (codProyecto!=null && !codProyecto.isEmpty()) {
             selFinanciera.setEnabled(true);
             selPlanproyecto.setEnabled(true);
+            selLugarGasto.setEnabled(true);
             DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
                     planproyectoRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
                             "N", GenUtil.getCurYear(), codProyecto),

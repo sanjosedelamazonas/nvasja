@@ -29,7 +29,7 @@ public class VsjCajabanco implements Serializable {
 
 	@Column(name="cod_contracta")
 	private String codContracta;
-
+	// Lugar de Gasto
 	@Column(name="cod_contraparte")
 	private String codContraparte;
 
