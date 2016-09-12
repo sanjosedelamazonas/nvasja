@@ -13,8 +13,8 @@ import com.vaadin.ui.TextField;
  * A field for entering numbers. On touch devices, a numeric keyboard is shown
  * instead of the normal one.
  */
-public class NumberField extends TextField {
-    public NumberField() {
+public class OldNumberField extends TextField {
+    public OldNumberField() {
         // Mark the field as numeric.
         // This affects the virtual keyboard shown on mobile devices.
         AttributeExtension ae = new AttributeExtension();
@@ -28,17 +28,17 @@ public class NumberField extends TextField {
                 // number expects a fixed wire/DOM number format regardless
                 // of how the browser presents it to the user (which could
                 // depend on the browser locale)
-                DecimalFormat format = new DecimalFormat();
-                format.setMaximumFractionDigits(0);
-                format.setDecimalSeparatorAlwaysShown(false);
-                format.setParseIntegerOnly(true);
-                format.setGroupingUsed(false);
+                DecimalFormat format = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"));
+                //format.setMaximumFractionDigits(2);
+                //format.setDecimalSeparatorAlwaysShown(false);
+                //format.setParseIntegerOnly(true);
+                //format.setGroupingUsed(false);
                 return format;
             }
         });
     }
 
-    public NumberField(String caption) {
+    public OldNumberField(String caption) {
         this();
         setCaption(caption);
     }

@@ -2,6 +2,9 @@
 <html>
  <head>
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta charset="UTF-8" name="package-mapping" content="org_sanjose_helper:org.sanjose.helper">
+  <meta charset="UTF-8" name="package-mapping" content="org_vaadin_addons_maskedtextfield:org.vaadin.addons.maskedtextfield">
+  <meta charset="UTF-8" name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
  </head> 
  <body> 
   <vaadin-vertical-layout description="---" spacing size-full margin> 
@@ -26,7 +29,7 @@
        <option>Soles</option> 
        <option>Dolares</option> 
       </vaadin-option-group> 
-      <vaadin-combo-box caption="Caja" item-caption-mode="id" width="137px" _id="selCaja"> 
+      <vaadin-combo-box caption="Caja" item-caption-mode="id" width="66.47%" _id="selCaja" :expand> 
        <option>Option 1</option> 
        <option>Option 2</option> 
       </vaadin-combo-box> 
@@ -38,23 +41,23 @@
       <vaadin-text-field description="Num de Voucher" enabled="false" _id="numVoucher"></vaadin-text-field> 
      </vaadin-horizontal-layout> 
      <vaadin-horizontal-layout spacing width="1024px" _id="horizontalIngresoGlosa"> 
-      <vaadin-text-field caption="Ingreso" _id="ingreso"></vaadin-text-field> 
-      <vaadin-text-field caption="Egreso" _id="egreso"></vaadin-text-field> 
+      <org_vaadin_ui-number-field caption="Ingreso" immediate _id="numIngreso"></org_vaadin_ui-number-field> 
+      <org_vaadin_ui-number-field caption="Egreso" responsive immediate _id="numEgreso"></org_vaadin_ui-number-field> 
       <vaadin-text-field caption="Glosa" width-full _id="glosa" :expand></vaadin-text-field> 
      </vaadin-horizontal-layout> 
      <vaadin-horizontal-layout spacing width="548px" _id="horizontalIngresoGlosa2"> 
-      <vaadin-combo-box caption="Responsable" item-caption-mode="id" width="188px" _id="selResponsable"> 
+      <vaadin-combo-box caption="Responsable" item-caption-mode="id" width="265px" _id="selResponsable"> 
        <option>Option 1</option> 
        <option>Option 2</option> 
       </vaadin-combo-box> 
-      <vaadin-combo-box caption="Lugar de gasto" item-caption-mode="id" width="210px" _id="selLugarGasto"> 
+      <vaadin-combo-box caption="Lugar de gasto" item-caption-mode="id" width="313px" _id="selLugarGasto"> 
        <option>Option 1</option> 
        <option>Option 2</option> 
       </vaadin-combo-box> 
      </vaadin-horizontal-layout> 
      <vaadin-vertical-layout caption="Documento" size-full _id="verticalDocumento"> 
-      <vaadin-horizontal-layout spacing width="1011px" _id="horizontalFechaVoucher2"> 
-       <vaadin-combo-box caption="Cod. Auxiliar" item-caption-mode="id" width="190px" _id="selCodAuxiliar"> 
+      <vaadin-horizontal-layout spacing width="800px" _id="horizontalFechaVoucher2"> 
+       <vaadin-combo-box caption="Cod. Auxiliar" item-caption-mode="id" width="73.96%" _id="selCodAuxiliar" :expand> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
@@ -63,7 +66,7 @@
         <option>Option 2</option> 
        </vaadin-combo-box> 
        <vaadin-text-field caption="Serie" _id="serieDoc"></vaadin-text-field> 
-       <vaadin-text-field caption="Nr Doc" _id="numDoc"></vaadin-text-field> 
+       <vaadin-text-field caption="Nr Doc" width="127px" _id="numDoc"></vaadin-text-field> 
        <vaadin-popup-date-field caption="Fecha Doc" _id="fechaDoc"></vaadin-popup-date-field> 
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout spacing width="1024px" _id="horizontalIngresoGlosa3"> 

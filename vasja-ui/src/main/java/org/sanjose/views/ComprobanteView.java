@@ -5,6 +5,7 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -22,7 +23,9 @@ import com.vaadin.ui.renderers.DateRenderer;
 import org.sanjose.helper.*;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.csvalidation.CSValidator;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -140,21 +143,79 @@ public class ComprobanteView extends ComprobanteUI implements View {
                         findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
                                 "N", GenUtil.getCurYear(), "N", "101"), "Sel Caja", "txtDescctacontable");
                 selCaja.setEnabled(true);
+                numEgreso.setEnabled(true);
+                numIngreso.setEnabled(true);
             } else {
                 // Dolares
                 DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
                         findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
                                 "N", GenUtil.getCurYear(), "D", "101"), "Sel Caja", "txtDescctacontable");
                 selCaja.setEnabled(true);
+                numEgreso.setEnabled(true);
+                numIngreso.setEnabled(true);
             }
         });
         //gridCaja.getColumn("codTipomoneda").setEditorField(selTipomoneda);
 
+        numIngreso.setDecimalAllowed(true);
+        numIngreso.setDecimalPrecision(2);                 // maximum 2 digits after the decimal separator
+        numIngreso.setDecimalSeparator('.');               // e.g. 1,5
+        numIngreso.setDecimalSeparatorAlwaysShown(true);   // e.g. 12345 -> 12345,
+        numIngreso.setMinimumFractionDigits(2);            // e.g. 123,4 -> 123,40
+        numIngreso.setGroupingUsed(true);                  // use grouping (e.g. 12345 -> 12.345)
+        numIngreso.setGroupingSeparator(' ');              // use '.' as grouping separator
+        numIngreso.setGroupingSize(3);                     // 3 digits between grouping separators: 12.345.678
+        numIngreso.setMinValue(0);                         // valid values must be >= 0 ...
+        numIngreso.setMaxValue(999999.99);                     // ... and <= 999.9
+        numIngreso.setErrorText("Numero invalido!"); // feedback message on bad input
+        numIngreso.setNegativeAllowed(false);              // prevent negative numbers (defaults to true)
+
+        numEgreso.setEnabled(false);
+        numIngreso.setEnabled(false);
+
+        numEgreso.setImmediate(true);
+        numEgreso.setDecimalAllowed(true);
+        numEgreso.setDecimalPrecision(2);                 // maximum 2 digits after the decimal separator
+        numEgreso.setDecimalSeparator('.');               // e.g. 1,5
+        numEgreso.setDecimalSeparatorAlwaysShown(true);   // e.g. 12345 -> 12345,
+        numEgreso.setMinimumFractionDigits(2);            // e.g. 123,4 -> 123,40
+        numEgreso.setGroupingUsed(true);                  // use grouping (e.g. 12345 -> 12.345)
+        numEgreso.setGroupingSeparator(' ');              // use '.' as grouping separator
+        numEgreso.setGroupingSize(3);                     // 3 digits between grouping separators: 12.345.678
+        numEgreso.setMinValue(0);                         // valid values must be >= 0 ...
+        numEgreso.setMaxValue(999999.99);                     // ... and <= 999.9
+        numEgreso.setErrorText("Numero invalido!"); // feedback message on bad input
+        numEgreso.setNegativeAllowed(false);              // prevent negative numbers (defaults to true)
+
+
+        numIngreso.addValueChangeListener(event -> {
+            if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                if (new BigDecimal(event.getProperty().getValue().toString()).doubleValue()!=0) {
+                    numEgreso.setValue("");
+                }
+            }
+            }
+        );
+        numEgreso.addValueChangeListener(event -> {
+                    if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                        if (new BigDecimal(event.getProperty().getValue().toString()).doubleValue()!=0) {
+                            numIngreso.setValue("");
+                        }
+                    }
+                }
+        );
+
+
+        //numEgreso.
+        //numTest.setValueIgnoreReadOnly("10");
+
+        //testNum.set
         //ingreso.add
-        ingreso.setPropertyDataSource(new DoubleDecimalFormatter(ingreso.getPropertyDataSource(), ConfigurationUtil.get("DECIMAL_FORMAT")));
+        //ingreso.setConverter(BigDecimal.class);
+        //ingreso.setPropertyDataSource(new DoubleDecimalFormatter(ingreso.getPropertyDataSource(), ConfigurationUtil.get("DECIMAL_FORMAT")));
         //ingreso.setValue("0.00");
 
-        egreso.setPropertyDataSource(new DoubleDecimalFormatter(egreso.getPropertyDataSource(), ConfigurationUtil.get("DECIMAL_FORMAT")));
+        //egreso.setPropertyDataSource(new DoubleDecimalFormatter(egreso.getPropertyDataSource(), ConfigurationUtil.get("DECIMAL_FORMAT")));
         //egreso.setValue("0.00");
 
         //gridCaja.getColumn("codCtaespecial").setEditorField(selCtaespecial);
@@ -210,7 +271,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
                 VsjConfiguractacajabanco config = configuractacajabancoRepo.findByCodTipocuenta(Integer.parseInt(tipoMov));
-                log.info("selected config: " + config);
+                //log.info("selected config: " + config);
                 selCtaContable.setValue(config.getCodCtacontablegasto());
                 selRubroInst.setValue(config.getCodCtaespecial());
             }
