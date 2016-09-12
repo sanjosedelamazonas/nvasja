@@ -1,0 +1,7 @@
+
+SELECT OBJECT_NAME(OBJECT_ID) AS DatabaseName, 
+last_user_update,last_user_seek,last_user_scan,last_user_lookup
+last_system_lookup,last_system_scan,last_system_seek, last_system_update
+FROM sys.dm_db_index_usage_stats
+order by last_user_update,last_user_seek,last_user_scan,last_user_lookup desc
+GO
