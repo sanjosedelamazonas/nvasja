@@ -1,5 +1,8 @@
 package org.sanjose.model;
 
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
+import org.sanjose.views.CajaGridView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
@@ -12,24 +15,13 @@ import java.util.Date;
  * User: prubach
  * Date: 12.09.16
  */
-@NamedStoredProcedureQuery(
-        name = "getSaldoAlDia",
-        procedureName = "usp_scp_vsj_getSaldoAlDia",
-        parameters = {
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "Tipo"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "FechaFinal"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "Codigo"),
-                @StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class, name = "SaldoPEN"),
-                @StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class, name = "SaldoUSD"),
-                @StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class, name = "SaldoEUR")
-        }
-)
 public class ProcUtil {
+
+
+    private static final Logger log = LoggerFactory.getLogger(ProcUtil.class);
 
     @PersistenceContext
     EntityManager em;
-
-    ProcUtil instance;
 
     public ProcUtil(EntityManager em) {
         this.em = em;
@@ -45,20 +37,24 @@ public class ProcUtil {
     }
 
     public Saldos getSaldos(Date fecha, String codProyecto, String codTercero) {
-        StoredProcedureQuery query = em.createNamedStoredProcedureQuery("usp_scp_vsj_getSaldoAlDia");
+        StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getSaldoAlDia");
         if (codProyecto!=null) {
-            query.setParameter("Tipo", 1);
-            query.setParameter("Codigo", codProyecto);
+            query.setParameter(1, "1");
+            query.setParameter(3, codProyecto);
         } else if (codTercero!=null) {
-            query.setParameter("Tipo", 2);
-            query.setParameter("Codigo", codTercero);
+            query.setParameter(1, "2");
+            query.setParameter(3, codTercero);
         }
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        query.setParameter("FechaFinal", sdf.format(fecha));
+        //log.info("Getting date: " + sdf.format(fecha));
+        query.setParameter(2, sdf.format(fecha));
         query.execute();
-        BigDecimal pen = (BigDecimal) query.getOutputParameterValue("SaldoPEN");
-        BigDecimal usd = (BigDecimal) query.getOutputParameterValue("SaldoUSD");
-        BigDecimal eur = (BigDecimal) query.getOutputParameterValue("SaldoEUR");
+        BigDecimal pen = (BigDecimal) query.getOutputParameterValue(4);
+        pen = pen.setScale(2,BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal usd = (BigDecimal) query.getOutputParameterValue(5);
+        usd = usd.setScale(2,BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal eur = (BigDecimal) query.getOutputParameterValue(6);
+        eur = eur.setScale(2,BigDecimal.ROUND_HALF_EVEN);
         return new Saldos(pen, usd, eur);
     }
 

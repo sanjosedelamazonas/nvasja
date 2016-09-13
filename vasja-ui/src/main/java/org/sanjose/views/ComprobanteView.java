@@ -69,6 +69,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
     public ScpProyectoRep proyectoRepo;
 
+    public ScpDestinoRep destinoRepo;
+
     public EntityManager em;
 
     @Autowired
@@ -84,6 +86,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         this.configuractacajabancoRepo = configuractacajabancoRepo;
         this.configuracioncajaRepo = configuracioncajaRepo;
         this.proyectoRepo = proyectoRepo;
+        this.destinoRepo = destinoRepo;
         this.em = em;
         setSizeFull();
         addStyleName("crud-view");
@@ -345,8 +348,14 @@ public class ComprobanteView extends ComprobanteUI implements View {
         selRubroProy.setEnabled(false);
         selRubroProy.setValue("");
 
-        ProcUtil.Saldos res = new ProcUtil(em).getSaldos(dataFechaComprobante.getValue(),null, event.getProperty().getValue().toString());
-        log.info("got saldos: "  + res);
+        if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+            nombreTercero.setValue(destinoRepo.findByCodDestino(event.getProperty().getValue().toString()).getTxtNombredestino());
+            ProcUtil.Saldos res = new ProcUtil(em).getSaldos(dataFechaComprobante.getValue(),null, event.getProperty().getValue().toString());
+            saldoProyPEN.setValue(res.getSaldoPEN().toString());
+            saldoProyUSD.setValue(res.getSaldoUSD().toString());
+            saldoProyEUR.setValue("");
+        }
+//        log.info("got saldos: "  + res);
     }
 
 
@@ -396,8 +405,11 @@ public class ComprobanteView extends ComprobanteUI implements View {
             DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
                     "Sel Fuente", "txtDescfinanciera");
 
-
+            nombreTercero.setValue(proyectoRepo.findByCodProyecto(codProyecto).getTxtDescproyecto());
             ProcUtil.Saldos res = new ProcUtil(em).getSaldos(dataFechaComprobante.getValue(),codProyecto,null);
+            saldoProyPEN.setValue(res.getSaldoPEN().toString());
+            saldoProyUSD.setValue(res.getSaldoUSD().toString());
+            saldoProyEUR.setValue(res.getSaldoEUR().toString());
             log.info("got saldos: "  + res);
         } else {
             //DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta",

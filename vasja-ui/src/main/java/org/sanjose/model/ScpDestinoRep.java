@@ -10,4 +10,6 @@ public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
 
 	List<ScpDestino> findByIndTipodestinoNot(String s);
 
+	ScpDestino findByCodDestino(String s);
+
 }
