@@ -1,10 +1,12 @@
 package org.sanjose.views;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.sanjose.helper.BooleanTrafficLight;
 import org.sanjose.helper.DataFilterUtil;
 import org.sanjose.helper.GenUtil;
+import org.sanjose.helper.TwoCombosValidator;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,65 +40,61 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
 
 	private static final Logger log = LoggerFactory.getLogger(ConfiguracionCajaView.class);
 	
-    public static final String VIEW_NAME = "Configuracion";
+    public static final String VIEW_NAME = "Configuracion de Caja";
 
     private ConfiguracionCajaLogic viewLogic = new ConfiguracionCajaLogic(this);
     
     public VsjConfiguracioncajaRep repo;
     
     @Autowired
-    public ConfiguracionCajaView(VsjConfiguracioncajaRep repo, ScpPlancontableRep planRepo, ScpPlanespecialRep planEspRepo) {
+    public ConfiguracionCajaView(VsjConfiguracioncajaRep repo, ScpPlancontableRep planRepo,
+                                 ScpDestinoRep destinoRepo, ScpProyectoRep proyectoRepo, ScpCategoriaproyectoRep categoriaproyectoRepo) {
     	this.repo = repo;
         setSizeFull();
         //addStyleName("crud-view");
 
-        BeanItemContainer<VsjConfiguractacajabanco> container = new BeanItemContainer(VsjConfiguractacajabanco.class, repo.findAll());
+        BeanItemContainer<VsjConfiguracioncaja> container = new BeanItemContainer(VsjConfiguracioncaja.class, repo.findAll());
         gridConfigCaja
         	.setContainerDataSource(container);
-        gridConfigCaja.setColumnOrder("activo", "codTipocuenta", "txtTipocuenta", "codCtacontablecaja",
-                "codCtacontablegasto", "codCtaespecial", "paraCaja", "paraBanco", "paraProyecto", "paraTercero");
+        gridConfigCaja.setColumnOrder("codConfiguracion", "txtConfiguracion", "indTipomoneda",
+                "codCtacontable", "codDestino", "codProyecto");
         
         
-        gridConfigCaja.getDefaultHeaderRow().getCell("codTipocuenta").setText("Codigo");
+        gridConfigCaja.getDefaultHeaderRow().getCell("codConfiguracion").setText("Codigo");
         
-        gridConfigCaja.getColumn("txtTipocuenta").setWidth(120);
+        gridConfigCaja.getColumn("txtConfiguracion").setWidth(200);
         //gridConfigCaja.setCol
         
-        gridConfigCaja.getColumn("codTipocuenta").setEditable(false);
+        gridConfigCaja.getColumn("codConfiguracion").setEditable(false);
                
         gridConfigCaja.setSelectionMode(SelectionMode.MULTI);
         HeaderRow filterRow = gridConfigCaja.appendHeaderRow();
         
         gridConfigCaja.setEditorFieldGroup(
-        	    new BeanFieldGroup<VsjConfiguractacajabanco>(VsjConfiguractacajabanco.class));
+        	    new BeanFieldGroup<VsjConfiguracioncaja>(VsjConfiguracioncaja.class));
+
+        ComboBox selCategoriaproy = new ComboBox();
+        DataFilterUtil.bindComboBox(selCategoriaproy, "codCategoriaproyecto", categoriaproyectoRepo.findAll(), "Sel Cat Proyecto", "txtDescripcion");
+        gridConfigCaja.getColumn("codCategoriaproyecto").setEditorField(selCategoriaproy);
+
+        ComboBox selCtacontable = new ComboBox();
+        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+        gridConfigCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
         
-        ComboBox selCtacontablecaja = new ComboBox();  
-        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
-        gridConfigCaja.getColumn("codCtacontablecaja").setEditorField(selCtacontablecaja);
-        
-        ComboBox selCtacontablegasto = new ComboBox();  
-        DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()), "Sel cta contable", "txtDescctacontable");
-        gridConfigCaja.getColumn("codCtacontablegasto").setEditorField(selCtacontablegasto);
-        
-        ComboBox selCtaespecial = new ComboBox();  
-        DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial", planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()), "Sel cta especial", "txtDescctaespecial");
-        gridConfigCaja.getColumn("codCtaespecial").setEditorField(selCtaespecial);
-        
-        gridConfigCaja.getColumn("activo").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCaja.getColumn("paraProyecto").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCaja.getColumn("paraTercero").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCaja.getColumn("paraBanco").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCaja.getColumn("paraCaja").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        
-        // Grey out inactive rows
-        gridConfigCaja.setRowStyleGenerator(rowRef -> {// Java 8
-		  if (! ((Boolean) rowRef.getItem()
-					.getItemProperty("activo")
-					.getValue()).booleanValue())
-		      return "grayed";
-		  else
-		      return null;
-		});
+
+        ComboBox selDestino = new ComboBox();
+        DataFilterUtil.bindComboBox(selDestino, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
+        gridConfigCaja.getColumn("codDestino").setEditorField(selDestino);
+
+        ComboBox selProyecto = new ComboBox();
+        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
+        //selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
+        gridConfigCaja.getColumn("codProyecto").setEditorField(selProyecto);
+
+        // Tipo Moneda
+        ComboBox selTipomoneda = new ComboBox();
+        DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "indTipomoneda", "Moneda");
+        gridConfigCaja.getColumn("indTipomoneda").setEditorField(selTipomoneda);
         
         // Set up a filter for all columns
 	     for (Object pid: gridConfigCaja.getContainerDataSource()
@@ -109,7 +107,7 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
 	        	 filterField.setColumns(2);
 	         else
 	        	 filterField.setColumns(6);
-	
+
 	         // Update filter When the filter input is changed
 	         filterField.addTextChangeListener(change -> {
 	             // Can't modify filters so need to replace
@@ -126,23 +124,11 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
         
         viewLogic.init();
     }
-    
-    public ConfiguracionCajaView() {
-        this(null, null, null);
-    }
 
 
     @Override
     public void enter(ViewChangeEvent event) {
         viewLogic.enter(event.getParameters());
-    }
-
-    public void showError(String msg) {
-        Notification.show(msg, Type.ERROR_MESSAGE);
-    }
-
-    public void showSaveNotification(String msg) {
-        Notification.show(msg, Type.TRAY_NOTIFICATION);
     }
 
     public void clearSelection() {

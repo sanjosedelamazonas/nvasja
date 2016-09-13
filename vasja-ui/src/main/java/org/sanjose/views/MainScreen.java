@@ -24,7 +24,7 @@ public class MainScreen extends HorizontalLayout {
 
     @Autowired
     public MainScreen(MainUI ui, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
-                      PropiedadView propiedadView, ComprobanteView comprobanteView) {
+                      ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -42,6 +42,8 @@ public class MainScreen extends HorizontalLayout {
                 ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
         menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
         		ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
+        menu.addView(configuracionCajaView, ConfiguracionCajaView.VIEW_NAME,
+                ConfiguracionCajaView.VIEW_NAME, FontAwesome.EDIT);
         menu.addView(propiedadView, PropiedadView.VIEW_NAME,
                 PropiedadView.VIEW_NAME, FontAwesome.EDIT);
         menu.addView(new AboutView(), AboutView.VIEW_NAME, AboutView.VIEW_NAME,
