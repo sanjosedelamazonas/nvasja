@@ -1,29 +1,20 @@
 package org.sanjose.views;
 
 import com.vaadin.data.Property;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.vaadin.event.FieldEvents;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Page;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Grid.HeaderCell;
-import com.vaadin.ui.Grid.HeaderRow;
-import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.renderers.DateRenderer;
 import org.sanjose.helper.*;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
@@ -73,18 +64,27 @@ public class ComprobanteView extends ComprobanteUI implements View {
     public Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
 
     public VsjConfiguractacajabancoRep configuractacajabancoRepo;
-    
+
+    public VsjConfiguracioncajaRep configuracioncajaRepo;
+
+    public ScpProyectoRep proyectoRepo;
+
+    public EntityManager em;
+
     @Autowired
     public ComprobanteView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
                            ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                            ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                            ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                           Scp_ContraparteRep contraparteRepo) {
+                           Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo, EntityManager em) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
         this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
         this.configuractacajabancoRepo = configuractacajabancoRepo;
+        this.configuracioncajaRepo = configuracioncajaRepo;
+        this.proyectoRepo = proyectoRepo;
+        this.em = em;
         setSizeFull();
         addStyleName("crud-view");
 
@@ -144,6 +144,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
                         findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
                                 "N", GenUtil.getCurYear(), "N", "101"), "Sel Caja", "txtDescctacontable");
                 selCaja.setEnabled(true);
+                setCajaLogic("0");
                 numEgreso.setEnabled(true);
                 numIngreso.setEnabled(true);
             } else {
@@ -152,6 +153,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
                         findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
                                 "N", GenUtil.getCurYear(), "D", "101"), "Sel Caja", "txtDescctacontable");
                 selCaja.setEnabled(true);
+                setCajaLogic("1");
                 numEgreso.setEnabled(true);
                 numIngreso.setEnabled(true);
             }
@@ -284,6 +286,36 @@ public class ComprobanteView extends ComprobanteUI implements View {
         viewLogic.init();
     }
 
+    public void setCajaLogic(String tipomoneda) {
+
+        if (!GenUtil.objNullOrEmpty(selProyecto.getValue())) {
+            List<VsjConfiguracioncaja> configs = configuracioncajaRepo.findByCodProyectoAndIndTipomoneda(
+                    selProyecto.getValue().toString(), tipomoneda);
+            if (!configs.isEmpty()) {
+                VsjConfiguracioncaja config = configs.get(0);
+                selCaja.setValue(config.getCodCtacontable());
+            } else {
+                String catProy = proyectoRepo.findByCodProyecto(selProyecto.getValue().toString())
+                        .getCodCategoriaproyecto();
+                configs = configuracioncajaRepo.findByCodCategoriaproyectoAndIndTipomoneda(
+                        catProy, tipomoneda);
+                if (!configs.isEmpty()) {
+                    VsjConfiguracioncaja config = configs.get(0);
+                    selCaja.setValue(config.getCodCtacontable());
+                }
+            }
+        } else if (!GenUtil.objNullOrEmpty(selTercero.getValue())) {
+            List<VsjConfiguracioncaja> configs = configuracioncajaRepo.findByCodDestinoAndIndTipomoneda(
+                    selTercero.getValue().toString(), tipomoneda);
+            if (!configs.isEmpty()) {
+                VsjConfiguracioncaja config = configs.get(0);
+                selCaja.setValue(config.getCodCtacontable());
+            }
+        }
+    }
+
+
+
     public void setProyectoLogic(Property.ValueChangeEvent event) {
         if (event.getProperty().getValue()!=null)
             setEditorLogic(event.getProperty().getValue().toString());
@@ -312,6 +344,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
         //        "-------", null);
         selRubroProy.setEnabled(false);
         selRubroProy.setValue("");
+
+        ProcUtil.Saldos res = new ProcUtil(em).getSaldos(dataFechaComprobante.getValue(),null, event.getProperty().getValue().toString());
+        log.info("got saldos: "  + res);
     }
 
 
@@ -360,6 +395,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
             }
             DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
                     "Sel Fuente", "txtDescfinanciera");
+
+
+            ProcUtil.Saldos res = new ProcUtil(em).getSaldos(dataFechaComprobante.getValue(),codProyecto,null);
+            log.info("got saldos: "  + res);
         } else {
             //DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta",
             //        configuractacajabancoRepo.findByParaCajaAndParaTercero(true, true),

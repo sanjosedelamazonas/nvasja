@@ -9,6 +9,7 @@ import java.math.BigDecimal;
  * Created by pol on 12.09.16.
  */
 
+
 @NamedStoredProcedureQuery(
         name = "getSaldoAlDia",
         procedureName = "usp_scp_vsj_getSaldoAlDia",
