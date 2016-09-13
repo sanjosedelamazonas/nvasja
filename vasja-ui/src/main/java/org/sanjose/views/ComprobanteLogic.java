@@ -117,6 +117,7 @@ public class ComprobanteLogic implements Serializable {
         vcb.setCodTipomoneda("0");
         vcb.setIndTipocuenta("0");
 
+
         //view.gridCaja.getContainerDataSource().addItem(vcb);
     }
 }

@@ -24,6 +24,7 @@ public class CajaManejoUI extends VerticalLayout {
 	protected HorizontalLayout horizontalFechas;
 	protected DateField fechaDesde;
 	protected DateField fechaHasta;
+	protected Button nuevoComprobante;
 	protected Grid gridCaja;
 	protected HorizontalLayout horizontalSaldos;
 	protected VerticalLayout verticalSaldoInicial;

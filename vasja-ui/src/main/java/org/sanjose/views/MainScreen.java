@@ -23,7 +23,7 @@ public class MainScreen extends HorizontalLayout {
     private Menu menu;
 
     @Autowired
-    public MainScreen(MainUI ui, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
+    public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
                       ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView) {
 
         setStyleName("main-screen");
@@ -40,6 +40,10 @@ public class MainScreen extends HorizontalLayout {
         		CajaGridView.VIEW_NAME, FontAwesome.EDIT);
         menu.addView(comprobanteView, ComprobanteView.VIEW_NAME,
                 ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
+
+        menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
+                CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
+
         menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
         		ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
         menu.addView(configuracionCajaView, ConfiguracionCajaView.VIEW_NAME,

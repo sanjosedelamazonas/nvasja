@@ -1,6 +1,9 @@
 package org.sanjose.views;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -34,28 +37,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
     public static final String VIEW_NAME = "Caja";
 
     private ComprobanteLogic viewLogic = new ComprobanteLogic(this);
+
+    public VsjCajabanco item;
     
     public VsjCajabancoRep repo;
-
-    String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
-            "codContracta", "txtGlosaitem", "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "codTipomoneda",
-            "codDestino", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
-            "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
-            "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
-    };
-    String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
-            "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "S/$",
-            "Responsable", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
-            "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
-            "Env", "Origen", "Comprobante"
-    };
-    int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
-            5, 10, 6, 6, 6, 6, 2, // S/$
-            6, 6, 5, 5, 2, // Tipo Doc
-            4, 5, 5, 5, 4, // Fuente
-            2, 6, 6
-    };
-    String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
 
     public ScpPlanproyectoRep planproyectoRepo;
 
@@ -72,6 +57,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
     public ScpDestinoRep destinoRepo;
 
     public EntityManager em;
+
+    public FieldGroup fieldGroup;
 
     @Autowired
     public ComprobanteView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
@@ -148,6 +135,12 @@ public class ComprobanteView extends ComprobanteUI implements View {
                                 "N", GenUtil.getCurYear(), "N", "101"), "Sel Caja", "txtDescctacontable");
                 selCaja.setEnabled(true);
                 setCajaLogic("0");
+                fieldGroup.unbind(numEgreso);
+                fieldGroup.unbind(numIngreso);
+                fieldGroup.bind(numIngreso, "numHabersol");
+                fieldGroup.bind(numEgreso, "numDebersol");
+
+
                 numEgreso.setEnabled(true);
                 numIngreso.setEnabled(true);
             } else {
@@ -157,6 +150,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
                                 "N", GenUtil.getCurYear(), "D", "101"), "Sel Caja", "txtDescctacontable");
                 selCaja.setEnabled(true);
                 setCajaLogic("1");
+                fieldGroup.unbind(numEgreso);
+                fieldGroup.unbind(numIngreso);
+                fieldGroup.bind(numIngreso, "numHaberdolar");
+                fieldGroup.bind(numEgreso, "numDeberdolar");
                 numEgreso.setEnabled(true);
                 numIngreso.setEnabled(true);
             }
@@ -274,6 +271,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
         viewLogic.init();
     }
 
+
+
+
+
     public void setCajaLogic(String tipomoneda) {
 
         if (!GenUtil.objNullOrEmpty(selProyecto.getValue())) {
@@ -323,15 +324,15 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 "Sel Tipo de Movimiento", "txtTipocuenta");
         //ComboBox selTercero = (ComboBox)gridCaja.getColumn("codTercero").getEditorField();
         selTercero.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
+        selFuente.setValue(null);
         selFuente.setEnabled(false);
-        selFuente.setValue("");
         // Reset those fields
         selCtaContable.setValue(null);
         selRubroInst.setValue(null);
         //DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto", new ArrayList<ScpPlanproyecto>(),
         //        "-------", null);
+        selRubroProy.setValue(null);
         selRubroProy.setEnabled(false);
-        selRubroProy.setValue("");
 
         if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
             nombreTercero.setValue(destinoRepo.findByCodDestino(event.getProperty().getValue().toString()).getTxtNombredestino());
@@ -413,6 +414,39 @@ public class ComprobanteView extends ComprobanteUI implements View {
             selPlanproyecto.setValue("");
         }
     }
+
+    public void bindForm(VsjCajabanco item) {
+
+        fieldGroup.setItemDataSource(new BeanItem<VsjCajabanco>(item));
+        fieldGroup = new BeanFieldGroup<VsjCajabanco>(VsjCajabanco.class);
+        fieldGroup.bind(selProyecto, "codProyecto");
+        fieldGroup.bind(selTercero, "codTercero");
+        fieldGroup.bind(selMoneda, "codTipomoneda");
+        fieldGroup.bind(selCaja, "codContracta");
+        fieldGroup.bind(dataFechaComprobante, "fecFecha");
+        fieldGroup.bind(numIngreso, "numHabersol");
+        fieldGroup.bind(numEgreso, "numDebersol");
+        fieldGroup.bind(glosa, "txtGlosaitem");
+        fieldGroup.bind(selResponsable, "codDestino");
+        fieldGroup.bind(selLugarGasto, "codContraparte");
+        fieldGroup.bind(selCodAuxiliar, "codDestinoitem");
+        fieldGroup.bind(selTipoDoc, "codTipocomprobantepago");
+        fieldGroup.bind(serieDoc, "txtSeriecomprobantepago");
+        fieldGroup.bind(numDoc, "txtComprobantepago");
+        fieldGroup.bind(fechaDoc, "fecComprobantepago");
+        fieldGroup.bind(selCtaContable, "codCtacontable");
+        fieldGroup.bind(selRubroInst, "codCtaespecial");
+        fieldGroup.bind(selRubroProy, "codCtaproyecto");
+        fieldGroup.bind(selFuente, "codFinanciera");
+    }
+
+    /*public VsjCajabanco getVsjCajabanco() {
+        //fieldGroup.getItemDataSource().
+
+
+    }
+*/
+
 
 
     @Override

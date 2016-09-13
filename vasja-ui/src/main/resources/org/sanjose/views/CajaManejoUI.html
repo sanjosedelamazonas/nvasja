@@ -11,18 +11,21 @@
       - 
     </vaadin-label> 
     <vaadin-date-field _id="fechaHasta"></vaadin-date-field> 
+    <vaadin-button plain-text _id="nuevoComprobante">
+      Nuevo comprobante 
+    </vaadin-button> 
    </vaadin-horizontal-layout> 
-   <vaadin-vertical-layout width="1179px"> 
-    <vaadin-grid editor-cancel-caption="Anular" width-full height="347px" editable _id="gridCaja" :middle :center></vaadin-grid> 
+   <vaadin-vertical-layout> 
+    <vaadin-grid editor-cancel-caption="Anular" size-full editable _id="gridCaja" :middle :center></vaadin-grid> 
    </vaadin-vertical-layout> 
-   <vaadin-horizontal-layout spacing _id="horizontalSaldos"> 
+   <vaadin-horizontal-layout spacing width-full _id="horizontalSaldos"> 
     <vaadin-vertical-layout caption="Saldo Inicial" size-auto _id="verticalSaldoInicial"> 
-     <vaadin-grid width="393px" height="169px" _id="gridSaldoInicial"></vaadin-grid> 
+     <vaadin-grid width="400px" height="169px" _id="gridSaldoInicial"></vaadin-grid> 
     </vaadin-vertical-layout> 
     <vaadin-vertical-layout caption="Saldo Final" spacing size-auto _id="verticalSaldoFinal"> 
-     <vaadin-grid editor-save-caption="Guardar" editor-cancel-caption="Anular" width="500px" height="169px" _id="gridSaldoFInal"></vaadin-grid> 
+     <vaadin-grid editor-save-caption="Guardar" editor-cancel-caption="Anular" width="400px" height="169px" _id="gridSaldoFInal"></vaadin-grid> 
     </vaadin-vertical-layout> 
-    <vaadin-vertical-layout spacing size-auto margin _id="verticalButtons"> 
+    <vaadin-vertical-layout spacing margin _id="verticalButtons" :expand> 
      <vaadin-button plain-text _id="btnEnviar">
        Enviar Todo a la Contabilidad 
      </vaadin-button> 

@@ -50,15 +50,19 @@ public class MainUI extends UI {
 
     private ComprobanteView comprobanteView;
 
+    private CajaManejoView cajaManejoView;
+
     @Autowired
     private MainUI(VsjPropiedadRep propRepo, PropiedadView propiedadView, CajaGridView cajaGridView,
-                   ConfiguracionCajaView configuracionCajaView, ConfiguracionCtaCajaBancoView confView, ComprobanteView comprobanteView) {
+                   ConfiguracionCajaView configuracionCajaView, ConfiguracionCtaCajaBancoView confView,
+                   ComprobanteView comprobanteView, CajaManejoView cajaManejoView) {
     	this.confView = confView;
     	this.cajaGridView = cajaGridView;
         this.propiedadView = propiedadView;
         this.propRepo = propRepo;
         this.comprobanteView = comprobanteView;
         this.configuracionCajaView = configuracionCajaView;
+        this.cajaManejoView = cajaManejoView;
     }
     
     @Override
@@ -81,7 +85,7 @@ public class MainUI extends UI {
 
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
-        setContent(new MainScreen(MainUI.this, cajaGridView, confView, configuracionCajaView, propiedadView, comprobanteView));
+        setContent(new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView, propiedadView, comprobanteView));
         getNavigator().navigateTo(getNavigator().getState());
     }
 

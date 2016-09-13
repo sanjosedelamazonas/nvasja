@@ -18,18 +18,12 @@ import java.util.StringJoiner;
                 @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
-                //@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class),
                 @StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class),
                 @StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class)
-
-                //@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class, name = "@SaldoPEN"),
-                //@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class, name = "@SaldoUSD"),
-                //@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class, name = "@SaldoEUR")
         }
 )
 public class SaldoAlDia {
-
 
         @Id
         @GeneratedValue(strategy=GenerationType.AUTO)
