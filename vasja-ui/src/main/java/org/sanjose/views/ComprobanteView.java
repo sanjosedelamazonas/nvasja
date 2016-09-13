@@ -195,36 +195,21 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
 
         numIngreso.addValueChangeListener(event -> {
-            if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                if (new BigDecimal(event.getProperty().getValue().toString()).doubleValue()!=0) {
-                    numEgreso.setValue("");
+                if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                    if (new BigDecimal(event.getProperty().getValue().toString()).doubleValue()!=0) {
+                        numEgreso.setValue("");
+                    }
                 }
-            }
             }
         );
         numEgreso.addValueChangeListener(event -> {
-                    if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                        if (new BigDecimal(event.getProperty().getValue().toString()).doubleValue()!=0) {
-                            numIngreso.setValue("");
-                        }
+                if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                    if (new BigDecimal(event.getProperty().getValue().toString()).doubleValue()!=0) {
+                        numIngreso.setValue("");
                     }
                 }
+            }
         );
-
-
-        //numEgreso.
-        //numTest.setValueIgnoreReadOnly("10");
-
-        //testNum.set
-        //ingreso.add
-        //ingreso.setConverter(BigDecimal.class);
-        //ingreso.setPropertyDataSource(new DoubleDecimalFormatter(ingreso.getPropertyDataSource(), ConfigurationUtil.get("DECIMAL_FORMAT")));
-        //ingreso.setValue("0.00");
-
-        //egreso.setPropertyDataSource(new DoubleDecimalFormatter(egreso.getPropertyDataSource(), ConfigurationUtil.get("DECIMAL_FORMAT")));
-        //egreso.setValue("0.00");
-
-        //gridCaja.getColumn("codCtaespecial").setEditorField(selCtaespecial);
 
         // Responsable
         //ComboBox selResponsable = new ComboBox();
@@ -404,6 +389,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
             }
             DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
                     "Sel Fuente", "txtDescfinanciera");
+            if (financieraEfectList.size()==1)
+                selFinanciera.select(financieraEfectList.get(0).getCodFinanciera());
 
             nombreTercero.setValue(proyectoRepo.findByCodProyecto(codProyecto).getTxtDescproyecto());
             ProcUtil.Saldos res = new ProcUtil(em).getSaldos(dataFechaComprobante.getValue(),codProyecto,null);
