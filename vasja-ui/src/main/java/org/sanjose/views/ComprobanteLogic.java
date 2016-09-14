@@ -9,6 +9,8 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.AccessControl;
+import org.sanjose.authentication.CurrentUser;
 import org.sanjose.helper.GenUtil;
 import org.sanjose.model.VsjCajabanco;
 
@@ -39,18 +41,13 @@ public class ComprobanteLogic implements Serializable {
     }
 
     public void init() {
-
-        //view.nuevoComprobante.addClickListener(e -> newComprobante());
-        // register save listener
-        //view.gridCaja.getEditorFieldGroup().
-
         view.guardarBtn.addClickListener(event -> saveComprobante());
         view.anularBtn.addClickListener(event -> anularComprobante());
+        view.nuevoComprobante.addClickListener(event -> nuevoComprobante());
+        //nuevoComprobante();
     }
 
     public void saveComprobante() {
-
-
         try {
             VsjCajabanco item = view.getVsjCajabanco();
             if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
@@ -65,7 +62,7 @@ public class ComprobanteLogic implements Serializable {
             } else {
                 item.setIndTipocuenta("1");
             }
-            //item.setCodUregistro();
+            item.setCodUregistro(CurrentUser.get());
             item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
 
             log.info("Ready to save: " + item);
@@ -121,15 +118,11 @@ public class ComprobanteLogic implements Serializable {
     public void nuevoComprobante() {
         setFragmentParameter("new");
         VsjCajabanco vcb = new VsjCajabanco();
-        vcb.setCodMes("03");
-
-        vcb.setTxtAnoproceso("2016");
         vcb.setFlgEnviado("0");
-        vcb.setCodDestino("000");
-        vcb.setCodTipomoneda("0");
         vcb.setIndTipocuenta("0");
+        vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
+        vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
 
-
-        //view.gridCaja.getContainerDataSource().addItem(vcb);
+        view.bindForm(vcb);
     }
 }

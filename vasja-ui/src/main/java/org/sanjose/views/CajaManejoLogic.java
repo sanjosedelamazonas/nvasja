@@ -123,9 +123,6 @@ public class CajaManejoLogic implements Serializable {
         view.clearSelection();
         setFragmentParameter("new");
         VsjCajabanco vcb = new VsjCajabanco();
-        //vcb.setCodMes("03");
-
-        //vcb.setTxtAnoproceso("2016");
         vcb.setFlgEnviado("0");
         vcb.setIndTipocuenta("0");
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));

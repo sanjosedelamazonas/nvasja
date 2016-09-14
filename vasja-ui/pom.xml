@@ -45,17 +45,25 @@
 		    <artifactId>vaadin-spring</artifactId>        
 		</dependency>
 
+        <!--VAADIN Add-Ons-->
 
-<!--        <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>maskedtextfield</artifactId>
-            <version>0.2.0</version>
-        </dependency>-->
+        <!--        <dependency>
+                    <groupId>org.vaadin.addons</groupId>
+                    <artifactId>maskedtextfield</artifactId>
+                    <version>0.2.0</version>
+                </dependency>-->
+
+        <dependency>
+            <groupId>de.steinwedel.vaadin.addon</groupId>
+            <artifactId>messagebox</artifactId>
+            <version>3.0.18</version>
+        </dependency>
 
         <dependency>
             <groupId>org.vaadin.ui</groupId>
             <artifactId>NumberField</artifactId>
-            <version>0.1.6</version>
+            <version>0.1.8-SNAPSHOT</version>
+            <!--<version>0.1.6</version>-->
         </dependency>
 
         <!--        <dependency>
@@ -75,7 +83,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.1.0.CR1</version>
+            <version>5.2.4.Final</version>
         </dependency>
 
         <!-- Testing -->

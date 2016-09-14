@@ -13,6 +13,7 @@ import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
+import org.apache.tomcat.jni.Local;
 import org.sanjose.helper.*;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,9 +82,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         setSizeFull();
         addStyleName("crud-view");
 
-        //BeanItemContainer<VsjCajabanco> container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
-
-        //gridCaja.setContainerDataSource(container);
+        List<Field> allFields = new ArrayList<>();
 
         // Fecha
         PopupDateField pdf = dataFechaComprobante;
@@ -95,6 +94,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         //gridCaja.getColumn("fecFecha").setEditorField(pdf);
         //gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
+        allFields.add(pdf);
         // Fecha Doc
         pdf = fechaDoc;
         prop = new ObjectProperty<Timestamp>(ts);
@@ -103,7 +103,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         pdf.setResolution(Resolution.DAY);
         //gridCaja.getColumn("fecComprobantepago").setEditorField(pdf);
         //gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
-
+        allFields.add(pdf);
         // Proyecto
         //ComboBox selTercero = selTercero;
         //ComboBox selProyecto = selProyecto;
@@ -111,7 +111,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         selProyecto.addValueChangeListener(event -> setProyectoLogic(event));
         selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
 //        selProyecto.setId("my-custom-combobox");
-
+        allFields.add(selProyecto);
                 //"setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
         //gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
@@ -120,7 +120,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         selTercero.addValueChangeListener(event -> setTerceroLogic(event));
         selTercero.addValidator(new TwoCombosValidator(selProyecto, true, null));
         //gridCaja.getColumn("codTercero").setEditorField(selTercero);
-
+        allFields.add(selTercero);
         // Cta Caja
         selCaja.setEnabled(false);
         selLugarGasto.setEnabled(false);
@@ -132,7 +132,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
 
             if (event.getProperty().getValue().toString().equals("0")) {
-                // Soles
+                // Soles        0
                 DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
                         findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
                                 "N", GenUtil.getCurYear(), "N", "101"), "Sel Caja", "txtDescctacontable");
@@ -141,9 +141,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 fieldGroup.unbind(numEgreso);
                 fieldGroup.unbind(numIngreso);
                 fieldGroup.bind(numIngreso, "numHabersol");
-                fieldGroup.bind(numEgreso, "numDebersol");
-
-
+                fieldGroup.bind(numEgreso, "numDebesol");
+                GenUtil.setDefaultsForNumberField(numIngreso);
+                GenUtil.setDefaultsForNumberField(numEgreso);
                 numEgreso.setEnabled(true);
                 numIngreso.setEnabled(true);
             } else {
@@ -156,47 +156,25 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 fieldGroup.unbind(numEgreso);
                 fieldGroup.unbind(numIngreso);
                 fieldGroup.bind(numIngreso, "numHaberdolar");
-                fieldGroup.bind(numEgreso, "numDeberdolar");
+                fieldGroup.bind(numEgreso, "numDebedolar");
                 numEgreso.setEnabled(true);
                 numIngreso.setEnabled(true);
+                GenUtil.setDefaultsForNumberField(numIngreso);
+                GenUtil.setDefaultsForNumberField(numEgreso);
             }
         });
+        allFields.add(selMoneda);
         //gridCaja.getColumn("codTipomoneda").setEditorField(selTipomoneda);
 
-        numIngreso.setDecimalAllowed(true);
-        numIngreso.setDecimalPrecision(2);                 // maximum 2 digits after the decimal separator
-        numIngreso.setDecimalSeparator('.');               // e.g. 1,5
-        numIngreso.setDecimalSeparatorAlwaysShown(true);   // e.g. 12345 -> 12345,
-        numIngreso.setMinimumFractionDigits(2);            // e.g. 123,4 -> 123,40
-        numIngreso.setGroupingUsed(true);                  // use grouping (e.g. 12345 -> 12.345)
-        numIngreso.setGroupingSeparator(' ');              // use '.' as grouping separator
-        numIngreso.setGroupingSize(3);                     // 3 digits between grouping separators: 12.345.678
-        numIngreso.setMinValue(0);                         // valid values must be >= 0 ...
-        numIngreso.setMaxValue(999999.99);                     // ... and <= 999.9
-        numIngreso.setErrorText("Numero invalido!"); // feedback message on bad input
-        numIngreso.setNegativeAllowed(false);              // prevent negative numbers (defaults to true)
+        allFields.add(numEgreso);
+        allFields.add(numIngreso);
 
         numEgreso.setEnabled(false);
         numIngreso.setEnabled(false);
 
-        numEgreso.setImmediate(true);
-        numEgreso.setDecimalAllowed(true);
-        numEgreso.setDecimalPrecision(2);                 // maximum 2 digits after the decimal separator
-        numEgreso.setDecimalSeparator('.');               // e.g. 1,5
-        numEgreso.setDecimalSeparatorAlwaysShown(true);   // e.g. 12345 -> 12345,
-        numEgreso.setMinimumFractionDigits(2);            // e.g. 123,4 -> 123,40
-        numEgreso.setGroupingUsed(true);                  // use grouping (e.g. 12345 -> 12.345)
-        numEgreso.setGroupingSeparator(' ');              // use '.' as grouping separator
-        numEgreso.setGroupingSize(3);                     // 3 digits between grouping separators: 12.345.678
-        numEgreso.setMinValue(0);                         // valid values must be >= 0 ...
-        numEgreso.setMaxValue(999999.99);                     // ... and <= 999.9
-        numEgreso.setErrorText("Numero invalido!"); // feedback message on bad input
-        numEgreso.setNegativeAllowed(false);              // prevent negative numbers (defaults to true)
-
-
         numIngreso.addValueChangeListener(event -> {
                 if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                    if (new BigDecimal(event.getProperty().getValue().toString()).doubleValue()!=0) {
+                    if (numIngreso.getDoubleValueDoNotThrow()!=0) {
                         numEgreso.setValue("");
                     }
                 }
@@ -204,7 +182,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         );
         numEgreso.addValueChangeListener(event -> {
                 if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                    if (new BigDecimal(event.getProperty().getValue().toString()).doubleValue()!=0) {
+                    if (numEgreso.getDoubleValueDoNotThrow()!=0) {
                         numIngreso.setValue("");
                     }
                 }
@@ -215,48 +193,54 @@ public class ComprobanteView extends ComprobanteUI implements View {
         //ComboBox selResponsable = new ComboBox();
         DataFilterUtil.bindComboBox(selResponsable, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
                 "Responsable", "txtNombredestino");
+
+        allFields.add(selResponsable);
         //gridCaja.getColumn("codDestino").setEditorField(selResponsable);
         // Lugar de gasto
         DataFilterUtil.bindComboBox(selLugarGasto, "codContraparte", contraparteRepo.findAll(),
                 "Sel Lugar de Gasto", "txt_DescContraparte");
 
+        allFields.add(selLugarGasto);
         // Cod. Auxiliar
         ComboBox selAuxiliar = selCodAuxiliar;
         DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
                 "Auxiliar", "txtNombredestino");
         //gridCaja.getColumn("codDestinoitem").setEditorField(selAuxiliar);
-
+        allFields.add(selCodAuxiliar);
         // Tipo doc
         ComboBox selComprobantepago = selTipoDoc;
         DataFilterUtil.bindComboBox(selComprobantepago, "codTipocomprobantepago", comprobantepagoRepo.findAll(),
                 "Sel Tipo", "txtDescripcion");
         //gridCaja.getColumn("codTipocomprobantepago").setEditorField(selComprobantepago);
-
+        allFields.add(selTipoDoc);
 
         // Cta Contable
         selCtaContable.setEnabled(false);
         DataFilterUtil.bindComboBox(selCtaContable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
         //gridCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
 
+        allFields.add(selCtaContable);
         // Rubro inst
         selRubroInst.setEnabled(false);
         DataFilterUtil.bindComboBox(selRubroInst, "id.codCtaespecial",
                 planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel cta especial", "txtDescctaespecial");
 
+        allFields.add(selRubroInst);
         // Rubro Proy
         selRubroProy.setEnabled(false);
         DataFilterUtil.bindComboBox(selRubroProy, "id.codCtaproyecto",
                 planproyectoRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel Rubro proy", "txtDescctaproyecto");
         //gridCaja.getColumn("codCtaproyecto").setEditorField(selPlanproyecto);
-
+        allFields.add(selRubroProy);
         // Fuente
         selFuente.setEnabled(false);
         ComboBox selFinanciera = selFuente;
         DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraRepo.findAll(),
                 "Sel Fuente", "txtDescfinanciera");
         //gridCaja.getColumn("codFinanciera").setEditorField(selFinanciera);
+        allFields.add(selFuente);
 
         DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta", configuractacajabancoRepo.findByActivoAndParaCaja(true, true),
                 "Sel Tipo de Movimiento", "txtTipocuenta");
@@ -271,7 +255,17 @@ public class ComprobanteView extends ComprobanteUI implements View {
             }
 
         });
+        allFields.add(selTipoMov);
+
+        allFields.add(glosa);
+        allFields.add(serieDoc);
+        allFields.add(numDoc);
+
+        for (Field f : allFields) {
+            f.setEnabled(false);
+        }
         viewLogic.init();
+        //viewLogic.nuevoComprobante();
     }
 
 
@@ -411,16 +405,22 @@ public class ComprobanteView extends ComprobanteUI implements View {
     public void bindForm(VsjCajabanco item) {
 
         beanItem = new BeanItem<VsjCajabanco>(item);
+        //if (item.getNumDebedolar()==null) item.setNumDebedolar(new BigDecimal("0.00"));
+        //if (item.getNumHaberdolar()==null) item.setNumHaberdolar(new BigDecimal("0.00"));
+        //if (item.getNumDebesol()==null) item.setNumDebesol(new BigDecimal("0.00"));
+        //if (item.getNumHabersol()==null) item.setNumHabersol(new BigDecimal("0.00"));
+
         fieldGroup = new FieldGroup(beanItem);
         fieldGroup.setItemDataSource(beanItem);
-        fieldGroup = new BeanFieldGroup<VsjCajabanco>(VsjCajabanco.class);
         fieldGroup.bind(selProyecto, "codProyecto");
         fieldGroup.bind(selTercero, "codTercero");
         fieldGroup.bind(selMoneda, "codTipomoneda");
         fieldGroup.bind(selCaja, "codContracta");
         fieldGroup.bind(dataFechaComprobante, "fecFecha");
         fieldGroup.bind(numIngreso, "numHabersol");
-        fieldGroup.bind(numEgreso, "numDebersol");
+        fieldGroup.bind(numEgreso, "numDebesol");
+        GenUtil.setDefaultsForNumberField(numIngreso);
+        GenUtil.setDefaultsForNumberField(numEgreso);
         fieldGroup.bind(glosa, "txtGlosaitem");
         fieldGroup.bind(selResponsable, "codDestino");
         fieldGroup.bind(selLugarGasto, "codContraparte");
@@ -433,6 +433,14 @@ public class ComprobanteView extends ComprobanteUI implements View {
         fieldGroup.bind(selRubroInst, "codCtaespecial");
         fieldGroup.bind(selRubroProy, "codCtaproyecto");
         fieldGroup.bind(selFuente, "codFinanciera");
+
+        for (Field f: fieldGroup.getFields()) {
+            if (f instanceof TextField)
+                ((TextField)f).setNullRepresentation("");
+        }
+        selProyecto.setEnabled(true);
+        selTercero.setEnabled(true);
+        dataFechaComprobante.setEnabled(true);
     }
 
 
