@@ -128,7 +128,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="txt_correlativo")
 	private String txtCorrelativo;
 
-	//@NotNull
+	@NotBlank
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
 
