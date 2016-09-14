@@ -13,6 +13,7 @@ import org.sanjose.helper.GenUtil;
 import org.sanjose.model.VsjCajabanco;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,15 +123,17 @@ public class CajaManejoLogic implements Serializable {
         view.clearSelection();
         setFragmentParameter("new");
         VsjCajabanco vcb = new VsjCajabanco();
-        vcb.setCodMes("03");
+        //vcb.setCodMes("03");
 
-        vcb.setTxtAnoproceso("2016");
+        //vcb.setTxtAnoproceso("2016");
         vcb.setFlgEnviado("0");
-        vcb.setCodDestino("000");
-        vcb.setCodTipomoneda("0");
         vcb.setIndTipocuenta("0");
+        vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
+        vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
 
-       // view.gridCaja.getContainerDataSource().addItem(vcb);
+        view.getComprobanteView().bindForm(vcb);
+        //enter();
+        MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
 

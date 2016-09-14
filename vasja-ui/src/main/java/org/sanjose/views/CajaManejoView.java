@@ -43,6 +43,8 @@ public class CajaManejoView extends CajaManejoUI implements View {
     public static final String VIEW_NAME = "Manejo de Caja";
 
     private CajaManejoLogic viewLogic = new CajaManejoLogic(this);
+
+    private ComprobanteView comprobanteView;
     
     public VsjCajabancoRep repo;
 
@@ -169,6 +171,14 @@ public class CajaManejoView extends CajaManejoUI implements View {
 	         cell.setComponent(filterField);
 	     }
         viewLogic.init();
+    }
+
+    public void setComprobanteView(ComprobanteView comprobanteView) {
+        this.comprobanteView = comprobanteView;
+    }
+
+    public ComprobanteView getComprobanteView() {
+        return comprobanteView;
     }
 
     public void setItemLogic(ItemClickEvent event) {

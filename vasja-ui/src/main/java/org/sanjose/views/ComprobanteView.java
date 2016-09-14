@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -39,6 +40,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
     private ComprobanteLogic viewLogic = new ComprobanteLogic(this);
 
     public VsjCajabanco item;
+
+    public BeanItem<VsjCajabanco> beanItem;
     
     public VsjCajabancoRep repo;
 
@@ -272,9 +275,6 @@ public class ComprobanteView extends ComprobanteUI implements View {
     }
 
 
-
-
-
     public void setCajaLogic(String tipomoneda) {
 
         if (!GenUtil.objNullOrEmpty(selProyecto.getValue())) {
@@ -400,16 +400,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
             saldoProyEUR.setValue(res.getSaldoEUR().toString());
             log.info("got saldos: "  + res);
         } else {
-            //DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta",
-            //        configuractacajabancoRepo.findByParaCajaAndParaTercero(true, true),
-            //        "Sel Tipo de Movimiento", "txtTipocuenta");
-            //DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", new ArrayList<ScpFinanciera>(),
-            //        "-------", null);
             log.info("disabling fin y planproy");
             selFinanciera.setEnabled(false);
             selFinanciera.setValue("");
-            //DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto", new ArrayList<ScpPlanproyecto>(),
-            //        "-------", null);
             selPlanproyecto.setEnabled(false);
             selPlanproyecto.setValue("");
         }
@@ -417,7 +410,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
     public void bindForm(VsjCajabanco item) {
 
-        fieldGroup.setItemDataSource(new BeanItem<VsjCajabanco>(item));
+        beanItem = new BeanItem<VsjCajabanco>(item);
+        fieldGroup = new FieldGroup(beanItem);
+        fieldGroup.setItemDataSource(beanItem);
         fieldGroup = new BeanFieldGroup<VsjCajabanco>(VsjCajabanco.class);
         fieldGroup.bind(selProyecto, "codProyecto");
         fieldGroup.bind(selTercero, "codTercero");
@@ -440,13 +435,13 @@ public class ComprobanteView extends ComprobanteUI implements View {
         fieldGroup.bind(selFuente, "codFinanciera");
     }
 
-    /*public VsjCajabanco getVsjCajabanco() {
-        //fieldGroup.getItemDataSource().
 
-
+    public VsjCajabanco getVsjCajabanco() throws FieldGroup.CommitException {
+        fieldGroup.commit();
+        VsjCajabanco item = beanItem.getBean();
+        log.info("Got VSJ to save: " + item);
+        return item;
     }
-*/
-
 
 
     @Override

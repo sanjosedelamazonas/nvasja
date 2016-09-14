@@ -13,6 +13,8 @@ import org.sanjose.helper.GenUtil;
 import org.sanjose.model.VsjCajabanco;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,22 +50,32 @@ public class ComprobanteLogic implements Serializable {
 
     public void saveComprobante() {
 
-        //log.info("Pre commit" + item);
-            VsjCajabanco vcb = new VsjCajabanco();
-            //log.info("Proy " + vcb.getCodProyecto() + " " + vcb.getCodTercero());
-            if (GenUtil.strNullOrEmpty(vcb.getCodProyecto()) && GenUtil.strNullOrEmpty(vcb.getCodTercero()))
+
+        try {
+            VsjCajabanco item = view.getVsjCajabanco();
+            if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
                 throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
-            //throw new CommitException("Codigo Proyecto o Codigo Tercero debe ser rellenado",
-            //        view.gridCaja.getEditorFieldGroup(),
-            //        new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado")
-            //);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MM");
+            item.setCodMes(sdf.format(item.getFecFecha()));
+            sdf = new SimpleDateFormat("yyyy");
+            item.setTxtAnoproceso(sdf.format(item.getFecFecha()));
+            if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
+                item.setIndTipocuenta("0");
+            } else {
+                item.setIndTipocuenta("1");
+            }
+            //item.setCodUregistro();
+            item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
+
+            log.info("Ready to save: " + item);
+        } catch (CommitException ce) {
+            log.info("Got Commit Exception: " + ce.getMessage());
+        }
+        //view.repo.save(item);
         // You can persist your data here
         //Notification.show("Item " + view.gridCaja.getEditedItemId() + " was edited.");
-            if (vcb.getCodProyecto()==null || "".equals(vcb.getCodProyecto()))
-                vcb.setIndTipocuenta("1");
-            else
-                vcb.setIndTipocuenta("0");
-            //view.repo.save(vcb);
+        //view.repo.save(vcb);
     }
 
     public void anularComprobante() {

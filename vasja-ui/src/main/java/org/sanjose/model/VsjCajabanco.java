@@ -90,7 +90,7 @@ public class VsjCajabanco implements Serializable {
 	private Timestamp fecFactualiza;
 
 	//@NotNull
-	//@NotBlank
+	@NotBlank
 	@Column(name="fec_fecha")
 	private Timestamp fecFecha;
 
