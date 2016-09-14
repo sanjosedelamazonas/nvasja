@@ -60,11 +60,17 @@
         </dependency>
 
         <dependency>
+            <groupId>tm.kod</groupId>
+            <artifactId>numberfield7</artifactId>
+            <version>0.0.6</version>
+        </dependency>
+
+<!--        <dependency>
             <groupId>org.vaadin.ui</groupId>
             <artifactId>NumberField</artifactId>
             <version>0.1.8-SNAPSHOT</version>
-            <!--<version>0.1.6</version>-->
-        </dependency>
+            &lt;!&ndash;<version>0.1.6</version>&ndash;&gt;
+        </dependency>-->
 
         <!--        <dependency>
                     <groupId>${project.groupId}</groupId>

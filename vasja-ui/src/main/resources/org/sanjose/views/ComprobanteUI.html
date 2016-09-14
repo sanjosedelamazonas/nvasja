@@ -2,6 +2,7 @@
 <html>
  <head>
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta charset="UTF-8" name="package-mapping" content="tm_kod_widgets_numberfield:tm.kod.widgets.numberfield">
   <meta charset="UTF-8" name="package-mapping" content="org_sanjose_helper:org.sanjose.helper">
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_addons_maskedtextfield:org.vaadin.addons.maskedtextfield">
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
@@ -41,8 +42,8 @@
       <vaadin-text-field description="Num de Voucher" enabled="false" _id="numVoucher"></vaadin-text-field> 
      </vaadin-horizontal-layout> 
      <vaadin-horizontal-layout spacing width="1024px" _id="horizontalIngresoGlosa"> 
-      <org_vaadin_ui-number-field caption="Ingreso" immediate _id="numIngreso"></org_vaadin_ui-number-field> 
-      <org_vaadin_ui-number-field caption="Egreso" responsive immediate _id="numEgreso"></org_vaadin_ui-number-field> 
+      <tm_kod_widgets_numberfield-number-field caption="Ingreso" _id="numIngreso"></tm_kod_widgets_numberfield-number-field> 
+      <tm_kod_widgets_numberfield-number-field caption="Egreso" _id="numEgreso"></tm_kod_widgets_numberfield-number-field> 
       <vaadin-text-field caption="Glosa" width-full _id="glosa" :expand></vaadin-text-field> 
      </vaadin-horizontal-layout> 
      <vaadin-horizontal-layout spacing width="548px" _id="horizontalIngresoGlosa2"> 

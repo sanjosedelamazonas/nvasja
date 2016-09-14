@@ -24,7 +24,7 @@ public class ConfigurationUtil {
 
 	public static void init() {
 		defaultParamMap.put("LOCALE", "es_PE");
-		defaultParamMap.put("DECIMAL_FORMAT", "#.##0,00");
+		defaultParamMap.put("DECIMAL_FORMAT", "#,##0.00");
 		defaultParamMap.put("SHORT_DATE_FORMAT", "MM/dd");
 		defaultParamMap.put("DEFAULT_DATE_FORMAT", "yyyy/MM/dd");
 		defaultParamMap.put("DEFAULT_DATE_RENDERER_FORMAT","%1$td/%1$tm/%1$ty");

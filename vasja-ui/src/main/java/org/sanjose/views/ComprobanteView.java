@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -174,7 +176,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
         numIngreso.addValueChangeListener(event -> {
                 if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                    if (numIngreso.getDoubleValueDoNotThrow()!=0) {
+                    if (!"0,00".equals(event.getProperty().getValue())) {
                         numEgreso.setValue("");
                     }
                 }
@@ -182,7 +184,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         );
         numEgreso.addValueChangeListener(event -> {
                 if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                    if (numEgreso.getDoubleValueDoNotThrow()!=0) {
+                    if (!"0,00".equals(event.getProperty().getValue())) {
                         numIngreso.setValue("");
                     }
                 }
@@ -298,7 +300,6 @@ public class ComprobanteView extends ComprobanteUI implements View {
     }
 
 
-
     public void setProyectoLogic(Property.ValueChangeEvent event) {
         if (event.getProperty().getValue()!=null)
             setEditorLogic(event.getProperty().getValue().toString());
@@ -331,8 +332,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
         if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
             nombreTercero.setValue(destinoRepo.findByCodDestino(event.getProperty().getValue().toString()).getTxtNombredestino());
             ProcUtil.Saldos res = new ProcUtil(em).getSaldos(dataFechaComprobante.getValue(),null, event.getProperty().getValue().toString());
-            saldoProyPEN.setValue(res.getSaldoPEN().toString());
-            saldoProyUSD.setValue(res.getSaldoUSD().toString());
+            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+            saldoProyPEN.setValue(df.format(res.getSaldoPEN()));
+            saldoProyUSD.setValue(df.format(res.getSaldoUSD()));
             saldoProyEUR.setValue("");
         }
 //        log.info("got saldos: "  + res);
@@ -389,9 +391,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
             nombreTercero.setValue(proyectoRepo.findByCodProyecto(codProyecto).getTxtDescproyecto());
             ProcUtil.Saldos res = new ProcUtil(em).getSaldos(dataFechaComprobante.getValue(),codProyecto,null);
-            saldoProyPEN.setValue(res.getSaldoPEN().toString());
-            saldoProyUSD.setValue(res.getSaldoUSD().toString());
-            saldoProyEUR.setValue(res.getSaldoEUR().toString());
+            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());            saldoProyPEN.setValue(df.format(res.getSaldoPEN()));
+            saldoProyUSD.setValue(df.format(res.getSaldoUSD()));
+            saldoProyEUR.setValue(df.format(res.getSaldoEUR()));
             log.info("got saldos: "  + res);
         } else {
             log.info("disabling fin y planproy");
@@ -405,11 +407,6 @@ public class ComprobanteView extends ComprobanteUI implements View {
     public void bindForm(VsjCajabanco item) {
 
         beanItem = new BeanItem<VsjCajabanco>(item);
-        //if (item.getNumDebedolar()==null) item.setNumDebedolar(new BigDecimal("0.00"));
-        //if (item.getNumHaberdolar()==null) item.setNumHaberdolar(new BigDecimal("0.00"));
-        //if (item.getNumDebesol()==null) item.setNumDebesol(new BigDecimal("0.00"));
-        //if (item.getNumHabersol()==null) item.setNumHabersol(new BigDecimal("0.00"));
-
         fieldGroup = new FieldGroup(beanItem);
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.bind(selProyecto, "codProyecto");
