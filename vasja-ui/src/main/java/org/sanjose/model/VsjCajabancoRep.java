@@ -10,5 +10,7 @@ public interface VsjCajabancoRep extends JpaRepository<VsjCajabanco, Long> {
 	
 	//List<VsjCajabanco> findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(String mov, String ano, String codcta);
 	
-	//List<VsjCajabanco> findByFlgMovimientoAndId_TxtAnoproceso(String mov, String ano);	
+	//List<VsjCajabanco> findByFlgMovimientoAndId_TxtAnoproceso(String mov, String ano);
+
+    VsjCajabanco findByCodCajabanco(Integer id);
 }

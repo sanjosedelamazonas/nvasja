@@ -4,6 +4,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.ItemSorter;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.filter.Between;
 import com.vaadin.data.util.filter.SimpleStringFilter;
@@ -12,6 +13,7 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
@@ -23,6 +25,8 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.renderers.NumberRenderer;
+import org.sanjose.MainUI;
 import org.sanjose.helper.*;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +100,29 @@ public class CajaManejoView extends CajaManejoUI implements View {
         container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
         gridCaja.setContainerDataSource(container);
         gridCaja.setEditorEnabled(false);
+        gridCaja.sort("fecFecha", SortDirection.DESCENDING);
+
+        gridCaja.getColumn("numHabersol").setRenderer(new EmptyZeroNumberRendrer(
+                "%02.2f", ConfigurationUtil.getLocale()));
+        gridCaja.getColumn("numHaberdolar").setRenderer(new EmptyZeroNumberRendrer(
+                "%02.2f", ConfigurationUtil.getLocale()));
+        gridCaja.getColumn("numDebedolar").setRenderer(new EmptyZeroNumberRendrer(
+                "%02.2f", ConfigurationUtil.getLocale()));
+        gridCaja.getColumn("numDebesol").setRenderer(new EmptyZeroNumberRendrer(
+                "%02.2f", ConfigurationUtil.getLocale()));
+
+        gridCaja.setCellStyleGenerator(( Grid.CellReference cellReference ) -> {
+            if ( "numHabersol".equals( cellReference.getPropertyId() ) ||
+                    "numHaberdolar".equals( cellReference.getPropertyId() ) ||
+                    "numDebedolar".equals( cellReference.getPropertyId() ) ||
+                    "numDebesol".equals( cellReference.getPropertyId() )) {
+                // when the current cell is number such as age, align text to right
+                return "v-align-right";
+            } else {
+                // otherwise, align text to left
+                return "v-align-left";
+            }
+        });
 
         Map<String, String> colNames = new HashMap<>();
         for (int i=0;i<VISIBLE_COLUMN_NAMES.length;i++) {
@@ -106,22 +133,16 @@ public class CajaManejoView extends CajaManejoUI implements View {
         gridCaja.setColumns(VISIBLE_COLUMN_IDS);
         gridCaja.setColumnOrder(VISIBLE_COLUMN_IDS);
 
-        //gridCaja.getColumn("fecFecha").setRenderer()
-
         for (String colId : colNames.keySet()) {
             gridCaja.getDefaultHeaderRow().getCell(colId).setText(colNames.get(colId));
         }
 
-     //   gridCaja.getColumn("txtTipocuenta").setWidth(120);
         for (String colId : NONEDITABLE_COLUMN_IDS) {
             gridCaja.getColumn(colId).setEditable(false);
         }
 
         gridCaja.setSelectionMode(SelectionMode.SINGLE);
         HeaderRow filterRow = gridCaja.appendHeaderRow();
-        
-        //gridCaja.setEditorFieldGroup(
-       // 	    new BeanFieldGroup<VsjCajabanco>(VsjCajabanco.class));
 
         // Fecha Desde
         Timestamp ts = new Timestamp(System.currentTimeMillis());
@@ -200,22 +221,19 @@ public class CajaManejoView extends CajaManejoUI implements View {
     public void refreshData() {
         container.removeAllItems();
         container.addAll(repo.findAll());
+        gridCaja.sort("fecFecha", SortDirection.DESCENDING);
     }
 
     public void setItemLogic(ItemClickEvent event) {
         if (event.isDoubleClick()) {
-               // The item was double-clicked, event.getItem() returns the target.
+            Object id = event.getItem().getItemProperty("codCajabanco").getValue();
+            VsjCajabanco vcb = repo.findByCodCajabanco((Integer)id);
+            if (!"1".equals(vcb.getFlgEnviado())) {
+                getComprobanteView().viewLogic.editarComprobante(vcb);
+                MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+            }
         }
-        //gridCaja.isEditorEnabled()
-        String proyecto = null;
-        Object objProyecto = event.getItem().getItemProperty("codProyecto").getValue();
-        if (objProyecto !=null && !objProyecto.toString().isEmpty())
-            proyecto = objProyecto.toString();
-
-           // log.info("Got to item: " + event.getItem() + "\n" + event.getPropertyId());
-        //}
     }
-
 
     @Override
     public void enter(ViewChangeEvent event) {

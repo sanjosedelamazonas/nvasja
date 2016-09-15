@@ -17,7 +17,7 @@ public class GenUtil {
 
 
 	public static boolean strNullOrEmpty(String s) {
-		if (s == null || "".equals(s))
+		if (s == null || "".equals(s) || "".equals(s.trim()))
 			return true;
 		else
 			return false;
@@ -101,5 +101,10 @@ public class GenUtil {
         c1.add(Calendar.MONTH, months);
         return c1.getTime();
     }
-	
+
+
+    public static boolean isZero(Object value) {
+        if (value==null) return false;
+        return "0.00".equals(value.toString()) || "0,00".equals(value.toString()) || "0".equals(value.toString());
+    }
 }

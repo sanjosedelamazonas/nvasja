@@ -70,6 +70,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
     boolean isLoading = true;
 
+    boolean isEdit = false;
+
     public CajaManejoView cajaManejoView;
 
     @Autowired
@@ -120,9 +122,6 @@ public class ComprobanteView extends ComprobanteUI implements View {
         DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
         selTercero.addValueChangeListener(event -> setTerceroLogic(event));
 
-        // Cta Caja
-        //selCaja.setEnabled(false);
-        //selLugarGasto.setEnabled(false);
         // Tipo Moneda
         DataFilterUtil.bindTipoMonedaOptionGroup(selMoneda, "codTipomoneda");
         selMoneda.addValueChangeListener(event -> {
@@ -135,6 +134,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 selCaja.removeAllValidators();
                 if (event.getProperty().getValue().toString().equals("0")) {
                     // Soles        0
+                    // Cta Caja
                     DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
                             findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
                                     "N", GenUtil.getCurYear(), "N", "101"), "Sel Caja", "txtDescctacontable");
@@ -143,6 +143,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
                     fieldGroup.bind(numEgreso, "numDebesol");
                 } else {
                     // Dolares
+                    // Cta Caja
                     DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
                             findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
                                     "N", GenUtil.getCurYear(), "D", "101"), "Sel Caja", "txtDescctacontable");
@@ -159,12 +160,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 GenUtil.setDefaultsForNumberField(numEgreso);
             }
         });
-        //numEgreso.setEnabled(false);
-        //numIngreso.setEnabled(false);
 
         numIngreso.addValueChangeListener(event -> {
                 if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                    if (!"0,00".equals(event.getProperty().getValue())) {
+                    if (!GenUtil.isZero(event.getProperty().getValue())) {
                         numEgreso.setValue("");
                     }
                 }
@@ -172,7 +171,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         );
         numEgreso.addValueChangeListener(event -> {
                 if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                    if (!"0,00".equals(event.getProperty().getValue())) {
+                    if (!GenUtil.isZero(event.getProperty().getValue())) {
                         numIngreso.setValue("");
                     }
                 }
@@ -188,34 +187,27 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 "Sel Lugar de Gasto", "txt_DescContraparte");
 
         // Cod. Auxiliar
-        ComboBox selAuxiliar = selCodAuxiliar;
-        DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
+        DataFilterUtil.bindComboBox(selCodAuxiliar, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
                 "Auxiliar", "txtNombredestino");
 
         // Tipo doc
-        ComboBox selComprobantepago = selTipoDoc;
-        DataFilterUtil.bindComboBox(selComprobantepago, "codTipocomprobantepago", comprobantepagoRepo.findAll(),
+        DataFilterUtil.bindComboBox(selTipoDoc, "codTipocomprobantepago", comprobantepagoRepo.findAll(),
                 "Sel Tipo", "txtDescripcion");
 
         // Cta Contable
-        //selCtaContable.setEnabled(false);
         DataFilterUtil.bindComboBox(selCtaContable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
 
         // Rubro inst
-        //selRubroInst.setEnabled(false);
         DataFilterUtil.bindComboBox(selRubroInst, "id.codCtaespecial",
                 planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel cta especial", "txtDescctaespecial");
 
         // Rubro Proy
-        //selRubroProy.setEnabled(false);
         DataFilterUtil.bindComboBox(selRubroProy, "id.codCtaproyecto",
                 planproyectoRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel Rubro proy", "txtDescctaproyecto");
         // Fuente
-        //selFuente.setEnabled(false);
-        ComboBox selFinanciera = selFuente;
-        DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraRepo.findAll(),
+        DataFilterUtil.bindComboBox(selFuente, "codFinanciera", financieraRepo.findAll(),
                 "Sel Fuente", "txtDescfinanciera");
 
         DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta", configuractacajabancoRepo.findByActivoAndParaCaja(true, true),
@@ -245,9 +237,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
         serieDoc.addValidator(new BeanValidator(VsjCajabanco.class, "txtSeriecomprobantepago"));
         numDoc.addValidator(new BeanValidator(VsjCajabanco.class, "txtComprobantepago"));
         selCtaContable.addValidator(new BeanValidator(VsjCajabanco.class, "codContracta"));
+
         setEnableFields(false);
         viewLogic.init();
-        //viewLogic.nuevoComprobante();
     }
 
     public void setEnableFields(boolean enabled) {
@@ -328,7 +320,6 @@ public class ComprobanteView extends ComprobanteUI implements View {
         if (isLoading) return;
         if (event.getProperty().getValue()!=null)
             setEditorLogic(event.getProperty().getValue().toString());
-        //ComboBox selProyecto = (ComboBox)gridCaja.getColumn("codProyecto").getEditorField();
         selProyecto.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
@@ -341,36 +332,36 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
 
     public void setEditorTerceroLogic(String codTercero)  {
-        setEnableFields(true);
-        if (selMoneda.getValue()==null) {
-            numIngreso.setEnabled(false);
-            numEgreso.setEnabled(false);
+        if (!GenUtil.strNullOrEmpty(codTercero)) {
+            setEnableFields(true);
+            if (selMoneda.getValue() == null) {
+                numIngreso.setEnabled(false);
+                numEgreso.setEnabled(false);
+            }
+            DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta",
+                    configuractacajabancoRepo.findByActivoAndParaCajaAndParaTercero(true, true, true),
+                    "Sel Tipo de Movimiento", "txtTipocuenta");
+            selFuente.setValue(null);
+            selFuente.setEnabled(false);
+            // Reset those fields
+            if (!isEdit) {
+                selCtaContable.setValue(null);
+                selRubroInst.setValue(null);
+                selRubroProy.setValue(null);
+            }
+            nombreTercero.setValue(destinoRepo.findByCodDestino(codTercero).getTxtNombredestino());
+            setSaldos();
         }
-        DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta",
-                configuractacajabancoRepo.findByActivoAndParaCajaAndParaTercero(true, true, true),
-                "Sel Tipo de Movimiento", "txtTipocuenta");
-        selFuente.setValue(null);
-        selFuente.setEnabled(false);
-        // Reset those fields
-        selCtaContable.setValue(null);
-        selRubroInst.setValue(null);
-        selRubroProy.setValue(null);
-        selRubroProy.setEnabled(false);
-        nombreTercero.setValue(destinoRepo.findByCodDestino(codTercero).getTxtNombredestino());
-        setSaldos();
     }
 
     public void setEditorLogic(String codProyecto) {
-        ComboBox selFinanciera = selFuente;
-        ComboBox selPlanproyecto = selRubroProy;
-
-        if (codProyecto!=null && !codProyecto.isEmpty()) {
+        if (!GenUtil.strNullOrEmpty(codProyecto)) {
             setEnableFields(true);
             if (selMoneda.getValue()==null) {
                 numIngreso.setEnabled(false);
                 numEgreso.setEnabled(false);
             }
-            DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
+            DataFilterUtil.bindComboBox(selRubroProy, "id.codCtaproyecto",
                     planproyectoRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
                             "N", GenUtil.getCurYear(), codProyecto),
                     "Sel Rubro proy", "txtDescctaproyecto");
@@ -397,38 +388,36 @@ public class ComprobanteView extends ComprobanteUI implements View {
                         configuractacajabancoRepo.findByActivoAndParaCajaAndParaProyecto(true, true, true),
                         "Sel Tipo de Movimiento", "txtTipocuenta");
                 // Reset those fields
-                selCtaContable.setValue(null);
-                selRubroInst.setValue(null);
+                if (!isEdit) {
+                    selCtaContable.setValue(null);
+                    selRubroInst.setValue(null);
+                }
                 selTipoMov.setEnabled(true);
                 selRubroInst.setEnabled(true);
                 selCtaContable.setEnabled(true);
             } else {
                 financieraEfectList = financieraList;
             }
-            DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
+            DataFilterUtil.bindComboBox(selFuente, "codFinanciera", financieraEfectList,
                     "Sel Fuente", "txtDescfinanciera");
             if (financieraEfectList.size()==1)
-                selFinanciera.select(financieraEfectList.get(0).getCodFinanciera());
+                selFuente.select(financieraEfectList.get(0).getCodFinanciera());
 
             nombreTercero.setValue(proyectoRepo.findByCodProyecto(codProyecto).getTxtDescproyecto());
             setSaldos();
         } else {
             log.info("disabling fin y planproy");
-            selFinanciera.setEnabled(false);
-            selFinanciera.setValue("");
-            selPlanproyecto.setEnabled(false);
-            selPlanproyecto.setValue("");
+            selFuente.setEnabled(false);
+            selFuente.setValue("");
+            selRubroProy.setEnabled(false);
+            selRubroProy.setValue("");
         }
-    }
-
-    public void switchMoneda() {
-
     }
 
     public void bindForm(VsjCajabanco item) {
         isLoading = true;
 
-        boolean isEdit = false;
+        isEdit = false;
         if (item.getCodCajabanco()>0) isEdit = true;
         clearSaldos();
         //selMoneda.setValue(null);
@@ -487,6 +476,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 setEditorTerceroLogic(item.getCodTercero());
             }
         }
+        isEdit = false;
     }
 
     public void anularComprobante() {

@@ -51,7 +51,6 @@ public class ComprobanteLogic implements Serializable {
 
 
     public void cerrarAlManejo() {
-        view.cajaManejoView.refreshData();
         MainUI.get().getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
     }
 
