@@ -120,16 +120,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
         allFields.add(pdf);
         // Proyecto
-        //ComboBox selTercero = selTercero;
-        //ComboBox selProyecto = selProyecto;
         DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
         selProyecto.addValueChangeListener(event -> setProyectoLogic(event));
         selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
-//        selProyecto.setId("my-custom-combobox");
         allFields.add(selProyecto);
-                //"setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
-        //gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
-
         // Tercero
         DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
         selTercero.addValueChangeListener(event -> setTerceroLogic(event));
@@ -459,6 +453,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
         }
     }
 
+    public void switchMoneda() {
+
+    }
+
     public void bindForm(VsjCajabanco item) {
         isLoading = true;
 
@@ -476,9 +474,11 @@ public class ComprobanteView extends ComprobanteUI implements View {
         fieldGroup.bind(dataFechaComprobante, "fecFecha");
 
         if (isEdit && "0".equals(item.getCodTipomoneda())) {
+            log.info("edit sol");
             fieldGroup.bind(numIngreso, "numHabersol");
             fieldGroup.bind(numEgreso, "numDebesol");
         } else if (isEdit && "1".equals(item.getCodTipomoneda())) {
+            log.info("edit usd");
             fieldGroup.bind(numIngreso, "numHaberdolar");
             fieldGroup.bind(numEgreso, "numDebedolar");
         }
