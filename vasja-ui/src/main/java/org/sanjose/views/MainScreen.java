@@ -54,6 +54,7 @@ public class MainScreen extends HorizontalLayout {
                 FontAwesome.INFO_CIRCLE);
 
         cajaManejoView.setComprobanteView(comprobanteView);
+        comprobanteView.setCajaManejoView(cajaManejoView);
         navigator.addViewChangeListener(viewChangeListener);
 
         addComponent(menu);

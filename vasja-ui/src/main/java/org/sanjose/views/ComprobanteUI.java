@@ -63,6 +63,7 @@ public class ComprobanteUI extends VerticalLayout {
 	protected ComboBox selFuente;
 	protected VerticalLayout verticalButtons;
 	protected HorizontalLayout horizontalButtons;
+	protected Button cerrarBtn;
 	protected Button nuevoComprobante;
 	protected Button anularBtn;
 	protected Button guardarBtn;

@@ -72,8 +72,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_tipocomprobantepago")
 	private String codTipocomprobantepago;
 
-	//@NotNull
-	@NotBlank
+	@NotNull
 	@Column(name="cod_tipomoneda")
 	private String codTipomoneda;
 
@@ -89,8 +88,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="fec_factualiza")
 	private Timestamp fecFactualiza;
 
-	//@NotNull
-	@NotBlank
+	@NotNull
 	@Column(name="fec_fecha")
 	private Timestamp fecFecha;
 

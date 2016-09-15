@@ -4,8 +4,8 @@
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
  </head> 
  <body> 
-  <vaadin-vertical-layout spacing id="verticalMain" margin> 
-   <vaadin-horizontal-layout spacing margin _id="horizontalFechas"> 
+  <vaadin-vertical-layout id="verticalMain" size-full margin> 
+   <vaadin-horizontal-layout spacing height="50px" margin _id="horizontalFechas" :middle :center> 
     <vaadin-date-field _id="fechaDesde"></vaadin-date-field> 
     <vaadin-label size-auto plain-text>
       - 
@@ -14,11 +14,14 @@
     <vaadin-button plain-text _id="nuevoComprobante">
       Nuevo comprobante 
     </vaadin-button> 
+    <vaadin-button plain-text _id="btnEditar">
+      Editar 
+    </vaadin-button> 
    </vaadin-horizontal-layout> 
-   <vaadin-vertical-layout> 
-    <vaadin-grid editor-cancel-caption="Anular" size-full editable _id="gridCaja" :middle :center></vaadin-grid> 
+   <vaadin-vertical-layout size-full> 
+    <vaadin-grid editor-cancel-caption="Anular" size-full _id="gridCaja" :middle :center></vaadin-grid> 
    </vaadin-vertical-layout> 
-   <vaadin-horizontal-layout spacing width-full _id="horizontalSaldos"> 
+   <vaadin-horizontal-layout spacing width-full height="200px" _id="horizontalSaldos"> 
     <vaadin-vertical-layout caption="Saldo Inicial" size-auto _id="verticalSaldoInicial"> 
      <vaadin-grid width="400px" height="169px" _id="gridSaldoInicial"></vaadin-grid> 
     </vaadin-vertical-layout> 

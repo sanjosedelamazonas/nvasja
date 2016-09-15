@@ -8,6 +8,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
+import com.vaadin.ui.Notification;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.AccessControl;
 import org.sanjose.authentication.CurrentUser;
@@ -44,7 +45,13 @@ public class ComprobanteLogic implements Serializable {
         view.guardarBtn.addClickListener(event -> saveComprobante());
         view.anularBtn.addClickListener(event -> anularComprobante());
         view.nuevoComprobante.addClickListener(event -> nuevoComprobante());
-        //nuevoComprobante();
+        view.cerrarBtn.addClickListener(event -> cerrarAlManejo());
+    }
+
+
+    public void cerrarAlManejo() {
+        view.cajaManejoView.refreshData();
+        MainUI.get().getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
     }
 
     public void saveComprobante() {
@@ -62,40 +69,29 @@ public class ComprobanteLogic implements Serializable {
             } else {
                 item.setIndTipocuenta("1");
             }
-            item.setCodUregistro(CurrentUser.get());
-            item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
+            if (item.getCodUregistro()==null) item.setCodUregistro(CurrentUser.get());
+            if (item.getFecFregistro()==null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
+            item.setCodUactualiza(CurrentUser.get());
+            item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
 
             log.info("Ready to save: " + item);
+            VsjCajabanco saved = view.repo.save(item);
+            view.numVoucher.setValue(new Integer(saved.getCodCajabanco()).toString());
+            view.guardarBtn.setEnabled(false);
+            view.anularBtn.setEnabled(false);
+            view.nuevoComprobante.setEnabled(true);
+            view.cajaManejoView.refreshData();
         } catch (CommitException ce) {
+            Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             log.info("Got Commit Exception: " + ce.getMessage());
         }
-        //view.repo.save(item);
-        // You can persist your data here
-        //Notification.show("Item " + view.gridCaja.getEditedItemId() + " was edited.");
-        //view.repo.save(vcb);
     }
 
     public void anularComprobante() {
-        setFragmentParameter("");
-        //view.clearSelection();
-//        view.editProduct(null);
+        view.anularComprobante();
+        view.nuevoComprobante.setEnabled(true);
     }
 
-    /**
-     * Update the fragment without causing navigator to change view
-     */
-    private void setFragmentParameter(String productId) {
-        String fragmentParameter;
-        if (productId == null || productId.isEmpty()) {
-            fragmentParameter = "";
-        } else {
-            fragmentParameter = productId;
-        }
-
-        Page page = MainUI.get().getPage();
-  /*      page.setUriFragment("!" + SampleCrudView.VIEW_NAME + "/"
-                + fragmentParameter, false);
-  */  }
 
     public void enter(String productId) {
         if (productId != null && !productId.isEmpty()) {
@@ -115,14 +111,25 @@ public class ComprobanteLogic implements Serializable {
         }
     }
 
+
     public void nuevoComprobante() {
-        setFragmentParameter("new");
+//        setFragmentParameter("new");
         VsjCajabanco vcb = new VsjCajabanco();
         vcb.setFlgEnviado("0");
         vcb.setIndTipocuenta("0");
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
-
         view.bindForm(vcb);
+        view.nuevoComprobante.setEnabled(false);
+        view.guardarBtn.setEnabled(true);
+        view.anularBtn.setEnabled(true);
+    }
+
+    public void editarComprobante(VsjCajabanco vcb) {
+  //      setFragmentParameter("edit");
+        view.bindForm(vcb);
+        view.nuevoComprobante.setEnabled(false);
+        view.guardarBtn.setEnabled(true);
+        view.anularBtn.setEnabled(true);
     }
 }

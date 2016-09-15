@@ -8,7 +8,7 @@
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
  </head> 
  <body> 
-  <vaadin-vertical-layout description="---" spacing size-full margin> 
+  <vaadin-vertical-layout spacing size-full margin> 
    <vaadin-vertical-layout width="1024px" _id="editarComprobante"> 
     <vaadin-horizontal-layout spacing width="1024px" margin _id="horizontalProyectoTercero" :middle :center> 
      <vaadin-combo-box caption="Proyecto" item-caption-mode="id" width="69px" _id="selProyecto"> 
@@ -96,6 +96,9 @@
     </vaadin-vertical-layout> 
     <vaadin-vertical-layout size-auto _id="verticalButtons" :middle :center> 
      <vaadin-horizontal-layout spacing _id="horizontalButtons" :middle :center> 
+      <vaadin-button plain-text _id="cerrarBtn">
+        Cerrar 
+      </vaadin-button> 
       <vaadin-button plain-text _id="nuevoComprobante">
         Nuevo Comprobante 
       </vaadin-button> 

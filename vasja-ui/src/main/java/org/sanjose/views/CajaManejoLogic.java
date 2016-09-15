@@ -40,6 +40,8 @@ public class CajaManejoLogic implements Serializable {
     public void init() {
 
         view.nuevoComprobante.addClickListener(e -> newComprobante());
+        view.btnEditar.addClickListener(e -> editarComprobante());
+        //view..addClickListener(e -> newComprobante());
         // register save listener
         //view.gridCaja.getEditorFieldGroup().
 
@@ -80,7 +82,6 @@ public class CajaManejoLogic implements Serializable {
     }
 
     public void cancelProduct() {
-        setFragmentParameter("");
         view.clearSelection();
 //        view.editProduct(null);
     }
@@ -121,33 +122,19 @@ public class CajaManejoLogic implements Serializable {
 
     public void newComprobante() {
         view.clearSelection();
-        setFragmentParameter("new");
-        VsjCajabanco vcb = new VsjCajabanco();
-        vcb.setFlgEnviado("0");
-        vcb.setIndTipocuenta("0");
-        vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
-        vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
-
-        view.getComprobanteView().bindForm(vcb);
-        //enter();
+        view.getComprobanteView().viewLogic.nuevoComprobante();
         MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
-
-    public void deleteConfiguracion() {
-        List<VsjCajabanco> rows = new ArrayList<VsjCajabanco>();
-    	
-        for (Object vsj : view.getSelectedRow()) {
-        	log.info("Got selected: " + vsj);
-        	if (vsj instanceof VsjCajabanco)
-        		rows.add((VsjCajabanco)vsj);
+    public void editarComprobante() {
+        for (Object obj : view.getSelectedRow()) {
+            log.info("selected: " + obj);
+            VsjCajabanco vcb = (VsjCajabanco)obj;
+            if (!"1".equals(vcb.getFlgEnviado())) {
+                view.getComprobanteView().viewLogic.editarComprobante(vcb);
+                MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+                break;
+            }
         }
-        view.clearSelection();
-        //setFragmentParameter("new");
-        for (VsjCajabanco vsj : rows) {
-        	log.info("Removing: " + vsj.getCodCajabanco());        	
-        	view.removeRow(vsj);
-        }
-        //view.gridCaja.getContainerDataSource().removeItem(itemId)
-    }    
+    }
 }

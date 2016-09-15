@@ -58,6 +58,19 @@ public class ProcUtil {
         return new Saldos(pen, usd, eur);
     }
 
+    public BigDecimal getSaldoCaja(Date fecha, String codCtacaja, String moneda) {
+        StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getSaldoAlDiaCaja");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        //log.info("Getting date: " + sdf.format(fecha));
+        query.setParameter(1, sdf.format(fecha));
+        query.setParameter(2, codCtacaja);
+        query.setParameter(3, moneda);
+        query.execute();
+        BigDecimal res = (BigDecimal) query.getOutputParameterValue(4);
+        res = res.setScale(2,BigDecimal.ROUND_HALF_EVEN);
+        return res;
+    }
+
 
     public class Saldos {
 

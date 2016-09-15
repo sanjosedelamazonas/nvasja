@@ -48,6 +48,8 @@ public class CajaManejoView extends CajaManejoUI implements View {
     
     public VsjCajabancoRep repo;
 
+    private BeanItemContainer<VsjCajabanco> container;
+
     String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "codTipomoneda",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
@@ -87,8 +89,7 @@ public class CajaManejoView extends CajaManejoUI implements View {
         setSizeFull();
         addStyleName("crud-view");
 
-        BeanItemContainer<VsjCajabanco> container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
-        
+        container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
         gridCaja.setContainerDataSource(container);
         gridCaja.setEditorEnabled(false);
 
@@ -179,6 +180,11 @@ public class CajaManejoView extends CajaManejoUI implements View {
 
     public ComprobanteView getComprobanteView() {
         return comprobanteView;
+    }
+
+    public void refreshData() {
+        container.removeAllItems();
+        container.addAll(repo.findAll());
     }
 
     public void setItemLogic(ItemClickEvent event) {
