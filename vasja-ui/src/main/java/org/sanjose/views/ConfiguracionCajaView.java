@@ -51,7 +51,6 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
                                  ScpDestinoRep destinoRepo, ScpProyectoRep proyectoRepo, ScpCategoriaproyectoRep categoriaproyectoRepo) {
     	this.repo = repo;
         setSizeFull();
-        //addStyleName("crud-view");
 
         BeanItemContainer<VsjConfiguracioncaja> container = new BeanItemContainer(VsjConfiguracioncaja.class, repo.findAll());
         gridConfigCaja
@@ -63,8 +62,7 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
         gridConfigCaja.getDefaultHeaderRow().getCell("codConfiguracion").setText("Codigo");
         
         gridConfigCaja.getColumn("txtConfiguracion").setWidth(200);
-        //gridConfigCaja.setCol
-        
+
         gridConfigCaja.getColumn("codConfiguracion").setEditable(false);
                
         gridConfigCaja.setSelectionMode(SelectionMode.MULTI);

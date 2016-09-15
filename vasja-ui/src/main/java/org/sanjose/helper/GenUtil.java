@@ -2,6 +2,8 @@ package org.sanjose.helper;
 
 //import org.vaadin.ui.NumberField;
 
+import com.vaadin.ui.Grid;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,19 +36,10 @@ public class GenUtil {
 		if (val==null) return true;
 		return (val.compareTo(new BigDecimal(0.00)))==0;
 	}
-
-
-	public static void setDefaultsForNumberField(tm.kod.widgets.numberfield.NumberField numberField) {
-		numberField.setConverter(new BigDecimalConverter());
-		numberField.setLocale(ConfigurationUtil.getLocale());
-		numberField.setDecimalLength(2);
-        numberField.setUseGrouping(true);
-		numberField.setDecimalSeparator(',');               // e.g. 1,5
-		numberField.setNullRepresentation("");
-		numberField.setGroupingSeparator('.');              // use '.' as grouping separator
-		numberField.setSigned(false);
-	}
-
+	
+	
+	/* Date and time utils */
+	
     public static Date getBeginningOfMonth(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMM-ddHH:mm:ss");
         try {

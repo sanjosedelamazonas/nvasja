@@ -91,8 +91,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
         this.em = em;
         setSizeFull();
         addStyleName("crud-view");
-        GenUtil.setDefaultsForNumberField(numIngreso);
-        GenUtil.setDefaultsForNumberField(numEgreso);
+        ViewUtil.setDefaultsForNumberField(numIngreso);
+        ViewUtil.setDefaultsForNumberField(numEgreso);
 
         guardarBtn.setEnabled(false);
         anularBtn.setEnabled(false);
@@ -156,8 +156,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 selCaja.setEnabled(true);
                 numEgreso.setEnabled(true);
                 numIngreso.setEnabled(true);
-                GenUtil.setDefaultsForNumberField(numIngreso);
-                GenUtil.setDefaultsForNumberField(numEgreso);
+                ViewUtil.setDefaultsForNumberField(numIngreso);
+                ViewUtil.setDefaultsForNumberField(numEgreso);
             }
         });
 
@@ -437,8 +437,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
             fieldGroup.bind(numIngreso, "numHaberdolar");
             fieldGroup.bind(numEgreso, "numDebedolar");
         }
-        GenUtil.setDefaultsForNumberField(numIngreso);
-        GenUtil.setDefaultsForNumberField(numEgreso);
+        ViewUtil.setDefaultsForNumberField(numIngreso);
+        ViewUtil.setDefaultsForNumberField(numEgreso);
         fieldGroup.bind(glosa, "txtGlosaitem");
         fieldGroup.bind(selResponsable, "codDestino");
         fieldGroup.bind(selLugarGasto, "codContraparte");

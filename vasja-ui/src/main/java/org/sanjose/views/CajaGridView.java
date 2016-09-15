@@ -7,6 +7,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -92,6 +93,7 @@ public class CajaGridView extends CajaGridUI implements View {
         BeanItemContainer<VsjCajabanco> container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
         
         gridCaja.setContainerDataSource(container);
+        gridCaja.sort("fecFecha", SortDirection.DESCENDING);
 
         Map<String, String> colNames = new HashMap<>();
         for (int i=0;i<VISIBLE_COLUMN_NAMES.length;i++) {
@@ -102,20 +104,20 @@ public class CajaGridView extends CajaGridUI implements View {
         gridCaja.setColumns(VISIBLE_COLUMN_IDS);
         gridCaja.setColumnOrder(VISIBLE_COLUMN_IDS);
 
-        //gridCaja.getColumn("fecFecha").setRenderer()
+        ViewUtil.alignMontosInGrid(gridCaja);
 
         for (String colId : colNames.keySet()) {
             gridCaja.getDefaultHeaderRow().getCell(colId).setText(colNames.get(colId));
         }
 
-     //   gridCaja.getColumn("txtTipocuenta").setWidth(120);
+        gridCaja.getColumn("txtGlosaitem").setWidth(120);
+
         for (String colId : NONEDITABLE_COLUMN_IDS) {
             gridCaja.getColumn(colId).setEditable(false);
         }
 
         gridCaja.setSelectionMode(SelectionMode.MULTI);
-        HeaderRow filterRow = gridCaja.appendHeaderRow();
-        
+
         gridCaja.setEditorFieldGroup(
         	    new BeanFieldGroup<VsjCajabanco>(VsjCajabanco.class));
 
@@ -216,34 +218,11 @@ public class CajaGridView extends CajaGridUI implements View {
             filCols.put(VISIBLE_COLUMN_IDS[i], FILTER_WIDTH[i]);
         }
 
-
         gridCaja.addItemClickListener(event ->  setItemLogic(event));
 
-        // Set up a filter for all columns
-	     for (Grid.Column column: gridCaja.getColumns()) {
-	         Object pid = column.getPropertyId();
-	         HeaderCell cell = filterRow.getCell(pid);
+        // Add filters
+        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
-
-             // Have an input field to use for filter
-	         TextField filterField = new TextField();
-
-             // Set filter width according to table
-             filterField.setColumns(filCols.get(pid));
-
-	         // Update filter When the filter input is changed
-	         filterField.addTextChangeListener(change -> {
-	             // Can't modify filters so need to replace
-	        	 container.removeContainerFilters(pid);
-	
-	             // (Re)create the filter if necessary
-	             if (! change.getText().isEmpty())
-	                 container.addContainerFilter(
-	                     new SimpleStringFilter(pid,
-	                         change.getText(), true, false));
-	         });
-	         cell.setComponent(filterField);
-	     }
         viewLogic.init();
     }
 
@@ -261,16 +240,12 @@ public class CajaGridView extends CajaGridUI implements View {
 
 
     public void setItemLogic(ItemClickEvent event) {
-        //gridCaja.isEditorEnabled()
         String proyecto = null;
         Object objProyecto = event.getItem().getItemProperty("codProyecto").getValue();
         if (objProyecto !=null && !objProyecto.toString().isEmpty())
             proyecto = objProyecto.toString();
 
         setEditorLogic(proyecto);
-        //if (gridCaja.getEditedItemId()!=null) {
-           // log.info("Got to item: " + event.getItem() + "\n" + event.getPropertyId());
-        //}
     }
 
     public void setEditorLogic(String codProyecto) {

@@ -102,27 +102,7 @@ public class CajaManejoView extends CajaManejoUI implements View {
         gridCaja.setEditorEnabled(false);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
 
-        gridCaja.getColumn("numHabersol").setRenderer(new EmptyZeroNumberRendrer(
-                "%02.2f", ConfigurationUtil.getLocale()));
-        gridCaja.getColumn("numHaberdolar").setRenderer(new EmptyZeroNumberRendrer(
-                "%02.2f", ConfigurationUtil.getLocale()));
-        gridCaja.getColumn("numDebedolar").setRenderer(new EmptyZeroNumberRendrer(
-                "%02.2f", ConfigurationUtil.getLocale()));
-        gridCaja.getColumn("numDebesol").setRenderer(new EmptyZeroNumberRendrer(
-                "%02.2f", ConfigurationUtil.getLocale()));
-
-        gridCaja.setCellStyleGenerator(( Grid.CellReference cellReference ) -> {
-            if ( "numHabersol".equals( cellReference.getPropertyId() ) ||
-                    "numHaberdolar".equals( cellReference.getPropertyId() ) ||
-                    "numDebedolar".equals( cellReference.getPropertyId() ) ||
-                    "numDebesol".equals( cellReference.getPropertyId() )) {
-                // when the current cell is number such as age, align text to right
-                return "v-align-right";
-            } else {
-                // otherwise, align text to left
-                return "v-align-left";
-            }
-        });
+        ViewUtil.alignMontosInGrid(gridCaja);
 
         Map<String, String> colNames = new HashMap<>();
         for (int i=0;i<VISIBLE_COLUMN_NAMES.length;i++) {
@@ -142,25 +122,10 @@ public class CajaManejoView extends CajaManejoUI implements View {
         }
 
         gridCaja.setSelectionMode(SelectionMode.SINGLE);
-        HeaderRow filterRow = gridCaja.appendHeaderRow();
 
         // Fecha Desde
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
-        ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
-        fechaDesde.setPropertyDataSource(prop);
-        fechaDesde.setConverter(DateToTimestampConverter.INSTANCE);
-        fechaDesde.setResolution(Resolution.DAY);
-        fechaDesde.setValue(GenUtil.getBeginningOfMonth(new Date()));
-        fechaDesde.addValueChangeListener(valueChangeEvent -> filterComprobantes());
 
-        ts = new Timestamp(System.currentTimeMillis());
-        prop = new ObjectProperty<Timestamp>(ts);
-        fechaHasta.setPropertyDataSource(prop);
-        fechaHasta.setConverter(DateToTimestampConverter.INSTANCE);
-        fechaHasta.setResolution(Resolution.DAY);
-
-        fechaHasta.setValue(GenUtil.getEndOfDay(new Date()));
-        fechaHasta.addValueChangeListener(valueChangeEvent -> filterComprobantes());
+        ViewUtil.setupDateFilters(container, fechaDesde, fechaHasta);
 
         gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
@@ -170,44 +135,15 @@ public class CajaManejoView extends CajaManejoUI implements View {
             filCols.put(VISIBLE_COLUMN_IDS[i], FILTER_WIDTH[i]);
         }
 
-        filterComprobantes();
-
         gridCaja.addItemClickListener(event ->  setItemLogic(event));
 
-        // Set up a filter for all columns
-	     for (Grid.Column column: gridCaja.getColumns()) {
-	         Object pid = column.getPropertyId();
-	         HeaderCell cell = filterRow.getCell(pid);
-             // Have an input field to use for filter
-	         TextField filterField = new TextField();
-             // Set filter width according to table
-             filterField.setColumns(filCols.get(pid));
-             // Update filter When the filter input is changed
-	         filterField.addTextChangeListener(change -> {
-	             // Can't modify filters so need to replace
-	        	 container.removeContainerFilters(pid);
-	
-	             // (Re)create the filter if necessary
-	             if (! change.getText().isEmpty())
-	                 container.addContainerFilter(
-	                     new SimpleStringFilter(pid,
-	                         change.getText(), true, false));
-	         });
-	         cell.setComponent(filterField);
-	     }
-        viewLogic.init();
-    }
+        // Add filters
+        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
-    public void filterComprobantes() {
-        container.removeContainerFilters("fecFecha");
-        Date from, to = null;
-        if (fechaDesde.getValue()!=null || fechaHasta.getValue()!=null ) {
-            from = (fechaDesde.getValue()!=null ? fechaDesde.getValue() : new Date(0));
-            to = (fechaHasta.getValue()!=null ? fechaHasta.getValue() : new Date(Long.MAX_VALUE));
-            container.addContainerFilter(
-                    new Between("fecFecha",
-                            from, to));
-        }
+        // Run date filter
+        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
+
+        viewLogic.init();
     }
 
     public void setComprobanteView(ComprobanteView comprobanteView) {
