@@ -64,7 +64,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
     public FieldGroup fieldGroup;
 
-    public List<Field> allFields;
+    public Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
+            numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
+            selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
 
     boolean isLoading = true;
 
@@ -92,45 +94,35 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
         guardarBtn.setEnabled(false);
         anularBtn.setEnabled(false);
-        allFields = new ArrayList<>();
 
         // Fecha
-        PopupDateField pdf = dataFechaComprobante;
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
-        pdf.setPropertyDataSource(prop);
-        pdf.setConverter(DateToTimestampConverter.INSTANCE);
-        pdf.setResolution(Resolution.DAY);
-        pdf.addValidator(new BeanValidator(VsjCajabanco.class, "fecFecha"));
-        pdf.addValueChangeListener(event -> {
+        dataFechaComprobante.setPropertyDataSource(prop);
+        dataFechaComprobante.setConverter(DateToTimestampConverter.INSTANCE);
+        dataFechaComprobante.setResolution(Resolution.DAY);
+        dataFechaComprobante.addValueChangeListener(event -> {
             setSaldoCaja();
             setSaldos();
         });
 
-        allFields.add(pdf);
         // Fecha Doc
-        pdf = fechaDoc;
         prop = new ObjectProperty<Timestamp>(ts);
-        pdf.setPropertyDataSource(prop);
-        pdf.setConverter(DateToTimestampConverter.INSTANCE);
-        pdf.setResolution(Resolution.DAY);
-        pdf.addValidator(new BeanValidator(VsjCajabanco.class, "fecComprobantepago"));
+        fechaDoc.setPropertyDataSource(prop);
+        fechaDoc.setConverter(DateToTimestampConverter.INSTANCE);
+        fechaDoc.setResolution(Resolution.DAY);
 
-        allFields.add(pdf);
         // Proyecto
         DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
         selProyecto.addValueChangeListener(event -> setProyectoLogic(event));
-        selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
-        allFields.add(selProyecto);
+
         // Tercero
         DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
         selTercero.addValueChangeListener(event -> setTerceroLogic(event));
-        selTercero.addValidator(new TwoCombosValidator(selProyecto, true, null));
-        allFields.add(selTercero);
+
         // Cta Caja
-        selCaja.setEnabled(false);
-        selLugarGasto.setEnabled(false);
-        allFields.add(selCaja);
+        //selCaja.setEnabled(false);
+        //selLugarGasto.setEnabled(false);
         // Tipo Moneda
         DataFilterUtil.bindTipoMonedaOptionGroup(selMoneda, "codTipomoneda");
         selMoneda.addValueChangeListener(event -> {
@@ -167,15 +159,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 GenUtil.setDefaultsForNumberField(numEgreso);
             }
         });
-        selMoneda.addValidator(new BeanValidator(VsjCajabanco.class, "codTipomoneda"));
-        allFields.add(selMoneda);
-        allFields.add(numEgreso);
-        allFields.add(numIngreso);
-
-        numEgreso.setEnabled(false);
-        numIngreso.setEnabled(false);
-        numIngreso.addValidator(new TwoNumberfieldsValidator(numEgreso, false, "Ingreso o egreso debe ser rellenado"));
-        numEgreso.addValidator(new TwoNumberfieldsValidator(numIngreso, false, "Ingreso o egreso debe ser rellenado"));
+        //numEgreso.setEnabled(false);
+        //numIngreso.setEnabled(false);
 
         numIngreso.addValueChangeListener(event -> {
                 if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
@@ -195,79 +180,70 @@ public class ComprobanteView extends ComprobanteUI implements View {
         );
 
         // Responsable
-        //ComboBox selResponsable = new ComboBox();
         DataFilterUtil.bindComboBox(selResponsable, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
                 "Responsable", "txtNombredestino");
-        selResponsable.addValidator(new BeanValidator(VsjCajabanco.class, "codDestino"));
 
-        allFields.add(selResponsable);
-        //gridCaja.getColumn("codDestino").setEditorField(selResponsable);
         // Lugar de gasto
         DataFilterUtil.bindComboBox(selLugarGasto, "codContraparte", contraparteRepo.findAll(),
                 "Sel Lugar de Gasto", "txt_DescContraparte");
-        selLugarGasto.addValidator(new BeanValidator(VsjCajabanco.class, "codContraparte"));
 
-        allFields.add(selLugarGasto);
         // Cod. Auxiliar
         ComboBox selAuxiliar = selCodAuxiliar;
         DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
                 "Auxiliar", "txtNombredestino");
-        selCodAuxiliar.addValidator(new BeanValidator(VsjCajabanco.class, "codDestinoitem"));
 
-        allFields.add(selCodAuxiliar);
         // Tipo doc
         ComboBox selComprobantepago = selTipoDoc;
         DataFilterUtil.bindComboBox(selComprobantepago, "codTipocomprobantepago", comprobantepagoRepo.findAll(),
                 "Sel Tipo", "txtDescripcion");
-        allFields.add(selTipoDoc);
 
         // Cta Contable
-        selCtaContable.setEnabled(false);
+        //selCtaContable.setEnabled(false);
         DataFilterUtil.bindComboBox(selCtaContable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
 
-        allFields.add(selCtaContable);
         // Rubro inst
-        selRubroInst.setEnabled(false);
+        //selRubroInst.setEnabled(false);
         DataFilterUtil.bindComboBox(selRubroInst, "id.codCtaespecial",
                 planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel cta especial", "txtDescctaespecial");
 
-        allFields.add(selRubroInst);
         // Rubro Proy
-        selRubroProy.setEnabled(false);
+        //selRubroProy.setEnabled(false);
         DataFilterUtil.bindComboBox(selRubroProy, "id.codCtaproyecto",
                 planproyectoRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel Rubro proy", "txtDescctaproyecto");
-        allFields.add(selRubroProy);
         // Fuente
-        selFuente.setEnabled(false);
+        //selFuente.setEnabled(false);
         ComboBox selFinanciera = selFuente;
         DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraRepo.findAll(),
                 "Sel Fuente", "txtDescfinanciera");
-        allFields.add(selFuente);
 
         DataFilterUtil.bindComboBox(selTipoMov, "codTipocuenta", configuractacajabancoRepo.findByActivoAndParaCaja(true, true),
                 "Sel Tipo de Movimiento", "txtTipocuenta");
-        selTipoMov.setEnabled(false);
+        //selTipoMov.setEnabled(false);
         selTipoMov.addValueChangeListener(event -> {
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
                 VsjConfiguractacajabanco config = configuractacajabancoRepo.findByCodTipocuenta(Integer.parseInt(tipoMov));
-                //log.info("selected config: " + config);
                 selCtaContable.setValue(config.getCodCtacontablegasto());
                 selRubroInst.setValue(config.getCodCtaespecial());
             }
-
         });
-        allFields.add(selTipoMov);
-        allFields.add(glosa);
 
+        // Validators
+        dataFechaComprobante.addValidator(new BeanValidator(VsjCajabanco.class, "fecFecha"));
+        fechaDoc.addValidator(new BeanValidator(VsjCajabanco.class, "fecComprobantepago"));
+        selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
+        selTercero.addValidator(new TwoCombosValidator(selProyecto, true, null));
+        selMoneda.addValidator(new BeanValidator(VsjCajabanco.class, "codTipomoneda"));
+        numIngreso.addValidator(new TwoNumberfieldsValidator(numEgreso, false, "Ingreso o egreso debe ser rellenado"));
+        numEgreso.addValidator(new TwoNumberfieldsValidator(numIngreso, false, "Ingreso o egreso debe ser rellenado"));
+        selResponsable.addValidator(new BeanValidator(VsjCajabanco.class, "codDestino"));
+        selLugarGasto.addValidator(new BeanValidator(VsjCajabanco.class, "codContraparte"));
+        selCodAuxiliar.addValidator(new BeanValidator(VsjCajabanco.class, "codDestinoitem"));
         glosa.addValidator(new BeanValidator(VsjCajabanco.class, "txtGlosaitem"));
-        allFields.add(serieDoc);
         serieDoc.addValidator(new BeanValidator(VsjCajabanco.class, "txtSeriecomprobantepago"));
-        allFields.add(numDoc);
         numDoc.addValidator(new BeanValidator(VsjCajabanco.class, "txtComprobantepago"));
-
         selCtaContable.addValidator(new BeanValidator(VsjCajabanco.class, "codContracta"));
         setEnableFields(false);
         viewLogic.init();
