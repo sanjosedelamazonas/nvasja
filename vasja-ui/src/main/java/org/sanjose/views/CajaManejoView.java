@@ -1,9 +1,11 @@
 package org.sanjose.views;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.filter.Between;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
@@ -49,6 +51,8 @@ public class CajaManejoView extends CajaManejoUI implements View {
     public VsjCajabancoRep repo;
 
     private BeanItemContainer<VsjCajabanco> container;
+
+    private Container.Filter fechaFilter;
 
     String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "codTipomoneda",
@@ -119,30 +123,33 @@ public class CajaManejoView extends CajaManejoUI implements View {
         //gridCaja.setEditorFieldGroup(
        // 	    new BeanFieldGroup<VsjCajabanco>(VsjCajabanco.class));
 
-        // Fecha
-        /*PopupDateField pdf = new PopupDateField();
+        // Fecha Desde
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
-        pdf.setPropertyDataSource(prop);
-        pdf.setConverter(DateToTimestampConverter.INSTANCE);
-        pdf.setResolution(Resolution.MINUTE);
-        gridCaja.getColumn("fecFecha").setEditorField(pdf);*/
-        gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        fechaDesde.setPropertyDataSource(prop);
+        fechaDesde.setConverter(DateToTimestampConverter.INSTANCE);
+        fechaDesde.setResolution(Resolution.DAY);
+        fechaDesde.setValue(GenUtil.getBeginningOfMonth(new Date()));
+        fechaDesde.addValueChangeListener(valueChangeEvent -> filterComprobantes());
 
-        // Fecha Doc
-        /*pdf = new PopupDateField();
+        ts = new Timestamp(System.currentTimeMillis());
         prop = new ObjectProperty<Timestamp>(ts);
-        pdf.setPropertyDataSource(prop);
-        pdf.setConverter(DateToTimestampConverter.INSTANCE);
-        pdf.setResolution(Resolution.MINUTE);
-        gridCaja.getColumn("fecComprobantepago").setEditorField(pdf);*/
+        fechaHasta.setPropertyDataSource(prop);
+        fechaHasta.setConverter(DateToTimestampConverter.INSTANCE);
+        fechaHasta.setResolution(Resolution.DAY);
+
+        fechaHasta.setValue(GenUtil.getEndOfDay(new Date()));
+        fechaHasta.addValueChangeListener(valueChangeEvent -> filterComprobantes());
+
         gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
         Map<String, Integer> filCols = new HashMap<>();
         for (int i=0;i<FILTER_WIDTH.length;i++) {
             filCols.put(VISIBLE_COLUMN_IDS[i], FILTER_WIDTH[i]);
         }
 
+        filterComprobantes();
 
         gridCaja.addItemClickListener(event ->  setItemLogic(event));
 
@@ -150,15 +157,11 @@ public class CajaManejoView extends CajaManejoUI implements View {
 	     for (Grid.Column column: gridCaja.getColumns()) {
 	         Object pid = column.getPropertyId();
 	         HeaderCell cell = filterRow.getCell(pid);
-
-
              // Have an input field to use for filter
 	         TextField filterField = new TextField();
-
              // Set filter width according to table
              filterField.setColumns(filCols.get(pid));
-
-	         // Update filter When the filter input is changed
+             // Update filter When the filter input is changed
 	         filterField.addTextChangeListener(change -> {
 	             // Can't modify filters so need to replace
 	        	 container.removeContainerFilters(pid);
@@ -172,6 +175,18 @@ public class CajaManejoView extends CajaManejoUI implements View {
 	         cell.setComponent(filterField);
 	     }
         viewLogic.init();
+    }
+
+    public void filterComprobantes() {
+        container.removeContainerFilters("fecFecha");
+        Date from, to = null;
+        if (fechaDesde.getValue()!=null || fechaHasta.getValue()!=null ) {
+            from = (fechaDesde.getValue()!=null ? fechaDesde.getValue() : new Date(0));
+            to = (fechaHasta.getValue()!=null ? fechaHasta.getValue() : new Date(Long.MAX_VALUE));
+            container.addContainerFilter(
+                    new Between("fecFecha",
+                            from, to));
+        }
     }
 
     public void setComprobanteView(ComprobanteView comprobanteView) {

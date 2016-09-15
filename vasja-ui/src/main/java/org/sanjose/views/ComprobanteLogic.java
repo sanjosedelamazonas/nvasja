@@ -16,6 +16,7 @@ import org.sanjose.helper.GenUtil;
 import org.sanjose.model.VsjCajabanco;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,6 +75,22 @@ public class ComprobanteLogic implements Serializable {
             item.setCodUactualiza(CurrentUser.get());
             item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
 
+            // Verify moneda and fields
+            if ("0".equals(item.getCodTipomoneda())) {
+                if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
+                    throw new CommitException("Selected SOL but values are zeros or nulls");
+                if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
+                    throw new CommitException("Selected SOL but values for Dolar are not zeros or nulls");
+                item.setNumHaberdolar(new BigDecimal(0.00));
+                item.setNumDebedolar(new BigDecimal(0.00));
+            } else {
+                if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
+                    throw new CommitException("Selected USD but values are zeros or nulls");
+                if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
+                    throw new CommitException("Selected USD but values for SOL are not zeros or nulls");
+                item.setNumHabersol(new BigDecimal(0.00));
+                item.setNumDebesol(new BigDecimal(0.00));
+            }
             log.info("Ready to save: " + item);
             VsjCajabanco saved = view.repo.save(item);
             view.numVoucher.setValue(new Integer(saved.getCodCajabanco()).toString());

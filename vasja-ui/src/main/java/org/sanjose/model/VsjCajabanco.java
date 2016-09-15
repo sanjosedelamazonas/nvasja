@@ -27,6 +27,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_comprobanteenlace")
 	private String codComprobanteenlace;
 
+	@NotBlank
 	@Column(name="cod_contracta")
 	private String codContracta;
 	// Lugar de Gasto
