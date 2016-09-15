@@ -102,43 +102,22 @@ public class CajaManejoView extends CajaManejoUI implements View {
         gridCaja.setEditorEnabled(false);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
 
+        ViewUtil.setColumnNames(gridCaja, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
+
+        // Add filters
+        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
+
         ViewUtil.alignMontosInGrid(gridCaja);
-
-        Map<String, String> colNames = new HashMap<>();
-        for (int i=0;i<VISIBLE_COLUMN_NAMES.length;i++) {
-            colNames.put(VISIBLE_COLUMN_IDS[i], VISIBLE_COLUMN_NAMES[i]);
-        }
-
-        //gridCaja.setH
-        gridCaja.setColumns(VISIBLE_COLUMN_IDS);
-        gridCaja.setColumnOrder(VISIBLE_COLUMN_IDS);
-
-        for (String colId : colNames.keySet()) {
-            gridCaja.getDefaultHeaderRow().getCell(colId).setText(colNames.get(colId));
-        }
-
-        for (String colId : NONEDITABLE_COLUMN_IDS) {
-            gridCaja.getColumn(colId).setEditable(false);
-        }
 
         gridCaja.setSelectionMode(SelectionMode.SINGLE);
 
-        // Fecha Desde
-
+        // Fecha Desde Hasta
         ViewUtil.setupDateFilters(container, fechaDesde, fechaHasta);
 
         gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
-        Map<String, Integer> filCols = new HashMap<>();
-        for (int i=0;i<FILTER_WIDTH.length;i++) {
-            filCols.put(VISIBLE_COLUMN_IDS[i], FILTER_WIDTH[i]);
-        }
-
         gridCaja.addItemClickListener(event ->  setItemLogic(event));
-
-        // Add filters
-        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);

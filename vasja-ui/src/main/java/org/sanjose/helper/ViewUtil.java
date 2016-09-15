@@ -23,7 +23,30 @@ import java.util.Map;
 public class ViewUtil {
 
 
+    public static void setColumnNames(Grid grid, String[] visible_col_names, String[] visible_col_ids) {
 
+        grid.setColumns(visible_col_ids);
+        grid.setColumnOrder(visible_col_ids);
+
+        Map<String, String> colNames = new HashMap<>();
+        for (int i=0;i<visible_col_names.length;i++) {
+            colNames.put(visible_col_ids[i], visible_col_names[i]);
+        }
+
+        for (String colId : colNames.keySet()) {
+            grid.getDefaultHeaderRow().getCell(colId).setText(colNames.get(colId));
+        }
+    }
+
+    public static void setColumnNames(Grid grid, String[] visible_col_names, String[] visible_col_ids,
+                                      String[] noneditable_cols) {
+        setColumnNames(grid, visible_col_names, visible_col_ids);
+
+        for (String colId : noneditable_cols) {
+            grid.getColumn(colId).setEditable(false);
+        }
+
+    }
 
     public static void setDefaultsForNumberField(tm.kod.widgets.numberfield.NumberField numberField) {
         numberField.setConverter(new BigDecimalConverter());

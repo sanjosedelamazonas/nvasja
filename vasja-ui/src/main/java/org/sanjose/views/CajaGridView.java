@@ -95,26 +95,14 @@ public class CajaGridView extends CajaGridUI implements View {
         gridCaja.setContainerDataSource(container);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
 
-        Map<String, String> colNames = new HashMap<>();
-        for (int i=0;i<VISIBLE_COLUMN_NAMES.length;i++) {
-            colNames.put(VISIBLE_COLUMN_IDS[i], VISIBLE_COLUMN_NAMES[i]);
-        }
+        ViewUtil.setColumnNames(gridCaja, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
-        //gridCaja.setH
-        gridCaja.setColumns(VISIBLE_COLUMN_IDS);
-        gridCaja.setColumnOrder(VISIBLE_COLUMN_IDS);
+        // Add filters
+        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
         ViewUtil.alignMontosInGrid(gridCaja);
 
-        for (String colId : colNames.keySet()) {
-            gridCaja.getDefaultHeaderRow().getCell(colId).setText(colNames.get(colId));
-        }
-
         gridCaja.getColumn("txtGlosaitem").setWidth(120);
-
-        for (String colId : NONEDITABLE_COLUMN_IDS) {
-            gridCaja.getColumn(colId).setEditable(false);
-        }
 
         gridCaja.setSelectionMode(SelectionMode.MULTI);
 
@@ -212,16 +200,7 @@ public class CajaGridView extends CajaGridUI implements View {
                 "Sel Fuente", "txtDescfinanciera");
         gridCaja.getColumn("codFinanciera").setEditorField(selFinanciera);
 
-
-        Map<String, Integer> filCols = new HashMap<>();
-        for (int i=0;i<FILTER_WIDTH.length;i++) {
-            filCols.put(VISIBLE_COLUMN_IDS[i], FILTER_WIDTH[i]);
-        }
-
         gridCaja.addItemClickListener(event ->  setItemLogic(event));
-
-        // Add filters
-        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
         viewLogic.init();
     }
