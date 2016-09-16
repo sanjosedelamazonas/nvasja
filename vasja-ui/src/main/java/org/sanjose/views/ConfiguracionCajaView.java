@@ -58,7 +58,6 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
         gridConfigCaja.setColumnOrder("codConfiguracion", "txtConfiguracion", "indTipomoneda",
                 "codCtacontable", "codDestino", "codProyecto");
         
-        
         gridConfigCaja.getDefaultHeaderRow().getCell("codConfiguracion").setText("Codigo");
         
         gridConfigCaja.getColumn("txtConfiguracion").setWidth(200);

@@ -115,11 +115,13 @@ public class ComprobanteView extends ComprobanteUI implements View {
         fechaDoc.setResolution(Resolution.DAY);
 
         // Proyecto
-        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
+        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()),
+                "Sel Proyecto", "txtDescproyecto");
         selProyecto.addValueChangeListener(event -> setProyectoLogic(event));
 
         // Tercero
-        DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
+        DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero",
+                "txtNombredestino");
         selTercero.addValueChangeListener(event -> setTerceroLogic(event));
 
         // Tipo Moneda
@@ -406,7 +408,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
             nombreTercero.setValue(proyectoRepo.findByCodProyecto(codProyecto).getTxtDescproyecto());
             setSaldos();
         } else {
-            log.info("disabling fin y planproy");
+            //log.info("disabling fin y planproy");
             selFuente.setEnabled(false);
             selFuente.setValue("");
             selRubroProy.setEnabled(false);

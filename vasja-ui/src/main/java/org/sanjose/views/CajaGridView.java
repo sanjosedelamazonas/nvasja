@@ -202,6 +202,11 @@ public class CajaGridView extends CajaGridUI implements View {
 
         gridCaja.addItemClickListener(event ->  setItemLogic(event));
 
+        // Fecha Desde Hasta
+        ViewUtil.setupDateFilters(container, fechaDesde, fechaHasta);
+        // Run date filter
+        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
+
         viewLogic.init();
     }
 

@@ -7,6 +7,7 @@ import org.sanjose.authentication.BasicAccessControl;
 import org.sanjose.authentication.LoginScreen;
 import org.sanjose.authentication.LoginScreen.LoginListener;
 import org.sanjose.helper.ConfigurationUtil;
+import org.sanjose.helper.GenUtil;
 import org.sanjose.model.VsjCajabancoRep;
 import org.sanjose.model.VsjPropiedad;
 import org.sanjose.model.VsjPropiedadRep;
@@ -86,7 +87,10 @@ public class MainUI extends UI {
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
         setContent(new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView, propiedadView, comprobanteView));
-        getNavigator().navigateTo(getNavigator().getState());
+        if (GenUtil.strNullOrEmpty(getNavigator().getState()))
+            getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
+        else
+            getNavigator().navigateTo(getNavigator().getState());
     }
 
     public static MainUI get() {
