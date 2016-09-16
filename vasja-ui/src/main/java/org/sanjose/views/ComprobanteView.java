@@ -141,8 +141,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
                             findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
                                     "N", GenUtil.getCurYear(), "N", "101"), "Sel Caja", "txtDescctacontable");
                     setCajaLogic("0");
-                    fieldGroup.bind(numIngreso, "numHabersol");
-                    fieldGroup.bind(numEgreso, "numDebesol");
+                    fieldGroup.bind(numEgreso, "numHabersol");
+                    fieldGroup.bind(numIngreso, "numDebesol");
                 } else {
                     // Dolares
                     // Cta Caja
@@ -150,8 +150,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
                             findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
                                     "N", GenUtil.getCurYear(), "D", "101"), "Sel Caja", "txtDescctacontable");
                     setCajaLogic("1");
-                    fieldGroup.bind(numIngreso, "numHaberdolar");
-                    fieldGroup.bind(numEgreso, "numDebedolar");
+                    fieldGroup.bind(numEgreso, "numHaberdolar");
+                    fieldGroup.bind(numIngreso, "numDebedolar");
                 }
                 setSaldoCaja();
                 selCaja.addValidator(new BeanValidator(VsjCajabanco.class, "codCtacontable"));
@@ -433,11 +433,11 @@ public class ComprobanteView extends ComprobanteUI implements View {
         fieldGroup.bind(dataFechaComprobante, "fecFecha");
 
         if (isEdit && "0".equals(item.getCodTipomoneda())) {
-            fieldGroup.bind(numIngreso, "numHabersol");
-            fieldGroup.bind(numEgreso, "numDebesol");
+            fieldGroup.bind(numEgreso, "numHabersol");
+            fieldGroup.bind(numIngreso, "numDebesol");
         } else if (isEdit && "1".equals(item.getCodTipomoneda())) {
-            fieldGroup.bind(numIngreso, "numHaberdolar");
-            fieldGroup.bind(numEgreso, "numDebedolar");
+            fieldGroup.bind(numEgreso, "numHaberdolar");
+            fieldGroup.bind(numIngreso, "numDebedolar");
         }
         ViewUtil.setDefaultsForNumberField(numIngreso);
         ViewUtil.setDefaultsForNumberField(numEgreso);
