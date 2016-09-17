@@ -1,20 +1,14 @@
 package org.sanjose.views;
 
-import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
-import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
-import org.sanjose.helper.GenUtil;
 import org.sanjose.model.ScpDestino;
-import org.sanjose.model.VsjCajabanco;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -37,13 +31,10 @@ public class DestinoLogic implements Serializable {
     }
 
     public void init() {
-        view.btnGuardar.addClickListener(event -> saveDestino());
-        view.btnAnular.addClickListener(event -> anularDestino());
-        //view.nuevoDestino.addClickListener(event -> nuevoDestino());
-        //view.cerrarBtn.addClickListener(event -> cerrarAlManejo());
+        view.btnNuevo.addClickListener(event -> nuevoDestino());
     }
 
-    public void saveDestino() {
+    public ScpDestino saveDestino() {
         try {
             ScpDestino item = view.getScpDestino();
 
@@ -56,47 +47,33 @@ public class DestinoLogic implements Serializable {
             view.btnAnular.setEnabled(false);
 
             log.info("Ready to save: " + item);
-            //ScpDestino saved = view.destinoRepo.save(item);
-
-            //view.nuevoDestino.setEnabled(true);
-//            view.cajaManejoView.refreshData();
+            ScpDestino saved = view.destinoRepo.save(item);
+            return saved;
         } catch (CommitException ce) {
             Notification.show("Error al guardar el destino: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             log.info("Got Commit Exception: " + ce.getMessage());
+            return null;
         }
     }
 
+
     public void anularDestino() {
         view.anularDestino();
-        //view.nuevoDestino.setEnabled(true);
     }
 
 
     public void enter(String productId) {
-        if (productId != null && !productId.isEmpty()) {
-        	log.info("Configuracion Logic getting: " + productId);
-            if (productId.equals("new")) {
-     //       	newConfiguracion();
-            } else {
-                // Ensure this is selected even if coming directly here from
-                // login
-                try {
-                    int pid = Integer.parseInt(productId);
-  //                  Product product = findProduct(pid);
-    //                view.selectRow(product);
-                } catch (NumberFormatException e) {
-                }
-            }
-        }
     }
 
 
     public void nuevoDestino() {
+        view.anularDestino();
         ScpDestino vcb = new ScpDestino();
         view.bindForm(vcb);
 //        view.nuevoDestino.setEnabled(false);
         view.btnGuardar.setEnabled(true);
         view.btnAnular.setEnabled(true);
+        view.btnEliminar.setEnabled(false);
     }
 
 
@@ -105,5 +82,6 @@ public class DestinoLogic implements Serializable {
         //view.nuevoDestino.setEnabled(false);
         view.btnGuardar.setEnabled(true);
         view.btnAnular.setEnabled(true);
+        view.btnEliminar.setEnabled(true);
     }
 }

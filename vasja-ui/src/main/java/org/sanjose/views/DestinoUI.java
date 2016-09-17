@@ -37,6 +37,8 @@ public class DestinoUI extends VerticalLayout {
 	protected ComboBox cargo;
 	protected Button btnGuardar;
 	protected Button btnAnular;
+	protected Button btnEliminar;
+	protected Button btnNuevo;
 
 	public DestinoUI() {
 		Design.read(this);

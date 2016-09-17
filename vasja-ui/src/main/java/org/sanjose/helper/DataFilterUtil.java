@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Logger;
 
+import com.vaadin.data.Property;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.OptionGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -171,43 +172,41 @@ public class DataFilterUtil {
 		combo.setFilteringMode(FilteringMode.CONTAINS);
 	}
 
+	public static void bindGeneroComboBox(final ComboBox combo, String column,
+										  final String prompt) {
+		Map<String, String> valMap = new TreeMap<>();
+		valMap.put("F", "Femenino");
+		valMap.put("M", "Masculino");
+		bindFixedValComboBox(combo, column, prompt, new String[]{"F", "M"}, valMap);
+	}
+
+
 	public static void bindTipoPersonaComboBox(final ComboBox combo, String column,
 											  final String prompt) {
-
 		Map<String, String> valMap = new TreeMap<>();
 		valMap.put("N","Natural");
 		valMap.put("J","Juridico");
-
-		IndexedContainer c = new IndexedContainer();
-		c.addContainerProperty(column, String.class, "");
-
-		int i = 0;
-		for (String value : new String[] { "N", "J" }) {
-			Item item = c.addItem(value);
-			item.getItemProperty(column)
-					.setValue(valMap.get(value));
-			i++;
-		}
-		combo.setContainerDataSource(c);
-		combo.setItemCaptionPropertyId(column);
-		combo.setImmediate(true);
-		combo.setInvalidAllowed(false);
-		combo.setInputPrompt(prompt);
-		combo.setFilteringMode(FilteringMode.CONTAINS);
+		bindFixedValComboBox(combo, column, prompt, new String[]{"N", "J"}, valMap);
 	}
 
-	public static void bindGeneroComboBox(final ComboBox combo, String column,
+	public static void bindTipoDestinoComboBox(final ComboBox combo, String column,
 											   final String prompt) {
-
 		Map<String, String> valMap = new TreeMap<>();
-		valMap.put("F","Femenino");
-		valMap.put("M","Masculino");
+		valMap.put("0","Proveedor");
+		valMap.put("1","Empleado");
+		valMap.put("2","Cliente");
+		valMap.put("3","Tercero");
+		bindFixedValComboBox(combo, column, prompt, new String[]{"0", "1", "2", "3"}, valMap);
+	}
+
+	public static void bindFixedValComboBox(final ComboBox combo, String column,
+										  final String prompt, String[] keys, Map valMap) {
 
 		IndexedContainer c = new IndexedContainer();
 		c.addContainerProperty(column, String.class, "");
 
 		int i = 0;
-		for (String value : new String[] { "F", "M" }) {
+		for (String value : keys) {
 			Item item = c.addItem(value);
 			item.getItemProperty(column)
 					.setValue(valMap.get(value));
@@ -314,7 +313,59 @@ public class DataFilterUtil {
 			}
 		});
 	}
-	
+
+
+	public static void refreshComboBox(final ComboBox combo, String column, List elements,
+									final String prompt, String concatenatedColumn) {
+
+		IndexedContainer c = (IndexedContainer)combo.getContainerDataSource();
+		c.removeAllItems();
+		String idCol = null;
+		String colProp = null;
+		if (column.contains(".")) {
+			idCol = column.substring(0, column.indexOf("."));
+			colProp = column.substring(column.indexOf(".")+1);
+		}
+		String contProp = (colProp!=null ? colProp : column);
+		c.addContainerProperty(contProp, String.class, "");
+		for (Object elem : elements) {
+			logger.fine("Got: " + elem);
+			BeanItem bItem = new BeanItem(elem);
+			Object value = null;
+			if (column.contains(".")) {
+				logger.fine("idCol: " + idCol + " colProp: " + colProp);
+				Object idObj = bItem.getItemProperty(idCol).getValue();
+				//logger.info("Got subItem: " + idObj + " method: " + "get" + colProp.substring(0,1).toUpperCase() + colProp.substring(1));
+				try {
+					Method mth = idObj.getClass().getMethod("get" + colProp.substring(0,1).toUpperCase() + colProp.substring(1), new Class[] {});
+					logger.fine("Got method: " + mth);
+					mth.setAccessible(true);
+					value = mth.invoke(idObj);
+				} catch (NoSuchMethodException nsm) {
+					logger.severe("Problem binding Combobox no method found for: " + column + " " + prompt + " " + concatenatedColumn + "\n" + nsm.getMessage());
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					logger.severe("Problem binding Combobox for: " + column + " " + prompt + " " + concatenatedColumn + "\n" + e.getMessage() );
+					e.printStackTrace();
+				}
+				//logger.fine("Got value: " + value);
+			} else {
+				if (bItem.getItemProperty(column)!=null)
+					value = bItem.getItemProperty(column).getValue();
+			}
+			Item item = c.addItem(value);
+			if (concatenatedColumn!=null) {
+				Property prop = c.getContainerProperty(value, contProp);
+				prop.setValue(value + " " + bItem.getItemProperty(concatenatedColumn).getValue());
+			}
+			else
+				c.getContainerProperty(value, contProp).setValue(value);
+		}
+		c.sort(new String[]{contProp},  new boolean[]{true});
+	}
+
+
+
+
 	public static void bindComboBox(final ComboBox combo, String column, List elements, 
 			final String prompt, String concatenatedColumn) {
 		

@@ -67,6 +67,9 @@ public class DestinoView extends DestinoUI implements View {
         btnGuardar.setEnabled(false);
         btnAnular.setEnabled(false);
 
+        // Clasificacion
+        DataFilterUtil.bindTipoDestinoComboBox(clasificacion, "indTipodestino", "Sel Clasificacion");
+
         // Tipo doc
         DataFilterUtil.bindComboBox(tipoDocumento, "codTipodocumento", tipodocumentoRepo.findAll(),
                 "Sel Tipo documento", "txtDescripcion");
@@ -83,16 +86,11 @@ public class DestinoView extends DestinoUI implements View {
 
         // Validators
         codigo.addValidator(new BeanValidator(ScpDestino.class, "codDestino"));
+        clasificacion.addValidator(new BeanValidator(ScpDestino.class, "indTipodestino"));
         nombreCompleta.addValidator(new BeanValidator(ScpDestino.class, "txtNombredestino"));
-    //    setEnableFields(false);
+        tipoDePersona.addValidator(new BeanValidator(ScpDestino.class, "indTipopersona"));
         viewLogic.init();
     }
-
-    /*public void setEnableFields(boolean enabled) {
-        for (Field f : allFields) {
-            f.setEnabled(enabled);
-        }
-    }*/
 
 
     public void bindForm(ScpDestino item) {
@@ -104,6 +102,7 @@ public class DestinoView extends DestinoUI implements View {
         fieldGroup = new FieldGroup(beanItem);
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.bind(codigo, "codDestino");
+        fieldGroup.bind(clasificacion, "indTipodestino");
         fieldGroup.bind(nombreCompleta, "txtNombredestino");
         fieldGroup.bind(apellidoPaterno, "txtApellidopaterno");
         fieldGroup.bind(apellidoMaterno, "txtApellidomaterno");
@@ -121,17 +120,17 @@ public class DestinoView extends DestinoUI implements View {
             if (f instanceof TextField)
                 ((TextField)f).setNullRepresentation("");
         }
-        //setEnableFields(false);
         isLoading = false;
         if (isEdit) {
             // EDITING
-            //setEnableFields(true);
-        }
+            codigo.setEnabled(false);
+        } else
+            codigo.setEnabled(true);
         isEdit = false;
     }
 
     public void anularDestino() {
-        fieldGroup.discard();
+        if (fieldGroup!=null) fieldGroup.discard();
     }
 
     public ScpDestino getScpDestino() throws FieldGroup.CommitException {
