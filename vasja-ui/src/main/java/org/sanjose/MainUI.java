@@ -6,8 +6,10 @@ import org.sanjose.authentication.AccessControl;
 import org.sanjose.authentication.BasicAccessControl;
 import org.sanjose.authentication.LoginScreen;
 import org.sanjose.authentication.LoginScreen.LoginListener;
+import org.sanjose.authentication.MsgAccessControl;
 import org.sanjose.helper.ConfigurationUtil;
 import org.sanjose.helper.GenUtil;
+import org.sanjose.model.MsgUsuarioRep;
 import org.sanjose.model.VsjCajabancoRep;
 import org.sanjose.model.VsjPropiedad;
 import org.sanjose.model.VsjPropiedadRep;
@@ -37,7 +39,7 @@ import com.vaadin.ui.themes.ValoTheme;
 @Widgetset("org.sanjose.MyAppWidgetset")
 public class MainUI extends UI {
 
-    private AccessControl accessControl = new BasicAccessControl();
+    private AccessControl accessControl;
 
     private ConfiguracionCtaCajaBancoView confView;
 
@@ -53,10 +55,12 @@ public class MainUI extends UI {
 
     private CajaManejoView cajaManejoView;
 
+    private MsgUsuarioRep msgUsuarioRep;
+
     @Autowired
     private MainUI(VsjPropiedadRep propRepo, PropiedadView propiedadView, CajaGridView cajaGridView,
                    ConfiguracionCajaView configuracionCajaView, ConfiguracionCtaCajaBancoView confView,
-                   ComprobanteView comprobanteView, CajaManejoView cajaManejoView) {
+                   ComprobanteView comprobanteView, CajaManejoView cajaManejoView, MsgUsuarioRep msgUsuarioRep) {
     	this.confView = confView;
     	this.cajaGridView = cajaGridView;
         this.propiedadView = propiedadView;
@@ -64,11 +68,14 @@ public class MainUI extends UI {
         this.comprobanteView = comprobanteView;
         this.configuracionCajaView = configuracionCajaView;
         this.cajaManejoView = cajaManejoView;
+        this.msgUsuarioRep = msgUsuarioRep;
     }
     
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        //accessControl = new BasicAccessControl();
         ConfigurationUtil.setPropiedadRepo(propRepo);
+        accessControl = new MsgAccessControl(msgUsuarioRep, ConfigurationUtil.is("DEV_MODE"));
         Responsive.makeResponsive(this);
         setLocale(ConfigurationUtil.getLocale());
         getPage().setTitle("Main");
