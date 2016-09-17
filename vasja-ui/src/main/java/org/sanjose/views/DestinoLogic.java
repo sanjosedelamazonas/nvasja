@@ -58,7 +58,6 @@ public class DestinoLogic implements Serializable {
             log.info("Ready to save: " + item);
             //ScpDestino saved = view.destinoRepo.save(item);
 
-
             //view.nuevoDestino.setEnabled(true);
 //            view.cajaManejoView.refreshData();
         } catch (CommitException ce) {
@@ -93,7 +92,6 @@ public class DestinoLogic implements Serializable {
 
 
     public void nuevoDestino() {
-//        setFragmentParameter("new");
         ScpDestino vcb = new ScpDestino();
         view.bindForm(vcb);
 //        view.nuevoDestino.setEnabled(false);
@@ -101,13 +99,11 @@ public class DestinoLogic implements Serializable {
         view.btnAnular.setEnabled(true);
     }
 
-/*
-    public void editarDestino(VsjCajabanco vcb) {
-  //      setFragmentParameter("edit");
+
+    public void editarDestino(ScpDestino vcb) {
         view.bindForm(vcb);
-        view.nuevoDestino.setEnabled(false);
-        view.guardarBtn.setEnabled(true);
-        view.anularBtn.setEnabled(true);
+        //view.nuevoDestino.setEnabled(false);
+        view.btnGuardar.setEnabled(true);
+        view.btnAnular.setEnabled(true);
     }
-*/
 }

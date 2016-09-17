@@ -40,7 +40,7 @@ public class DestinoView extends DestinoUI implements View {
 
 	private static final Logger log = LoggerFactory.getLogger(DestinoView.class);
 	
-    public static final String VIEW_NAME = "Caja";
+    public static final String VIEW_NAME = "Destino";
 
     public DestinoLogic viewLogic = new DestinoLogic(this);
 
