@@ -170,6 +170,58 @@ public class DataFilterUtil {
 		combo.setInputPrompt(prompt);
 		combo.setFilteringMode(FilteringMode.CONTAINS);
 	}
+
+	public static void bindTipoPersonaComboBox(final ComboBox combo, String column,
+											  final String prompt) {
+
+		Map<String, String> valMap = new TreeMap<>();
+		valMap.put("N","Natural");
+		valMap.put("J","Juridico");
+
+		IndexedContainer c = new IndexedContainer();
+		c.addContainerProperty(column, String.class, "");
+
+		int i = 0;
+		for (String value : new String[] { "N", "J" }) {
+			Item item = c.addItem(value);
+			item.getItemProperty(column)
+					.setValue(valMap.get(value));
+			i++;
+		}
+		combo.setContainerDataSource(c);
+		combo.setItemCaptionPropertyId(column);
+		combo.setImmediate(true);
+		combo.setInvalidAllowed(false);
+		combo.setInputPrompt(prompt);
+		combo.setFilteringMode(FilteringMode.CONTAINS);
+	}
+
+	public static void bindGeneroComboBox(final ComboBox combo, String column,
+											   final String prompt) {
+
+		Map<String, String> valMap = new TreeMap<>();
+		valMap.put("F","Femenino");
+		valMap.put("M","Masculino");
+
+		IndexedContainer c = new IndexedContainer();
+		c.addContainerProperty(column, String.class, "");
+
+		int i = 0;
+		for (String value : new String[] { "F", "M" }) {
+			Item item = c.addItem(value);
+			item.getItemProperty(column)
+					.setValue(valMap.get(value));
+			i++;
+		}
+		combo.setContainerDataSource(c);
+		combo.setItemCaptionPropertyId(column);
+		combo.setImmediate(true);
+		combo.setInvalidAllowed(false);
+		combo.setInputPrompt(prompt);
+		combo.setFilteringMode(FilteringMode.CONTAINS);
+	}
+
+
 /*
 	public static void bindBooleanComboBox(final ComboBox combo, final String column,
 			final String prompt, String[] values,
