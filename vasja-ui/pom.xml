@@ -65,12 +65,21 @@
             <version>0.0.6</version>
         </dependency>
 
-<!--        <dependency>
-            <groupId>org.vaadin.ui</groupId>
-            <artifactId>NumberField</artifactId>
-            <version>0.1.8-SNAPSHOT</version>
-            &lt;!&ndash;<version>0.1.6</version>&ndash;&gt;
-        </dependency>-->
+
+
+        <dependency>
+            <groupId>org.sanjose</groupId>
+            <artifactId>printapplet-addon</artifactId>
+            <version>0.0.5</version>
+        </dependency>
+
+
+        <!--        <dependency>
+                    <groupId>org.vaadin.ui</groupId>
+                    <artifactId>NumberField</artifactId>
+                    <version>0.1.8-SNAPSHOT</version>
+                    &lt;!&ndash;<version>0.1.6</version>&ndash;&gt;
+                </dependency>-->
 
         <!--        <dependency>
                     <groupId>${project.groupId}</groupId>

@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=printapplet-addon.jar -DgroupId=org.sanjose -DartifactId=printapplet-addon -Dversion=0.04 -Dpackaging=jar
