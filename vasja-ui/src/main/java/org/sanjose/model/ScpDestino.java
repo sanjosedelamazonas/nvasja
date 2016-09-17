@@ -1,7 +1,10 @@
 package org.sanjose.model;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 
@@ -16,7 +19,8 @@ public class ScpDestino implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	//@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@NotBlank
 	@Column(name="cod_destino")
 	private String codDestino;
 
@@ -47,9 +51,11 @@ public class ScpDestino implements Serializable {
 	@Column(name="ind_tipodctoidentidad")
 	private String indTipodctoidentidad;
 
+	@NotNull
 	@Column(name="ind_tipodestino")
 	private String indTipodestino;
 
+	@NotNull
 	@Column(name="ind_tipopersona")
 	private String indTipopersona;
 
@@ -65,6 +71,7 @@ public class ScpDestino implements Serializable {
 	@Column(name="txt_nombre")
 	private String txtNombre;
 
+	@NotBlank
 	@Column(name="txt_nombredestino")
 	private String txtNombredestino;
 
@@ -251,4 +258,30 @@ public class ScpDestino implements Serializable {
 		this.txtTelefono2 = txtTelefono2;
 	}
 
+	@Override
+	public String toString() {
+		return "ScpDestino{" +
+				"codDestino='" + codDestino + '\'' +
+				", codCargo='" + codCargo + '\'' +
+				", codFilial='" + codFilial + '\'' +
+				", codUactualiza='" + codUactualiza + '\'' +
+				", codUregistro='" + codUregistro + '\'' +
+				", fecFactualiza=" + fecFactualiza +
+				", fecFregistro=" + fecFregistro +
+				", flgIm='" + flgIm + '\'' +
+				", indSexo='" + indSexo + '\'' +
+				", indTipodctoidentidad='" + indTipodctoidentidad + '\'' +
+				", indTipodestino='" + indTipodestino + '\'' +
+				", indTipopersona='" + indTipopersona + '\'' +
+				", txtApellidomaterno='" + txtApellidomaterno + '\'' +
+				", txtApellidopaterno='" + txtApellidopaterno + '\'' +
+				", txtDireccion='" + txtDireccion + '\'' +
+				", txtNombre='" + txtNombre + '\'' +
+				", txtNombredestino='" + txtNombredestino + '\'' +
+				", txtNumerodctoidentidad='" + txtNumerodctoidentidad + '\'' +
+				", txtRuc='" + txtRuc + '\'' +
+				", txtTelefono1='" + txtTelefono1 + '\'' +
+				", txtTelefono2='" + txtTelefono2 + '\'' +
+				'}';
+	}
 }

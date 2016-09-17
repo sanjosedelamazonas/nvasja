@@ -10,9 +10,11 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.datefield.Resolution;
+import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
+import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.helper.*;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +62,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
     public ScpDestinoRep destinoRepo;
 
+    private ScpCargocuartaRep cargocuartaRepo;
+
+    private ScpTipodocumentoRep tipodocumentoRepo;
+
     public EntityManager em;
 
     public FieldGroup fieldGroup;
@@ -79,7 +85,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
                            ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                            ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                            ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                           Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo, EntityManager em) {
+                           Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
+                           ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -88,6 +95,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
         this.configuracioncajaRepo = configuracioncajaRepo;
         this.proyectoRepo = proyectoRepo;
         this.destinoRepo = destinoRepo;
+        this.cargocuartaRepo = cargocuartaRepo;
+        this.tipodocumentoRepo = tipodocumentoRepo;
         this.em = em;
         setSizeFull();
         addStyleName("crud-view");
@@ -240,14 +249,105 @@ public class ComprobanteView extends ComprobanteUI implements View {
         numDoc.addValidator(new BeanValidator(VsjCajabanco.class, "txtComprobantepago"));
         selCtaContable.addValidator(new BeanValidator(VsjCajabanco.class, "codContracta"));
 
+        // Editing Destino
+        btnDestino.addClickListener(event->editDestino(selCodAuxiliar));
+        btnResponsable.addClickListener(event->editDestino(selResponsable));
+
         setEnableFields(false);
         viewLogic.init();
     }
+
+    private void editDestino(ComboBox comboBox) {
+        Window destinoWindow = new Window();
+
+        destinoWindow.setWindowMode(WindowMode.NORMAL);
+        destinoWindow.setWidth(500,Unit.PIXELS);
+        destinoWindow.setHeight(500,Unit.PIXELS);
+        destinoWindow.setPositionX(200);
+        destinoWindow.setPositionY(50);
+        destinoWindow.setModal(true);
+
+        DestinoView destinoView = new DestinoView(destinoRepo, cargocuartaRepo, tipodocumentoRepo);
+        if (comboBox.getValue()==null)
+            destinoView.viewLogic.nuevoDestino();
+        else {
+            ScpDestino destino = destinoRepo.findByCodDestino(comboBox.getValue().toString());
+            if (destino!=null)
+                destinoView.viewLogic.editarDestino(destino);
+        }
+        destinoWindow.setContent(destinoView);
+
+        destinoView.btnGuardar.addClickListener(event -> {
+            ScpDestino editedItem = destinoView.viewLogic.saveDestino();
+            destinoWindow.close();
+            refreshDestino();
+            comboBox.setValue(editedItem.getCodDestino());
+
+        });
+        destinoView.btnAnular.addClickListener(event -> {
+            destinoView.viewLogic.anularDestino();
+            destinoWindow.close();
+        });
+
+        destinoView.btnEliminar.addClickListener(clickEvent -> {
+            try {
+                ScpDestino item = destinoView.getScpDestino();
+                //log.info("eliminar: " + item);
+                String codDestino = item.getCodDestino();
+                MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
+                MessageBox
+                        .createQuestion()
+                        .withCaption("Eliminar: " + item.getTxtNombredestino())
+                        .withMessage("Esta seguro que lo quiere eliminar?")
+                        .withYesButton(() -> {
+                            log.debug("To delete: " + item);
+
+                            List<VsjCajabanco> comprobantes = repo.findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
+                            if (comprobantes.isEmpty()) {
+                                destinoView.destinoRepo.delete(item);
+                                refreshDestino();
+                                destinoWindow.close();
+                            } else {
+                                StringBuilder sb = new StringBuilder();
+                                for (VsjCajabanco vcb : comprobantes) {
+                                    sb.append("\n" + vcb.getTxtCorrelativo() + " " + vcb.getFecFecha() + " " + vcb.getTxtGlosaitem());
+                                }
+                                MessageBox
+                                        .createWarning()
+                                        .withCaption("No se puede eliminar destino: " + item.getTxtNombredestino())
+                                        .withMessage("Los sigientes comprobantes usan este destino como Responsable o como Codigo Auxiliar: " + sb.toString())
+                                        .open();
+                            }
+                        })
+                        .withNoButton()
+                        .open();
+            } catch (FieldGroup.CommitException ce) {
+                Notification.show("Error al eliminar el destino: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                log.info("Got Commit Exception: " + ce.getMessage());
+            }
+            //destinoWindow.close();
+        });
+
+
+
+        UI.getCurrent().addWindow(destinoWindow);
+
+    }
+
+    private void refreshDestino() {
+        DataFilterUtil.refreshComboBox(selResponsable, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
+                "Responsable", "txtNombredestino");
+        DataFilterUtil.refreshComboBox(selCodAuxiliar, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
+                "Auxiliar", "txtNombredestino");
+    }
+
 
     public void setEnableFields(boolean enabled) {
         for (Field f : allFields) {
             f.setEnabled(enabled);
         }
+        btnResponsable.setEnabled(enabled);
+        btnDestino.setEnabled(enabled);
     }
 
     public void setSaldoCaja() {
@@ -456,6 +556,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
         for (Field f: fieldGroup.getFields()) {
             if (f instanceof TextField)
                 ((TextField)f).setNullRepresentation("");
+            if (f instanceof ComboBox)
+                ((ComboBox)f).setPageLength(20);
         }
         setEnableFields(false);
         selProyecto.setEnabled(true);
@@ -479,6 +581,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
             }
         }
         isEdit = false;
+
     }
 
     public void anularComprobante() {

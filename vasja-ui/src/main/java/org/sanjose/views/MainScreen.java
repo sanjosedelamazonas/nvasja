@@ -5,6 +5,7 @@ import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.helper.ConfigurationUtil;
 import org.sanjose.helper.PrintHelper;
+import org.sanjose.authentication.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.navigator.Navigator;
@@ -42,23 +43,30 @@ public class MainScreen extends HorizontalLayout {
         final Navigator navigator = new Navigator(ui, viewContainer);
         navigator.setErrorView(ErrorView.class);
         menu = new Menu(navigator);
-        menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
-        		CajaGridView.VIEW_NAME, FontAwesome.EDIT);
-        menu.addView(comprobanteView, ComprobanteView.VIEW_NAME,
-                ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
 
-        menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
-                CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
-
-        menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
-        		ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
-        menu.addView(configuracionCajaView, ConfiguracionCajaView.VIEW_NAME,
-                ConfiguracionCajaView.VIEW_NAME, FontAwesome.EDIT);
-        menu.addView(propiedadView, PropiedadView.VIEW_NAME,
-                PropiedadView.VIEW_NAME, FontAwesome.EDIT);
-        menu.addView(new AboutView(), AboutView.VIEW_NAME, AboutView.VIEW_NAME,
-                FontAwesome.INFO_CIRCLE);
-
+        if (ui.getAccessControl().isUserInRole(Role.CAJA) ||
+                ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
+                ui.getAccessControl().isUserInRole(Role.ADMIN)
+                ) {
+            menu.addView(comprobanteView, ComprobanteView.VIEW_NAME,
+                    ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
+                    CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
+        }
+        if (ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
+                ui.getAccessControl().isUserInRole(Role.ADMIN)
+                ) {
+            menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
+                    CajaGridView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(configuracionCajaView, ConfiguracionCajaView.VIEW_NAME,
+                    ConfiguracionCajaView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
+                    ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
+        }
+        if (ui.getAccessControl().isUserInRole(Role.ADMIN)) {
+            menu.addView(propiedadView, PropiedadView.VIEW_NAME,
+                    PropiedadView.VIEW_NAME, FontAwesome.EDIT);
+        }
 
         cajaManejoView.setComprobanteView(comprobanteView);
         comprobanteView.setCajaManejoView(cajaManejoView);
