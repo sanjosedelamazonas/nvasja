@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-09-16T12:45:57 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Comprobante" language="groovy" pageWidth="421" pageHeight="218" orientation="Landscape" columnWidth="381" leftMargin="20" rightMargin="20" topMargin="6" bottomMargin="14" uuid="5be8d58c-dab0-419a-8c82-ba0da90720f0">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.export.text.character.width" value="7.238"/>
+	<property name="net.sf.jasperreports.export.text.character.height" value="13.948"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="FixSizeFontStyle" isDefault="true" fontName="DejaVu Sans Mono" fontSize="10"/>
+	<parameter name="OP_ID" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[351]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[(SELECT
+     operacion.`CHEQUENUMERO` AS operacion_CHEQUE_NUMERO,
+     operacion.`DESCRIPCION` AS operacion_DESCRIPCION,
+     operacion.`DNI` AS operacion_DNI,
+     operacion.`FECHA` AS operacion_FECHA,
+     operacion.`FIRMA` AS operacion_FIRMA,
+     operacion.`PEN` AS operacion_PEN,
+     operacion.`ISCARGO` AS operacion_ISCARGO,
+     operacion.`SALDOPEN` AS operacion_SALDOPEN,
+     operacion.`SALDOUSD` AS operacion_SALDOUSD,
+     operacion.`TIPO` AS operacion_TIPO,
+     operacion.`USD` AS operacion_USD,
+     operacion.`cuenta_ID` AS operacion_cuenta_ID,
+     operacion.`usuario_ID` AS operacion_usuario_ID,
+     operacion.`ID` AS operacion_ID,
+     operacion.`ISPEN` AS operacion_ISPEN,
+     operacion.`banco_ID` AS operacion_banco_ID,
+	cuenta.`NOMBRE` AS cuenta_NOMBRE,
+	cuenta.`NUMERO` AS cuenta_NUMERO,
+    	cuenta.`ISCAJA` AS cuenta_ISCAJA,
+	banco.`NOMBRE` AS banco_NOMBRE,
+	usuario.`usuario` AS usuario
+FROM
+     `operacion` operacion
+LEFT JOIN `usuario` ON `operacion`.usuario_ID = usuario.ID
+LEFT JOIN `cuenta` ON `operacion`.cuenta_ID = cuenta.ID
+LEFT JOIN `banco` ON `operacion`.banco_ID = banco.ID
+WHERE operacion.ID = $P{OP_ID})
+UNION ALL
+(SELECT
+     operacion.`CHEQUENUMERO` AS operacion_CHEQUE_NUMERO,
+     operacion.`DESCRIPCION` AS operacion_DESCRIPCION,
+     operacion.`DNI` AS operacion_DNI,
+     operacion.`FECHA` AS operacion_FECHA,
+     operacion.`FIRMA` AS operacion_FIRMA,
+     operacion.`PEN` AS operacion_PEN,
+     operacion.`ISCARGO` AS operacion_ISCARGO,
+     operacion.`SALDOPEN` AS operacion_SALDOPEN,
+     operacion.`SALDOUSD` AS operacion_SALDOUSD,
+     operacion.`TIPO` AS operacion_TIPO,
+     operacion.`USD` AS operacion_USD,
+     operacion.`cuenta_ID` AS operacion_cuenta_ID,
+     operacion.`usuario_ID` AS operacion_usuario_ID,
+     operacion.`ID` AS operacion_ID,
+     operacion.`ISPEN` AS operacion_ISPEN,
+     operacion.`banco_ID` AS operacion_banco_ID,
+	cuenta.`NOMBRE` AS cuenta_NOMBRE,
+	cuenta.`NUMERO` AS cuenta_NUMERO,
+   	cuenta.`ISCAJA` AS cuenta_ISCAJA,
+	banco.`NOMBRE` AS banco_NOMBRE,
+	usuario.`usuario` AS usuario
+FROM
+     `operacion` operacion
+LEFT JOIN `usuario` ON `operacion`.usuario_ID = usuario.ID
+LEFT JOIN `cuenta` ON `operacion`.cuenta_ID = cuenta.ID
+LEFT JOIN `banco` ON `operacion`.banco_ID = banco.ID
+WHERE operacion.ID = $P{OP_ID})]]>
+	</queryString>
+	<field name="operacion_CHEQUE_NUMERO" class="java.lang.String"/>
+	<field name="operacion_DESCRIPCION" class="java.lang.String"/>
+	<field name="operacion_DNI" class="java.lang.String"/>
+	<field name="operacion_FECHA" class="java.sql.Timestamp"/>
+	<field name="operacion_FIRMA" class="java.lang.String"/>
+	<field name="operacion_PEN" class="java.math.BigDecimal"/>
+	<field name="operacion_ISCARGO" class="java.lang.Boolean"/>
+	<field name="operacion_SALDOPEN" class="java.math.BigDecimal"/>
+	<field name="operacion_SALDOUSD" class="java.math.BigDecimal"/>
+	<field name="operacion_TIPO" class="java.lang.String"/>
+	<field name="operacion_USD" class="java.math.BigDecimal"/>
+	<field name="operacion_cuenta_ID" class="java.lang.Long"/>
+	<field name="operacion_usuario_ID" class="java.lang.Long"/>
+	<field name="operacion_ID" class="java.lang.Long"/>
+	<field name="operacion_ISPEN" class="java.lang.Boolean"/>
+	<field name="cuenta_NUMERO" class="java.lang.Long"/>
+	<field name="cuenta_NOMBRE" class="java.lang.String"/>
+	<field name="usuario" class="java.lang.String"/>
+	<field name="banco_NOMBRE" class="java.lang.String"/>
+	<field name="cuenta_ISCAJA" class="java.lang.Boolean"/>
+	<variable name="operacion_ID" class="java.lang.Long">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[201]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="196" splitType="Stretch">
+			<textField>
+				<reportElement style="FixSizeFontStyle" x="58" y="99" width="322" height="14" uuid="b51f5768-42fe-4c3b-8903-c9fa7adfcc8d"/>
+				<textFieldExpression><![CDATA[$F{operacion_TIPO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="FixSizeFontStyle" x="60" y="57" width="60" height="12" uuid="fa0abad7-9a7a-4357-b067-7ed43ac0aaf4"/>
+				<textFieldExpression><![CDATA[$F{cuenta_NUMERO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="FixSizeFontStyle" x="120" y="57" width="260" height="12" uuid="c957d810-23aa-4fce-ad6e-b753866e4ca1"/>
+				<textFieldExpression><![CDATA[$F{cuenta_NOMBRE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="0" y="57" width="45" height="12" uuid="387476da-7e1d-4517-b900-6396ffe5bbc4"/>
+				<text><![CDATA[Cuenta:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="0" y="72" width="58" height="12" uuid="13972241-b5a6-4a4e-86c2-6d4ab7460b07"/>
+				<text><![CDATA[Detalle:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="0" y="99" width="58" height="14" uuid="edd9f1bf-245c-49b3-81fb-7773e9f962c8"/>
+				<text><![CDATA[Cta Caja:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="137" y="144" width="39" height="12" uuid="6d30d20a-4185-4d70-bbfe-2e943aa7e38b"/>
+				<text><![CDATA[FIRMA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="116" width="300" height="12" uuid="6d7628cd-046c-4a4b-b3e7-83c4c4f81a53"/>
+				<textFieldExpression><![CDATA[($F{operacion_TIPO}.toString().equals("TRANSFERENCIA") ? $F{banco_NOMBRE} : "")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="176" y="144" width="205" height="12" uuid="5122f5e9-53fd-4b6a-9e85-1011f78a60b5"/>
+				<text><![CDATA[________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="3" y="0" width="186" height="24" uuid="9ccf9704-ad73-46ae-a4cf-b3d622a2d83e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Vicariato Apostolico
+De San Jose Del Amazonas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="0" y="24" width="120" height="12" uuid="ddc114a3-afa0-41c1-a578-9103612c9cca"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Comprobante Numero:]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="FixSizeFontStyle" mode="Transparent" x="120" y="24" width="100" height="12" forecolor="#666666" backcolor="#FFFFFF" uuid="e7c34401-a3d4-42b7-b0a2-e208960e0986"/>
+				<textElement verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{OP_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="FixSizeFontStyle" x="243" y="0" width="131" height="14" uuid="667b20e8-fa23-413c-a842-cf1384fb79af"/>
+				<textElement textAlignment="Center" markup="none">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{cuenta_ISCAJA} ? ($F{operacion_ISCARGO} ? "EGRESO" : "INGRESO") : ($F{operacion_ISCARGO} ? "CARGO" : "ABONO"))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="226" y="16" width="56" height="13" uuid="fa400418-a4d6-4d3c-8427-71c0daa330c4"/>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<textField pattern="yyyy.MM.dd" isBlankWhenNull="true">
+				<reportElement style="FixSizeFontStyle" x="282" y="16" width="99" height="13" uuid="5fb647e5-5e63-4a1e-a36f-b69442ace1c5"/>
+				<textFieldExpression><![CDATA[$F{operacion_FECHA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="FixSizeFontStyle" x="226" y="29" width="44" height="12" uuid="01d6bf40-441f-4aeb-9744-c9207a20d2d4"/>
+				<textElement markup="none">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[Importe ]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="FixSizeFontStyle" x="282" y="29" width="99" height="12" uuid="bc530a07-72c1-4552-99d3-b6cf2ff02ad4"/>
+				<textFieldExpression><![CDATA[($F{operacion_ISPEN} ? ("S./ " +
+    ($F{operacion_ISCARGO} ?
+        ($F{operacion_PEN}.multiply(new BigDecimal(-1))) : $F{operacion_PEN}
+    ))
+    : ("\$ " +
+    ($F{operacion_ISCARGO} ?
+        ($F{operacion_USD}.multiply(new BigDecimal(-1))) : $F{operacion_USD}
+
+    ))
+)]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy.MM.dd HH:mm" isBlankWhenNull="false">
+				<reportElement style="FixSizeFontStyle" x="68" y="184" width="175" height="12" uuid="c1653055-1600-41a8-b9be-ec0bfdc731f8"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="FixSizeFontStyle" x="37" y="156" width="99" height="12" uuid="7a1b6580-f18f-4ae3-a550-11059ca5b605"/>
+				<textFieldExpression><![CDATA[$F{operacion_SALDOPEN}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="0" y="171" width="37" height="12" uuid="b0bc3583-15a6-4829-a711-776d48db5b96"/>
+				<text><![CDATA[USD:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement style="FixSizeFontStyle" x="37" y="171" width="99" height="12" uuid="9760796b-393d-4b9b-8777-cd427ccbfae1"/>
+				<textFieldExpression><![CDATA[$F{operacion_SALDOUSD}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="0" y="156" width="37" height="12" uuid="a9f1c458-ca05-4751-8bae-2a9ef03d10b6"/>
+				<text><![CDATA[PEN:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="0" y="184" width="68" height="12" uuid="f63edca1-d94a-497b-857c-1b3dc0a795dc"/>
+				<text><![CDATA[Impreso:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="58" y="72" width="323" height="27" uuid="94b9f236-d444-4bbd-a350-fa48c137114d"/>
+				<textFieldExpression><![CDATA[$F{operacion_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="0" y="115" width="80" height="14" uuid="31d92899-afa3-46f0-b958-97d4abc6618a"/>
+				<text><![CDATA[Entregado a:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="171" width="205" height="12" uuid="12d9d2d8-ff71-4f6d-be95-446f88df2b5c"/>
+				<text><![CDATA[________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="FixSizeFontStyle" x="137" y="171" width="42" height="12" uuid="695a3309-ed51-48b5-a5cf-057f66b1df21"/>
+				<text><![CDATA[DNI:]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
