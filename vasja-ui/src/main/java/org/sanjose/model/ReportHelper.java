@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -13,9 +14,7 @@ import com.vaadin.server.Sizeable;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.*;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -31,7 +30,6 @@ import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.type.WhenNoDataTypeEnum;
 import net.sf.jasperreports.engine.util.JRLoader;
 
-import com.vaadin.ui.Window;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.sanjose.helper.ConfigurationUtil;
@@ -147,20 +145,20 @@ public class ReportHelper {
 		repWindow.setModal(false);
         repWindow.setContent(emb);
 		UI.getCurrent().addWindow(repWindow);
-
-	}
-		//Set<Window> windows = window.getChildWindows();
-/*for (Window win : windows) {
+        //Set<Window> windows = repWindow.getChildWindows();
+        JavaScript.getCurrent().execute("window.onload = function() { window.print(); } ");
+        //repWindow.ex
+        /*for (Window win : windows) {
 			logger.info("URL: " + win.getURL());
 			win.executeJavaScript("window.onload = function() { window.print(); } ");
-		}*//*
+		}*/
 
 	}
-*/
+
 
 
 	@SuppressWarnings({ "serial", "unchecked" })
-	public static JasperPrint printComprobante(final VsjCajabanco op, Window window) {
+	public static JasperPrint printComprobante(final VsjCajabanco op) {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
 		final String REPORT = (isTxt ? "ComprobanteTxt" : "Comprobante");
@@ -530,25 +528,8 @@ public class ReportHelper {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		//em = MainUI.get().getEntityManager();
-
         em=em.getEntityManagerFactory().createEntityManager();
         logger.info("Got entity manager: " + em.getProperties().toString());
-
-		//logger.info("Got: " + em.getDelegate());
-		//logger.info("Got class: " + em.getDelegate().getClass().getCanonicalName());
-
-/*		try {
-            if (((org.hibernate.internal.SessionImpl) em.getDelegate()).isConnected()) {
-                logger.info("Hibernate is connected");
-            } else {
-
-            }
-            sqlConnection = ((org.hibernate.internal.SessionImpl) em.getDelegate()).connection();
-		} catch (SessionException se) {
-			logger.info("Hibernate session is closed!!!" + se.getMessage());
-            //sqlConnection = ((org.hibernate.internal.SessionImpl) em.getDelegate()).beginTransaction();
-        }*/
         Session session = em.unwrap(Session.class);
         session.doWork(new Work() {
 
@@ -558,14 +539,6 @@ public class ReportHelper {
                 sqlConnection = connection;
             }
         });
-
-		/*UnitOfWork unitOfWork = (UnitOfWork) ((JpaEntityManager) ConfigurationUtil
-				.getEntityManager().getDelegate()).getActiveSession();
-		unitOfWork.beginEarlyTransaction();
-		Accessor accessor = ((UnitOfWorkImpl) unitOfWork).getAccessor();
-		accessor.incrementCallCount(unitOfWork.getParent());
-		accessor.decrementCallCount();
-		sqlConnection = accessor.getConnection();*/
 		return sqlConnection;
 	}
 }

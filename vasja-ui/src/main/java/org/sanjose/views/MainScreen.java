@@ -125,4 +125,8 @@ public class MainScreen extends HorizontalLayout {
         }
 
     };
+
+    public PrintHelper getPrintHelper() {
+        return printHelper;
+    }
 }

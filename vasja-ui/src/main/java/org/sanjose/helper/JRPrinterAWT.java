@@ -240,10 +240,10 @@ public class JRPrinterAWT implements Printable
 //			Graphics2DExporterConfiguration conf = new SimpleGraphics2DExporterConfiguration();
 
 //			exporter.setConfiguration();
-			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			//exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 			//exporter.exportReportToGraphics2D(graphics);
 
-			//exporter.setParameter(JRExporterParameter.JASPER_PRINT, this.jasperPrint);
+			exporter.setParameter(JRExporterParameter.JASPER_PRINT, this.jasperPrint);
 			exporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, graphics);
 			exporter.setParameter(JRExporterParameter.PAGE_INDEX, Integer.valueOf(pageIndex));
 			exporter.exportReport();

@@ -3,7 +3,11 @@ package org.sanjose.views;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
+import com.vaadin.ui.Notification;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
+import org.sanjose.helper.PrintHelper;
 import org.sanjose.model.ReportHelper;
 import org.sanjose.model.VsjCajabanco;
 
@@ -34,6 +38,7 @@ public class CajaManejoLogic implements Serializable {
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.btnEditar.addClickListener(e -> editarComprobante());
         view.btnReporteCaja.addClickListener(e -> generateComprobante());
+        view.btnEnviar.addClickListener(e -> printComprobante());
     }
 
     /**
@@ -93,6 +98,25 @@ public class CajaManejoLogic implements Serializable {
             log.info("selected: " + obj);
             VsjCajabanco vcb = (VsjCajabanco)obj;
             ReportHelper.generateComprobante(vcb);
+        }
+    }
+
+    public void printComprobante() {
+        for (Object obj : view.getSelectedRow()) {
+            log.info("selected: " + obj);
+            VsjCajabanco vcb = (VsjCajabanco) obj;
+            try {
+                JasperPrint jrPrint = ReportHelper.printComprobante(vcb);
+                boolean isPrinted = false;
+
+                PrintHelper ph = ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper();
+                isPrinted = ph.print(jrPrint, true);
+                if (!isPrinted)
+                    throw new JRException("Problema al consequir un servicio de imprimir");
+            } catch (JRException e) {
+                e.printStackTrace();
+                Notification.show("Problema al imprimir el comprobante ID: " + vcb.getCodCajabanco() + " " + e.getMessage());
+            }
         }
     }
 }

@@ -50,6 +50,8 @@ import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedListener;
 import dk.apaq.vaadin.addon.printservice.RemotePrintService;
 import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
 //import net.sf.jasperreports.engine.print.JRPrinterAWT;
+import net.sf.jasperreports.engine.export.JRTextExporter;
+import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 import org.sanjose.model.ReportHelper;
 import org.sanjose.views.MainScreen;
 
@@ -187,7 +189,7 @@ public class PrintHelper extends VerticalLayout implements View {
 	    //table.setVisibleColumns(new String[] { "id", "name", "resolution",
 		//		"colorsupported", "defaultprinter" });
 	}
-/*
+
 	public boolean print(JasperPrint jrPrint, boolean isComprobante) throws JRException {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
@@ -215,15 +217,17 @@ public class PrintHelper extends VerticalLayout implements View {
 				job.print(doc, pras);
 			} catch (PrintException e) {
 				e.printStackTrace();
-				app.getMainWindow().showNotification("Problema de impresora de texto", "Problema: " + e.getMessage(), Notification.TYPE_ERROR_MESSAGE);				
+				Notification.show("Problema de impresora de texto", "Problema: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
-		else			
-			JRPrinterAWT.printPages(jrPrint, 0, jrPrint.getPages().size()-1, false, printService);
+		else {
+			logger.info("Printing graphically using printService: " + printService.getName());
+			JRPrinterAWT.printPages(jrPrint, 0, jrPrint.getPages().size() - 1, false, printService);
+		}
 		return true;
 	}
 	
-  */  public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         try {
             if (pageIndex > 0) {
                 return Printable.NO_SUCH_PAGE;
