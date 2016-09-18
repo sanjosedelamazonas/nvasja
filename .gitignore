@@ -10,6 +10,7 @@ target
 /printaddon-applet/WebContent/VAADIN/widgetsets/*
 .settings
 .settings/*
-Blank_A4.jrxml
 reports/.gitignore
-reports/Blank_A4.jrxml
+vasja-reports/.gitignore
+vasja-reports/reports/.gitignore
+vasja-ui/.designer/
