@@ -38,6 +38,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import com.vaadin.ui.Window;
 import org.hibernate.SessionException;
 import org.sanjose.MainUI;
+import org.sanjose.model.VsjCajabanco;
 
 import javax.persistence.EntityManager;
 
@@ -46,21 +47,20 @@ public class ReportHelper {
 	static Connection sqlConnection = null;
 	static final Logger logger = Logger.getLogger(ReportHelper.class.getName());
 
-/*
+
 	@SuppressWarnings("serial")
-	public static void generateComprobante(final Operacion op, Window window) {
+	public static void generateComprobante(final VsjCajabanco op, Window window) {
 		final boolean isPdf = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("PDF");
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
 		final String REPORT = (isTxt ? "ComprobanteTxt" : "Comprobante");
-		final Application app = window.getApplication();
 		StreamResource.StreamSource source = new StreamResource.StreamSource() {
 			@SuppressWarnings("unchecked")
 			public InputStream getStream() {
 				byte[] b = null;
 				try {
-					InputStream rep = loadReport(REPORT, app);
+					InputStream rep = loadReport(REPORT);
 					if (rep != null) {
 						JasperReport report = (JasperReport) JRLoader
 								.loadObject(rep);
@@ -68,25 +68,25 @@ public class ReportHelper {
 						@SuppressWarnings("rawtypes")
 						HashMap paramMap = new HashMap();
 						paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
-						paramMap.put("OP_ID", op.getId());
-						DecimalPropertyFormatter dpf = new DecimalPropertyFormatter(
+						paramMap.put("OP_ID", op.getCodCajabanco());
+						DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
 								null, ConfigurationUtil.get("DECIMAL_FORMAT"));
+/*
 						paramMap.put(
 								"OP_AMOUNT",
 								(op.getIsPen() ? dpf.format(op.getPen()) : dpf
 										.format(op.getUsd())));
+*/
 						if (isPdf)
 							b = JasperRunManager.runReportToPdf(report,
 									paramMap, getSqlConnection());
 						else if (isTxt) {
 							return exportToTxt(REPORT, paramMap);
-						}
-						else {
+						} else {
 							return exportToHtml(REPORT, paramMap);
 						}
 					} else {
-						app.getMainWindow().showNotification(
-								"There is no report file!");
+						Notification.show("There is no report file!");
 					}
 				} catch (JRException ex) {
 					logger.log(Level.SEVERE, null, ex);
@@ -97,23 +97,31 @@ public class ReportHelper {
 		};
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		StreamResource resource = new StreamResource(source,
-				(op.getIsCargo() ? "Cargo_" : "Abono_")
-						+ op.getCuenta().getId() + "_" + op.getId() + "_"
+				(GenUtil.isIngreso(op) ? "Ingreso_" : "Egreso_")
+						+ op.getTxtAnoproceso() + "_" + op.getCodMes() + "_" + op.getCodCajabanco() + "_"
 						+ df.format(new Date(System.currentTimeMillis()))
-						+ (isPdf ? ".pdf" : (isTxt ? ".txt" : ".html")), app);
+						+ (isPdf ? ".pdf" : (isTxt ? ".txt" : ".html")));
 		resource.setMIMEType((isPdf ? "application/pdf" : (isTxt ? "text/plain" : "text/html")));
 
 		logger.info("Resource: " + resource.getFilename() + " "
 				+ resource.toString());
 
-		window.open(resource, // URL
-				"_blank", // window name
-				500, // width
-				650, // weight
-				Window.BORDER_DEFAULT // decorations
-		);
+		Embedded emb = new Embedded();
+		emb.setSizeFull();
+		emb.setType(Embedded.TYPE_BROWSER);
+		emb.setSource(resource);
+
+		Window repWindow = new Window();
+		repWindow.setWindowMode(WindowMode.NORMAL);
+		repWindow.setWidth(700, Sizeable.Unit.PIXELS);
+		repWindow.setHeight(600, Sizeable.Unit.PIXELS);
+		repWindow.setPositionX(200);
+		repWindow.setPositionY(50);
+		repWindow.setModal(false);
+		UI.getCurrent().addWindow(repWindow);
+
+	}
 		//Set<Window> windows = window.getChildWindows();
-		*/
 /*for (Window win : windows) {
 			logger.info("URL: " + win.getURL());
 			win.executeJavaScript("window.onload = function() { window.print(); } ");
@@ -311,7 +319,7 @@ public class ReportHelper {
 			boolean isPen) {
 		final String REPORT = "ReporteDiario" + (isPen ? "PEN" : "USD");
 			try {
-					InputStream rep = loadReport(REPORT, null);
+					InputStream rep = loadReport(REPORT);
 					if (rep != null) {
 						JasperReport report = (JasperReport) JRLoader
 								.loadObject(rep);
@@ -338,13 +346,12 @@ public class ReportHelper {
 		final String format;
 		if (inFormat==null) format = ConfigurationUtil.get(typeParamName);
 		else format = inFormat;
-		final UI app = (window!=null ? UI.getCurrent() : null);
 		StreamResource.StreamSource source = new StreamResource.StreamSource() {
 			@SuppressWarnings("unchecked")
 			public InputStream getStream() {
 				byte[] b = null;
 				try {
-					InputStream rep = loadReport(reportName, app);
+					InputStream rep = loadReport(reportName);
 					if (rep != null) {
 						JasperReport report = (JasperReport) JRLoader
 								.loadObject(rep);
@@ -393,10 +400,9 @@ public class ReportHelper {
 	}
 	
 	
-	private static InputStream loadReport(String reportName, UI app) {
+	private static InputStream loadReport(String reportName) {
 		InputStream rep = null;
-		if (app != null)
-			rep = (app.getClass()).getResourceAsStream(ConfigurationUtil
+		rep = (UI.getCurrent().getClass()).getResourceAsStream(ConfigurationUtil
 					.get("REPORTS_SOURCE_URL") + reportName + ".jasper");
 		if (rep == null) {
 			logger.info("Loading report " + reportName + " from file");
