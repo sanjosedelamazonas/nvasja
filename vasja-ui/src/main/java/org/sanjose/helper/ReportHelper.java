@@ -271,8 +271,6 @@ public class ReportHelper {
 
 */
 
-
-
 	public static void generateCC(final Date minfecha, final Date maxfecha,boolean isPen, Window window, String format, String grouping) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 		logger.info("jestem w generateRep. params: "+minfecha+" maxfecha "+maxfecha+" isPen "+isPen);
@@ -290,6 +288,8 @@ public class ReportHelper {
 		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
 //		generateReport("ReporteCentroDeCostosStructure", "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
 	}
+
+
 	public static void generateLG(final Date minfecha, final Date maxfecha, Window window, String format, String reportName) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 		logger.info("jestem w generateLG. params: "+minfecha+" maxfecha "+maxfecha);
@@ -332,7 +332,6 @@ public class ReportHelper {
 			return null;
 	}
 
-	
 
 	private static void generateReport(final String reportName, String typeParamName, 
 			final HashMap paramMap, Window window, final String inFormat) {

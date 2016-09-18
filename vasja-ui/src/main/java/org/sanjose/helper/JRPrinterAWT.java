@@ -43,6 +43,10 @@ import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
 import net.sf.jasperreports.engine.util.JRGraphEnvInitializer;
 
+import net.sf.jasperreports.export.Graphics2DExporterConfiguration;
+import net.sf.jasperreports.export.Graphics2DReportConfiguration;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleGraphics2DExporterConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -233,10 +237,26 @@ public class JRPrinterAWT implements Printable
 		try
 		{
 			JRGraphics2DExporter exporter = new JRGraphics2DExporter();
-			exporter.setParameter(JRExporterParameter.JASPER_PRINT, this.jasperPrint);
+//			Graphics2DExporterConfiguration conf = new SimpleGraphics2DExporterConfiguration();
+
+//			exporter.setConfiguration();
+			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			//exporter.exportReportToGraphics2D(graphics);
+
+			//exporter.setParameter(JRExporterParameter.JASPER_PRINT, this.jasperPrint);
 			exporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, graphics);
 			exporter.setParameter(JRExporterParameter.PAGE_INDEX, Integer.valueOf(pageIndex));
 			exporter.exportReport();
+
+
+			/*JRPdfExporter exporter = new JRPdfExporter();
+
+			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			exporter.setExporterOutput(outputStream);
+			SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+			exporter.setConfiguration(configuration);
+
+			exporter.exportReport();*/
 		}
 		catch (JRException e)
 		{
