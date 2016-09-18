@@ -25,6 +25,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 
+import javax.persistence.EntityManager;
+
 /**
  * Main UI class of the application that shows either the login screen or the
  * main view of the application depending on whether a user is signed in.
@@ -57,10 +59,13 @@ public class MainUI extends UI {
 
     private MsgUsuarioRep msgUsuarioRep;
 
+    private EntityManager em;
+
     @Autowired
     private MainUI(VsjPropiedadRep propRepo, PropiedadView propiedadView, CajaGridView cajaGridView,
                    ConfiguracionCajaView configuracionCajaView, ConfiguracionCtaCajaBancoView confView,
-                   ComprobanteView comprobanteView, CajaManejoView cajaManejoView, MsgUsuarioRep msgUsuarioRep) {
+                   ComprobanteView comprobanteView, CajaManejoView cajaManejoView, MsgUsuarioRep msgUsuarioRep,
+                   EntityManager em) {
     	this.confView = confView;
     	this.cajaGridView = cajaGridView;
         this.propiedadView = propiedadView;
@@ -69,6 +74,7 @@ public class MainUI extends UI {
         this.configuracionCajaView = configuracionCajaView;
         this.cajaManejoView = cajaManejoView;
         this.msgUsuarioRep = msgUsuarioRep;
+        this.em = em;
     }
     
     @Override
@@ -106,5 +112,9 @@ public class MainUI extends UI {
 
     public AccessControl getAccessControl() {
         return accessControl;
+    }
+
+    public EntityManager getEntityManager() {
+        return em;
     }
 }

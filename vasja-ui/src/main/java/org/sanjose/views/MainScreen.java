@@ -27,7 +27,7 @@ public class MainScreen extends HorizontalLayout {
     private PrintHelper printHelper = null;
     private Label printerIcon = new Label("");
 
-    private ProgressIndicator printerLoading;
+    private ProgressBar printerLoading;
 
     @Autowired
     public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
@@ -78,10 +78,10 @@ public class MainScreen extends HorizontalLayout {
 
         if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
             //if (!ConfigurationUtil.is("PRINTER_LIST_SHOW")) menu.addComponent(printHelper);
-            Label l = new Label("");
-            printerLoading = new ProgressIndicator();
+            Label l = new Label("Loading");
+            printerLoading = new ProgressBar();
             printerLoading.setIndeterminate(true);
-            printerLoading.setPollingInterval(3000);
+            UI.getCurrent().setPollInterval(3000);
             printerLoading.setEnabled(true);
             printerIcon.setIcon(new ThemeResource("printer-icon.png"));
             printerIcon.setVisible(false);

@@ -45,13 +45,33 @@
 		    <artifactId>vaadin-spring</artifactId>        
 		</dependency>
 
-        <!--VAADIN Add-Ons-->
+        <!-- JASPER REPORTS -->
 
-        <!--        <dependency>
-                    <groupId>org.vaadin.addons</groupId>
-                    <artifactId>maskedtextfield</artifactId>
-                    <version>0.2.0</version>
-                </dependency>-->
+        <dependency>
+            <groupId>net.sourceforge.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>${jasper.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.jasperreports</groupId>
+            <artifactId>jasperreports-javaflow</artifactId>
+            <version>${jasper.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>${jasper.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.jasperreports</groupId>
+            <artifactId>jasperreports-functions</artifactId>
+            <version>${jasper.version}</version>
+        </dependency>
+
+        <!--VAADIN Add-Ons-->
 
         <dependency>
             <groupId>de.steinwedel.vaadin.addon</groupId>
@@ -65,28 +85,12 @@
             <version>0.0.6</version>
         </dependency>
 
-
-
         <dependency>
-            <groupId>org.sanjose</groupId>
+            <groupId>org.sanjosedelamazonas</groupId>
             <artifactId>printapplet-addon</artifactId>
             <version>0.0.5</version>
         </dependency>
 
-
-        <!--        <dependency>
-                    <groupId>org.vaadin.ui</groupId>
-                    <artifactId>NumberField</artifactId>
-                    <version>0.1.8-SNAPSHOT</version>
-                    &lt;!&ndash;<version>0.1.6</version>&ndash;&gt;
-                </dependency>-->
-
-        <!--        <dependency>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>vasja-backend</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-        -->
         <!-- Custom components -->
         <dependency>
             <groupId>${project.groupId}</groupId>

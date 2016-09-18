@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,13 +29,12 @@ import javax.print.attribute.HashDocAttributeSet;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 
-/*import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRTextExporter;
-import net.sf.jasperreports.engine.export.JRTextExporterParameter;*/
+import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 
 /*
-import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.JRPrinterAWT;
 import org.sanjose.web.VasjaApp;
 */
@@ -46,16 +44,14 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.VerticalLayout;
 
 import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedEvent;
 import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedListener;
 import dk.apaq.vaadin.addon.printservice.RemotePrintService;
 import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
+//import net.sf.jasperreports.engine.print.JRPrinterAWT;
 import org.sanjose.views.MainScreen;
 
 @SuppressWarnings("serial")
@@ -79,6 +75,8 @@ public class PrintHelper extends VerticalLayout implements View {
     
 	public PrintHelper(MainScreen mainScreen) {
 		if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
+            addComponent(new Label("Imprmir Service"));
+			//ReportHelper.getSqlConnection();
             logger.info("Printing reports");
 		    printServiceManager = RemotePrintServiceManager.getInstance(mainScreen);
 		    printServiceManager.addListener(new PrintServiceListChangedListener() {
@@ -125,16 +123,16 @@ public class PrintHelper extends VerticalLayout implements View {
             printOptions.setValue(sb);
             printOptions.requestRepaint();
         });
-	    //if (ConfigurationUtil.is("PRINTER_LIST_SHOW")) drawPrinterTable();
+	    if (ConfigurationUtil.is("PRINTER_LIST_SHOW")) drawPrinterTable();
 	}
 
-	/*public void drawPrinterTable() {
+	public void drawPrinterTable() {
 	    setCaption("Imprimir");
 	    Button button = new Button("Imprimir");
 	    button.addListener(new Button.ClickListener() {
 	        public void buttonClick(ClickEvent event) {
 	            try {
-	            	if (printService==null) getWindow().showNotification("Seleccione la impresora", Notification.TYPE_ERROR_MESSAGE);	
+	            	if (printService==null) Notification.show("Seleccione la impresora", Notification.Type.ERROR_MESSAGE);
 	                SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 	                JasperPrint jrPrint = ReportHelper.printDiario(df.parse("20110911"), null, true);
 	                logger.info("Report margins: " + jrPrint.getTopMargin() + " " + jrPrint.getBottomMargin() + " " + 
@@ -181,7 +179,7 @@ public class PrintHelper extends VerticalLayout implements View {
 	    table.setMultiSelect(false);
 	    //table.setVisibleColumns(new String[] { "id", "name", "resolution",
 		//		"colorsupported", "defaultprinter" });
-	}*/
+	}
 /*
 	public boolean print(JasperPrint jrPrint, boolean isComprobante) throws JRException {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
