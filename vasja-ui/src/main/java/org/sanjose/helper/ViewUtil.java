@@ -36,6 +36,13 @@ public class ViewUtil {
         for (String colId : colNames.keySet()) {
             grid.getDefaultHeaderRow().getCell(colId).setText(colNames.get(colId));
         }
+        grid.setColumnReorderingAllowed(true);
+
+        // Allow column hiding
+        for (Grid.Column c : grid.getColumns()) {
+            c.setHidable(true);
+        }
+
     }
 
     public static void setColumnNames(Grid grid, String[] visible_col_names, String[] visible_col_ids,

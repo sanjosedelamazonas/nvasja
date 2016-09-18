@@ -1,10 +1,6 @@
 package org.sanjose.helper;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -49,7 +45,7 @@ public class ReportHelper {
 
 
 	@SuppressWarnings("serial")
-	public static void generateComprobante(final VsjCajabanco op, Window window) {
+	public static void generateComprobante(final VsjCajabanco op) {
 		final boolean isPdf = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("PDF");
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
@@ -129,30 +125,32 @@ public class ReportHelper {
 
 	}
 */
-/*
+
 
 	@SuppressWarnings({ "serial", "unchecked" })
-	public static JasperPrint printComprobante(final Operacion op, Window window) {
+	public static JasperPrint printComprobante(final VsjCajabanco op, Window window) {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
 		final String REPORT = (isTxt ? "ComprobanteTxt" : "Comprobante");
 			try {
-					InputStream rep = loadReport(REPORT, null);
+					InputStream rep = loadReport(REPORT);
 					if (rep != null) {
 						JasperReport report = (JasperReport) JRLoader
 								.loadObject(rep);
 						report.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
 						@SuppressWarnings("rawtypes")
 						HashMap paramMap = new HashMap();
-						paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
-						paramMap.put("OP_ID", op.getId());
-						
+						paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
+						paramMap.put("OP_ID", op.getCodCajabanco());
+/*
+
 						DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
 								null, ConfigurationUtil.get("DECIMAL_FORMAT"));
 						paramMap.put(
 								"OP_AMOUNT",
 								(op.getIsPen() ? dpf.format(op.getPen()) : dpf
 										.format(op.getUsd())));
+*/
 						return prepareToPrint(REPORT, paramMap);
 					} else {
 						logger.warning("There is no report file!");
@@ -162,7 +160,7 @@ public class ReportHelper {
 				}
 			return null;
 	}
-*/
+
 
 /*
 	@SuppressWarnings("serial")
@@ -403,13 +401,13 @@ public class ReportHelper {
 	private static InputStream loadReport(String reportName) {
 		InputStream rep = null;
 		rep = (UI.getCurrent().getClass()).getResourceAsStream(ConfigurationUtil
-					.get("REPORTS_SOURCE_URL") + reportName + ".jasper");
+					.get("REPORTS_SOURCE_URL").trim() + "/" + reportName + ".jasper");
 		if (rep == null) {
 			logger.info("Loading report " + reportName + " from file");
 			try {
-				logger.info("Reports folder: " + ConfigurationUtil.get("REPORTS_SOURCE_FOLDER"));
+				logger.info("Reports folder: " + ConfigurationUtil.get("REPORTS_SOURCE_FOLDER").trim());
 				rep = new FileInputStream(
-						ConfigurationUtil.get("REPORTS_SOURCE_FOLDER")
+						ConfigurationUtil.get("REPORTS_SOURCE_FOLDER") + File.separator
 								+ reportName + ".jasper");
 			} catch (FileNotFoundException e) {
 				Notification.show("Report file not found!");

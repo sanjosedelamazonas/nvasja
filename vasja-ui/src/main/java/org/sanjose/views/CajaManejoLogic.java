@@ -10,6 +10,7 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
 import org.sanjose.MainUI;
 import org.sanjose.helper.GenUtil;
+import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.VsjCajabanco;
 
 import java.io.Serializable;
@@ -41,6 +42,7 @@ public class CajaManejoLogic implements Serializable {
 
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.btnEditar.addClickListener(e -> editarComprobante());
+        view.btnReporteCaja.addClickListener(e -> generateComprobante());
     }
 
     /**
@@ -92,6 +94,14 @@ public class CajaManejoLogic implements Serializable {
                 MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
                 break;
             }
+        }
+    }
+
+    public void generateComprobante() {
+        for (Object obj : view.getSelectedRow()) {
+            log.info("selected: " + obj);
+            VsjCajabanco vcb = (VsjCajabanco)obj;
+            ReportHelper.generateComprobante(vcb);
         }
     }
 }

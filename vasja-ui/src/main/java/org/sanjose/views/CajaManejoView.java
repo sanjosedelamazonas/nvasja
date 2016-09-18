@@ -121,6 +121,7 @@ public class CajaManejoView extends CajaManejoUI implements View {
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
 
         viewLogic.init();
+
     }
 
     public void setComprobanteView(ComprobanteView comprobanteView) {
