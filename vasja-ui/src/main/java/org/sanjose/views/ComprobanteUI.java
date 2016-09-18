@@ -47,10 +47,13 @@ public class ComprobanteUI extends VerticalLayout {
 	protected TextField glosa;
 	protected HorizontalLayout horizontalIngresoGlosa2;
 	protected ComboBox selResponsable;
+	protected Button btnResponsable;
 	protected ComboBox selLugarGasto;
 	protected VerticalLayout verticalDocumento;
 	protected HorizontalLayout horizontalFechaVoucher2;
+	protected HorizontalLayout horizontalCodAux;
 	protected ComboBox selCodAuxiliar;
+	protected Button btnDestino;
 	protected ComboBox selTipoDoc;
 	protected TextField serieDoc;
 	protected TextField numDoc;

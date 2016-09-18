@@ -46,29 +46,39 @@
       <tm_kod_widgets_numberfield-number-field caption="Egreso" _id="numEgreso"></tm_kod_widgets_numberfield-number-field> 
       <vaadin-text-field caption="Glosa" width-full _id="glosa" :expand></vaadin-text-field> 
      </vaadin-horizontal-layout> 
-     <vaadin-horizontal-layout spacing width="548px" _id="horizontalIngresoGlosa2"> 
-      <vaadin-combo-box caption="Responsable" item-caption-mode="id" width="265px" _id="selResponsable"> 
+     <vaadin-horizontal-layout spacing width="620px" _id="horizontalIngresoGlosa2"> 
+      <vaadin-combo-box caption="Responsable" item-caption-mode="id" width-full _id="selResponsable" :expand> 
        <option>Option 1</option> 
        <option>Option 2</option> 
       </vaadin-combo-box> 
+      <vaadin-button plain-text _id="btnResponsable" :bottom :center>
+        + 
+      </vaadin-button> 
       <vaadin-combo-box caption="Lugar de gasto" item-caption-mode="id" width="313px" _id="selLugarGasto"> 
        <option>Option 1</option> 
        <option>Option 2</option> 
       </vaadin-combo-box> 
      </vaadin-horizontal-layout> 
      <vaadin-vertical-layout caption="Documento" size-full _id="verticalDocumento"> 
-      <vaadin-horizontal-layout spacing width="800px" _id="horizontalFechaVoucher2"> 
-       <vaadin-combo-box caption="Cod. Auxiliar" item-caption-mode="id" width="73.96%" _id="selCodAuxiliar" :expand> 
-        <option>Option 1</option> 
-        <option>Option 2</option> 
-       </vaadin-combo-box> 
-       <vaadin-combo-box caption="Tipo de Doc" item-caption-mode="id" _id="selTipoDoc"> 
-        <option>Option 1</option> 
-        <option>Option 2</option> 
-       </vaadin-combo-box> 
-       <vaadin-text-field caption="Serie" _id="serieDoc"></vaadin-text-field> 
-       <vaadin-text-field caption="Nr Doc" width="127px" _id="numDoc"></vaadin-text-field> 
-       <vaadin-popup-date-field caption="Fecha Doc" _id="fechaDoc"></vaadin-popup-date-field> 
+      <vaadin-horizontal-layout spacing width="844px" _id="horizontalFechaVoucher2"> 
+       <vaadin-horizontal-layout spacing width="293px" _id="horizontalCodAux"> 
+        <vaadin-combo-box caption="Cod. Auxiliar" item-caption-mode="id" width-full _id="selCodAuxiliar" :expand> 
+         <option>Option 1</option> 
+         <option>Option 2</option> 
+        </vaadin-combo-box> 
+        <vaadin-button plain-text _id="btnDestino" :bottom>
+          + 
+        </vaadin-button> 
+       </vaadin-horizontal-layout> 
+       <vaadin-horizontal-layout width-full :expand> 
+        <vaadin-combo-box caption="Tipo de Doc" item-caption-mode="id" _id="selTipoDoc" :middle :right> 
+         <option>Option 1</option> 
+         <option>Option 2</option> 
+        </vaadin-combo-box> 
+        <vaadin-text-field caption="Serie" _id="serieDoc" :middle :center></vaadin-text-field> 
+        <vaadin-text-field caption="Nr Doc" width="119px" _id="numDoc" :middle></vaadin-text-field> 
+        <vaadin-popup-date-field caption="Fecha Doc" _id="fechaDoc"></vaadin-popup-date-field> 
+       </vaadin-horizontal-layout> 
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout spacing width="1024px" _id="horizontalIngresoGlosa3"> 
        <vaadin-combo-box caption="Tipo de movimiento" item-caption-mode="id" width="190px" _id="selTipoMov"> 

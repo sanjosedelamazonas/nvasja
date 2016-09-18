@@ -127,18 +127,26 @@ public class ViewUtil {
 
 
 
-    public static void setupDateFilters(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta) {
-        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta);
+    public static void setupDateFilters(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta, Date defDesde, Date defHasta) {
+        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, defDesde, defHasta);
     }
 
-    public static void setupDateFilters(BeanItemContainer container, String propertyId, DateField fechaDesde, DateField fechaHasta) {
+    public static void setupDateFiltersThisMonth(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta) {
+        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(new Date()), GenUtil.getEndOfDay(new Date()));
+    }
+
+    public static void setupDateFiltersThisDay(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta) {
+        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfDay(new Date()), GenUtil.getEndOfDay(new Date()));
+    }
+
+    public static void setupDateFilters(BeanItemContainer container, String propertyId, DateField fechaDesde, DateField fechaHasta, Date defDesde, Date defHasta) {
         // Fecha Desde
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
         fechaDesde.setPropertyDataSource(prop);
         fechaDesde.setConverter(DateToTimestampConverter.INSTANCE);
         fechaDesde.setResolution(Resolution.DAY);
-        fechaDesde.setValue(GenUtil.getBeginningOfMonth(new Date()));
+        fechaDesde.setValue(defDesde);
         fechaDesde.addValueChangeListener(valueChangeEvent -> ViewUtil.filterComprobantes(container, propertyId, fechaDesde, fechaHasta));
 
         ts = new Timestamp(System.currentTimeMillis());
@@ -147,7 +155,7 @@ public class ViewUtil {
         fechaHasta.setConverter(DateToTimestampConverter.INSTANCE);
         fechaHasta.setResolution(Resolution.DAY);
 
-        fechaHasta.setValue(GenUtil.getEndOfDay(new Date()));
+        fechaHasta.setValue(defHasta);
         fechaHasta.addValueChangeListener(valueChangeEvent -> filterComprobantes(container, propertyId, fechaDesde, fechaHasta));
     }
 

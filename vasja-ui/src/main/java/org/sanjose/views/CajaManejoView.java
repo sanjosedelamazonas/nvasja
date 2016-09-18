@@ -112,7 +112,7 @@ public class CajaManejoView extends CajaManejoUI implements View {
         gridCaja.setSelectionMode(SelectionMode.SINGLE);
 
         // Fecha Desde Hasta
-        ViewUtil.setupDateFilters(container, fechaDesde, fechaHasta);
+        ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
 
         gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
