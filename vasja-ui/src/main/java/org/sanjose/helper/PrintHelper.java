@@ -34,11 +34,6 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
-/*
-import org.sanjose.util.JRPrinterAWT;
-import org.sanjose.web.VasjaApp;
-*/
-
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -49,7 +44,6 @@ import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedEvent;
 import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedListener;
 import dk.apaq.vaadin.addon.printservice.RemotePrintService;
 import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
-//import net.sf.jasperreports.engine.print.JRPrinterAWT;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 import org.sanjose.model.ReportHelper;
@@ -77,8 +71,7 @@ public class PrintHelper extends VerticalLayout implements View {
 	public PrintHelper(MainScreen mainScreen) {
 		if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
             addComponent(new Label("Imprmir Service"));
-			//ReportHelper.getSqlConnection();
-		    printServiceManager = RemotePrintServiceManager.getInstance(mainScreen);
+			printServiceManager = RemotePrintServiceManager.getInstance(mainScreen);
 		    printServiceManager.addListener(new PrintServiceListChangedListener() {
 		        public void onPrintServiceListChanged(PrintServiceListChangedEvent event) {
 		        	c.removeAllItems();
@@ -221,7 +214,7 @@ public class PrintHelper extends VerticalLayout implements View {
 			}
 		}
 		else {
-			logger.info("Printing graphically using printService: " + printService.getName());
+			logger.info("Printing graphically using printService: " + printService.getName() + " pages: " + jrPrint.getPages().size());
 			JRPrinterAWT.printPages(jrPrint, 0, jrPrint.getPages().size() - 1, false, printService);
 		}
 		return true;

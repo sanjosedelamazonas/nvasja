@@ -124,13 +124,16 @@ public class CajaManejoView extends CajaManejoUI implements View {
 
         // Create a context menu for 'someComponent'
         GridContextMenu contextMenu = new GridContextMenu(gridCaja);
+
+/*
+        contextMenu.addItem("Imprimir", ev -> {
+            Notification.show("imprimir: " + ev.getItemId());
+        });
+*/
+
         contextMenu.addGridBodyContextMenuListener(e -> {
             contextMenu.removeItems();
-            contextMenu.addItem("Imprimir", ev -> {
-                Notification.show("imprimir: " + e.getItemId());
-            });
         });
-
 // Checkable item
         final MenuItem item = contextMenu.addItem("Editar", e -> {
             Notification.show("editar: " + e.getDescription());
