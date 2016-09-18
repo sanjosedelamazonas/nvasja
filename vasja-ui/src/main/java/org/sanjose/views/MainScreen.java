@@ -87,8 +87,8 @@ public class MainScreen extends HorizontalLayout {
             printerIcon.setVisible(false);
             printerIcon.setImmediate(true);
             //printerIcon.setValue("");
-            printHelper.addComponent(printerLoading);
-            printHelper.addComponent(printerIcon);
+            menu.addComponent(printerLoading);
+            menu.addComponent(printerIcon);
         }
 
 
@@ -104,8 +104,8 @@ public class MainScreen extends HorizontalLayout {
         if (printerIcon!=null) {
             printerIcon.setVisible(true);
             //printerIcon.setValue(null);
-            printerIcon.setHeight("16px");
-            printerIcon.setWidth("16px");
+            printerIcon.setHeight(16, Unit.PIXELS);
+            printerIcon.setWidth(16, Unit.PIXELS);
         }
         //printTitleLayout.requestRepaint();
     }
