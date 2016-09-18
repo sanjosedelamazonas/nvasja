@@ -13336,10 +13336,6 @@ div.v-layout.v-horizontal.v-widget {
 	box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.1);
 }
 
-.mytheme .about-view {
-	overflow: auto;
-}
-
 .mytheme .about-view .about-content {
 	background: white;
 	color: #474747;

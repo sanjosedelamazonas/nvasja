@@ -7,12 +7,15 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,34 +80,35 @@ public class PrintHelper extends VerticalLayout implements View {
 		if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
             addComponent(new Label("Imprmir Service"));
 			//ReportHelper.getSqlConnection();
-            logger.info("Printing reports");
 		    printServiceManager = RemotePrintServiceManager.getInstance(mainScreen);
 		    printServiceManager.addListener(new PrintServiceListChangedListener() {
 		        public void onPrintServiceListChanged(PrintServiceListChangedEvent event) {
 		        	c.removeAllItems();
 		            c.setBeanIdProperty("id");
 		            logger.info("Found printServices");
-		            for (PrintService ps : event.getPrintServices()) {
-                        logger.info("Trying to load printservices");
-		            	mainScreen.printerLoaded();
-		                c.addBean(ps);
+					List<String> imprimeras = new ArrayList<String>();
+					for (PrintService ps : event.getPrintServices()) {
+                        logger.fine("Printservice loaded: " + ps.getName());
+						imprimeras.add(ps.getName());
+						c.addBean(ps);
 		            }
-		            table.setContainerDataSource(c);
-		        }
+					if (!imprimeras.isEmpty())
+						mainScreen.printerLoaded(imprimeras);
+					table.setContainerDataSource(c);
+					//table.setVisibleColumns(new String[] { "id", "name", "resolution" });
+					table.setColumnCollapsingAllowed(true);
+					/*table.setColumnCollapsed("ATTRIBUTES", true);
+					table.setColumnCollapsed("Attributes", true);
+					table.setColumnCollapsed("supportedAttributeCategories", true);
+					table.setColumnCollapsed("supportedAttributeCategories".toUpperCase(), true);
+					table.setColumnCollapsed("supportedDocFlavors", true);
+					table.setColumnCollapsed("supportedDocFlavors".toUpperCase(), true);*/
+				}
 		    });
 		}
+		printOptions.setColumns(80);
 		table.setSelectable(true);
 	    table.setMultiSelect(false);
-	    //table.setVisibleColumns(new String[] { "id", "name", "resolution",
-		//		"colorsupported", "defaultprinter" });
-	    table.setColumnCollapsingAllowed(true);
-/*	    table.setColumnCollapsed("ATTRIBUTES", true);
-	    table.setColumnCollapsed("Attributes", true);
-	    table.setColumnCollapsed("supportedAttributeCategories", true);
-	    table.setColumnCollapsed("supportedAttributeCategories".toUpperCase(), true);
-	    table.setColumnCollapsed("supportedDocFlavors", true);
-	    table.setColumnCollapsed("supportedDocFlavors".toUpperCase(), true);
-	    */
 	    table.addValueChangeListener((Table.ValueChangeListener) event -> {
             printService = (PrintService)c.getItem(event.getProperty().getValue()).getBean();
             logger.info("The bean got: " + c.getItem(event.getProperty().getValue()).getBean().getClass().getName());
@@ -149,23 +153,30 @@ public class PrintHelper extends VerticalLayout implements View {
 	    Button buttonText = new Button("Imprimir texto");
 	    buttonText.addListener(new Button.ClickListener() {
 	        public void buttonClick(ClickEvent event) {
-	    	    DocFlavor flavor = DocFlavor.INPUT_STREAM.TEXT_PLAIN_UTF_8;
+	    	    DocFlavor flavor = DocFlavor.BYTE_ARRAY.TEXT_PLAIN_UTF_8;
 				PrintRequestAttributeSet pras =	new HashPrintRequestAttributeSet();
 				logger.info("Printing using printService: " + printService.getName());
 				DocPrintJob job = printService.createPrintJob();
-				FileInputStream fis = null;
+				//FileInputStream fis = null;
 				try {
-					fis = new FileInputStream(new File("text.txt"));
+					File testFile = new File(System.getProperty("java.io.tmpdir") + "/text.txt");
+					testFile.createNewFile();
+					FileWriter fw = new FileWriter(testFile);
+					BufferedWriter bw = new BufferedWriter(fw);
+					bw.write("Test text file printed by the VASJA Caja system.");
+					bw.close();
+					fw.close();
+					Path path = Paths.get(testFile.getPath());
+					byte[] data = Files.readAllBytes(path);
+					DocAttributeSet das = new HashDocAttributeSet();
+					Doc doc = new SimpleDoc(data, flavor, das);
+					logger.info("Sending to job: " + job.toString() + " " + doc.toString());
+					job.print(doc, pras);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
-				}
-				DocAttributeSet das = new HashDocAttributeSet();
-				Doc doc = new SimpleDoc(fis, flavor, das);
-				logger.info("Sending to job: " + job.toString() + " " + doc.toString());				
-				try {
-					job.print(doc, pras);
+				} catch (IOException e) {
+					e.printStackTrace();
 				} catch (PrintException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	        }

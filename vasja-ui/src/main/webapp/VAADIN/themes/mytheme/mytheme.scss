@@ -189,7 +189,7 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
   // About view
 
   .about-view {
-    overflow: auto;
+    //overflow: auto;
 
     .about-content {
       @include valo-panel-style;
