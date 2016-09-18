@@ -23,6 +23,14 @@
             <artifactId>vaadin-client-compiler</artifactId>
             <scope>provided</scope>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.sanjosedelamazonas</groupId>
+            <artifactId>printapplet-addon</artifactId>
+            <version>0.0.5</version>
+        </dependency>
+
     </dependencies>
 
     <build>

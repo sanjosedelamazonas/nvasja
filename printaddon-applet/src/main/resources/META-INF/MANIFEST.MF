@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: pol
+Build-Jdk: 1.6.0_26
+Implementation-Vendor-Id: dk.apaq.vaadin.addon
+Implementation-Title: PrintService for Vaadin with DotMatrix TextPrint
+Implementation-Vendor: 
+Implementation-Version: 0.0.5
+Vaadin-Addon: printservice-addon-pol-0.0.5.jar
+Vaadin-Package-Version: 1
+Vaadin-Widgetsets: dk.apaq.vaadin.addon.printservice.gwt.WidgetSet
