@@ -15,7 +15,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,16 +33,12 @@ import javax.print.attribute.PrintRequestAttributeSet;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.export.JRTextExporter;
-import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 
 /*
 import org.sanjose.util.JRPrinterAWT;
 import org.sanjose.web.VasjaApp;
 */
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -55,6 +50,7 @@ import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedListener;
 import dk.apaq.vaadin.addon.printservice.RemotePrintService;
 import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
 //import net.sf.jasperreports.engine.print.JRPrinterAWT;
+import org.sanjose.model.ReportHelper;
 import org.sanjose.views.MainScreen;
 
 @SuppressWarnings("serial")

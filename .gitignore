@@ -14,3 +14,6 @@ reports/.gitignore
 vasja-reports/.gitignore
 vasja-reports/reports/.gitignore
 vasja-ui/.designer/
+vasja-reports/.project
+vasja-reports/.classpath
+vasja-reports/.settings

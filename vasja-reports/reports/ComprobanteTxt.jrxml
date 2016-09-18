@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-18T10:38:08 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="411" pageHeight="212" columnWidth="401" leftMargin="5" rightMargin="5" topMargin="1" bottomMargin="1" uuid="ffcc9523-bfb3-42b3-bfd2-4d3bbc1d7d8d">
+<!-- 2016-09-18T12:58:56 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComprobanteTxt" pageWidth="411" pageHeight="212" columnWidth="401" leftMargin="5" rightMargin="5" topMargin="1" bottomMargin="1" uuid="ffcc9523-bfb3-42b3-bfd2-4d3bbc1d7d8d">
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="net.sf.jasperreports.export.text.character.width" value="7.238"/>
 	<property name="net.sf.jasperreports.export.text.character.height" value="13.948"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="192.168.1.50"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SQL Srv virtualxp"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<style name="FixSizeFontStyle" isDefault="true" fontName="DejaVu Sans Mono" fontSize="10"/>
 	<parameter name="OP_ID" class="java.lang.Integer">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
@@ -34,10 +35,10 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID})
 Union all
 (SELECT OPERACION.txt_glosaitem AS OPERACION_DESCRIPCION,
      OPERACION.fec_fecha AS OPERACION_FECHA,
-     OPERACION.num_debesol AS OPERACION_PEN_debe,
-     OPERACION.num_habersol AS OPERACION_PEN_haber,
-     OPERACION.num_debedolar AS OPERACION_USD_debe,
-     OPERACION.num_haberdolar AS OPERACION_USD_haber,
+     OPERACION.num_habersol AS OPERACION_PEN_debe,
+     OPERACION.num_debesol AS OPERACION_PEN_haber,
+     OPERACION.num_haberdolar AS OPERACION_USD_debe,
+     OPERACION.num_debedolar AS OPERACION_USD_haber,
      OPERACION.cod_tipomoneda AS OPERACION_TIPOMONEDA,
      OPERACION.txt_correlativo AS OPERACION_ID,
 	firma.txt_nombredestino AS OPERACION_FIRMA,
@@ -256,7 +257,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID})]]>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans Mono"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{OPERACION_PEN_debe}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{OPERACION_PEN_haber}]]></textFieldExpression>
 			</textField>
 			<textField pattern="yyyy.MM.dd HH:mm" isBlankWhenNull="false">
 				<reportElement style="FixSizeFontStyle" x="11" y="196" width="134" height="12" uuid="de3f5e0a-4475-4ef8-b763-c1de2d553417"/>

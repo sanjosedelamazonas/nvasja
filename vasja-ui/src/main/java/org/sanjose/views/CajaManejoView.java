@@ -1,6 +1,7 @@
 package org.sanjose.views;
 
 import com.vaadin.addon.contextmenu.ContextMenu;
+import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.addon.contextmenu.MenuItem;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
@@ -122,14 +123,18 @@ public class CajaManejoView extends CajaManejoUI implements View {
         viewLogic.init();
 
         // Create a context menu for 'someComponent'
-        ContextMenu contextMenu = new ContextMenu(gridCaja, true);
+        GridContextMenu contextMenu = new GridContextMenu(gridCaja);
+        contextMenu.addGridBodyContextMenuListener(e -> {
+            contextMenu.removeItems();
+            contextMenu.addItem("Imprimir", ev -> {
+                Notification.show("imprimir: " + e.getItemId());
+            });
+        });
 
 // Checkable item
         final MenuItem item = contextMenu.addItem("Editar", e -> {
             Notification.show("editar: " + e.getDescription());
         });
-        item.setCheckable(true);
-        item.setChecked(true);
 
 // Disabled item
         MenuItem item2 = contextMenu.addItem("Disabled", e -> {

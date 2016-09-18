@@ -48,26 +48,8 @@
         <!-- JASPER REPORTS -->
 
         <dependency>
-            <groupId>net.sourceforge.jasperreports</groupId>
+            <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>${jasper.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.jasperreports</groupId>
-            <artifactId>jasperreports-javaflow</artifactId>
-            <version>${jasper.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.jasperreports</groupId>
-            <artifactId>jasperreports-fonts</artifactId>
-            <version>${jasper.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.jasperreports</groupId>
-            <artifactId>jasperreports-functions</artifactId>
             <version>${jasper.version}</version>
         </dependency>
 

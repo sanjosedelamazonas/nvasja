@@ -101,7 +101,7 @@ public class InfrastructureConfig {
 	 * @return
 	 */
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+	public EntityManagerFactory entityManagerFactory() {
 
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		vendorAdapter.setDatabase(Database.SQL_SERVER);
@@ -113,14 +113,15 @@ public class InfrastructureConfig {
 		factory.setPackagesToScan(getClass().getPackage().getName());
 		
 		factory.setDataSource(persistentDataSource());
+		factory.afterPropertiesSet();
 
-		return factory;
+		return factory.getObject();
 	}
 
 	@Bean
 	public PlatformTransactionManager transactionManager() {
 		JpaTransactionManager txManager = new JpaTransactionManager();
-		txManager.setEntityManagerFactory(entityManagerFactory().getObject());
+		txManager.setEntityManagerFactory(entityManagerFactory());
 		return txManager;
 	}
 }

@@ -1,22 +1,13 @@
 package org.sanjose.views;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitEvent;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitHandler;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
 import org.sanjose.MainUI;
-import org.sanjose.helper.GenUtil;
-import org.sanjose.helper.ReportHelper;
+import org.sanjose.model.ReportHelper;
 import org.sanjose.model.VsjCajabanco;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class provides an interface for the logical operations between the CRUD

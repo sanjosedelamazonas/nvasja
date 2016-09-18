@@ -66,7 +66,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
     private ScpTipodocumentoRep tipodocumentoRepo;
 
-    public EntityManager em;
+    private EntityManager em;
 
     public FieldGroup fieldGroup;
 

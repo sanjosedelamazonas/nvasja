@@ -1,4 +1,4 @@
-package org.sanjose.helper;
+package org.sanjose.model;
 
 import java.io.*;
 import java.sql.Connection;
@@ -6,13 +6,13 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Sizeable;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.window.WindowMode;
+import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -32,16 +32,46 @@ import net.sf.jasperreports.engine.type.WhenNoDataTypeEnum;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 import com.vaadin.ui.Window;
-import org.hibernate.SessionException;
-import org.sanjose.MainUI;
-import org.sanjose.model.VsjCajabanco;
+import org.hibernate.Session;
+import org.hibernate.jdbc.Work;
+import org.sanjose.helper.ConfigurationUtil;
+import org.sanjose.helper.DoubleDecimalFormatter;
+import org.sanjose.helper.GenUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
+@SpringComponent
+@EnableTransactionManagement
 public class ReportHelper {
 
-	static Connection sqlConnection = null;
-	static final Logger logger = Logger.getLogger(ReportHelper.class.getName());
+    @PersistenceContext
+    private EntityManager em;
+
+    private Connection sqlConnection = null;
+
+	static final Logger logger = LoggerFactory.getLogger(ReportHelper.class.getName());
+
+    private static ReportHelper instance;
+
+    public ReportHelper() {
+          instance = this;
+    }
+
+    @Autowired
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
+    }
+
+
+    public static ReportHelper get() {
+        if (instance==null)
+            instance = new ReportHelper();
+        return instance;
+    }
 
 
 	@SuppressWarnings("serial")
@@ -56,6 +86,7 @@ public class ReportHelper {
 			public InputStream getStream() {
 				byte[] b = null;
 				try {
+                    logger.info("in getStream");
 					InputStream rep = loadReport(REPORT);
 					if (rep != null) {
 						JasperReport report = (JasperReport) JRLoader
@@ -75,7 +106,7 @@ public class ReportHelper {
 */
 						if (isPdf)
 							b = JasperRunManager.runReportToPdf(report,
-									paramMap, getSqlConnection());
+									paramMap, get().getSqlConnection());
 						else if (isTxt) {
 							return exportToTxt(REPORT, paramMap);
 						} else {
@@ -85,7 +116,7 @@ public class ReportHelper {
 						Notification.show("There is no report file!");
 					}
 				} catch (JRException ex) {
-					logger.log(Level.SEVERE, null, ex);
+					logger.error("Error generating report", ex);
 
 				}
 				return new ByteArrayInputStream(b);
@@ -100,7 +131,7 @@ public class ReportHelper {
 		resource.setMIMEType((isPdf ? "application/pdf" : (isTxt ? "text/plain" : "text/html")));
 
 		logger.info("Resource: " + resource.getFilename() + " "
-				+ resource.toString());
+				+ resource.getMIMEType());
 
 		Embedded emb = new Embedded();
 		emb.setSizeFull();
@@ -114,6 +145,7 @@ public class ReportHelper {
 		repWindow.setPositionX(200);
 		repWindow.setPositionY(50);
 		repWindow.setModal(false);
+        repWindow.setContent(emb);
 		UI.getCurrent().addWindow(repWindow);
 
 	}
@@ -153,10 +185,10 @@ public class ReportHelper {
 */
 						return prepareToPrint(REPORT, paramMap);
 					} else {
-						logger.warning("There is no report file!");
+						logger.warn("There is no report file!");
 					}
 				} catch (JRException ex) {
-					logger.log(Level.SEVERE, null, ex);
+					logger.error("Error generating report", ex);
 				}
 			return null;
 	}
@@ -330,10 +362,11 @@ public class ReportHelper {
 							paramMap.put("DIARIO_FECHA_MAX", fechaMax);
 						return prepareToPrint(REPORT, paramMap);
 					} else {
-						logger.warning("There is no report file!");
+                        Notification.show("There is no report file: " + REPORT);
+						logger.warn("There is no report file!");
 					}
 				} catch (JRException ex) {
-					logger.log(Level.SEVERE, null, ex);
+					logger.error("Serious error generating report printDiario", ex);
 				}
 			return null;
 	}
@@ -356,17 +389,17 @@ public class ReportHelper {
 						report.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
 						if (format.equalsIgnoreCase("pdf"))
 							b = JasperRunManager.runReportToPdf(report,
-									paramMap, getSqlConnection());
+									paramMap, get().getSqlConnection());
 						else if (format.equalsIgnoreCase("html"))
 							return exportToHtml(reportName, paramMap);
 						else 
 							return exportToXls(reportName, paramMap);
 					} else {
 						Notification.show(
-								"There is no report file!");
+								"There is no report file: "  + reportName);
 					}
 				} catch (JRException ex) {
-					logger.severe(ex.getMessage());
+					logger.error(ex.getMessage());
 					ex.printStackTrace();
 				}
 				return new ByteArrayInputStream(b);
@@ -394,12 +427,14 @@ public class ReportHelper {
 		repWindow.setPositionX(200);
 		repWindow.setPositionY(50);
 		repWindow.setModal(false);
+        repWindow.setContent(emb);
 		UI.getCurrent().addWindow(repWindow);
 	}
 	
 	
 	private static InputStream loadReport(String reportName) {
 		InputStream rep = null;
+        logger.info("Trying to load report " + reportName);
 		rep = (UI.getCurrent().getClass()).getResourceAsStream(ConfigurationUtil
 					.get("REPORTS_SOURCE_URL").trim() + "/" + reportName + ".jasper");
 		if (rep == null) {
@@ -422,7 +457,7 @@ public class ReportHelper {
 		@SuppressWarnings("unchecked")
 		JasperPrint jasperPrint = JasperFillManager.fillReport(
 				ConfigurationUtil.get("REPORTS_SOURCE_FOLDER") + reportName
-						+ ".jasper", paramMap, getSqlConnection());
+						+ ".jasper", paramMap, get().getSqlConnection());
 		JRHtmlExporter htmlExporter = new JRHtmlExporter();
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 
@@ -443,7 +478,7 @@ public class ReportHelper {
 		@SuppressWarnings("unchecked")
 		JasperPrint jasperPrint = JasperFillManager.fillReport(
 				ConfigurationUtil.get("REPORTS_SOURCE_FOLDER") + reportName
-						+ ".jasper", paramMap, getSqlConnection());
+						+ ".jasper", paramMap, get().getSqlConnection());
 		JRXlsExporter xlsExporter = new JRXlsExporter();
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 
@@ -465,7 +500,7 @@ public class ReportHelper {
 		@SuppressWarnings("unchecked")
 		JasperPrint jasperPrint = JasperFillManager.fillReport(
 				ConfigurationUtil.get("REPORTS_SOURCE_FOLDER") + reportName
-						+ ".jasper", paramMap, getSqlConnection());
+						+ ".jasper", paramMap, get().getSqlConnection());
 		JRTextExporter txtExporter = new JRTextExporter();
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 
@@ -484,26 +519,46 @@ public class ReportHelper {
 			HashMap paramMap) throws JRException {
 		return JasperFillManager.fillReport(
 				ConfigurationUtil.get("REPORTS_SOURCE_FOLDER") + reportName
-						+ ".jasper", paramMap, getSqlConnection());
+						+ ".jasper", paramMap, get().getSqlConnection());
 	}
 
-	public static Connection getSqlConnection() {
+    @Transactional
+	public Connection getSqlConnection() {
 		try {
 			if (sqlConnection != null && sqlConnection.isValid(100))
 				return sqlConnection;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		EntityManager em = MainUI.get().getEntityManager();
+		//em = MainUI.get().getEntityManager();
+
+        em=em.getEntityManagerFactory().createEntityManager();
+        logger.info("Got entity manager: " + em.getProperties().toString());
 
 		//logger.info("Got: " + em.getDelegate());
 		//logger.info("Got class: " + em.getDelegate().getClass().getCanonicalName());
 
-		try {
-			sqlConnection = ((org.hibernate.internal.SessionImpl) em.getDelegate()).connection();
+/*		try {
+            if (((org.hibernate.internal.SessionImpl) em.getDelegate()).isConnected()) {
+                logger.info("Hibernate is connected");
+            } else {
+
+            }
+            sqlConnection = ((org.hibernate.internal.SessionImpl) em.getDelegate()).connection();
 		} catch (SessionException se) {
-			logger.info("Hibernate session is closed!!!");
-		}
+			logger.info("Hibernate session is closed!!!" + se.getMessage());
+            //sqlConnection = ((org.hibernate.internal.SessionImpl) em.getDelegate()).beginTransaction();
+        }*/
+        Session session = em.unwrap(Session.class);
+        session.doWork(new Work() {
+
+            @Override
+            public void execute(Connection connection) throws SQLException {
+                logger.info("setting connection: " + connection);
+                sqlConnection = connection;
+            }
+        });
+
 		/*UnitOfWork unitOfWork = (UnitOfWork) ((JpaEntityManager) ConfigurationUtil
 				.getEntityManager().getDelegate()).getActiveSession();
 		unitOfWork.beginEarlyTransaction();
