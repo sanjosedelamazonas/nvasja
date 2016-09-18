@@ -45,6 +45,32 @@
 		    <artifactId>vaadin-spring</artifactId>        
 		</dependency>
 
+        <!-- JASPER REPORTS -->
+
+        <dependency>
+            <groupId>net.sourceforge.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>${jasper.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.jasperreports</groupId>
+            <artifactId>jasperreports-javaflow</artifactId>
+            <version>${jasper.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>${jasper.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.jasperreports</groupId>
+            <artifactId>jasperreports-functions</artifactId>
+            <version>${jasper.version}</version>
+        </dependency>
+
         <!--VAADIN Add-Ons-->
 
         <dependency>
@@ -57,6 +83,12 @@
             <groupId>tm.kod</groupId>
             <artifactId>numberfield7</artifactId>
             <version>0.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sanjosedelamazonas</groupId>
+            <artifactId>printapplet-addon</artifactId>
+            <version>0.0.5</version>
         </dependency>
 
         <!-- Custom components -->

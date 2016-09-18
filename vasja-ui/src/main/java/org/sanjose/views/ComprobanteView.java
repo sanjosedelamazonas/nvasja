@@ -266,6 +266,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         destinoWindow.setPositionX(200);
         destinoWindow.setPositionY(50);
         destinoWindow.setModal(true);
+        destinoWindow.setClosable(false);
 
         DestinoView destinoView = new DestinoView(destinoRepo, cargocuartaRepo, tipodocumentoRepo);
         if (comboBox.getValue()==null)

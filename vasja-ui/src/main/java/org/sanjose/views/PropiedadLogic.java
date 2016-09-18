@@ -8,6 +8,7 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
 import org.sanjose.MainUI;
+import org.sanjose.helper.ConfigurationUtil;
 import org.sanjose.model.VsjPropiedad;
 
 import java.io.Serializable;
@@ -48,6 +49,7 @@ public class PropiedadLogic implements Serializable {
                 Object item = view.gridPropiedad.getContainerDataSource().getItem(view.gridPropiedad.getEditedItemId());
                 if (item!=null) 
                 	view.repo.save((VsjPropiedad)((BeanItem)item).getBean());
+                ConfigurationUtil.resetConfiguration();
             }
         });
                
@@ -101,5 +103,6 @@ public class PropiedadLogic implements Serializable {
         for (VsjPropiedad vsj : rows) {
         	view.removeRow(vsj);
         }
+        ConfigurationUtil.resetConfiguration();
     }
 }

@@ -1127,7 +1127,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.7.0";
+	content: "7.7.1";
 }
 
 .v-widget {
@@ -13462,10 +13462,6 @@ div.v-layout.v-horizontal.v-widget {
 	transform: none;
 	-webkit-box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.1);
 	box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.1);
-}
-
-.mytheme .about-view {
-	overflow: auto;
 }
 
 .mytheme .about-view .about-content {

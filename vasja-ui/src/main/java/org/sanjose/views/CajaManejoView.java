@@ -44,8 +44,6 @@ import java.util.*;
 @UIScope
 public class CajaManejoView extends CajaManejoUI implements View {
 
-	private static final Logger log = LoggerFactory.getLogger(CajaManejoView.class);
-	
     public static final String VIEW_NAME = "Manejo de Caja";
 
     private CajaManejoLogic viewLogic = new CajaManejoLogic(this);

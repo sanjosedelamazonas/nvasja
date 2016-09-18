@@ -14,8 +14,12 @@ public class AboutView extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "About";
 
+    private Label label;
+
+    private CustomLayout aboutContent;
+
     public AboutView() {
-        CustomLayout aboutContent = new CustomLayout("aboutview");
+        aboutContent = new CustomLayout("aboutview");
         aboutContent.setStyleName("about-content");
 
         // you can add Vaadin components in predefined slots in the custom
@@ -24,11 +28,18 @@ public class AboutView extends VerticalLayout implements View {
                 new Label(FontAwesome.INFO_CIRCLE.getHtml()
                         + " This application is using Vaadin "
                         + Version.getFullVersion(), ContentMode.HTML), "info");
-
         setSizeFull();
         setStyleName("about-view");
         addComponent(aboutContent);
         setComponentAlignment(aboutContent, Alignment.MIDDLE_CENTER);
+    }
+
+    public CustomLayout getAboutContent() {
+        return aboutContent;
+    }
+
+    public Label getLabel() {
+        return label;
     }
 
     @Override
