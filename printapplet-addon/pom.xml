@@ -6,7 +6,7 @@
     <artifactId>printapplet-addon</artifactId>
     <packaging>jar</packaging>
     <version>0.0.5</version>
-    <name>Vaadin AppletIntegration Addon</name>
+    <name>Print Applet Addon</name>
 
 
     <parent>
@@ -108,7 +108,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
                 <configuration>
                   <archive>
                     <manifestFile>WebContent/META-INF/MANIFEST.MF</manifestFile>
@@ -118,7 +117,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -131,7 +129,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>2.4.1</version>
                 <configuration>
                     <filesets>
                         <fileset>
@@ -151,8 +148,8 @@
                     <hostedWebapp>${basedir}/WebContent/VAADIN/widgetsets
                     </hostedWebapp>
                     <noServer>true</noServer>
-                    <draftCompile>false</draftCompile>
-                    <compileReport>true</compileReport>
+                    <draftCompile>true</draftCompile>
+                    <compileReport>false</compileReport>
                     <style>OBF</style>
                     <strict>true</strict>
                     <runTarget>http://localhost:8080/</runTarget>

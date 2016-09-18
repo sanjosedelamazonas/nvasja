@@ -18,7 +18,7 @@
 	<name>vasja-parent</name>
 
 	<properties>
-		<vaadin.version>7.7.1</vaadin.version>
+		<vaadin.version>7.7.0</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 		<jasper.version>6.3.0</jasper.version>
 		<jetty.plugin.version>9.2.3.v20140905</jetty.plugin.version>
@@ -134,6 +134,6 @@
     <module>vasja-widgetset</module>
     <module>vasja-ui</module>
     <module>vasja-production</module>
-	<module>printaddon-applet</module>
+	<module>printapplet-addon</module>
   </modules>
 </project>

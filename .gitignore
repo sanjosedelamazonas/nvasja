@@ -7,7 +7,7 @@ target
 /*/target/
 .idea
 *.iml
-/printaddon-applet/WebContent/VAADIN/widgetsets/*
+/printapplet-addon/WebContent/VAADIN/widgetsets/*
 .settings
 .settings/*
 reports/.gitignore
