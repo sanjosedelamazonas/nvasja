@@ -1,5 +1,7 @@
 package org.sanjose.views;
 
+import com.vaadin.addon.contextmenu.ContextMenu;
+import com.vaadin.addon.contextmenu.MenuItem;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -17,13 +19,10 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.HeaderCell;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.PopupDateField;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.NumberRenderer;
 import org.sanjose.MainUI;
@@ -121,6 +120,22 @@ public class CajaManejoView extends CajaManejoUI implements View {
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
 
         viewLogic.init();
+
+        // Create a context menu for 'someComponent'
+        ContextMenu contextMenu = new ContextMenu(gridCaja, true);
+
+// Checkable item
+        final MenuItem item = contextMenu.addItem("Editar", e -> {
+            Notification.show("editar: " + e.getDescription());
+        });
+        item.setCheckable(true);
+        item.setChecked(true);
+
+// Disabled item
+        MenuItem item2 = contextMenu.addItem("Disabled", e -> {
+            Notification.show("disabled");
+        });
+        item2.setEnabled(false);
 
     }
 
