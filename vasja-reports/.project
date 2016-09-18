@@ -20,4 +20,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.sf.jasperreports.nature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>ComprobanteTxt.jrxml</name>
+			<type>1</type>
+			<location>//Leon-pc/d/vasja_caja_system/Reports/ComprobanteTxt.jrxml</location>
+		</link>
+	</linkedResources>
 </projectDescription>
