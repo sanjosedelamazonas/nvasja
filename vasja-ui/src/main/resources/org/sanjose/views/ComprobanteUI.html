@@ -8,119 +8,142 @@
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
  </head> 
  <body> 
-  <vaadin-vertical-layout spacing size-full margin> 
-   <vaadin-vertical-layout width="1024px" _id="editarComprobante"> 
-    <vaadin-horizontal-layout spacing width="1024px" margin _id="horizontalProyectoTercero" :middle :center> 
-     <vaadin-combo-box caption="Proyecto" item-caption-mode="id" width="69px" _id="selProyecto"> 
-      <option>Option 1</option> 
-      <option>Option 2</option> 
-     </vaadin-combo-box> 
-     <vaadin-combo-box caption="Tercero" item-caption-mode="id" width="71px" _id="selTercero"> 
-      <option>Option 1</option> 
-      <option>Option 2</option> 
-     </vaadin-combo-box> 
-     <vaadin-text-field caption="Nombre" enabled="false" width-full _id="nombreTercero" :expand></vaadin-text-field> 
-     <vaadin-text-field caption="S/." enabled="false" width="60px" _id="saldoProyPEN"></vaadin-text-field> 
-     <vaadin-text-field caption="$" enabled="false" width="60px" _id="saldoProyUSD"></vaadin-text-field> 
-     <vaadin-text-field caption="€" enabled="false" width="60px" _id="saldoProyEUR"></vaadin-text-field> 
-    </vaadin-horizontal-layout> 
-    <vaadin-vertical-layout caption="Detalles" spacing height="93.98%" margin _id="verticalDetalles"> 
-     <vaadin-horizontal-layout spacing width="742px" _id="horizontalMonedaCaja"> 
-      <vaadin-option-group item-caption-mode="id" width="94px" height="37px" _id="selMoneda"> 
-       <option>Soles</option> 
-       <option>Dolares</option> 
-      </vaadin-option-group> 
-      <vaadin-combo-box caption="Caja" item-caption-mode="id" width="66.47%" _id="selCaja" :expand> 
-       <option>Option 1</option> 
-       <option>Option 2</option> 
-      </vaadin-combo-box> 
-      <vaadin-text-field caption="Caja S/." enabled="false" width="60px" _id="saldoCajaPEN"></vaadin-text-field> 
-      <vaadin-text-field caption="Caja $" enabled="false" width="60px" _id="saldoCajaUSD"></vaadin-text-field> 
-     </vaadin-horizontal-layout> 
-     <vaadin-horizontal-layout spacing width="468px" _id="horizontalFechaVoucher"> 
-      <vaadin-popup-date-field description="Fecha" _id="dataFechaComprobante"></vaadin-popup-date-field> 
-      <vaadin-text-field description="Num de Voucher" enabled="false" _id="numVoucher"></vaadin-text-field> 
-     </vaadin-horizontal-layout> 
-     <vaadin-horizontal-layout spacing width="1024px" _id="horizontalIngresoGlosa"> 
-      <tm_kod_widgets_numberfield-number-field caption="Ingreso" _id="numIngreso"></tm_kod_widgets_numberfield-number-field> 
-      <tm_kod_widgets_numberfield-number-field caption="Egreso" _id="numEgreso"></tm_kod_widgets_numberfield-number-field> 
-      <vaadin-text-field caption="Glosa" width-full _id="glosa" :expand></vaadin-text-field> 
-     </vaadin-horizontal-layout> 
-     <vaadin-horizontal-layout spacing width="620px" _id="horizontalIngresoGlosa2"> 
-      <vaadin-combo-box caption="Responsable" item-caption-mode="id" width-full _id="selResponsable" :expand> 
-       <option>Option 1</option> 
-       <option>Option 2</option> 
-      </vaadin-combo-box> 
-      <vaadin-button plain-text _id="btnResponsable" :bottom :center>
-        + 
-      </vaadin-button> 
-      <vaadin-combo-box caption="Lugar de gasto" item-caption-mode="id" width="313px" _id="selLugarGasto"> 
-       <option>Option 1</option> 
-       <option>Option 2</option> 
-      </vaadin-combo-box> 
-     </vaadin-horizontal-layout> 
-     <vaadin-vertical-layout caption="Documento" size-full _id="verticalDocumento"> 
-      <vaadin-horizontal-layout spacing width="844px" _id="horizontalFechaVoucher2"> 
-       <vaadin-horizontal-layout spacing width="293px" _id="horizontalCodAux"> 
-        <vaadin-combo-box caption="Cod. Auxiliar" item-caption-mode="id" width-full _id="selCodAuxiliar" :expand> 
+  <vaadin-css-layout caption="Saldos de la cuenta" style-name="root-layout form-template-vivid" responsive width-full _id="root_layout"> 
+   <vaadin-label style-name="header-label" plain-text _id="billing_header_label">
+     Detalles de operacion 
+   </vaadin-label> 
+   <vaadin-horizontal-layout> 
+    <vaadin-vertical-layout size-auto> 
+     <vaadin-form-layout style-name="billing-formlayout" width="588px" margin-top="false" margin-bottom="false" _id="billing_form"> 
+      <vaadin-horizontal-layout spacing> 
+       <vaadin-text-field description="Num de Voucher" caption="Nro de comprobante" enabled="false" style-name="form-textfield" width="105px" _id="numVoucher" :middle :center></vaadin-text-field> 
+       <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante"></vaadin-popup-date-field> 
+      </vaadin-horizontal-layout> 
+      <vaadin-horizontal-layout style-name="cuenta-Layout" spacing> 
+       <vaadin-vertical-layout spacing> 
+        <vaadin-horizontal-layout description="Proyecto" spacing> 
+         <vaadin-combo-box input-prompt="Proyecto" style-name="form-textfield" item-caption-mode="id" width="215px" _id="selProyecto"> 
+          <option>Option 1</option> 
+          <option>Option 2</option> 
+         </vaadin-combo-box> 
+         <vaadin-combo-box input-prompt="Fuente" style-name="form-textfield" item-caption-mode="id" width="86px" _id="selFuente"> 
+          <option>Option 1</option> 
+          <option>Option 2</option> 
+         </vaadin-combo-box> 
+        </vaadin-horizontal-layout> 
+        <vaadin-combo-box input-prompt="Tercero" style-name="form-textfield" item-caption-mode="id" width="311px" _id="selTercero"> 
          <option>Option 1</option> 
          <option>Option 2</option> 
         </vaadin-combo-box> 
-        <vaadin-button plain-text _id="btnDestino" :bottom>
-          + 
-        </vaadin-button> 
-       </vaadin-horizontal-layout> 
-       <vaadin-horizontal-layout width-full :expand> 
-        <vaadin-combo-box caption="Tipo de Doc" item-caption-mode="id" _id="selTipoDoc" :middle :right> 
-         <option>Option 1</option> 
-         <option>Option 2</option> 
-        </vaadin-combo-box> 
-        <vaadin-text-field caption="Serie" _id="serieDoc" :middle :center></vaadin-text-field> 
-        <vaadin-text-field caption="Nr Doc" width="119px" _id="numDoc" :middle></vaadin-text-field> 
-        <vaadin-popup-date-field caption="Fecha Doc" _id="fechaDoc"></vaadin-popup-date-field> 
+       </vaadin-vertical-layout> 
+       <vaadin-horizontal-layout> 
+        <vaadin-text-field caption="S/." enabled="false" style-name="form-textfield" width="60px" _id="saldoProyPEN"></vaadin-text-field> 
+        <vaadin-text-field caption="$" enabled="false" style-name="form-textfield" width="60px" _id="saldoProyUSD"></vaadin-text-field> 
+        <vaadin-text-field caption="€" enabled="false" style-name="form-textfield" width="60px" height="18px" _id="saldoProyEUR"></vaadin-text-field> 
        </vaadin-horizontal-layout> 
       </vaadin-horizontal-layout> 
-      <vaadin-horizontal-layout spacing width="1024px" _id="horizontalIngresoGlosa3"> 
-       <vaadin-combo-box caption="Tipo de movimiento" item-caption-mode="id" width="190px" _id="selTipoMov"> 
+     </vaadin-form-layout> 
+     <vaadin-form-layout style-name="billing-formlayout" width="590px" margin-top="false" margin-bottom="false" _id="billing_form2"> 
+      <vaadin-horizontal-layout spacing> 
+       <tm_kod_widgets_numberfield-number-field caption="Ingreso" _id="numIngreso"></tm_kod_widgets_numberfield-number-field> 
+       <tm_kod_widgets_numberfield-number-field caption="Egreso" _id="numEgreso"></tm_kod_widgets_numberfield-number-field> 
+       <vaadin-option-group caption="Moneda" item-caption-mode="id" width="94px" height="37px" _id="selMoneda" :center> 
+        <option>Soles</option> 
+        <option>Dolares</option> 
+       </vaadin-option-group> 
+       <vaadin-combo-box caption="Caja" style-name="form-textfield" item-caption-mode="id" width="66.47%" _id="selCaja"> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
-       <vaadin-combo-box caption="Cta contable" item-caption-mode="id" width="187px" _id="selCtaContable"> 
+       <vaadin-text-field caption="Caja S/." enabled="false" style-name="form-textfield" width="60px" _id="saldoCajaPEN"></vaadin-text-field> 
+       <vaadin-text-field caption="Caja $" enabled="false" style-name="form-textfield" width="60px" _id="saldoCajaUSD"></vaadin-text-field> 
+      </vaadin-horizontal-layout> 
+      <vaadin-text-field input-prompt="Glosa" style-name="form-textfield" width="550px" _id="glosa"></vaadin-text-field> 
+      <vaadin-horizontal-layout spacing> 
+       <vaadin-combo-box input-prompt="Responsable" style-name="form-textfield" item-caption-mode="id" width="250px" height="18px" _id="selResponsable"> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
-       <vaadin-combo-box caption="Rubro inst" item-caption-mode="id" width="189px" _id="selRubroInst"> 
-        <option>Option 1</option> 
-        <option>Option 2</option> 
-       </vaadin-combo-box> 
-       <vaadin-combo-box caption="Rubro proy." item-caption-mode="id" width="196px" _id="selRubroProy"> 
-        <option>Option 1</option> 
-        <option>Option 2</option> 
-       </vaadin-combo-box> 
-       <vaadin-combo-box caption="Fuente" item-caption-mode="id" width="168px" _id="selFuente"> 
+       <vaadin-button plain-text _id="btnResponsable" :bottom>
+         + Nuevo 
+       </vaadin-button> 
+       <vaadin-combo-box input-prompt="Lugar de gasto" style-name="form-textfield" item-caption-mode="id" width="140px" _id="selLugarGasto" :center> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
       </vaadin-horizontal-layout> 
-     </vaadin-vertical-layout> 
+      <vaadin-horizontal-layout spacing> 
+       <vaadin-vertical-layout spacing size-auto> 
+        <vaadin-combo-box input-prompt="Tipo de movimiento" style-name="form-textfield" item-caption-mode="id" width="140px" _id="selTipoMov"> 
+         <option>Option 1</option> 
+         <option>Option 2</option> 
+        </vaadin-combo-box> 
+        <vaadin-combo-box input-prompt="Cuenta contable" style-name="form-textfield" item-caption-mode="id" width="140px" _id="selCtaContable"> 
+         <option>Option 1</option> 
+         <option>Option 2</option> 
+        </vaadin-combo-box> 
+        <vaadin-combo-box input-prompt="Rubro Institucional" style-name="form-textfield" item-caption-mode="id" width="140px" _id="selRubroInst"> 
+         <option>Option 1</option> 
+         <option>Option 2</option> 
+        </vaadin-combo-box> 
+        <vaadin-combo-box input-prompt="Partida presupuestal" style-name="form-textfield" item-caption-mode="id" width="140px" _id="selRubroProy"> 
+         <option>Option 1</option> 
+         <option>Option 2</option> 
+        </vaadin-combo-box> 
+       </vaadin-vertical-layout> 
+       <vaadin-form-layout style-name="billing-formlayout" width="311px" margin-top="false" margin-bottom="false" _id="billing_form5"> 
+        <vaadin-label size-auto plain-text _id="documento_header_label4">
+          Detalles del documento 
+        </vaadin-label> 
+        <vaadin-horizontal-layout> 
+         <vaadin-horizontal-layout style-name="name-wrapper" spacing _id="name_wrapper9"> 
+          <vaadin-combo-box input-prompt="Auxiliar" style-name="form-textfield" item-caption-mode="id" width="200px" height="18px" _id="selCodAuxiliar4"> 
+           <option>Option 1</option> 
+           <option>Option 2</option> 
+          </vaadin-combo-box> 
+          <vaadin-button plain-text _id="btnDestino4" :bottom>
+            +Nuevo 
+          </vaadin-button> 
+         </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout> 
+        <vaadin-horizontal-layout style-name="name-wrapper" spacing _id="name_wrapper10"> 
+         <vaadin-popup-date-field style-name="form-textfield" _id="fechaDoc4" :bottom></vaadin-popup-date-field> 
+         <vaadin-combo-box input-prompt="Tipo de documento" style-name="form-textfield" item-caption-mode="id" _id="selTipoDoc4" :bottom> 
+          <option>Option 1</option> 
+          <option>Option 2</option> 
+         </vaadin-combo-box> 
+        </vaadin-horizontal-layout> 
+        <vaadin-horizontal-layout width="190px"> 
+         <vaadin-text-field input-prompt="Serie de doc" style-name="form-textfield" width="50px" _id="serieDoc4" :bottom></vaadin-text-field> 
+         <vaadin-text-field input-prompt="Nr doc" style-name="form-textfield" width="100px" _id="numDoc4" :bottom></vaadin-text-field> 
+        </vaadin-horizontal-layout> 
+       </vaadin-form-layout> 
+      </vaadin-horizontal-layout> 
+     </vaadin-form-layout> 
     </vaadin-vertical-layout> 
-    <vaadin-vertical-layout size-auto _id="verticalButtons" :middle :center> 
-     <vaadin-horizontal-layout spacing _id="horizontalButtons" :middle :center> 
-      <vaadin-button plain-text _id="cerrarBtn">
-        Cerrar 
+    <vaadin-form-layout style-name="billing-formlayout" size-auto margin-top="false" margin-bottom="false" _id="billing_form6" :bottom> 
+     <vaadin-vertical-layout size-auto> 
+      <vaadin-button plain-text _id="guardarBtn">
+        Guardar 
+      </vaadin-button> 
+      <vaadin-button plain-text _id="cancelarBtn">
+        Cancelar 
+      </vaadin-button> 
+      <vaadin-button plain-text _id="modificarBtn">
+        Modificar 
+      </vaadin-button> 
+      <vaadin-button plain-text _id="anularBtn">
+        Eliminar 
       </vaadin-button> 
       <vaadin-button plain-text _id="nuevoComprobante">
         Nuevo Comprobante 
       </vaadin-button> 
-      <vaadin-button plain-text _id="anularBtn">
-        Anular 
+      <vaadin-button plain-text _id="cerrarBtn">
+        Imprimir voucher 
       </vaadin-button> 
-      <vaadin-button plain-text _id="guardarBtn">
-        Guardar 
-      </vaadin-button> 
-     </vaadin-horizontal-layout> 
-    </vaadin-vertical-layout> 
-   </vaadin-vertical-layout> 
-  </vaadin-vertical-layout>  
+     </vaadin-vertical-layout> 
+    </vaadin-form-layout> 
+   </vaadin-horizontal-layout> 
+  </vaadin-css-layout>  
  </body>
 </html>
