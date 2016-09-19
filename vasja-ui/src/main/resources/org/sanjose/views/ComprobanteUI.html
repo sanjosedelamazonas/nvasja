@@ -45,12 +45,12 @@
      </vaadin-form-layout> 
      <vaadin-form-layout style-name="billing-formlayout" width="590px" margin-top="false" margin-bottom="false" _id="billing_form2"> 
       <vaadin-horizontal-layout spacing> 
-       <tm_kod_widgets_numberfield-number-field caption="Ingreso" _id="numIngreso"></tm_kod_widgets_numberfield-number-field> 
-       <tm_kod_widgets_numberfield-number-field caption="Egreso" _id="numEgreso"></tm_kod_widgets_numberfield-number-field> 
        <vaadin-option-group caption="Moneda" item-caption-mode="id" width="94px" height="37px" _id="selMoneda" :center> 
         <option>Soles</option> 
         <option>Dolares</option> 
        </vaadin-option-group> 
+       <tm_kod_widgets_numberfield-number-field caption="Ingreso" _id="numIngreso"></tm_kod_widgets_numberfield-number-field> 
+       <tm_kod_widgets_numberfield-number-field caption="Egreso" _id="numEgreso"></tm_kod_widgets_numberfield-number-field> 
        <vaadin-combo-box caption="Caja" style-name="form-textfield" item-caption-mode="id" width="66.47%" _id="selCaja"> 
         <option>Option 1</option> 
         <option>Option 2</option> 
@@ -123,20 +123,19 @@
     </vaadin-vertical-layout> 
     <vaadin-form-layout style-name="order-summary-layout" width="438px" margin-top="false" margin-bottom="false" _id="order_summary_layout"> 
      <vaadin-label style-name="header-label-small" size-auto plain-text _id="order_heading">
-       Order Summary 
+       Saldos de Cajas 
      </vaadin-label> 
      <vaadin-css-layout style-name="order-item" width="300px" _id="order_item"> 
       <vaadin-label style-name="order-label" width="260px" _id="order_label">
         Vaadin Designer License 
        <br> $ 389.00 
       </vaadin-label> 
-      <vaadin-native-button icon="fonticon://FontAwesome/f057" style-name="cancel-order-button" width="25px" height="25px" plain-text _id="cancel_order_button"></vaadin-native-button> 
+      <vaadin-label style-name="order-label" width="260px" _id="order_label2">
+        Vaadin Designer License 
+       <br> $ 389.00 
+      </vaadin-label> 
      </vaadin-css-layout> 
      <vaadin-css-layout> 
-      <vaadin-label style-name="tax-sum" size-auto _id="tax_sum">
-        Tax : 
-       <span class="order-sum"> $0.00 </span> 
-      </vaadin-label> 
       <vaadin-label style-name="total-sum" _id="total_sum">
         Total : 
        <span class="order-sum"> $ 389.00</span> 
@@ -144,7 +143,10 @@
      </vaadin-css-layout> 
     </vaadin-form-layout> 
     <vaadin-form-layout style-name="billing-formlayout" size-auto margin-top="false" margin-bottom="false" _id="billing_form6" :bottom> 
-     <vaadin-vertical-layout size-auto> 
+     <vaadin-vertical-layout spacing size-auto :middle :center> 
+      <vaadin-button height="18px" plain-text _id="cerrarBtn">
+        Manejo de Caja 
+      </vaadin-button> 
       <vaadin-button plain-text _id="guardarBtn">
         Guardar 
       </vaadin-button> 
@@ -154,13 +156,13 @@
       <vaadin-button plain-text _id="modificarBtn">
         Modificar 
       </vaadin-button> 
-      <vaadin-button plain-text _id="anularBtn">
+      <vaadin-button plain-text _id="eliminarBtn">
         Eliminar 
       </vaadin-button> 
       <vaadin-button plain-text _id="nuevoComprobante">
         Nuevo Comprobante 
       </vaadin-button> 
-      <vaadin-button plain-text _id="cerrarBtn">
+      <vaadin-button plain-text _id="imprimirBtn">
         Imprimir voucher 
       </vaadin-button> 
      </vaadin-vertical-layout> 

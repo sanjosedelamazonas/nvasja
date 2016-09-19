@@ -104,7 +104,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
         ViewUtil.setDefaultsForNumberField(numEgreso);
 
         guardarBtn.setEnabled(false);
-        anularBtn.setEnabled(false);
+        cancelarBtn.setEnabled(false);
+        modificarBtn.setEnabled(false);
 
         // Fecha
         Timestamp ts = new Timestamp(System.currentTimeMillis());
@@ -365,17 +366,26 @@ public class ComprobanteView extends ComprobanteUI implements View {
         }
     }
 
+    private boolean isProyecto() {
+        return !GenUtil.objNullOrEmpty(selProyecto.getValue());
+    }
+
+    private boolean isTercero() {
+        return !GenUtil.objNullOrEmpty(selTercero.getValue());
+    }
+
+
     public void setSaldos() {
         if (dataFechaComprobante.getValue()!=null) {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             ProcUtil.Saldos res = null;
-            if (!GenUtil.objNullOrEmpty(selProyecto.getValue())) {
+            if (isProyecto()) {
                 res = new ProcUtil(em).getSaldos(dataFechaComprobante.getValue(), selProyecto.getValue().toString(), null);
                 saldoProyPEN.setValue(df.format(res.getSaldoPEN()));
                 saldoProyUSD.setValue(df.format(res.getSaldoUSD()));
                 saldoProyEUR.setValue(df.format(res.getSaldoEUR()));
             }
-            if (!GenUtil.objNullOrEmpty(selTercero.getValue())) {
+            if (isTercero()) {
                 res = new ProcUtil(em).getSaldos(dataFechaComprobante.getValue(), null, selTercero.getValue().toString());
                 saldoProyPEN.setValue(df.format(res.getSaldoPEN()));
                 saldoProyUSD.setValue(df.format(res.getSaldoUSD()));
@@ -390,9 +400,14 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 .forEach(f -> f.setValue(""));
     }
 
+
+    private void setCajaLogic() {
+        setCajaLogic(selMoneda.getValue().toString());
+    }
+
     public void setCajaLogic(String tipomoneda) {
 
-        if (!GenUtil.objNullOrEmpty(selProyecto.getValue())) {
+        if (isProyecto()) {
             List<VsjConfiguracioncaja> configs = configuracioncajaRepo.findByCodProyectoAndIndTipomoneda(
                     selProyecto.getValue().toString(), tipomoneda);
             if (!configs.isEmpty()) {
@@ -408,7 +423,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
                     selCaja.setValue(config.getCodCtacontable());
                 }
             }
-        } else if (!GenUtil.objNullOrEmpty(selTercero.getValue())) {
+        } else if (isTercero()) {
             List<VsjConfiguracioncaja> configs = configuracioncajaRepo.findByCodDestinoAndIndTipomoneda(
                     selTercero.getValue().toString(), tipomoneda);
             if (!configs.isEmpty()) {
@@ -423,6 +438,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         if (isLoading) return;
         if (event.getProperty().getValue()!=null)
             setEditorLogic(event.getProperty().getValue().toString());
+        setCajaLogic();
         selProyecto.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
@@ -430,6 +446,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         if (isLoading) return;
         if (event.getProperty().getValue()!=null)
             setEditorTerceroLogic(event.getProperty().getValue().toString());
+        setCajaLogic();
         selTercero.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
@@ -564,6 +581,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
         selProyecto.setEnabled(true);
         selTercero.setEnabled(true);
         dataFechaComprobante.setEnabled(true);
+
+        // Set default to SOLES
+        if (selMoneda.getValue()==null)
+            selMoneda.setValue("0");
 
         isLoading = false;
         if (isEdit) {

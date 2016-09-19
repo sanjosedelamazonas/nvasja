@@ -38,15 +38,18 @@ public class ComprobanteLogic implements Serializable {
 	
     private ComprobanteView view;
 
+    private VsjCajabanco savedCajabanco;
+
     public ComprobanteLogic(ComprobanteView ComprobanteView) {
         view = ComprobanteView;
     }
 
     public void init() {
         view.guardarBtn.addClickListener(event -> saveComprobante());
-        view.anularBtn.addClickListener(event -> anularComprobante());
+        view.cancelarBtn.addClickListener(event -> anularComprobante());
         view.nuevoComprobante.addClickListener(event -> nuevoComprobante());
         view.cerrarBtn.addClickListener(event -> cerrarAlManejo());
+        view.modificarBtn.addClickListener(event -> editarComprobante(savedCajabanco));
     }
 
 
@@ -91,10 +94,11 @@ public class ComprobanteLogic implements Serializable {
                 item.setNumDebesol(new BigDecimal(0.00));
             }
             log.info("Ready to save: " + item);
-            VsjCajabanco saved = view.repo.save(item);
-            view.numVoucher.setValue(new Integer(saved.getCodCajabanco()).toString());
+            savedCajabanco = view.repo.save(item);
+            view.numVoucher.setValue(new Integer(savedCajabanco.getCodCajabanco()).toString());
             view.guardarBtn.setEnabled(false);
-            view.anularBtn.setEnabled(false);
+            view.modificarBtn.setEnabled(true);
+            view.cancelarBtn.setEnabled(false);
             view.nuevoComprobante.setEnabled(true);
             view.cajaManejoView.refreshData();
         } catch (CommitException ce) {
@@ -138,7 +142,8 @@ public class ComprobanteLogic implements Serializable {
         view.bindForm(vcb);
         view.nuevoComprobante.setEnabled(false);
         view.guardarBtn.setEnabled(true);
-        view.anularBtn.setEnabled(true);
+        view.cancelarBtn.setEnabled(true);
+        view.modificarBtn.setEnabled(false);
     }
 
     public void editarComprobante(VsjCajabanco vcb) {
@@ -146,6 +151,7 @@ public class ComprobanteLogic implements Serializable {
         view.bindForm(vcb);
         view.nuevoComprobante.setEnabled(false);
         view.guardarBtn.setEnabled(true);
-        view.anularBtn.setEnabled(true);
+        view.cancelarBtn.setEnabled(true);
+        view.modificarBtn.setEnabled(false);
     }
 }

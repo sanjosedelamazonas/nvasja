@@ -8,7 +8,6 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TextField;
@@ -38,9 +37,9 @@ public class ComprobanteUI extends CssLayout {
 	protected TextField saldoProyUSD;
 	protected TextField saldoProyEUR;
 	protected FormLayout billing_form2;
+	protected OptionGroup selMoneda;
 	protected NumberField numIngreso;
 	protected NumberField numEgreso;
-	protected OptionGroup selMoneda;
 	protected ComboBox selCaja;
 	protected TextField saldoCajaPEN;
 	protected TextField saldoCajaUSD;
@@ -66,16 +65,16 @@ public class ComprobanteUI extends CssLayout {
 	protected Label order_heading;
 	protected CssLayout order_item;
 	protected Label order_label;
-	protected NativeButton cancel_order_button;
-	protected Label tax_sum;
+	protected Label order_label2;
 	protected Label total_sum;
 	protected FormLayout billing_form6;
+	protected Button cerrarBtn;
 	protected Button guardarBtn;
 	protected Button cancelarBtn;
 	protected Button modificarBtn;
-	protected Button anularBtn;
+	protected Button eliminarBtn;
 	protected Button nuevoComprobante;
-	protected Button cerrarBtn;
+	protected Button imprimirBtn;
 
 	public ComprobanteUI() {
 		Design.read(this);
