@@ -377,13 +377,18 @@ public class ComprobanteView extends ComprobanteUI implements View {
     }
 
     public void setSaldoDeCajas() {
+        if (isPEN()) {
+            order_summary_layout.removeStyleName("order-summary-layout-usd");
+        } else  {
+            order_summary_layout.addStyleName("order-summary-layout-usd");
+        }
         cajaSaldosLayout.removeAllComponents();
         if (dataFechaComprobante.getValue() != null && selMoneda.getValue() != null) {
             for (ScpPlancontable caja : DataUtil.getCajas(planRepo, PEN.equals(selMoneda.getValue().toString()))) {
 
                 BigDecimal saldo = new ProcUtil(em).getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
                         , selMoneda.getValue().toString());
-                Label salLbl = new Label(caja.getId().getCodCtacontable() + " " + caja.getTxtDescctacontable() + ": "+  saldo);
+                Label salLbl = new Label(caja.getId().getCodCtacontable() + " " + caja.getTxtDescctacontable() + ": <span class=\"order-sum\">"+  saldo);
                 salLbl.setStyleName("order-item");
                 cajaSaldosLayout.addComponent(salLbl);
             }

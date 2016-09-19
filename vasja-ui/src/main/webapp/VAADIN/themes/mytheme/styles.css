@@ -101,6 +101,10 @@
 	font-weight: 400;
 }
 
+.root-layout.form-template-vivid .order-summary-layout-usd {
+	background-color: #BB71D4;
+}
+
 .root-layout.form-template-vivid[width-range~="321px-768px"] {
 	padding: 10px;
 }

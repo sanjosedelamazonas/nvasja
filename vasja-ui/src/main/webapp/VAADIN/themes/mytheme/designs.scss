@@ -13,6 +13,7 @@
 	$header-label-border-color: #D0C7C7;
 	
     $order-summary-background: #FF71D4;
+    $order-summary-usd-background: #BB71D4;
     $order-summary-header-color: #fff;
     $order-summary-header-border-color: #FFD2FF;	
     $order-summary-text-color: #fff;
@@ -121,6 +122,10 @@
 			}
 		}
 	}
+
+	.order-summary-layout-usd {
+    		background-color: $order-summary-usd-background;
+    }
 
 	&[width-range~="321px-768px"]{
 		padding: 10px;
