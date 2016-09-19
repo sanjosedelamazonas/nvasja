@@ -124,6 +124,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         dataFechaComprobante.addValueChangeListener(event -> {
             setSaldoCaja();
             setSaldos();
+            setSaldoDeCajas();
         });
 
         // Fecha Doc
@@ -243,18 +244,14 @@ public class ComprobanteView extends ComprobanteUI implements View {
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
-                DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
-                        findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                                "N", GenUtil.getCurYear(), "N", "101"), "Sel Caja", "txtDescctacontable");
+                DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", DataUtil.getCajas(planRepo, true), "Sel Caja", "txtDescctacontable");
                 setCajaLogic(PEN);
                 fieldGroup.bind(numEgreso, "numHabersol");
                 fieldGroup.bind(numIngreso, "numDebesol");
             } else {
                 // Dolares
                 // Cta Caja
-                DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
-                        findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                                "N", GenUtil.getCurYear(), "D", "101"), "Sel Caja", "txtDescctacontable");
+                DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", DataUtil.getCajas(planRepo, false), "Sel Caja", "txtDescctacontable");
                 setCajaLogic(USD);
                 fieldGroup.bind(numEgreso, "numHaberdolar");
                 fieldGroup.bind(numIngreso, "numDebedolar");
@@ -266,6 +263,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
             numIngreso.setEnabled(true);
             ViewUtil.setDefaultsForNumberField(numIngreso);
             ViewUtil.setDefaultsForNumberField(numEgreso);
+            setSaldoDeCajas();
         }
     }
 
@@ -374,6 +372,20 @@ public class ComprobanteView extends ComprobanteUI implements View {
             } else {
                 saldoCajaUSD.setValue(saldo.toString());
                 saldoCajaPEN.setValue("");
+            }
+        }
+    }
+
+    public void setSaldoDeCajas() {
+        cajaSaldosLayout.removeAllComponents();
+        if (dataFechaComprobante.getValue() != null && selMoneda.getValue() != null) {
+            for (ScpPlancontable caja : DataUtil.getCajas(planRepo, PEN.equals(selMoneda.getValue().toString()))) {
+
+                BigDecimal saldo = new ProcUtil(em).getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
+                        , selMoneda.getValue().toString());
+                Label salLbl = new Label(caja.getId().getCodCtacontable() + " " + caja.getTxtDescctacontable() + ": " + saldo);
+                salLbl.setStyleName("order-item");
+                cajaSaldosLayout.addComponent(salLbl);
             }
         }
     }
@@ -612,6 +624,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         } else {
             setMonedaLogic(item.getCodTipomoneda());
             numVoucher.setValue("");
+            setSaldoDeCajas();
         }
         isEdit = false;
 
