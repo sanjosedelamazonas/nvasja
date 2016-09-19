@@ -68,9 +68,9 @@ public class ComprobanteLogic implements Serializable {
             sdf = new SimpleDateFormat("yyyy");
             item.setTxtAnoproceso(sdf.format(item.getFecFecha()));
             if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
-                item.setIndTipocuenta("0");
+                item.setIndTipocuenta(ComprobanteView.PEN);
             } else {
-                item.setIndTipocuenta("1");
+                item.setIndTipocuenta(ComprobanteView.USD);
             }
             if (item.getCodUregistro()==null) item.setCodUregistro(CurrentUser.get());
             if (item.getFecFregistro()==null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
@@ -78,7 +78,7 @@ public class ComprobanteLogic implements Serializable {
             item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
 
             // Verify moneda and fields
-            if ("0".equals(item.getCodTipomoneda())) {
+            if (ComprobanteView.PEN.equals(item.getCodTipomoneda())) {
                 if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
                     throw new CommitException("Selected SOL but values are zeros or nulls");
                 if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
@@ -121,12 +121,6 @@ public class ComprobanteLogic implements Serializable {
             } else {
                 // Ensure this is selected even if coming directly here from
                 // login
-                try {
-                    int pid = Integer.parseInt(productId);
-  //                  Product product = findProduct(pid);
-    //                view.selectRow(product);
-                } catch (NumberFormatException e) {
-                }
             }
         }
     }
@@ -137,6 +131,7 @@ public class ComprobanteLogic implements Serializable {
         VsjCajabanco vcb = new VsjCajabanco();
         vcb.setFlgEnviado("0");
         vcb.setIndTipocuenta("0");
+        vcb.setCodTipomoneda(ComprobanteView.PEN);
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
         view.bindForm(vcb);

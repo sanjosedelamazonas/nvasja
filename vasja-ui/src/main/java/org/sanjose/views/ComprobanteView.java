@@ -40,6 +40,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
 	
     public static final String VIEW_NAME = "Caja";
 
+    public static final String PEN="0";
+
+    public static final String USD="1";
+
     public ComprobanteLogic viewLogic = new ComprobanteLogic(this);
 
     public VsjCajabanco item;
@@ -65,6 +69,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
     private ScpCargocuartaRep cargocuartaRepo;
 
     private ScpTipodocumentoRep tipodocumentoRepo;
+
+    private ScpPlancontableRep planRepo;
 
     private EntityManager em;
 
@@ -97,6 +103,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         this.destinoRepo = destinoRepo;
         this.cargocuartaRepo = cargocuartaRepo;
         this.tipodocumentoRepo = tipodocumentoRepo;
+        this.planRepo = planRepo;
         this.em = em;
         setSizeFull();
         addStyleName("crud-view");
@@ -136,42 +143,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
         // Tipo Moneda
         DataFilterUtil.bindTipoMonedaOptionGroup(selMoneda, "codTipomoneda");
-        selMoneda.addValueChangeListener(event -> {
-            if (!isLoading) {
-                try {
-                    fieldGroup.unbind(numEgreso);
-                    fieldGroup.unbind(numIngreso);
-                } catch (FieldGroup.BindException be) {
-                }
-                selCaja.removeAllValidators();
-                if (event.getProperty().getValue().toString().equals("0")) {
-                    // Soles        0
-                    // Cta Caja
-                    DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
-                            findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                                    "N", GenUtil.getCurYear(), "N", "101"), "Sel Caja", "txtDescctacontable");
-                    setCajaLogic("0");
-                    fieldGroup.bind(numEgreso, "numHabersol");
-                    fieldGroup.bind(numIngreso, "numDebesol");
-                } else {
-                    // Dolares
-                    // Cta Caja
-                    DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
-                            findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                                    "N", GenUtil.getCurYear(), "D", "101"), "Sel Caja", "txtDescctacontable");
-                    setCajaLogic("1");
-                    fieldGroup.bind(numEgreso, "numHaberdolar");
-                    fieldGroup.bind(numIngreso, "numDebedolar");
-                }
-                setSaldoCaja();
-                selCaja.addValidator(new BeanValidator(VsjCajabanco.class, "codCtacontable"));
-                selCaja.setEnabled(true);
-                numEgreso.setEnabled(true);
-                numIngreso.setEnabled(true);
-                ViewUtil.setDefaultsForNumberField(numIngreso);
-                ViewUtil.setDefaultsForNumberField(numEgreso);
-            }
-        });
+        selMoneda.addValueChangeListener(event -> setMonedaLogic(event.getProperty().getValue().toString()));
 
         numIngreso.addValueChangeListener(event -> {
                 if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
@@ -257,6 +229,44 @@ public class ComprobanteView extends ComprobanteUI implements View {
         setEnableFields(false);
         viewLogic.init();
     }
+
+    private void setMonedaLogic(String moneda) {
+        if (!isLoading) {
+            try {
+                fieldGroup.unbind(numEgreso);
+                fieldGroup.unbind(numIngreso);
+            } catch (FieldGroup.BindException be) {
+            }
+            selCaja.removeAllValidators();
+            if (moneda.equals(PEN)) {
+                // Soles        0
+                // Cta Caja
+                DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
+                        findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
+                                "N", GenUtil.getCurYear(), "N", "101"), "Sel Caja", "txtDescctacontable");
+                setCajaLogic(PEN);
+                fieldGroup.bind(numEgreso, "numHabersol");
+                fieldGroup.bind(numIngreso, "numDebesol");
+            } else {
+                // Dolares
+                // Cta Caja
+                DataFilterUtil.bindComboBox(selCaja, "id.codCtacontable", planRepo.
+                        findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
+                                "N", GenUtil.getCurYear(), "D", "101"), "Sel Caja", "txtDescctacontable");
+                setCajaLogic(USD);
+                fieldGroup.bind(numEgreso, "numHaberdolar");
+                fieldGroup.bind(numIngreso, "numDebedolar");
+            }
+            setSaldoCaja();
+            selCaja.addValidator(new BeanValidator(VsjCajabanco.class, "codCtacontable"));
+            selCaja.setEnabled(true);
+            numEgreso.setEnabled(true);
+            numIngreso.setEnabled(true);
+            ViewUtil.setDefaultsForNumberField(numIngreso);
+            ViewUtil.setDefaultsForNumberField(numEgreso);
+        }
+    }
+
 
     private void editDestino(ComboBox comboBox) {
         Window destinoWindow = new Window();
@@ -356,7 +366,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
         if (dataFechaComprobante.getValue()!=null && selCaja.getValue()!=null && selMoneda.getValue()!=null) {
             BigDecimal saldo = new ProcUtil(em).getSaldoCaja(dataFechaComprobante.getValue(),
                     selCaja.getValue().toString(), selMoneda.getValue().toString());
-            if ("0".equals(selMoneda.getValue().toString())) {
+            if (PEN.equals(selMoneda.getValue().toString())) {
                 saldoCajaPEN.setValue(saldo.toString());
                 saldoCajaUSD.setValue("");
             } else {
@@ -550,10 +560,10 @@ public class ComprobanteView extends ComprobanteUI implements View {
         fieldGroup.bind(selCaja, "codCtacontable");
         fieldGroup.bind(dataFechaComprobante, "fecFecha");
 
-        if (isEdit && "0".equals(item.getCodTipomoneda())) {
+        if (isEdit && PEN.equals(item.getCodTipomoneda())) {
             fieldGroup.bind(numEgreso, "numHabersol");
             fieldGroup.bind(numIngreso, "numDebesol");
-        } else if (isEdit && "1".equals(item.getCodTipomoneda())) {
+        } else if (isEdit && USD.equals(item.getCodTipomoneda())) {
             fieldGroup.bind(numEgreso, "numHaberdolar");
             fieldGroup.bind(numIngreso, "numDebedolar");
         }
@@ -583,9 +593,11 @@ public class ComprobanteView extends ComprobanteUI implements View {
         dataFechaComprobante.setEnabled(true);
 
         // Set default to SOLES
-        if (selMoneda.getValue()==null)
-            selMoneda.setValue("0");
-
+        /*if (selMoneda.getValue()==null) {
+            selMoneda.setValue(PEN);
+            setMonedaLogic(PEN);
+        }
+*/
         isLoading = false;
         if (isEdit) {
             // EDITING
