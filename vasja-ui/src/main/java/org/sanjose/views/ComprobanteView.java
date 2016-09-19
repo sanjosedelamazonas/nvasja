@@ -383,11 +383,16 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
                 BigDecimal saldo = new ProcUtil(em).getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
                         , selMoneda.getValue().toString());
-                Label salLbl = new Label(caja.getId().getCodCtacontable() + " " + caja.getTxtDescctacontable() + ": " + saldo);
+                Label salLbl = new Label(caja.getId().getCodCtacontable() + " " + caja.getTxtDescctacontable() + ": "+  saldo);
                 salLbl.setStyleName("order-item");
                 cajaSaldosLayout.addComponent(salLbl);
             }
+            saldoTotal.setValue("Total : \n" +
+                    "<span class=\"order-sum\"> " + (isPEN() ? "$" : "S/.") + "389.00</span>");
         }
+
+
+
     }
 
     private boolean isProyecto() {
@@ -639,6 +644,11 @@ public class ComprobanteView extends ComprobanteUI implements View {
         VsjCajabanco item = beanItem.getBean();
         setEnableFields(false);
         return item;
+    }
+
+
+    public boolean isPEN() {
+        return PEN.equals(selMoneda.getValue().toString());
     }
 
     public void setCajaManejoView(CajaManejoView cajaManejoView) {
