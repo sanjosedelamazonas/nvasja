@@ -10,6 +10,7 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.datefield.Resolution;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
@@ -384,20 +385,23 @@ public class ComprobanteView extends ComprobanteUI implements View {
         }
         cajaSaldosLayout.removeAllComponents();
         if (dataFechaComprobante.getValue() != null && selMoneda.getValue() != null) {
+            BigDecimal total = new BigDecimal(0.00);
             for (ScpPlancontable caja : DataUtil.getCajas(planRepo, PEN.equals(selMoneda.getValue().toString()))) {
 
                 BigDecimal saldo = new ProcUtil(em).getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
                         , selMoneda.getValue().toString());
-                Label salLbl = new Label(caja.getId().getCodCtacontable() + " " + caja.getTxtDescctacontable() + ": <span class=\"order-sum\">"+  saldo);
+                Label salLbl = new Label();
+                salLbl.setContentMode(ContentMode.HTML);
+                salLbl.setValue(
+                    caja.getId().getCodCtacontable() + " " + caja.getTxtDescctacontable() + ": <span class=\"order-sum\">"+  saldo + "</span");
                 salLbl.setStyleName("order-item");
                 cajaSaldosLayout.addComponent(salLbl);
+                total = total.add(saldo);
             }
-            saldoTotal.setValue("Total : \n" +
-                    "<span class=\"order-sum\"> " + (isPEN() ? "$" : "S/.") + "389.00</span>");
+            saldoTotal.setContentMode(ContentMode.HTML);
+            saldoTotal.setValue("Total :" +
+                    "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : "$ ") + total.toString() + "</span>");
         }
-
-
-
     }
 
     private boolean isProyecto() {
