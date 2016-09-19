@@ -54,13 +54,13 @@ public class ComprobanteUI extends CssLayout {
 	protected FormLayout billing_form5;
 	protected Label documento_header_label4;
 	protected HorizontalLayout name_wrapper9;
-	protected ComboBox selCodAuxiliar4;
+	protected ComboBox selCodAuxiliar;
 	protected Button btnDestino4;
 	protected HorizontalLayout name_wrapper10;
-	protected PopupDateField fechaDoc4;
-	protected ComboBox selTipoDoc4;
-	protected TextField serieDoc4;
-	protected TextField numDoc4;
+	protected PopupDateField fechaDoc;
+	protected ComboBox selTipoDoc;
+	protected TextField serieDoc;
+	protected TextField numDoc;
 	protected FormLayout billing_form6;
 	protected Button guardarBtn;
 	protected Button cancelarBtn;
