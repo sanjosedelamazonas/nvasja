@@ -1,6 +1,190 @@
 <!doctype html>
 <html>
  <head>
+  <style>
+.root-layout.form-template-vivid {
+    $root-background-color: #fff;
+    $template-font-size: 16px;
+    $template-font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    
+	$billing-form-background: #f6f3f3;
+	$billing-form-border-color: #fff;
+	$form-text-field-border: #D0C7C7;
+	
+	$header-label-font-size: 1.618em;
+	$header-label-text-color: #000;
+	$header-label-border-color: #D0C7C7;
+	
+    $order-summary-background: #FF71D4;
+    $order-summary-header-color: #fff;
+    $order-summary-header-border-color: #FFD2FF;	
+    $order-summary-text-color: #fff;
+    $cancel-order-icon-color: #DB2780;    
+	$total-sum-border-color: #FFD2FF;
+    $total-sum-text-color: #FFD2FF;
+        
+	$header-bar-height: 100px;
+
+	background-color: $root-background-color;
+	padding: 60px;
+	
+	.v-nativebutton {
+		background: none;
+		border: none;
+		
+		&:hover{
+			cursor: pointer;
+		}
+	}
+
+	.header-label {
+	    font-family: $template-font-family;
+		font-size: $header-label-font-size;
+		width: 100%;
+		margin-bottom: 20px;
+		color: $header-label-text-color;
+		border-bottom: 3px solid $header-label-border-color;
+	}
+	.cuenta-formlayout {
+		background: $billing-form-background;
+		border: solid 1px $billing-form-border-color;
+		margin: 0 30px 0 0px;
+		float: left;
+		padding: 20px;
+		width: 100%;
+		max-width: 722px;
+		
+		.v-label {
+	       font-family: $template-font-family;
+		}
+		
+		.form-textfield {
+		    font-family: $template-font-family;
+			background: none;
+			border-radius: 0;
+			border: none;
+			box-shadow: none;
+			border-bottom: 2px solid $form-text-field-border;
+		}
+		
+		.email-field {
+			min-width: 250px;
+		}
+    }
+	
+	.billing-formlayout {
+		background: $billing-form-background;
+		border: solid 1px $billing-form-border-color;
+		margin: 0 30px 0 0px;
+		float: left;
+		padding: 20px;
+		width: 100%;
+		max-width: 722px;
+		
+		.v-label {
+	       font-family: $template-font-family;
+		}
+		
+		.form-textfield {
+		    font-family: $template-font-family;
+			background: none;
+			border-radius: 0;
+			border: none;
+			box-shadow: none;
+			border-bottom: 2px solid $form-text-field-border;
+		}
+		
+		.email-field {
+			min-width: 250px;
+		}
+    }             
+    
+        
+    .cajas-summary-layout {
+		background-color: $order-summary-background;
+		float: right;
+		padding: 20px;
+         
+        .v-label {
+            font-family: $template-font-family;
+            color: $order-summary-text-color;
+        }         
+            
+        .header-label-small {
+			width: 100%;
+			text-transform: uppercase;
+            color: $order-summary-header-color;
+            border-bottom: 3px solid $order-summary-header-border-color;
+        }
+		
+		.cancel-order-button {
+			background: none;
+			border: none;
+			position: relative; 
+			margin-left: 15px;
+			margin-top: 10px;
+			padding: 0;
+			float: right;
+
+			.v-icon{
+				font-size: 25px;
+				width: 25px;
+				height: 25px;
+				line-height: 25px;
+				color: $cancel-order-icon-color;
+			}
+		}
+		
+		.order-sum {
+			position: absolute;
+			left: 170px;
+			text-align: right;
+			width: 150px;
+		}
+		
+		.total-sum {
+			border-top: solid 2px $total-sum-border-color; 
+			color: $total-sum-text-color !important;
+			font-size: 2em;
+			&:first-letter {
+				font-weight: 400;
+			}
+		}
+	}
+
+	&[width-range~="321px-768px"]{
+		padding: 5px;
+		
+		.billing-formlayout{
+			margin: 15px 0 0 0;
+			width: 100% !important;
+		}
+		
+		.cuenta-formlayout{
+			margin: 5px 0 0 0;
+			width: 100% !important;
+		}		
+		.order-summary-layout{
+			margin: 15px 0 0 0;
+		}
+	}
+	
+	&[width-range~="769px-1426px"]{
+		.billing-formlayout{
+			margin-bottom: 30px;
+		}
+		
+		.order-summary-layout{
+			float: left;
+		}
+	}
+}
+
+.form-template-vivid[width-range~="321px-768px"],
+.form-template-vivid[width-range~="769px-1426px"]{
+	visibility: visible;
+}
+</style>
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
   <meta charset="UTF-8" name="package-mapping" content="tm_kod_widgets_numberfield:tm.kod.widgets.numberfield">
   <meta charset="UTF-8" name="package-mapping" content="org_sanjose_helper:org.sanjose.helper">
@@ -8,13 +192,14 @@
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
  </head> 
  <body> 
-  <vaadin-css-layout caption="Saldos de la cuenta" style-name="root-layout form-template-vivid" responsive width-full _id="root_layout"> 
-   <vaadin-label style-name="header-label" plain-text _id="billing_header_label">
+  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive width-full _id="root_layout"> 
+   <vaadin-label style-name="header-label" plain-text _id="operacion_header_label">
      Detalles de operacion 
    </vaadin-label> 
    <vaadin-horizontal-layout> 
     <vaadin-vertical-layout size-auto> 
-     <vaadin-form-layout style-name="billing-formlayout" width="588px" margin-top="false" margin-bottom="false" _id="billing_form"> 
+     
+     <vaadin-form-layout style-name="cuenta-formLayout" width="588px" margin-top="false" margin-bottom="false" _id="cuenta_form"> 
       <vaadin-horizontal-layout spacing> 
        <vaadin-text-field description="Num de Voucher" caption="Nro de comprobante" enabled="false" style-name="form-textfield" width="105px" _id="numVoucher" :middle :center></vaadin-text-field> 
        <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante"></vaadin-popup-date-field> 
@@ -43,6 +228,7 @@
        </vaadin-horizontal-layout> 
       </vaadin-horizontal-layout> 
      </vaadin-form-layout> 
+     
      <vaadin-form-layout style-name="billing-formlayout" width="590px" margin-top="false" margin-bottom="false" _id="billing_form2"> 
       <vaadin-horizontal-layout spacing> 
        <tm_kod_widgets_numberfield-number-field caption="Ingreso" _id="numIngreso"></tm_kod_widgets_numberfield-number-field> 
@@ -121,6 +307,30 @@
       </vaadin-horizontal-layout> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
+    
+    <vaadin-form-layout style-name="order-summary-layout" width="438px" margin-top="false" margin-bottom="false" _id="order_summary_layout"> 
+    
+     <vaadin-label style-name="header-label-small" size-auto plain-text _id="order_heading">
+       Order Summary 
+     </vaadin-label> 
+     <vaadin-css-layout style-name="order-item" width="300px" _id="order_item"> 
+      <vaadin-label style-name="order-label" width="260px" _id="order_label">
+        Vaadin Designer License 
+       <br> $ 389.00 
+      </vaadin-label> 
+      <vaadin-native-button icon="fonticon://FontAwesome/f057" style-name="cancel-order-button" width="25px" height="25px" plain-text _id="cancel_order_button"></vaadin-native-button> 
+     </vaadin-css-layout> 
+     <vaadin-css-layout> 
+      <vaadin-label style-name="tax-sum" size-auto _id="tax_sum">
+        Tax : 
+       <span class="order-sum"> $0.00 </span> 
+      </vaadin-label> 
+      <vaadin-label style-name="total-sum" _id="total_sum">
+        Total : 
+       <span class="order-sum"> $ 389.00</span> 
+      </vaadin-label> 
+     </vaadin-css-layout> 
+    </vaadin-form-layout> 
     <vaadin-form-layout style-name="billing-formlayout" size-auto margin-top="false" margin-bottom="false" _id="billing_form6" :bottom> 
      <vaadin-vertical-layout size-auto> 
       <vaadin-button plain-text _id="guardarBtn">
