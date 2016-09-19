@@ -110,7 +110,6 @@ public class ComprobanteLogic implements Serializable {
             view.numVoucher.setValue(savedCajabanco.getTxtCorrelativo());
             view.guardarBtn.setEnabled(false);
             view.modificarBtn.setEnabled(true);
-            view.cancelarBtn.setEnabled(false);
             view.nuevoComprobante.setEnabled(true);
             view.cajaManejoView.refreshData();
             view.imprimirBtn.setEnabled(true);
@@ -196,7 +195,6 @@ public class ComprobanteLogic implements Serializable {
             savedCajabanco = null;
             view.guardarBtn.setEnabled(false);
             view.modificarBtn.setEnabled(false);
-            view.cancelarBtn.setEnabled(false);
             view.nuevoComprobante.setEnabled(true);
             view.cajaManejoView.refreshData();
             view.imprimirBtn.setEnabled(false);

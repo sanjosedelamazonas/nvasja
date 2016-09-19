@@ -111,7 +111,6 @@ public class ComprobanteView extends ComprobanteUI implements View {
         ViewUtil.setDefaultsForNumberField(numEgreso);
 
         guardarBtn.setEnabled(false);
-        cancelarBtn.setEnabled(false);
         modificarBtn.setEnabled(false);
         eliminarBtn.setEnabled(false);
         imprimirBtn.setEnabled(false);
