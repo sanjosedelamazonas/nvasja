@@ -205,8 +205,13 @@ public class ComprobanteView extends ComprobanteUI implements View {
         DataFilterUtil.bindComboBox(selTipoDoc, "codTipocomprobantepago", comprobantepagoRepo.findAll(),
                 "Sel Tipo", "txtDescripcion");
 
+
+        List<String> cods = Arrays.asList(new String[] { "101", "102", "104", "106" });
         // Cta Contable
-        DataFilterUtil.bindComboBox(selCtaContable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtaContable, "id.codCtacontable",
+                planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotStartingWith("N", GenUtil.getCurYear(), cods),
+                //planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""),
+                "Sel cta contable", "txtDescctacontable");
 
         // Rubro inst
         DataFilterUtil.bindComboBox(selRubroInst, "id.codCtaespecial",
