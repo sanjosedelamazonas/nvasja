@@ -121,22 +121,18 @@
       </vaadin-horizontal-layout> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
-    <vaadin-form-layout style-name="order-summary-layout" width="438px" margin-top="false" margin-bottom="false" _id="order_summary_layout"> 
+    <vaadin-form-layout style-name="order-summary-layout" width="357px" margin-top="false" margin-bottom="false" _id="order_summary_layout"> 
      <vaadin-label style-name="header-label-small" size-auto plain-text _id="order_heading">
        Saldos de Cajas 
      </vaadin-label> 
-     <vaadin-css-layout style-name="order-item" width="300px" _id="order_item"> 
-      <vaadin-label style-name="order-label" width="260px" _id="order_label">
-        Vaadin Designer License 
-       <br> $ 389.00 
-      </vaadin-label> 
-      <vaadin-label style-name="order-label" width="260px" _id="order_label2">
+     <vaadin-css-layout style-name="order-item" width="300px" _id="cajaSaldosLayout"> 
+      <vaadin-label style-name="order-label" width="260px" _id="saldoLabel1">
         Vaadin Designer License 
        <br> $ 389.00 
       </vaadin-label> 
      </vaadin-css-layout> 
      <vaadin-css-layout> 
-      <vaadin-label style-name="total-sum" _id="total_sum">
+      <vaadin-label style-name="total-sum" _id="saldoTotal">
         Total : 
        <span class="order-sum"> $ 389.00</span> 
       </vaadin-label> 
@@ -149,9 +145,6 @@
       </vaadin-button> 
       <vaadin-button plain-text _id="guardarBtn">
         Guardar 
-      </vaadin-button> 
-      <vaadin-button plain-text _id="cancelarBtn">
-        Cancelar 
       </vaadin-button> 
       <vaadin-button plain-text _id="modificarBtn">
         Modificar 

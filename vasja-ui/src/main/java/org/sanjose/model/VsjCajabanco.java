@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -128,6 +129,7 @@ public class VsjCajabanco implements Serializable {
 	private String txtCorrelativo;
 
 	@NotBlank
+	@Size(min=3, max=70)
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
 

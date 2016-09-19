@@ -113,6 +113,8 @@ public class ComprobanteView extends ComprobanteUI implements View {
         guardarBtn.setEnabled(false);
         cancelarBtn.setEnabled(false);
         modificarBtn.setEnabled(false);
+        eliminarBtn.setEnabled(false);
+        imprimirBtn.setEnabled(false);
 
         // Fecha
         Timestamp ts = new Timestamp(System.currentTimeMillis());
@@ -205,6 +207,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 selRubroInst.setValue(config.getCodCtaespecial());
             }
         });
+        glosa.setMaxLength(70);
 
         // Validators
         dataFechaComprobante.addValidator(new BeanValidator(VsjCajabanco.class, "fecFecha"));
@@ -448,7 +451,6 @@ public class ComprobanteView extends ComprobanteUI implements View {
         if (isLoading) return;
         if (event.getProperty().getValue()!=null)
             setEditorLogic(event.getProperty().getValue().toString());
-        setCajaLogic();
         selProyecto.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
@@ -456,7 +458,6 @@ public class ComprobanteView extends ComprobanteUI implements View {
         if (isLoading) return;
         if (event.getProperty().getValue()!=null)
             setEditorTerceroLogic(event.getProperty().getValue().toString());
-        setCajaLogic();
         selTercero.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
@@ -481,6 +482,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
             }
             //nombreTercero.setValue(destinoRepo.findByCodDestino(codTercero).getTxtNombredestino());
             setSaldos();
+            setCajaLogic();
         }
     }
 
@@ -535,6 +537,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
 
             //nombreTercero.setValue(proyectoRepo.findByCodProyecto(codProyecto).getTxtDescproyecto());
             setSaldos();
+            setCajaLogic();
         } else {
             //log.info("disabling fin y planproy");
             selFuente.setEnabled(false);
@@ -592,12 +595,6 @@ public class ComprobanteView extends ComprobanteUI implements View {
         selTercero.setEnabled(true);
         dataFechaComprobante.setEnabled(true);
 
-        // Set default to SOLES
-        /*if (selMoneda.getValue()==null) {
-            selMoneda.setValue(PEN);
-            setMonedaLogic(PEN);
-        }
-*/
         isLoading = false;
         if (isEdit) {
             // EDITING
@@ -613,6 +610,9 @@ public class ComprobanteView extends ComprobanteUI implements View {
             } else {
                 setEditorTerceroLogic(item.getCodTercero());
             }
+        } else {
+            setMonedaLogic(item.getCodTipomoneda());
+            numVoucher.setValue("");
         }
         isEdit = false;
 

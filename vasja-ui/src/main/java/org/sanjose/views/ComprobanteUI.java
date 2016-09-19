@@ -63,14 +63,12 @@ public class ComprobanteUI extends CssLayout {
 	protected TextField numDoc;
 	protected FormLayout order_summary_layout;
 	protected Label order_heading;
-	protected CssLayout order_item;
-	protected Label order_label;
-	protected Label order_label2;
-	protected Label total_sum;
+	protected CssLayout cajaSaldosLayout;
+	protected Label saldoLabel1;
+	protected Label saldoTotal;
 	protected FormLayout billing_form6;
 	protected Button cerrarBtn;
 	protected Button guardarBtn;
-	protected Button cancelarBtn;
 	protected Button modificarBtn;
 	protected Button eliminarBtn;
 	protected Button nuevoComprobante;

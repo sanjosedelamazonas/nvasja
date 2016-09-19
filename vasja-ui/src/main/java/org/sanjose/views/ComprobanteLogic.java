@@ -13,7 +13,9 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.AccessControl;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.helper.GenUtil;
+import org.sanjose.model.ReportHelper;
 import org.sanjose.model.VsjCajabanco;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -46,10 +48,14 @@ public class ComprobanteLogic implements Serializable {
 
     public void init() {
         view.guardarBtn.addClickListener(event -> saveComprobante());
-        view.cancelarBtn.addClickListener(event -> anularComprobante());
+        //view.cancelarBtn.addClickListener(event -> anularComprobante());
         view.nuevoComprobante.addClickListener(event -> nuevoComprobante());
         view.cerrarBtn.addClickListener(event -> cerrarAlManejo());
+        view.imprimirBtn.addClickListener(event -> {
+            if (savedCajabanco!=null) ReportHelper.generateComprobante(savedCajabanco);
+        });
         view.modificarBtn.addClickListener(event -> editarComprobante(savedCajabanco));
+        view.eliminarBtn.addClickListener(event -> eliminarComprobante());
     }
 
 
@@ -57,6 +63,7 @@ public class ComprobanteLogic implements Serializable {
         MainUI.get().getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
     }
 
+    @Transactional
     public void saveComprobante() {
         try {
             VsjCajabanco item = view.getVsjCajabanco();
@@ -68,9 +75,9 @@ public class ComprobanteLogic implements Serializable {
             sdf = new SimpleDateFormat("yyyy");
             item.setTxtAnoproceso(sdf.format(item.getFecFecha()));
             if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
-                item.setIndTipocuenta(ComprobanteView.PEN);
+                item.setIndTipocuenta("0");
             } else {
-                item.setIndTipocuenta(ComprobanteView.USD);
+                item.setIndTipocuenta("1");
             }
             if (item.getCodUregistro()==null) item.setCodUregistro(CurrentUser.get());
             if (item.getFecFregistro()==null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
@@ -95,12 +102,18 @@ public class ComprobanteLogic implements Serializable {
             }
             log.info("Ready to save: " + item);
             savedCajabanco = view.repo.save(item);
-            view.numVoucher.setValue(new Integer(savedCajabanco.getCodCajabanco()).toString());
+
+            if (GenUtil.strNullOrEmpty(savedCajabanco.getTxtCorrelativo())) {
+                savedCajabanco.setTxtCorrelativo(GenUtil.getTxtCorrelativo(savedCajabanco.getCodCajabanco()));
+                savedCajabanco = view.repo.save(savedCajabanco);
+            }
+            view.numVoucher.setValue(savedCajabanco.getTxtCorrelativo());
             view.guardarBtn.setEnabled(false);
             view.modificarBtn.setEnabled(true);
             view.cancelarBtn.setEnabled(false);
             view.nuevoComprobante.setEnabled(true);
             view.cajaManejoView.refreshData();
+            view.imprimirBtn.setEnabled(true);
         } catch (CommitException ce) {
             Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             log.info("Got Commit Exception: " + ce.getMessage());
@@ -128,25 +141,70 @@ public class ComprobanteLogic implements Serializable {
 
     public void nuevoComprobante() {
 //        setFragmentParameter("new");
+        savedCajabanco = null;
         VsjCajabanco vcb = new VsjCajabanco();
         vcb.setFlgEnviado("0");
+        vcb.setFlg_Anula("0");
         vcb.setIndTipocuenta("0");
         vcb.setCodTipomoneda(ComprobanteView.PEN);
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
         view.bindForm(vcb);
-        view.nuevoComprobante.setEnabled(false);
         view.guardarBtn.setEnabled(true);
-        view.cancelarBtn.setEnabled(true);
+        //view.cancelarBtn.setEnabled(true);
         view.modificarBtn.setEnabled(false);
+        view.eliminarBtn.setEnabled(false);
+        view.imprimirBtn.setEnabled(false);
     }
 
     public void editarComprobante(VsjCajabanco vcb) {
   //      setFragmentParameter("edit");
+        savedCajabanco = vcb;
         view.bindForm(vcb);
         view.nuevoComprobante.setEnabled(false);
         view.guardarBtn.setEnabled(true);
-        view.cancelarBtn.setEnabled(true);
+        //view.cancelarBtn.setEnabled(true);
+        view.eliminarBtn.setEnabled(true);
         view.modificarBtn.setEnabled(false);
+        view.imprimirBtn.setEnabled(true);
     }
+
+    public void eliminarComprobante() {
+        try {
+            if (savedCajabanco==null) log.info("no se puede eliminar si no esta ya guardado");
+            VsjCajabanco item = view.getVsjCajabanco();
+            if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
+                throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
+
+            item.setCodUactualiza(CurrentUser.get());
+            item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+
+            // Verify moneda and fields
+            item.setNumHabersol(new BigDecimal(0.00));
+            item.setNumDebesol(new BigDecimal(0.00));
+            item.setNumHaberdolar(new BigDecimal(0.00));
+            item.setNumDebedolar(new BigDecimal(0.00));
+
+            item.setTxtGlosaitem("ANULADO - " + (item.getTxtGlosaitem().length()>60 ?
+                    item.getTxtGlosaitem().substring(0,60) : item.getTxtGlosaitem()));
+            item.setFlg_Anula("1");
+
+            view.glosa.setValue(item.getTxtGlosaitem());
+            log.info("Ready to ANULAR: " + item);
+            savedCajabanco = view.repo.save(item);
+            view.numVoucher.setValue(new Integer(savedCajabanco.getCodCajabanco()).toString());
+            savedCajabanco = null;
+            view.guardarBtn.setEnabled(false);
+            view.modificarBtn.setEnabled(false);
+            view.cancelarBtn.setEnabled(false);
+            view.nuevoComprobante.setEnabled(true);
+            view.cajaManejoView.refreshData();
+            view.imprimirBtn.setEnabled(false);
+            view.eliminarBtn.setEnabled(    false);
+        } catch (CommitException ce) {
+            Notification.show("Error al anular el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+            log.info("Got Commit Exception: " + ce.getMessage());
+        }
+    }
+
 }

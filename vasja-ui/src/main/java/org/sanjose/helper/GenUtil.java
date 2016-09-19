@@ -42,7 +42,16 @@ public class GenUtil {
         return vcb.getNumDebesol().compareTo(new BigDecimal(0))>0
                 || vcb.getNumDebedolar().compareTo(new BigDecimal(0))>0;
     }
-	
+
+    public static String getTxtCorrelativo(Integer id) {
+        StringBuilder sb = new StringBuilder();
+        for (int i=0;i<8-id.toString().length();i++) {
+            sb.append("0");
+        }
+        sb.append(id.toString());
+        return sb.toString();
+    }
+
 	/* Date and time utils */
 	
     public static Date getBeginningOfMonth(Date date) {
