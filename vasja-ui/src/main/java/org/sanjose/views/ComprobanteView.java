@@ -452,7 +452,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
                 selRubroInst.setValue(null);
                 selRubroProy.setValue(null);
             }
-            nombreTercero.setValue(destinoRepo.findByCodDestino(codTercero).getTxtNombredestino());
+            //nombreTercero.setValue(destinoRepo.findByCodDestino(codTercero).getTxtNombredestino());
             setSaldos();
         }
     }
@@ -506,7 +506,7 @@ public class ComprobanteView extends ComprobanteUI implements View {
             if (financieraEfectList.size()==1)
                 selFuente.select(financieraEfectList.get(0).getCodFinanciera());
 
-            nombreTercero.setValue(proyectoRepo.findByCodProyecto(codProyecto).getTxtDescproyecto());
+            //nombreTercero.setValue(proyectoRepo.findByCodProyecto(codProyecto).getTxtDescproyecto());
             setSaldos();
         } else {
             //log.info("disabling fin y planproy");
