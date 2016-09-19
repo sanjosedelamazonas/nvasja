@@ -15,7 +15,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,16 +33,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.export.JRTextExporter;
-import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 
-/*
-import org.sanjose.util.JRPrinterAWT;
-import org.sanjose.web.VasjaApp;
-*/
-
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -54,7 +44,9 @@ import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedEvent;
 import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedListener;
 import dk.apaq.vaadin.addon.printservice.RemotePrintService;
 import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
-//import net.sf.jasperreports.engine.print.JRPrinterAWT;
+import net.sf.jasperreports.engine.export.JRTextExporter;
+import net.sf.jasperreports.engine.export.JRTextExporterParameter;
+import org.sanjose.model.ReportHelper;
 import org.sanjose.views.MainScreen;
 
 @SuppressWarnings("serial")
@@ -79,8 +71,7 @@ public class PrintHelper extends VerticalLayout implements View {
 	public PrintHelper(MainScreen mainScreen) {
 		if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
             addComponent(new Label("Imprmir Service"));
-			//ReportHelper.getSqlConnection();
-		    printServiceManager = RemotePrintServiceManager.getInstance(mainScreen);
+			printServiceManager = RemotePrintServiceManager.getInstance(mainScreen);
 		    printServiceManager.addListener(new PrintServiceListChangedListener() {
 		        public void onPrintServiceListChanged(PrintServiceListChangedEvent event) {
 		        	c.removeAllItems();
@@ -191,7 +182,7 @@ public class PrintHelper extends VerticalLayout implements View {
 	    //table.setVisibleColumns(new String[] { "id", "name", "resolution",
 		//		"colorsupported", "defaultprinter" });
 	}
-/*
+
 	public boolean print(JasperPrint jrPrint, boolean isComprobante) throws JRException {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
@@ -219,15 +210,17 @@ public class PrintHelper extends VerticalLayout implements View {
 				job.print(doc, pras);
 			} catch (PrintException e) {
 				e.printStackTrace();
-				app.getMainWindow().showNotification("Problema de impresora de texto", "Problema: " + e.getMessage(), Notification.TYPE_ERROR_MESSAGE);				
+				Notification.show("Problema de impresora de texto", "Problema: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
 			}
 		}
-		else			
-			JRPrinterAWT.printPages(jrPrint, 0, jrPrint.getPages().size()-1, false, printService);
+		else {
+			logger.info("Printing graphically using printService: " + printService.getName() + " pages: " + jrPrint.getPages().size());
+			JRPrinterAWT.printPages(jrPrint, 0, jrPrint.getPages().size() - 1, false, printService);
+		}
 		return true;
 	}
 	
-  */  public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         try {
             if (pageIndex > 0) {
                 return Printable.NO_SUCH_PAGE;

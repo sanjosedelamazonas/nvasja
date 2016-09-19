@@ -118,7 +118,7 @@ public class RemotePrintService implements PrintService {
                                     gfx.scale(scaleTo72Dpi, scaleTo72Dpi);
 
                                     if (p.print(gfx, pf, pageCount++) == Printable.PAGE_EXISTS) {
-                                        ZipEntry entry = new ZipEntry(pageCount + ".png");
+                                        ZipEntry entry = new ZipEntry(pageCount + "_" + System.currentTimeMillis() +".png");
                                         zout.putNextEntry(entry);
                                         entry.setExtra("image/png".getBytes("utf-8"));
                                         ImageIO.write(image, "png", zout);

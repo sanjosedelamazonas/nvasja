@@ -3,6 +3,7 @@ package org.sanjose.helper;
 //import org.vaadin.ui.NumberField;
 
 import com.vaadin.ui.Grid;
+import org.sanjose.model.VsjCajabanco;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -36,7 +37,11 @@ public class GenUtil {
 		if (val==null) return true;
 		return (val.compareTo(new BigDecimal(0.00)))==0;
 	}
-	
+
+	public static boolean isIngreso(VsjCajabanco vcb) {
+        return vcb.getNumDebesol().compareTo(new BigDecimal(0))>0
+                || vcb.getNumDebedolar().compareTo(new BigDecimal(0))>0;
+    }
 	
 	/* Date and time utils */
 	

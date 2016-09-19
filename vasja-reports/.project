@@ -26,11 +26,4 @@
 		<nature>net.sf.jasperreports.nature</nature>
 		<nature>com.jaspersoft.studio.babel.editor.rbeNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>ComprobanteTxt.jrxml</name>
-			<type>1</type>
-			<location>//Leon-pc/d/vasja_caja_system/Reports/ComprobanteTxt.jrxml</location>
-		</link>
-	</linkedResources>
 </projectDescription>

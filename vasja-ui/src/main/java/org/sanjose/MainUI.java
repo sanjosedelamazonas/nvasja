@@ -61,6 +61,8 @@ public class MainUI extends UI {
 
     private EntityManager em;
 
+    private MainScreen mainScreen;
+
     @Autowired
     private MainUI(VsjPropiedadRep propRepo, PropiedadView propiedadView, CajaGridView cajaGridView,
                    ConfiguracionCajaView configuracionCajaView, ConfiguracionCtaCajaBancoView confView,
@@ -99,7 +101,8 @@ public class MainUI extends UI {
 
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
-        setContent(new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView, propiedadView, comprobanteView));
+        mainScreen = new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView, propiedadView, comprobanteView);
+        setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
         else
@@ -116,5 +119,9 @@ public class MainUI extends UI {
 
     public EntityManager getEntityManager() {
         return em;
+    }
+
+    public MainScreen getMainScreen() {
+        return mainScreen;
     }
 }

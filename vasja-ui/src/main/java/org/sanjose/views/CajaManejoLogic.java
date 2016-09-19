@@ -1,21 +1,17 @@
 package org.sanjose.views;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitEvent;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitHandler;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
+import com.vaadin.ui.Notification;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
-import org.sanjose.helper.GenUtil;
+import org.sanjose.helper.PrintHelper;
+import org.sanjose.model.ReportHelper;
 import org.sanjose.model.VsjCajabanco;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -41,6 +37,8 @@ public class CajaManejoLogic implements Serializable {
 
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.btnEditar.addClickListener(e -> editarComprobante());
+        view.btnReporteCaja.addClickListener(e -> generateComprobante());
+        view.btnEnviar.addClickListener(e -> printComprobante());
     }
 
     /**
@@ -91,6 +89,33 @@ public class CajaManejoLogic implements Serializable {
                 view.getComprobanteView().viewLogic.editarComprobante(vcb);
                 MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
                 break;
+            }
+        }
+    }
+
+    public void generateComprobante() {
+        for (Object obj : view.getSelectedRow()) {
+            log.info("selected: " + obj);
+            VsjCajabanco vcb = (VsjCajabanco)obj;
+            ReportHelper.generateComprobante(vcb);
+        }
+    }
+
+    public void printComprobante() {
+        for (Object obj : view.getSelectedRow()) {
+            log.info("selected: " + obj);
+            VsjCajabanco vcb = (VsjCajabanco) obj;
+            try {
+                JasperPrint jrPrint = ReportHelper.printComprobante(vcb);
+                boolean isPrinted = false;
+
+                PrintHelper ph = ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper();
+                isPrinted = ph.print(jrPrint, true);
+                if (!isPrinted)
+                    throw new JRException("Problema al consequir un servicio de imprimir");
+            } catch (JRException e) {
+                e.printStackTrace();
+                Notification.show("Problema al imprimir el comprobante ID: " + vcb.getCodCajabanco() + " " + e.getMessage());
             }
         }
     }

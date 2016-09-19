@@ -48,26 +48,8 @@
         <!-- JASPER REPORTS -->
 
         <dependency>
-            <groupId>net.sourceforge.jasperreports</groupId>
+            <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>${jasper.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.jasperreports</groupId>
-            <artifactId>jasperreports-javaflow</artifactId>
-            <version>${jasper.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.jasperreports</groupId>
-            <artifactId>jasperreports-fonts</artifactId>
-            <version>${jasper.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.jasperreports</groupId>
-            <artifactId>jasperreports-functions</artifactId>
             <version>${jasper.version}</version>
         </dependency>
 
@@ -89,6 +71,12 @@
             <groupId>org.sanjosedelamazonas</groupId>
             <artifactId>printapplet-addon</artifactId>
             <version>0.0.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vaadin.addon</groupId>
+            <artifactId>vaadin-context-menu</artifactId>
+            <version>0.7.4</version>
         </dependency>
 
         <!-- Custom components -->
