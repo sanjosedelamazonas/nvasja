@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-18T16:23:28 -->
+<!-- 2016-09-20T01:02:43 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComprobanteTxt" pageWidth="411" pageHeight="212" columnWidth="401" leftMargin="5" rightMargin="5" topMargin="1" bottomMargin="1" uuid="ffcc9523-bfb3-42b3-bfd2-4d3bbc1d7d8d">
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -15,25 +15,7 @@
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[(SELECT OPERACION.txt_glosaitem AS OPERACION_DESCRIPCION,
-     OPERACION.fec_fecha AS OPERACION_FECHA,
-     OPERACION.num_debesol AS OPERACION_PEN_debe,
-     OPERACION.num_habersol AS OPERACION_PEN_haber,
-     OPERACION.num_debedolar AS OPERACION_USD_debe,
-     OPERACION.num_haberdolar AS OPERACION_USD_haber,
-     OPERACION.cod_tipomoneda AS OPERACION_TIPOMONEDA,
-     OPERACION.txt_correlativo AS OPERACION_ID,
-	firma.txt_nombredestino AS OPERACION_FIRMA,
-	firma.txt_ruc AS OPERACION_DNI,
-	isnull(CUENTA.txt_descproyecto,tercero.txt_nombredestino) AS CUENTA_NOMBRE,
-	isnull(CUENTA.cod_proyecto,tercero.cod_destino) AS CUENTA_NUMERO
-FROM       dbo.vsj_cajabanco OPERACION
-LEFT JOIN dbo.scp_proyecto CUENTA ON OPERACION.cod_proyecto = CUENTA.cod_proyecto
-LEFT JOIN dbo.scp_destino tercero ON OPERACION.cod_tercero= tercero.cod_destino
-LEFT JOIN dbo.scp_destino firma ON OPERACION.cod_destino= firma.cod_destino
-WHERE OPERACION.cod_cajabanco = $P{OP_ID})
-Union all
-(SELECT OPERACION.txt_glosaitem AS OPERACION_DESCRIPCION,
+		<![CDATA[SELECT OPERACION.txt_glosaitem AS OPERACION_DESCRIPCION,
      OPERACION.fec_fecha AS OPERACION_FECHA,
      OPERACION.num_habersol AS OPERACION_PEN_debe,
      OPERACION.num_debesol AS OPERACION_PEN_haber,
@@ -49,15 +31,15 @@ FROM   dbo.vsj_cajabanco OPERACION
 LEFT JOIN dbo.scp_proyecto CUENTA ON OPERACION.cod_proyecto = CUENTA.cod_proyecto
 LEFT JOIN dbo.scp_destino tercero ON OPERACION.cod_tercero= tercero.cod_destino
 LEFT JOIN dbo.scp_destino firma ON OPERACION.cod_destino= firma.cod_destino
-WHERE OPERACION.cod_cajabanco = $P{OP_ID})]]>
+WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 	</queryString>
 	<field name="OPERACION_DESCRIPCION" class="java.lang.String"/>
 	<field name="OPERACION_FECHA" class="java.sql.Timestamp"/>
-	<field name="OPERACION_PEN_debe" class="java.math.BigDecimal"/>
-	<field name="OPERACION_PEN_haber" class="java.math.BigDecimal"/>
-	<field name="OPERACION_USD_debe" class="java.math.BigDecimal"/>
-	<field name="OPERACION_USD_haber" class="java.math.BigDecimal"/>
-	<field name="OPERACION_TIPOMONEDA" class="java.lang.String"/>
+	<field name="operacion_PEN_debe" class="java.math.BigDecimal"/>
+	<field name="operacion_PEN_haber" class="java.math.BigDecimal"/>
+	<field name="operacion_USD_debe" class="java.math.BigDecimal"/>
+	<field name="operacion_USD_haber" class="java.math.BigDecimal"/>
+	<field name="operacion_TIPOMONEDA" class="java.lang.String"/>
 	<field name="OPERACION_ID" class="java.lang.String"/>
 	<field name="OPERACION_FIRMA" class="java.lang.String"/>
 	<field name="OPERACION_DNI" class="java.lang.String"/>
@@ -211,7 +193,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID})]]>
 				<textElement textAlignment="Center" markup="none">
 					<font fontName="DejaVu Sans Mono" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["CARGO"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(($F{operacion_PEN_haber}.compareTo(new BigDecimal(0))>0 || $F{operacion_USD_haber}.compareTo(new BigDecimal(0))>0) ? "ABONO" : "CARGO" )]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="FixSizeFontStyle" x="250" y="20" width="45" height="13" uuid="2459dc49-22c7-492b-bfc4-aa0cdb6a803c"/>
@@ -253,7 +235,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID})]]>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans Mono"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{OPERACION_PEN_haber}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{operacion_TIPOMONEDA}.toString().equals("0") ? ($F{operacion_PEN_haber}.compareTo(new BigDecimal(0))>0 ? $F{operacion_PEN_haber} : $F{operacion_PEN_debe}) : ( $F{operacion_USD_haber}.compareTo(new BigDecimal(0))>0 ? $F{operacion_USD_haber} : $F{operacion_USD_debe} ))]]></textFieldExpression>
 			</textField>
 			<textField pattern="yyyy.MM.dd HH:mm" isBlankWhenNull="false">
 				<reportElement style="FixSizeFontStyle" x="11" y="196" width="134" height="12" uuid="de3f5e0a-4475-4ef8-b763-c1de2d553417"/>
@@ -313,7 +295,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID})]]>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans Mono"/>
 				</textElement>
-				<textFieldExpression><![CDATA["IMPORTE S/. "]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{operacion_TIPOMONEDA}.toString().equals("0") ? "IMPORTE S/." : "IMPORTE $")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
