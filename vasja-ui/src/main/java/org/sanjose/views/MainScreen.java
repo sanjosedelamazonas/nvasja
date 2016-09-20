@@ -33,17 +33,12 @@ public class MainScreen extends HorizontalLayout {
 
     private PrintHelper printHelper = null;
 
-    private Label printerIcon = new Label("");
-
-    private ProgressBar printerLoading;
-
-    private AboutView aboutView;
-
     private static final Logger log = LoggerFactory.getLogger(MainScreen.class);
 
     @Autowired
     public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
-                      ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView) {
+                      ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView,
+                      TransferenciaView transferenciaView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -62,6 +57,8 @@ public class MainScreen extends HorizontalLayout {
                 ) {
             menu.addView(comprobanteView, ComprobanteView.VIEW_NAME,
                     ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(transferenciaView, TransferenciaView.VIEW_NAME,
+                    TransferenciaView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
                     CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
@@ -80,7 +77,6 @@ public class MainScreen extends HorizontalLayout {
                     PropiedadView.VIEW_NAME, FontAwesome.EDIT);
         }
 
-        aboutView = new AboutView();
         menu.addView(new AboutView(), AboutView.VIEW_NAME, AboutView.VIEW_NAME,
                 FontAwesome.INFO_CIRCLE);
         cajaManejoView.setComprobanteView(comprobanteView);

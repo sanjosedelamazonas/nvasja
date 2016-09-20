@@ -1,32 +1,21 @@
 package org.sanjose.views;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
-import de.steinwedel.messagebox.MessageBox;
-import org.sanjose.helper.*;
+import org.sanjose.helper.DataUtil;
+import org.sanjose.helper.ViewUtil;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import tm.kod.widgets.numberfield.NumberField;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.*;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -36,17 +25,17 @@ import java.util.*;
  */
 @SpringComponent
 @UIScope
-public class ComprobanteView extends ComprobanteUI implements View, IComprobanteView {
+public class TransferenciaView extends TransferenciaUI implements View, IComprobanteView {
 
-	private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);
-	
-    public static final String VIEW_NAME = "Caja";
+	private static final Logger log = LoggerFactory.getLogger(TransferenciaView.class);
+
+    public static final String VIEW_NAME = "Transferencia";
 
     public static final String PEN="0";
 
     public static final String USD="1";
 
-    ComprobanteLogic viewLogic = new ComprobanteLogic(this);
+    TransferenciaLogic viewLogic = new TransferenciaLogic(this);
 
     VsjCajabancoRep repo;
 
@@ -85,12 +74,12 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
     public CajaManejoView cajaManejoView;
 
     @Autowired
-    public ComprobanteView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
-                           ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
-                           ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                           ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                           Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                           ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
+    public TransferenciaView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
+                             ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
+                             ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
+                             ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
+                             Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
+                             ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -121,6 +110,7 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         viewLogic.init();
     }
 
+    @Override
     public void setEnableFields(boolean enabled) {
         for (Field f : allFields) {
             f.setEnabled(enabled);
@@ -129,55 +119,20 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         btnDestino.setEnabled(enabled);
     }
 
-    public void setSaldoDeCajas() {
-        if (isPEN()) {
-            order_summary_layout.removeStyleName("order-summary-layout-usd");
-        } else  {
-            order_summary_layout.addStyleName("order-summary-layout-usd");
-        }
-        cajaSaldosLayout.removeAllComponents();
-        if (dataFechaComprobante.getValue() != null && selMoneda.getValue() != null) {
-            BigDecimal total = new BigDecimal(0.00);
-            for (ScpPlancontable caja : DataUtil.getCajas(planRepo, PEN.equals(selMoneda.getValue().toString()))) {
+    @Override
+    public void refreshData() {
 
-                BigDecimal saldo = new ProcUtil(em).getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
-                        , selMoneda.getValue().toString());
-                Label salLbl = new Label();
-                salLbl.setContentMode(ContentMode.HTML);
-                salLbl.setValue(
-                    caja.getId().getCodCtacontable() + " " + caja.getTxtDescctacontable() + ": <span class=\"order-sum\">"+  saldo + "</span");
-                salLbl.setStyleName("order-item");
-                cajaSaldosLayout.addComponent(salLbl);
-                total = total.add(saldo);
-            }
-            saldoTotal.setContentMode(ContentMode.HTML);
-            saldoTotal.setValue("Total :" +
-                    "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : "$ ") + total.toString() + "</span>");
-        }
+    }
+
+    public void setSaldoDeCajas() {
     }
 
     public boolean isPEN() {
         return PEN.equals(selMoneda.getValue().toString());
     }
 
-    @Override
-    public void refreshData() {
-        if (cajaManejoView!=null) cajaManejoView.refreshData();
-    }
-
-
     public void setCajaManejoView(CajaManejoView cajaManejoView) {
         this.cajaManejoView = cajaManejoView;
-    }
-
-    @Override
-    public void enter(ViewChangeEvent event) {
-        viewLogic.enter(event.getParameters());
-    }
-
-
-    public EntityManager getEm() {
-        return em;
     }
 
     @Override
@@ -185,9 +140,6 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         return selProyecto;
     }
 
-    public PopupDateField getDataFechaComprobante() {
-        return dataFechaComprobante;
-    }
 
     public TextField getNumVoucher() {
         return numVoucher;
@@ -293,10 +245,6 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         return numDoc;
     }
 
-    public CssLayout getCajaSaldosLayout() {
-        return cajaSaldosLayout;
-    }
-
     public Label getSaldoTotal() {
         return saldoTotal;
     }
@@ -325,60 +273,90 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         return imprimirBtn;
     }
 
+    @Override
+    public PopupDateField getDataFechaComprobante() {
+        return dataFechaComprobante;
+    }
 
+    //
+    @Override
     public VsjCajabancoRep getRepo() {
         return repo;
     }
 
+    @Override
     public ScpPlanproyectoRep getPlanproyectoRepo() {
         return planproyectoRepo;
     }
 
+    @Override
     public ScpFinancieraRep getFinancieraRepo() {
         return financieraRepo;
     }
 
+    @Override
     public Scp_ProyectoPorFinancieraRep getProyectoPorFinancieraRepo() {
         return proyectoPorFinancieraRepo;
     }
 
+    @Override
     public VsjConfiguractacajabancoRep getConfiguractacajabancoRepo() {
         return configuractacajabancoRepo;
     }
 
+    @Override
     public VsjConfiguracioncajaRep getConfiguracioncajaRepo() {
         return configuracioncajaRepo;
     }
 
+    @Override
     public ScpProyectoRep getProyectoRepo() {
         return proyectoRepo;
     }
 
+    @Override
     public ScpDestinoRep getDestinoRepo() {
         return destinoRepo;
     }
 
+    @Override
     public ScpPlanespecialRep getPlanespecialRep() {
         return planespecialRep;
     }
 
+    @Override
     public ScpCargocuartaRep getCargocuartaRepo() {
         return cargocuartaRepo;
     }
 
+    @Override
     public ScpTipodocumentoRep getTipodocumentoRepo() {
         return tipodocumentoRepo;
     }
 
+    @Override
     public ScpPlancontableRep getPlanRepo() {
         return planRepo;
     }
 
+    @Override
     public Scp_ContraparteRep getContraparteRepo() {
         return contraparteRepo;
     }
 
+    @Override
     public ScpComprobantepagoRep getComprobantepagoRepo() {
         return comprobantepagoRepo;
     }
+
+    @Override
+    public void enter(ViewChangeEvent event) {
+        viewLogic.enter(event.getParameters());
+    }
+
+
+    public EntityManager getEm() {
+        return em;
+    }
+
 }

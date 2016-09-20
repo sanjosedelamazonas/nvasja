@@ -57,6 +57,8 @@ public class MainUI extends UI {
 
     private CajaManejoView cajaManejoView;
 
+    private TransferenciaView transferenciaView;
+
     private MsgUsuarioRep msgUsuarioRep;
 
     private EntityManager em;
@@ -66,13 +68,15 @@ public class MainUI extends UI {
     @Autowired
     private MainUI(VsjPropiedadRep propRepo, PropiedadView propiedadView, CajaGridView cajaGridView,
                    ConfiguracionCajaView configuracionCajaView, ConfiguracionCtaCajaBancoView confView,
-                   ComprobanteView comprobanteView, CajaManejoView cajaManejoView, MsgUsuarioRep msgUsuarioRep,
+                   ComprobanteView comprobanteView, TransferenciaView transferenciaView,
+                   CajaManejoView cajaManejoView, MsgUsuarioRep msgUsuarioRep,
                    EntityManager em) {
     	this.confView = confView;
     	this.cajaGridView = cajaGridView;
         this.propiedadView = propiedadView;
         this.propRepo = propRepo;
         this.comprobanteView = comprobanteView;
+        this.transferenciaView = transferenciaView;
         this.configuracionCajaView = configuracionCajaView;
         this.cajaManejoView = cajaManejoView;
         this.msgUsuarioRep = msgUsuarioRep;
@@ -101,7 +105,7 @@ public class MainUI extends UI {
 
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
-        mainScreen = new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView, propiedadView, comprobanteView);
+        mainScreen = new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView, propiedadView, comprobanteView, transferenciaView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
