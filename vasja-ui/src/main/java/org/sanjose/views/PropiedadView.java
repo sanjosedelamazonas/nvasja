@@ -1,5 +1,6 @@
 package org.sanjose.views;
 
+import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
@@ -72,6 +73,26 @@ public class PropiedadView extends PropiedadUI implements View {
         
         gridPropiedad.setEditorFieldGroup(
         	    new BeanFieldGroup<VsjPropiedad>(VsjPropiedad.class));
+
+        GridContextMenu gridContextMenu = new GridContextMenu(gridPropiedad);
+
+        gridContextMenu.addGridBodyContextMenuListener(e -> {
+            gridContextMenu.removeItems();
+            final Object itemId = e.getItemId();
+            if (itemId == null) {
+                gridContextMenu.addItem("Add Item", k -> {
+                    Notification.show("adding");
+                });
+            } else {
+                gridContextMenu.addItem("Remove this row", k -> {
+                    Notification.show("removing");
+                });
+                gridContextMenu.addItem("Imprimir ", k -> {
+                    Notification.show("removing");
+                });
+            }
+        });
+
         viewLogic.init();
     }
 

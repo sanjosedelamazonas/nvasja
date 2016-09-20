@@ -48,7 +48,6 @@ public class ComprobanteLogic implements Serializable {
 
     public void init() {
         view.guardarBtn.addClickListener(event -> saveComprobante());
-        //view.cancelarBtn.addClickListener(event -> anularComprobante());
         view.nuevoComprobante.addClickListener(event -> nuevoComprobante());
         view.cerrarBtn.addClickListener(event -> cerrarAlManejo());
         view.imprimirBtn.addClickListener(event -> {
@@ -119,12 +118,6 @@ public class ComprobanteLogic implements Serializable {
         }
     }
 
-    public void anularComprobante() {
-        view.anularComprobante();
-        view.nuevoComprobante.setEnabled(true);
-    }
-
-
     public void enter(String productId) {
         if (productId != null && !productId.isEmpty()) {
         	log.info("Configuracion Logic getting: " + productId);
@@ -150,7 +143,6 @@ public class ComprobanteLogic implements Serializable {
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
         view.bindForm(vcb);
         view.guardarBtn.setEnabled(true);
-        //view.cancelarBtn.setEnabled(true);
         view.modificarBtn.setEnabled(false);
         view.eliminarBtn.setEnabled(false);
         view.imprimirBtn.setEnabled(false);
@@ -162,7 +154,6 @@ public class ComprobanteLogic implements Serializable {
         view.bindForm(vcb);
         view.nuevoComprobante.setEnabled(false);
         view.guardarBtn.setEnabled(true);
-        //view.cancelarBtn.setEnabled(true);
         view.eliminarBtn.setEnabled(true);
         view.modificarBtn.setEnabled(false);
         view.imprimirBtn.setEnabled(true);
@@ -170,7 +161,14 @@ public class ComprobanteLogic implements Serializable {
 
     public void eliminarComprobante() {
         try {
-            if (savedCajabanco==null) log.info("no se puede eliminar si no esta ya guardado");
+            if (savedCajabanco==null) {
+                log.info("no se puede eliminar si no esta ya guardado");
+                return;
+            }
+            if (savedCajabanco.getFlgEnviado().equals("1")) {
+                Notification.show("No se puede eliminar porque ya esta enviado a la contabilidad");
+                return;
+            }
             VsjCajabanco item = view.getVsjCajabanco();
             if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
                 throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
