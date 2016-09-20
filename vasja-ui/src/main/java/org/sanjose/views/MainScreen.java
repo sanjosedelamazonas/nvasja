@@ -91,20 +91,16 @@ public class MainScreen extends HorizontalLayout {
         if (ConfigurationUtil.is("PRINTER_LIST_SHOW"))
             menu.addView(printHelper, PrintHelper.VIEW_NAME, PrintHelper.VIEW_NAME, FontAwesome.PRINT);
 
-        /*if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
-            log.info("Adding printer icon and progressbar");
-        }
-        */
         addComponent(menu);
         addComponent(viewContainer);
         setExpandRatio(viewContainer, 1);
         setSizeFull();
     }
 
-    public void printerLoaded(List<String> imprimeras) {
+    public void printerLoaded(List<String> imprimeras, String defaultPrinter) {
         log.info("Loaded " + imprimeras.size() + " printers");
 
-        ImprimerasView imprimerasView = new ImprimerasView(imprimeras);
+        ImprimerasView imprimerasView = new ImprimerasView(imprimeras, defaultPrinter);
         menu.addView(imprimerasView, ImprimerasView.VIEW_NAME, ImprimerasView.VIEW_NAME,
                 FontAwesome.PRINT);
     }

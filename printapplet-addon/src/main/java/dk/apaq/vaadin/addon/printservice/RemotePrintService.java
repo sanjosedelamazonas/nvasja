@@ -100,8 +100,12 @@ public class RemotePrintService implements PrintService {
                 ZipOutputStream zout = new ZipOutputStream(os);
                 Pageable pageable = (Pageable) doc.getPrintData();
                 try {
-                    for (int i = 0; i == 0 || i < pageable.getNumberOfPages(); i++) {
+                    //LOG.info("got pageable: " + pageable.getNumberOfPages());
+
+                    // Solving problem of double printing
+                  //  for (int i = 0; i == 0 || i < pageable.getNumberOfPages(); i++) {
                         try {
+                            int i=0;
                             Printable p = pageable.getPrintable(i);
                             PageFormat pf = pageable.getPageFormat(i);
 
@@ -118,6 +122,7 @@ public class RemotePrintService implements PrintService {
                                     gfx.scale(scaleTo72Dpi, scaleTo72Dpi);
 
                                     if (p.print(gfx, pf, pageCount++) == Printable.PAGE_EXISTS) {
+                                        //LOG.info(pageCount + "_" + System.currentTimeMillis() +".png");
                                         ZipEntry entry = new ZipEntry(pageCount + "_" + System.currentTimeMillis() +".png");
                                         zout.putNextEntry(entry);
                                         entry.setExtra("image/png".getBytes("utf-8"));
@@ -137,9 +142,9 @@ public class RemotePrintService implements PrintService {
                                 }
                             } while (hasMorePages);
                         } catch (IndexOutOfBoundsException ex) {
-                            break;
+                      //      break;
                         }
-                    }
+                    //}
 
                 } catch (Exception ex) {
                     throw new PrintException(ex);
