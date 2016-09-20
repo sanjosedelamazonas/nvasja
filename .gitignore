@@ -7,7 +7,6 @@ target
 /*/target/
 .idea
 *.iml
-/printapplet-addon/WebContent/VAADIN/widgetsets/*
 .settings
 .settings/*
 reports/.gitignore
@@ -17,4 +16,4 @@ vasja-ui/.designer/
 vasja-reports/.project
 vasja-reports/.classpath
 vasja-reports/.settings
-/*/.settings/
+/printapplet-addon/WebContent/VAADIN/widgetsets/

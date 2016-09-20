@@ -83,8 +83,9 @@ public class PrintHelper extends VerticalLayout implements View {
 						imprimeras.add(ps.getName());
 						c.addBean(ps);
 		            }
+					PrintService defPrintService = printServiceManager.getDefaultPrintService();
 					if (!imprimeras.isEmpty())
-						mainScreen.printerLoaded(imprimeras);
+						mainScreen.printerLoaded(imprimeras, defPrintService.getName());
 					table.setContainerDataSource(c);
 					//table.setVisibleColumns(new String[] { "id", "name", "resolution" });
 					table.setColumnCollapsingAllowed(true);
