@@ -36,7 +36,13 @@ public class CajaManejoLogic implements Serializable {
     public void init() {
 
         view.nuevoComprobante.addClickListener(e -> newComprobante());
-        view.btnEditar.addClickListener(e -> editarComprobante());
+        view.btnEditar.addClickListener(e -> {
+            for (Object obj : view.getSelectedRow()) {
+                log.info("selected: " + obj);
+                editarComprobante((VsjCajabanco) obj);
+                break;
+            }
+        });
         view.btnReporteCaja.addClickListener(e -> generateComprobante());
         view.btnEnviar.addClickListener(e -> printComprobante());
     }
@@ -81,17 +87,14 @@ public class CajaManejoLogic implements Serializable {
         MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
-    public void editarComprobante() {
-        for (Object obj : view.getSelectedRow()) {
-            log.info("selected: " + obj);
-            VsjCajabanco vcb = (VsjCajabanco)obj;
-            if (!"1".equals(vcb.getFlgEnviado())) {
-                view.getComprobanteView().viewLogic.editarComprobante(vcb);
-                MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
-                break;
-            }
+    public void editarComprobante(VsjCajabanco vcb) {
+        if (!"1".equals(vcb.getFlgEnviado()) && !"1".equals(vcb.getFlg_Anula())) {
+            view.getComprobanteView().viewLogic.editarComprobante(vcb);
+            MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
         }
     }
+
+
 
     public void generateComprobante() {
         for (Object obj : view.getSelectedRow()) {

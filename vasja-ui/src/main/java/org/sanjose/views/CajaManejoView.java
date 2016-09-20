@@ -143,10 +143,7 @@ public class CajaManejoView extends CajaManejoUI implements View {
         if (event.isDoubleClick()) {
             Object id = event.getItem().getItemProperty("codCajabanco").getValue();
             VsjCajabanco vcb = repo.findByCodCajabanco((Integer)id);
-            if (!"1".equals(vcb.getFlgEnviado())) {
-                getComprobanteView().viewLogic.editarComprobante(vcb);
-                MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
-            }
+            viewLogic.editarComprobante(vcb);
         }
     }
 
