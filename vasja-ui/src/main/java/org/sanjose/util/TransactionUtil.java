@@ -1,28 +1,23 @@
-package org.sanjose.model;
+package org.sanjose.util;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import org.sanjose.helper.GenUtil;
-import org.sanjose.views.TransferenciaLogic;
+import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.VsjCajabancoRep;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 20.09.16
  */
@@ -49,10 +44,15 @@ public class TransactionUtil implements ITransactionUtil {
         assert TransactionSynchronizationManager.isActualTransactionActive();
         List<VsjCajabanco> savedOperaciones = new ArrayList<VsjCajabanco>();
         for (VsjCajabanco oper : cajabancoRep.save(cajabancos)) {
-            //VsjCajabanco savedCajabanco = em.merge(oper);
+            // Tested saving each element using entityManager directly but then an Exception is raised:
+            // javax.persistence.TransactionRequiredException: No EntityManager with actual transaction available for
+            // current thread - cannot reliably process 'merge' call
+            //
+//            VsjCajabanco savedCajabanco = em.merge(oper);
             if (GenUtil.strNullOrEmpty(oper.getTxtCorrelativo())) {
                 oper.setTxtCorrelativo(GenUtil.getTxtCorrelativo(oper.getCodCajabanco()));
-                // TEST transactionality
+                // TEST transactionality - causes org.springframework.dao.DataIntegrityViolationException
+                // because codMes is NOT NULL in the database
 ///                if (oper.getTxtGlosaitem().equals("abc"))
 //                    oper.setCodMes(null);
                 oper = cajabancoRep.save(oper);

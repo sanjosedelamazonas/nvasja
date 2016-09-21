@@ -6,7 +6,7 @@ import elemental.json.JsonValue;
 import java.util.Locale;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 15.09.16
  */

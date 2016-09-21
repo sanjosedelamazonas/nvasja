@@ -3,10 +3,8 @@ package org.sanjose.views;
 import java.util.Collection;
 import java.util.Date;
 
-import org.sanjose.helper.BooleanTrafficLight;
-import org.sanjose.helper.DataFilterUtil;
-import org.sanjose.helper.GenUtil;
-import org.sanjose.helper.TwoCombosValidator;
+import org.sanjose.util.DataFilterUtil;
+import org.sanjose.util.GenUtil;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,10 +21,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid.HeaderCell;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.renderers.HtmlRenderer;
 
 /**
  * A view for performing create-read-update-delete operations on products.

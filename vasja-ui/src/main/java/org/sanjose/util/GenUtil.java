@@ -1,4 +1,4 @@
-package org.sanjose.helper;
+package org.sanjose.util;
 
 //import org.vaadin.ui.NumberField;
 

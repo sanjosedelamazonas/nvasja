@@ -1,4 +1,4 @@
-package org.sanjose.helper;
+package org.sanjose.util;
 
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.ScpPlancontableRep;
@@ -6,7 +6,7 @@ import org.sanjose.model.ScpPlancontableRep;
 import java.util.List;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 19.09.16
  */

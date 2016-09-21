@@ -1,4 +1,4 @@
-package org.sanjose.helper;
+package org.sanjose.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import com.vaadin.data.Property;
-import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.OptionGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 

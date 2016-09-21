@@ -4,34 +4,32 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import com.vaadin.data.Property;
-import com.vaadin.data.Validator;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.DateRenderer;
-import com.vaadin.ui.themes.ValoTheme;
-import org.sanjose.helper.*;
+import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.*;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.model.VsjCajabancoRep;
+import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.DataFilterUtil;
+import org.sanjose.util.GenUtil;
+import org.sanjose.util.ViewUtil;
+import org.sanjose.validator.TwoCombosValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.Grid.HeaderCell;
-import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.renderers.HtmlRenderer;
 
 /**
  * A view for performing create-read-update-delete operations on products.

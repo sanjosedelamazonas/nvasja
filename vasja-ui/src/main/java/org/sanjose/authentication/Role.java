@@ -1,7 +1,7 @@
 package org.sanjose.authentication;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 17.09.16
  */

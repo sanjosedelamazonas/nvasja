@@ -1,17 +1,12 @@
 package org.sanjose;
 
-import com.vaadin.ui.JavaScript;
-import com.vaadin.ui.Notification;
 import org.sanjose.authentication.AccessControl;
-import org.sanjose.authentication.BasicAccessControl;
 import org.sanjose.authentication.LoginScreen;
 import org.sanjose.authentication.LoginScreen.LoginListener;
 import org.sanjose.authentication.MsgAccessControl;
-import org.sanjose.helper.ConfigurationUtil;
-import org.sanjose.helper.GenUtil;
+import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.GenUtil;
 import org.sanjose.model.MsgUsuarioRep;
-import org.sanjose.model.VsjCajabancoRep;
-import org.sanjose.model.VsjPropiedad;
 import org.sanjose.model.VsjPropiedadRep;
 import org.sanjose.views.*;
 import org.springframework.beans.factory.annotation.Autowired;

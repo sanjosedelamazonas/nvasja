@@ -8,7 +8,7 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
 import org.sanjose.MainUI;
-import org.sanjose.helper.ConfigurationUtil;
+import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.model.VsjPropiedad;
 
 import java.io.Serializable;

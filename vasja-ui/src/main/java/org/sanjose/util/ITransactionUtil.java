@@ -1,9 +1,11 @@
-package org.sanjose.model;
+package org.sanjose.util;
+
+import org.sanjose.model.VsjCajabanco;
 
 import java.util.List;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 20.09.16
  */

@@ -1,39 +1,20 @@
 package org.sanjose.views;
 
-import com.vaadin.addon.contextmenu.ContextMenu;
-import com.vaadin.addon.contextmenu.GridContextMenu;
-import com.vaadin.addon.contextmenu.MenuItem;
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.ItemSorter;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.filter.Between;
-import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.external.org.slf4j.Logger;
-import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.shared.ui.ui.NotificationRole;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Grid.HeaderCell;
-import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
-import com.vaadin.ui.renderers.NumberRenderer;
-import org.sanjose.MainUI;
-import org.sanjose.helper.*;
 import org.sanjose.model.*;
+import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.ViewUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 /**

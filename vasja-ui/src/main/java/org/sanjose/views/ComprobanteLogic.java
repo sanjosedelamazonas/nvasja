@@ -16,8 +16,12 @@ import com.vaadin.ui.*;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
-import org.sanjose.helper.*;
+import org.sanjose.converter.DateToTimestampConverter;
+import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.*;
+import org.sanjose.util.*;
+import org.sanjose.validator.TwoCombosValidator;
+import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 

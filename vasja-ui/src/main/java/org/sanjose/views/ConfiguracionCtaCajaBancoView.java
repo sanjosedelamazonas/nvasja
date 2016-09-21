@@ -3,8 +3,8 @@ package org.sanjose.views;
 import java.util.Collection;
 
 import org.sanjose.helper.BooleanTrafficLight;
-import org.sanjose.helper.DataFilterUtil;
-import org.sanjose.helper.GenUtil;
+import org.sanjose.util.DataFilterUtil;
+import org.sanjose.util.GenUtil;
 import org.sanjose.model.ScpPlancontableRep;
 import org.sanjose.model.ScpPlanespecialRep;
 import org.sanjose.model.VsjConfiguractacajabanco;

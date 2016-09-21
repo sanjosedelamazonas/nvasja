@@ -1,14 +1,15 @@
-package org.sanjose.helper;
+package org.sanjose.validator;
 
 import com.vaadin.data.Validator;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.AbstractField;
+import org.sanjose.util.GenUtil;
 import tm.kod.widgets.numberfield.NumberField;
 
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 09.09.16
  */

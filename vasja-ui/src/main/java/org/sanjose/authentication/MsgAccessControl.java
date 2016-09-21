@@ -1,6 +1,6 @@
 package org.sanjose.authentication;
 
-import org.sanjose.helper.Rot10;
+import org.sanjose.util.Rot10;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.MsgUsuarioRep;
 

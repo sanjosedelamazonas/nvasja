@@ -1,9 +1,10 @@
-package org.sanjose.helper;
+package org.sanjose.validator;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 import com.vaadin.data.Validator;
+import org.sanjose.util.ConfigurationUtil;
 
 @SuppressWarnings("serial")
 public class BigDecimalValidator implements Validator {

@@ -8,7 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
 import org.sanjose.helper.PrintHelper;
-import org.sanjose.model.ReportHelper;
+import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.VsjCajabanco;
 
 import java.io.Serializable;

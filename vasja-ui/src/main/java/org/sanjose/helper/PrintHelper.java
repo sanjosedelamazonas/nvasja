@@ -46,7 +46,7 @@ import dk.apaq.vaadin.addon.printservice.RemotePrintService;
 import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRTextExporterParameter;
-import org.sanjose.model.ReportHelper;
+import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.views.MainScreen;
 
 @SuppressWarnings("serial")

@@ -2,12 +2,9 @@ package org.sanjose.views;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.server.ThemeResource;
-import com.vaadin.shared.Version;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
-import org.sanjose.helper.ConfigurationUtil;
+import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.authentication.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,6 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import org.springframework.beans.factory.parsing.ImportDefinition;
 
 import java.util.List;
 

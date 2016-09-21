@@ -1,30 +1,19 @@
 package org.sanjose.views;
 
-import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
-import org.sanjose.authentication.CurrentUser;
-import org.sanjose.helper.GenUtil;
-import org.sanjose.helper.ViewUtil;
-import org.sanjose.model.TransactionUtil;
+import org.sanjose.util.ViewUtil;
+import org.sanjose.util.TransactionUtil;
 import org.sanjose.model.VsjCajabanco;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 20.09.16
  */
@@ -32,11 +21,11 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     private static final Logger log = LoggerFactory.getLogger(TransferenciaLogic.class);
 
-    private TransferenciaView tView;
+    private final TransferenciaView tView;
 
     private String moneda;
 
-    private TransactionUtil transactionUtil;
+    private final TransactionUtil transactionUtil;
 
     public TransferenciaLogic(IComprobanteView comprobanteView) {
         super(comprobanteView);
@@ -53,15 +42,13 @@ public class TransferenciaLogic extends ComprobanteLogic {
         tView.imprimirTotalBtn.setEnabled(false);
     }
 
-    public void nuevaTrans() {
+    private void nuevaTrans() {
         if (!tView.getContainer().getItemIds().isEmpty())
             MessageBox
                 .createQuestion()
                 .withCaption("Nueva transferencia")
                 .withMessage("?Esta seguro que quiere eliminar esta transferencia y crear una nueva?")
-                .withYesButton(() -> {
-                    resetTrans();
-                })
+                .withYesButton(this::resetTrans)
                 .withNoButton()
                 .open();
         else
@@ -109,9 +96,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 .withCaption("Quitar la transferencia")
                 .withMessage("?Esta seguro que quiere eliminar todos operaciones de esta transferencia \n" +
                         "y regresar al Manejo de Caja?\n")
-                .withYesButton(() -> {
-                    MainUI.get().getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
-                })
+                .withYesButton(() -> MainUI.get().getNavigator().navigateTo(CajaManejoView.VIEW_NAME))
                 .withNoButton()
                 .open();
     }
@@ -157,9 +142,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 .withCaption("Guardar la transferencia")
                 .withMessage("?Esta seguro que quiere guardar todos operaciones de esta transferencia?\n" +
                         "!Despues no se puede regresar a editarlos en esta pantalla!")
-                .withYesButton(() -> {
-                    executeSaveTransferencia();
-                })
+                .withYesButton(this::executeSaveTransferencia)
                 .withNoButton()
                 .open();
     }

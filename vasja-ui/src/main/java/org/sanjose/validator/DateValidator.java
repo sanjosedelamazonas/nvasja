@@ -1,4 +1,4 @@
-package org.sanjose.helper;
+package org.sanjose.validator;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

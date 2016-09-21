@@ -1,4 +1,4 @@
-package org.sanjose.helper;
+package org.sanjose.converter;
 
 import com.vaadin.data.util.converter.StringToBigDecimalConverter;
 

@@ -3,30 +3,20 @@ package org.sanjose.views;
 import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.Grid.HeaderCell;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.PopupDateField;
-import com.vaadin.ui.TextField;
-import org.sanjose.helper.ConfigurationUtil;
-import org.sanjose.helper.DateToTimestampConverter;
-import org.sanjose.model.ScpPlancontableRep;
-import org.sanjose.model.ScpPlanespecialRep;
+import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.model.VsjPropiedad;
 import org.sanjose.model.VsjPropiedadRep;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Timestamp;
 import java.util.Collection;
 
 /**          A

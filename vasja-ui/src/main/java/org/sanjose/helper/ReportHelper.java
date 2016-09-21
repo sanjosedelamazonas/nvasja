@@ -1,4 +1,4 @@
-package org.sanjose.model;
+package org.sanjose.helper;
 
 import java.io.*;
 import java.sql.Connection;
@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Set;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -32,9 +31,9 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
-import org.sanjose.helper.ConfigurationUtil;
-import org.sanjose.helper.DoubleDecimalFormatter;
-import org.sanjose.helper.GenUtil;
+import org.sanjose.model.VsjCajabanco;
+import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.GenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 

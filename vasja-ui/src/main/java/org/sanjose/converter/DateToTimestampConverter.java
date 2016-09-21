@@ -1,4 +1,4 @@
-package org.sanjose.helper;
+package org.sanjose.converter;
 
 import com.vaadin.data.util.converter.Converter;
 
@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 08.09.16
  */

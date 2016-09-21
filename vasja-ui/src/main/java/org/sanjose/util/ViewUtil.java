@@ -1,4 +1,4 @@
-package org.sanjose.helper;
+package org.sanjose.util;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
@@ -7,8 +7,10 @@ import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TextField;
+import org.sanjose.converter.BigDecimalConverter;
+import org.sanjose.converter.DateToTimestampConverter;
+import org.sanjose.helper.EmptyZeroNumberRendrer;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -16,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 15.09.16
  */

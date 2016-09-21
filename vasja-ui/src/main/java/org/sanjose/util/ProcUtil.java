@@ -1,8 +1,7 @@
-package org.sanjose.model;
+package org.sanjose.util;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import org.sanjose.views.CajaGridView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
@@ -11,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 12.09.16
  */
