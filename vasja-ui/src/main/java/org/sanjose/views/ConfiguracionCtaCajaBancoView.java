@@ -2,7 +2,7 @@ package org.sanjose.views;
 
 import java.util.Collection;
 
-import org.sanjose.helper.BooleanTrafficLight;
+import org.sanjose.render.BooleanTrafficLight;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.model.ScpPlancontableRep;
@@ -77,8 +77,11 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridConfigCtaCajaBanco.getColumn("codCtacontablecaja").setEditorField(selCtacontablecaja);
         
-        ComboBox selCtacontablegasto = new ComboBox();  
-        DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()), "Sel cta contable", "txtDescctacontable");
+        ComboBox selCtacontablegasto = new ComboBox();
+        DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable",
+                planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
+                        "N", GenUtil.getCurYear(), "101%", "102%", "104%", "106%")
+                , "Sel cta contable", "txtDescctacontable");
         gridConfigCtaCajaBanco.getColumn("codCtacontablegasto").setEditorField(selCtacontablegasto);
         
         ComboBox selCtaespecial = new ComboBox();  

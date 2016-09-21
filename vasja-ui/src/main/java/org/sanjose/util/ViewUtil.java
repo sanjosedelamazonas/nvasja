@@ -10,7 +10,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextField;
 import org.sanjose.converter.BigDecimalConverter;
 import org.sanjose.converter.DateToTimestampConverter;
-import org.sanjose.helper.EmptyZeroNumberRendrer;
+import org.sanjose.render.EmptyZeroNumberRendrer;
 
 import java.sql.Timestamp;
 import java.util.Date;

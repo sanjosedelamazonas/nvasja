@@ -1,4 +1,4 @@
-package org.sanjose.views;
+package org.sanjose.sysviews;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -7,6 +7,7 @@ import org.sanjose.MainUI;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.authentication.Role;
+import org.sanjose.views.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.navigator.Navigator;
@@ -110,7 +111,7 @@ public class MainScreen extends HorizontalLayout {
         @Override
         public void afterViewChange(ViewChangeEvent event) {
             menu.setActiveView(event.getViewName());
-            JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
+            //JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
         }
 
     };

@@ -31,10 +31,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -69,6 +66,8 @@ public class ComprobanteLogic implements Serializable {
     public static final String USD="1";
 
     protected ProcUtil procUtil;
+
+    private Property.ValueChangeListener selTipoMovValChangeListener;
 
     @Autowired
     public ComprobanteLogic(IComprobanteView  comprobanteView) {
@@ -142,6 +141,11 @@ public class ComprobanteLogic implements Serializable {
         DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
                 "Responsable", "txtNombredestino");
 
+        view.getSelResponsable().addValueChangeListener(valueChangeEvent ->  {
+            if (valueChangeEvent.getProperty().getValue()!=null)
+                view.getSelCodAuxiliar().setValue(valueChangeEvent.getProperty().getValue());
+        });
+
         // Lugar de gasto
         DataFilterUtil.bindComboBox(view.getSelLugarGasto(), "codContraparte", view.getContraparteRepo().findAll(),
                 "Sel Lugar de Gasto", "txt_DescContraparte");
@@ -175,17 +179,8 @@ public class ComprobanteLogic implements Serializable {
         DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", view.getFinancieraRepo().findAll(),
                 "Sel Fuente", "txtDescfinanciera");
 
-        DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta", view.getConfiguractacajabancoRepo().findByActivoAndParaCaja(true, true),
-                "Sel Tipo de Movimiento", "txtTipocuenta");
-        //getSelTipoMov().setEnabled(false);
-        view.getSelTipoMov().addValueChangeListener(event -> {
-            if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                String tipoMov = event.getProperty().getValue().toString();
-                VsjConfiguractacajabanco config = view.getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
-                view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
-                view.getSelRubroInst().setValue(config.getCodCtaespecial());
-            }
-        });
+        setupSelTipoMov(view.getConfiguractacajabancoRepo().findByActivoAndParaCaja(true, true));
+
         view.getGlosa().setMaxLength(70);
 
         // Validators
@@ -209,6 +204,33 @@ public class ComprobanteLogic implements Serializable {
         view.getBtnResponsable().addClickListener(event->editDestino(view.getSelResponsable()));
 
         view.setEnableFields(false);
+    }
+
+
+    protected void setupSelTipoMov(List<VsjConfiguractacajabanco> vsjConfiguractacajabancos) {
+        view.getSelTipoMov().removeAllValidators();
+        if (selTipoMovValChangeListener ==null)
+            DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta", vsjConfiguractacajabancos,
+                "Sel Tipo de Movimiento", "txtTipocuenta");
+        else
+            DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta", vsjConfiguractacajabancos,
+                    "Sel Tipo de Movimiento", "txtTipocuenta");
+        if (selTipoMovValChangeListener !=null)
+            view.getSelTipoMov().removeValueChangeListener(selTipoMovValChangeListener);
+        selTipoMovValChangeListener = new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (!isEdit && !GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                    String tipoMov = event.getProperty().getValue().toString();
+                    VsjConfiguractacajabanco config = view.getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
+                    log.info("selTipoMov got: " + event.getProperty().getValue() + " from db: " + config);
+                    view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
+                    view.getSelRubroInst().setValue(config.getCodCtaespecial());
+                }
+            }
+        };
+        view.getSelTipoMov().addValueChangeListener(selTipoMovValChangeListener);
+        view.getSelTipoMov().addValidator(new BeanValidator(VsjCajabanco.class, "codTipomov"));
     }
 
     private void editDestino(ComboBox comboBox) {
@@ -394,6 +416,7 @@ public class ComprobanteLogic implements Serializable {
                 view.getSelCaja().setValue(config.getCodCtacontable());
             }
         }
+        setSaldoCaja();
     }
 
     public void setProyectoLogic(Property.ValueChangeEvent event) {
@@ -418,16 +441,15 @@ public class ComprobanteLogic implements Serializable {
                 view.getNumIngreso().setEnabled(false);
                 view.getNumEgreso().setEnabled(false);
             }
-            DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta",
-                    view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaTercero(true, true, true),
-                    "Sel Tipo de Movimiento", "txtTipocuenta");
-            view.getSelFuente().setValue(null);
+
+            setupSelTipoMov(view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaTercero(true, true, true));
+            view.getSelFuente().setValue("");
             view.getSelFuente().setEnabled(false);
             // Reset those fields
             if (!isEdit) {
-                view.getSelCtaContable().setValue(null);
-                view.getSelRubroInst().setValue(null);
-                view.getSelRubroProy().setValue(null);
+                view.getSelCtaContable().setValue("");
+                view.getSelRubroInst().setValue("");
+                view.getSelRubroProy().setValue("");
             }
             //nombreTercero.setValue(getDestinoRepo().findByCodDestino(codTercero).getTxtNombredestino());
             setSaldos();
@@ -463,11 +485,8 @@ public class ComprobanteLogic implements Serializable {
                         financieraEfectList.add(financiera);
                     }
                 }
-
                 // Sel Tipo Movimiento
-                DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta",
-                        view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true),
-                        "Sel Tipo de Movimiento", "txtTipocuenta");
+                setupSelTipoMov(view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true));
                 // Reset those fields
                 if (!isEdit) {
                     view.getSelCtaContable().setValue("");
@@ -532,6 +551,8 @@ public class ComprobanteLogic implements Serializable {
         fieldGroup.bind(view.getSelRubroInst(), "codCtaespecial");
         fieldGroup.bind(view.getSelRubroProy(), "codCtaproyecto");
         fieldGroup.bind(view.getSelFuente(), "codFinanciera");
+        fieldGroup.bind(view.getSelTipoMov(), "codTipomov");
+
         for (Field f: fieldGroup.getFields()) {
             if (f instanceof TextField)
                 ((TextField)f).setNullRepresentation("");
@@ -590,8 +611,13 @@ public class ComprobanteLogic implements Serializable {
             view.refreshData();
             view.getImprimirBtn().setEnabled(true);
         } catch (CommitException ce) {
-            Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
-            log.info("Got Commit Exception: " + ce.getMessage());
+            StringBuilder sb = new StringBuilder();
+            Map<Field<?>, Validator.InvalidValueException> fieldMap = ce.getInvalidFields();
+            for (Field f : fieldMap.keySet()) {
+                sb.append(f.getConnectorId() + " " + fieldMap.get(f).getHtmlMessage() + "\n");
+            }
+            Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage() + "\n" + sb.toString(), Notification.Type.ERROR_MESSAGE);
+            log.warn("Got Commit Exception: " + ce.getMessage() + "\n" + sb.toString());
         }
     }
 

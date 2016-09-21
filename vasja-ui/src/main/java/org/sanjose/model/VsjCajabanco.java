@@ -46,6 +46,10 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_ctaproyecto")
 	private String codCtaproyecto;
 
+	@NotNull
+	@Column(name="cod_tipomov")
+	private Integer codTipomov;
+
 	//@NotNull
 	@NotBlank
 	@Column(name="cod_destino")
@@ -409,6 +413,14 @@ public class VsjCajabanco implements Serializable {
 
 	public void setTxtSeriecomprobantepago(String txtSeriecomprobantepago) {
 		this.txtSeriecomprobantepago = txtSeriecomprobantepago;
+	}
+
+	public Integer getCodTipomov() {
+		return codTipomov;
+	}
+
+	public void setCodTipomov(Integer codTipomov) {
+		this.codTipomov = codTipomov;
 	}
 
 	@Override

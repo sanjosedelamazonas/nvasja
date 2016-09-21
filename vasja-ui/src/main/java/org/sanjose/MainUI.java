@@ -4,6 +4,7 @@ import org.sanjose.authentication.AccessControl;
 import org.sanjose.authentication.LoginScreen;
 import org.sanjose.authentication.LoginScreen.LoginListener;
 import org.sanjose.authentication.MsgAccessControl;
+import org.sanjose.sysviews.MainScreen;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.model.MsgUsuarioRep;

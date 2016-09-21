@@ -47,7 +47,7 @@ import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.views.MainScreen;
+import org.sanjose.sysviews.MainScreen;
 
 @SuppressWarnings("serial")
 public class PrintHelper extends VerticalLayout implements View {

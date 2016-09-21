@@ -1,4 +1,4 @@
-package org.sanjose.helper;
+package org.sanjose.render;
 
 import com.vaadin.ui.renderers.NumberRenderer;
 import elemental.json.JsonValue;

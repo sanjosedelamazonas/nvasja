@@ -1,4 +1,4 @@
-package org.sanjose.views;
+package org.sanjose.sysviews;
 
 import java.util.HashMap;
 import java.util.Map;
