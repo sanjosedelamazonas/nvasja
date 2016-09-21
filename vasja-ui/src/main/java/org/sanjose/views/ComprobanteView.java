@@ -172,7 +172,6 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
 
     @Override
     public void enter(ViewChangeEvent event) {
-        viewLogic.enter(event.getParameters());
     }
 
 

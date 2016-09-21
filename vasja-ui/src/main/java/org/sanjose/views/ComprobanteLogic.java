@@ -64,7 +64,8 @@ public class ComprobanteLogic implements Serializable {
 
     public static final String USD="1";
 
-    
+    protected ProcUtil procUtil;
+
     @Autowired
     public ComprobanteLogic(IComprobanteView  comprobanteView) {
         view = comprobanteView;
@@ -77,8 +78,9 @@ public class ComprobanteLogic implements Serializable {
         view.getImprimirBtn().addClickListener(event -> {
             if (savedCajabanco!=null) ReportHelper.generateComprobante(savedCajabanco);
         });
-        view.getModificarBtn().addClickListener(event -> editarComprobante(savedCajabanco));
+        view.getModificarBtn().addClickListener(event -> editarComprobante());
         view.getEliminarBtn().addClickListener(event -> eliminarComprobante());
+        procUtil = new ProcUtil(view.getEm());
     }
 
 
@@ -328,13 +330,13 @@ public class ComprobanteLogic implements Serializable {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             ProcUtil.Saldos res = null;
             if (isProyecto()) {
-                res = new ProcUtil(view.getEm()).getSaldos(view.getDataFechaComprobante().getValue(), view.getSelProyecto().getValue().toString(), null);
+                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), view.getSelProyecto().getValue().toString(), null);
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue(df.format(res.getSaldoEUR()));
             }
             if (isTercero()) {
-                res = new ProcUtil(view.getEm()).getSaldos(view.getDataFechaComprobante().getValue(), null, view.getSelTercero().getValue().toString());
+                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), null, view.getSelTercero().getValue().toString());
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue("");
@@ -345,7 +347,7 @@ public class ComprobanteLogic implements Serializable {
 
     public void setSaldoCaja() {
         if (view.getDataFechaComprobante().getValue()!=null && view.getSelCaja().getValue()!=null && view.getSelMoneda().getValue()!=null) {
-            BigDecimal saldo = new ProcUtil(view.getEm()).getSaldoCaja(view.getDataFechaComprobante().getValue(),
+            BigDecimal saldo = procUtil.getSaldoCaja(view.getDataFechaComprobante().getValue(),
                     view.getSelCaja().getValue().toString(), view.getSelMoneda().getValue().toString());
             if (PEN.equals(view.getSelMoneda().getValue().toString())) {
                 view.getSaldoCajaPEN().setValue(saldo.toString());
@@ -464,8 +466,8 @@ public class ComprobanteLogic implements Serializable {
                         "Sel Tipo de Movimiento", "txtTipocuenta");
                 // Reset those fields
                 if (!isEdit) {
-                    view.getSelCtaContable().setValue(null);
-                    view.getSelRubroInst().setValue(null);
+                    view.getSelCtaContable().setValue("");
+                    view.getSelRubroInst().setValue("");
                 }
                 view.getSelTipoMov().setEnabled(true);
                 view.getSelRubroInst().setEnabled(true);
@@ -493,8 +495,7 @@ public class ComprobanteLogic implements Serializable {
     public void bindForm(VsjCajabanco item) {
         isLoading = true;
 
-        isEdit = false;
-        if (item.getCodCajabanco()>0) isEdit = true;
+        isEdit = !GenUtil.strNullOrEmpty(item.getCodUregistro());
         clearSaldos();
         //getSelMoneda().setValue(null);
         beanItem = new BeanItem<VsjCajabanco>(item);
@@ -559,7 +560,6 @@ public class ComprobanteLogic implements Serializable {
             view.setSaldoDeCajas();
         }
         isEdit = false;
-
     }
 
 
@@ -572,41 +572,7 @@ public class ComprobanteLogic implements Serializable {
     @Transactional
     public void saveComprobante() {
         try {
-            VsjCajabanco item = getVsjCajabanco();
-            if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
-                throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
-
-            SimpleDateFormat sdf = new SimpleDateFormat("MM");
-            item.setCodMes(sdf.format(item.getFecFecha()));
-            sdf = new SimpleDateFormat("yyyy");
-            item.setTxtAnoproceso(sdf.format(item.getFecFecha()));
-            if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
-                item.setIndTipocuenta("0");
-            } else {
-                item.setIndTipocuenta("1");
-            }
-            if (item.getCodUregistro()==null) item.setCodUregistro(CurrentUser.get());
-            if (item.getFecFregistro()==null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
-            item.setCodUactualiza(CurrentUser.get());
-            item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
-
-            // Verify moneda and fields
-            if (ComprobanteView.PEN.equals(item.getCodTipomoneda())) {
-                if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
-                    throw new CommitException("Selected SOL but values are zeros or nulls");
-                if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
-                    throw new CommitException("Selected SOL but values for Dolar are not zeros or nulls");
-                item.setNumHaberdolar(new BigDecimal(0.00));
-                item.setNumDebedolar(new BigDecimal(0.00));
-            } else {
-                if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
-                    throw new CommitException("Selected USD but values are zeros or nulls");
-                if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
-                    throw new CommitException("Selected USD but values for SOL are not zeros or nulls");
-                item.setNumHabersol(new BigDecimal(0.00));
-                item.setNumDebesol(new BigDecimal(0.00));
-            }
-            log.info("Ready to save: " + item);
+            VsjCajabanco item = prepareToSave();
             savedCajabanco = view.getRepo().save(item);
 
             if (GenUtil.strNullOrEmpty(savedCajabanco.getTxtCorrelativo())) {
@@ -625,18 +591,52 @@ public class ComprobanteLogic implements Serializable {
         }
     }
 
-    public void enter(String productId) {
+    public VsjCajabanco prepareToSave() throws CommitException {
+        VsjCajabanco item = getVsjCajabanco();
+        if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
+            throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM");
+        item.setCodMes(sdf.format(item.getFecFecha()));
+        sdf = new SimpleDateFormat("yyyy");
+        item.setTxtAnoproceso(sdf.format(item.getFecFecha()));
+        if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
+            item.setIndTipocuenta("0");
+        } else {
+            item.setIndTipocuenta("1");
+        }
+        if (item.getCodUregistro() == null) item.setCodUregistro(CurrentUser.get());
+        if (item.getFecFregistro() == null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
+        item.setCodUactualiza(CurrentUser.get());
+        item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+
+        // Verify moneda and fields
+        if (ComprobanteView.PEN.equals(item.getCodTipomoneda())) {
+            if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
+                throw new CommitException("Selected SOL but values are zeros or nulls");
+            if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
+                throw new CommitException("Selected SOL but values for Dolar are not zeros or nulls");
+            item.setNumHaberdolar(new BigDecimal(0.00));
+            item.setNumDebedolar(new BigDecimal(0.00));
+        } else {
+            if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
+                throw new CommitException("Selected USD but values are zeros or nulls");
+            if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
+                throw new CommitException("Selected USD but values for SOL are not zeros or nulls");
+            item.setNumHabersol(new BigDecimal(0.00));
+            item.setNumDebesol(new BigDecimal(0.00));
+        }
+        log.info("Ready to save: " + item);
+        return item;
     }
 
-
-    public void nuevoComprobante() {
-//        setFragmentParameter("new");
+    public void nuevoComprobante(String moneda) {
         savedCajabanco = null;
         VsjCajabanco vcb = new VsjCajabanco();
         vcb.setFlgEnviado("0");
         vcb.setFlg_Anula("0");
         vcb.setIndTipocuenta("0");
-        vcb.setCodTipomoneda(ComprobanteView.PEN);
+        vcb.setCodTipomoneda(moneda);
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
         bindForm(vcb);
@@ -646,8 +646,15 @@ public class ComprobanteLogic implements Serializable {
         view.getImprimirBtn().setEnabled(false);
     }
 
+    public void nuevoComprobante() {
+        nuevoComprobante(PEN);
+    }
+
+    public void editarComprobante() {
+        editarComprobante(savedCajabanco);
+    }
+
     public void editarComprobante(VsjCajabanco vcb) {
-  //      setFragmentParameter("edit");
         savedCajabanco = vcb;
         bindForm(vcb);
         view.getNuevoComprobante().setEnabled(false);

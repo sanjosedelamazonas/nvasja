@@ -13,8 +13,8 @@
      Transferencia (Cargo / Abono) 
    </vaadin-label> 
    <vaadin-horizontal-layout height="501px"> 
-    <vaadin-vertical-layout size-auto> 
-     <vaadin-form-layout style-name="billing-formlayout" width="529px" margin-top="false" margin-bottom="false" _id="cuenta_form"> 
+    <vaadin-vertical-layout width="540px"> 
+     <vaadin-form-layout style-name="billing-formlayout" width="522px" margin-top="false" margin-bottom="false" _id="cuenta_form"> 
       <vaadin-horizontal-layout spacing> 
        <vaadin-text-field description="Num de Voucher" caption="Nro de comprobante" enabled="false" style-name="form-textfield" width="105px" _id="numVoucher" :middle :center></vaadin-text-field> 
        <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante"></vaadin-popup-date-field> 
@@ -43,7 +43,7 @@
        </vaadin-horizontal-layout> 
       </vaadin-horizontal-layout> 
      </vaadin-form-layout> 
-     <vaadin-form-layout style-name="billing-formlayout" width="530px" height="315px" margin-top="false" margin-bottom="false" _id="billing_form2"> 
+     <vaadin-form-layout style-name="billing-formlayout" width="522px" height="315px" margin-top="false" margin-bottom="false" _id="billing_form2"> 
       <vaadin-horizontal-layout spacing width="477px"> 
        <vaadin-option-group caption="Moneda" item-caption-mode="id" width="61px" height="37px" _id="selMoneda" :center> 
         <option>Soles</option> 
@@ -121,12 +121,12 @@
       </vaadin-horizontal-layout> 
      </vaadin-form-layout> 
     </vaadin-vertical-layout> 
-    <vaadin-vertical-layout spacing size-auto> 
-     <vaadin-form-layout style-name="order-summary-layout" width="677px" height="362px" margin-top="false" margin-bottom="false" _id="order_summary_layout"> 
-      <vaadin-label style-name="header-label-small" width="618px" plain-text _id="order_heading">
+    <vaadin-vertical-layout spacing width="694px"> 
+     <vaadin-form-layout style-name="order-summary-layout" width="694px" height="362px" margin-top="false" margin-bottom="false" _id="order_summary_layout"> 
+      <vaadin-label style-name="header-label-small" width="632px" plain-text _id="order_heading">
         Operaciones de transferencia 
       </vaadin-label> 
-      <vaadin-grid width="618px" height="256px"></vaadin-grid> 
+      <vaadin-grid width="633px" height="256px" _id="gridTrans"></vaadin-grid> 
       <vaadin-css-layout> 
        <vaadin-label style-name="total-sum" _id="saldoTotal">
          Differencia : 
@@ -153,6 +153,12 @@
        </vaadin-button> 
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout spacing> 
+       <vaadin-button plain-text _id="nuevaTransBtn">
+         Nueva Transferencia 
+       </vaadin-button> 
+       <vaadin-button plain-text _id="finalizarTransBtn">
+         Finalizar Transferencia 
+       </vaadin-button> 
        <vaadin-button height="18px" plain-text _id="cerrarBtn">
          Manejo de Caja 
        </vaadin-button> 

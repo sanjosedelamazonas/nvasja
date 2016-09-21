@@ -26,6 +26,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -41,7 +42,7 @@ import javax.validation.constraints.NotNull;
 @Configuration
 @ConfigurationProperties("sqlserver")
 @EnableTransactionManagement
-public class InfrastructureConfig {
+public class InfrastructureConfig  implements TransactionManagementConfigurer {
 	
 
     @NotNull    
@@ -76,8 +77,7 @@ public class InfrastructureConfig {
 	 * Bootstraps an in-memory HSQL database.
 	 * 
 	 * @return
-	 * @see http 
-	 *      ://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/jdbc.html#jdbc-embedded-database
+	 * @see http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/jdbc.html#jdbc-embedded-database
 	 *      -support
 	 */
 	
@@ -123,5 +123,10 @@ public class InfrastructureConfig {
 		JpaTransactionManager txManager = new JpaTransactionManager();
 		txManager.setEntityManagerFactory(entityManagerFactory());
 		return txManager;
+	}
+
+	@Override
+	public PlatformTransactionManager annotationDrivenTransactionManager() {
+		return transactionManager();
 	}
 }

@@ -18,6 +18,7 @@ package org.sanjose;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * JavaConfig class to enable Spring Data JPA repositories. Re-using common infrastrcuture configuration from
@@ -27,6 +28,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @Configuration
 @EnableJpaRepositories
+@EnableTransactionManagement
 @Import(InfrastructureConfig.class)
 public class ApplicationConfig {
 

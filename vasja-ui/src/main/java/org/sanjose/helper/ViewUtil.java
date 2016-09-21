@@ -68,13 +68,17 @@ public class ViewUtil {
 
 
     public static void alignMontosInGrid(Grid grid) {
-        grid.getColumn("numHabersol").setRenderer(new EmptyZeroNumberRendrer(
+        if (grid.getColumn("numHabersol")!=null)
+            grid.getColumn("numHabersol").setRenderer(new EmptyZeroNumberRendrer(
                 "%02.2f", ConfigurationUtil.getLocale()));
-        grid.getColumn("numHaberdolar").setRenderer(new EmptyZeroNumberRendrer(
+        if (grid.getColumn("numHaberdolar")!=null)
+            grid.getColumn("numHaberdolar").setRenderer(new EmptyZeroNumberRendrer(
                 "%02.2f", ConfigurationUtil.getLocale()));
-        grid.getColumn("numDebedolar").setRenderer(new EmptyZeroNumberRendrer(
+        if (grid.getColumn("numDebedolar")!=null)
+            grid.getColumn("numDebedolar").setRenderer(new EmptyZeroNumberRendrer(
                 "%02.2f", ConfigurationUtil.getLocale()));
-        grid.getColumn("numDebesol").setRenderer(new EmptyZeroNumberRendrer(
+        if (grid.getColumn("numDebesol")!=null)
+            grid.getColumn("numDebesol").setRenderer(new EmptyZeroNumberRendrer(
                 "%02.2f", ConfigurationUtil.getLocale()));
 
         grid.setCellStyleGenerator(( Grid.CellReference cellReference ) -> {

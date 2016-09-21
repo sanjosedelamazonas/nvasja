@@ -1,13 +1,17 @@
 package org.sanjose.views;
 
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
+import com.vaadin.ui.renderers.DateRenderer;
+import org.sanjose.helper.ConfigurationUtil;
 import org.sanjose.helper.DataUtil;
 import org.sanjose.helper.ViewUtil;
 import org.sanjose.model.*;
@@ -16,6 +20,7 @@ import tm.kod.widgets.numberfield.NumberField;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -35,7 +40,7 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
 
     public static final String USD="1";
 
-    TransferenciaLogic viewLogic = new TransferenciaLogic(this);
+    TransferenciaLogic viewLogic = null;
 
     VsjCajabancoRep repo;
 
@@ -67,11 +72,29 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
 
     private EntityManager em;
 
+    private CajaManejoView cajaManejoView;
+
+    private BeanItemContainer<VsjCajabanco> container;
+
     private Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
 
-    public CajaManejoView cajaManejoView;
+    static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
+            "codContracta", "txtGlosaitem", "numDebesol", "numHabersol"
+    };
+    static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"Numero", "Proyecto", "Tercero",
+            "Cuenta", "Glosa", "Ing S/.", "Egr S/."
+    };
+
+    static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
+            "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
+    };
+    static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Numero", "Proyecto", "Tercero",
+            "Cuenta", "Glosa", "Ing $", "Egr $"
+    };
+
+    static final String[] NONEDITABLE_COLUMN_IDS = new String[]{  };
 
     @Autowired
     public TransferenciaView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
@@ -96,6 +119,7 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
         this.planRepo = planRepo;
 
         this.em = em;
+        viewLogic = new TransferenciaLogic(this);
         setSizeFull();
         addStyleName("crud-view");
         ViewUtil.setDefaultsForNumberField(numIngreso);
@@ -105,29 +129,86 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
         modificarBtn.setEnabled(false);
         eliminarBtn.setEnabled(false);
         imprimirBtn.setEnabled(false);
+        nuevoComprobante.setEnabled(false);
 
         viewLogic.setupEditComprobanteView();
+
+        // Grid
+        container = new BeanItemContainer(VsjCajabanco.class, new ArrayList());
+        gridTrans.setContainerDataSource(container);
+        gridTrans.setEditorEnabled(false);
+        gridTrans.sort("fecFecha", SortDirection.DESCENDING);
+
+        gridTrans.getColumn("txtGlosaitem").setWidth(150);
+
+        ViewUtil.setColumnNames(gridTrans, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
+
+        ViewUtil.alignMontosInGrid(gridTrans);
+
+        gridTrans.setSelectionMode(Grid.SelectionMode.SINGLE);
+
+        setSaldoTrans();
         viewLogic.init();
+    }
+
+    public VsjCajabanco getSelectedRow() {
+        return (VsjCajabanco) gridTrans.getSelectedRow();
     }
 
     @Override
     public void setEnableFields(boolean enabled) {
         for (Field f : allFields) {
-            f.setEnabled(enabled);
+            if (f!=selMoneda || !enabled) f.setEnabled(enabled);
         }
         btnResponsable.setEnabled(enabled);
         btnDestino.setEnabled(enabled);
     }
 
-    @Override
-    public void refreshData() {
-
+    public BeanItemContainer<VsjCajabanco> getContainer() {
+        return container;
     }
 
+    public BigDecimal calcDifference() {
+        BigDecimal total = new BigDecimal(0.00);
+
+        for (VsjCajabanco cajabanco : container.getItemIds()) {
+            if (isPEN())
+                total = total.add(cajabanco.getNumDebesol()).subtract(cajabanco.getNumHabersol());
+            else
+                total = total.add(cajabanco.getNumDebedolar()).subtract(cajabanco.getNumHaberdolar());
+        }
+        return total;
+    }
+
+    public void setSaldoTrans() {
+        if (isPEN()) {
+            order_summary_layout.removeStyleName("order-summary-layout-usd");
+        } else  {
+            order_summary_layout.addStyleName("order-summary-layout-usd");
+        }
+
+        saldoTotal.setContentMode(ContentMode.HTML);
+        saldoTotal.setValue("Differencia:" +
+                "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : "$ ") + calcDifference().toString() + "</span>");
+
+        if (!container.getItemIds().isEmpty() && calcDifference().compareTo(new BigDecimal(0.00))==0)
+            finalizarTransBtn.setEnabled(true);
+        else
+            finalizarTransBtn.setEnabled(false);
+    }
+
+
+    @Override
+    public void refreshData() {
+        cajaManejoView.refreshData();
+    }
+
+    @Override
     public void setSaldoDeCajas() {
     }
 
     public boolean isPEN() {
+        if (selMoneda.getValue()==null) return true;
         return PEN.equals(selMoneda.getValue().toString());
     }
 
@@ -351,7 +432,6 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
 
     @Override
     public void enter(ViewChangeEvent event) {
-        viewLogic.enter(event.getParameters());
     }
 
 

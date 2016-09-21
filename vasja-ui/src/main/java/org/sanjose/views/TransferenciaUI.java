@@ -6,6 +6,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
@@ -63,6 +64,7 @@ public class TransferenciaUI extends CssLayout {
 	protected TextField numDoc;
 	protected FormLayout order_summary_layout;
 	protected Label order_heading;
+	protected Grid gridTrans;
 	protected Label saldoTotal;
 	protected FormLayout billing_form6;
 	protected Button guardarBtn;
@@ -70,6 +72,8 @@ public class TransferenciaUI extends CssLayout {
 	protected Button eliminarBtn;
 	protected Button nuevoComprobante;
 	protected Button imprimirBtn;
+	protected Button nuevaTransBtn;
+	protected Button finalizarTransBtn;
 	protected Button cerrarBtn;
 	protected Button imprimirTotalBtn;
 
