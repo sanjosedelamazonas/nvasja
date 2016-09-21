@@ -15,6 +15,8 @@ import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.*;
 
 /**
@@ -64,17 +66,24 @@ public class CajaManejoView extends CajaManejoUI implements View {
     public ScpFinancieraRep financieraRepo;
 
     public Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-    
+
+    ScpPlancontableRep planRepo;
+
+    @PersistenceContext
+    private EntityManager em;
+
     @Autowired
     public CajaManejoView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
                           ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                           ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                           ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                          Scp_ContraparteRep contraparteRepo) {
+                          Scp_ContraparteRep contraparteRepo, EntityManager em) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
         this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
+        this.planRepo = planRepo;
+        this.em = em;
         setSizeFull();
         addStyleName("crud-view");
 
@@ -105,7 +114,14 @@ public class CajaManejoView extends CajaManejoUI implements View {
 
         ViewUtil.colorizeRows(gridCaja);
 
+        // Set Saldos Inicial
+        fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
+        fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));
+
         viewLogic.init();
+        viewLogic.setSaldos(gridSaldoInicial, true);
+        viewLogic.setSaldos(gridSaldoFInal, false);
+
     }
 
     public void setComprobanteView(ComprobanteView comprobanteView) {
@@ -146,5 +162,9 @@ public class CajaManejoView extends CajaManejoUI implements View {
     public void removeRow(VsjCajabanco vsj) {
     	repo.delete(vsj);    	
     	gridCaja.getContainerDataSource().removeItem(vsj);
+    }
+
+    public EntityManager getEm() {
+        return em;
     }
 }

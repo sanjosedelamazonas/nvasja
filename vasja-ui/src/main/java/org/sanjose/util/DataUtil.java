@@ -27,6 +27,13 @@ public class DataUtil {
                         "N", GenUtil.getCurYear(), (isPEN ? "N" : "D") , "101");
     }
 
+    public static List<ScpPlancontable> getCajas(ScpPlancontableRep planRepo) {
+        return planRepo.
+                findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
+                        "N", GenUtil.getCurYear(), "101");
+    }
+
+
     public static VsjCajabanco prepareToSave(VsjCajabanco item) throws FieldGroup.CommitException {
         if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
             throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");

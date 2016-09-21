@@ -61,6 +61,7 @@ public class ProcUtil {
         return new Saldos(pen, usd, eur);
     }
 
+    // moneda { 0, 1 }
     public BigDecimal getSaldoCaja(Date fecha, String codCtacaja, String moneda) {
         StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getSaldoAlDiaCaja");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
