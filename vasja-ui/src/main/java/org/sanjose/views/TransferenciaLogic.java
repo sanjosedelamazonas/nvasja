@@ -41,7 +41,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     public TransferenciaLogic(IComprobanteView comprobanteView) {
         super(comprobanteView);
         tView = (TransferenciaView) comprobanteView;
-        transactionUtil = new TransactionUtil(view.getRepo());
+        transactionUtil = new TransactionUtil(view.getRepo(), tView.getEm());
     }
 
     @Override
