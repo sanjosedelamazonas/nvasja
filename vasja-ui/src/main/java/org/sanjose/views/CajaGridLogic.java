@@ -18,6 +18,7 @@ import org.sanjose.helper.EnviarException;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpTipocambio;
 import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.model.VsjCajabanco;
 
@@ -67,29 +68,23 @@ public class CajaGridLogic implements Serializable {
             }
             @Override
             public void postCommit(CommitEvent commitEvent) throws CommitException {
-
-
                 Object item = view.gridCaja.getContainerDataSource().getItem(view.gridCaja.getEditedItemId());
-                //log.info("Pre commit" + item);
                 if (item!=null) {
                     VsjCajabanco vcb = (VsjCajabanco) ((BeanItem) item).getBean();
-                    //log.info("Proy " + vcb.getCodProyecto() + " " + vcb.getCodTercero());
-                    if (GenUtil.strNullOrEmpty(vcb.getCodProyecto()) && GenUtil.strNullOrEmpty(vcb.getCodTercero()))
-                        throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
-                        //throw new CommitException("Codigo Proyecto o Codigo Tercero debe ser rellenado",
-                        //        view.gridCaja.getEditorFieldGroup(),
-                        //        new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado")
-                        //);
-                }
-                // You can persist your data here
-                //Notification.show("Item " + view.gridCaja.getEditedItemId() + " was edited.");
-                if (item!=null) {
-                    VsjCajabanco vcb = (VsjCajabanco) ((BeanItem) item).getBean();
-                    if (vcb.getCodProyecto()==null || "".equals(vcb.getCodProyecto()))
-                        vcb.setIndTipocuenta("1");
-                    else
-                        vcb.setIndTipocuenta("0");
-                    view.repo.save(vcb);
+                    final VsjCajabanco vcbToSave = DataUtil.prepareToSave(vcb);
+                    if ("1".equals(vcb.getFlgEnviado())) {
+                        MessageBox
+                                .createQuestion()
+                                .withCaption("Esta operacion ya esta enviado")
+                                .withMessage("?Esta seguro que quiere guardar los cambios?")
+                                .withYesButton(() -> {
+                                    view.repo.save(vcbToSave);
+                                })
+                                .withNoButton()
+                                .open();
+                    } else
+                        view.repo.save(vcbToSave);
+
                 }
             }
         });

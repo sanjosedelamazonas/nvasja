@@ -103,6 +103,8 @@ public class CajaManejoView extends CajaManejoUI implements View {
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
 
+        ViewUtil.colorizeRows(gridCaja);
+
         viewLogic.init();
     }
 

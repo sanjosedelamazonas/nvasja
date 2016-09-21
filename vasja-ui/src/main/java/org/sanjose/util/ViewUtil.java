@@ -212,4 +212,15 @@ public class ViewUtil {
                             from, to));
         }
     }
+
+    public static void colorizeRows(Grid grid) {
+        grid.setRowStyleGenerator(rowReference -> {
+            if ("1".equals(((VsjCajabanco) rowReference.getItemId()).getFlgEnviado())) {
+                return "enviado";
+            }
+            if ("1".equals(((VsjCajabanco) rowReference.getItemId()).getFlg_Anula()))
+                return "anulado";
+            return "";
+        });
+    }
 }

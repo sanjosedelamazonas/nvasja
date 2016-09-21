@@ -67,6 +67,13 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
 @mixin mytheme {
   @include valo;
 
+    .v-grid-row.enviado {
+        color: #7FEC6C;
+    }
+
+    .v-grid-row.anulado {
+        color: #C2B4AA;
+    }
 
   // login screen - for small screens, see below
   .login-screen {

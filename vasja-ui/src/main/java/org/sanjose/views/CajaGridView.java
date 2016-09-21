@@ -10,10 +10,13 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.*;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.model.VsjCajabancoRep;
+import org.sanjose.render.BooleanTrafficLight;
+import org.sanjose.render.ZeroOneTrafficLight;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
@@ -56,19 +59,19 @@ public class CajaGridView extends CajaGridUI implements View {
             "codContracta", "txtGlosaitem",  "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
-            "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
+            "flg_Anula", "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
     String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "S/$",
             "Responsable", "Lug. Gasto", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
-            "Env", "Origen", "Comprobante"
+            "Anl", "Env", "Origen", "Comprobante"
     };
     int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
             5, 10, 6, 6, 6, 6, 2, // S/$
             6, 4, 6, 5, 5, 2, // Tipo Doc
             4, 5, 5, 5, 4, // Fuente
-            2, 6, 6
+            2, 2, 6, 6
     };
     String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
 
@@ -219,6 +222,11 @@ public class CajaGridView extends CajaGridUI implements View {
         DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraRepo.findAll(),
                 "Sel Fuente", "txtDescfinanciera");
         gridCaja.getColumn("codFinanciera").setEditorField(selFinanciera);
+
+        gridCaja.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLight()).setRenderer(new HtmlRenderer());
+        gridCaja.getColumn("flg_Anula").setConverter(new ZeroOneTrafficLight()).setRenderer(new HtmlRenderer());
+
+        ViewUtil.colorizeRows(gridCaja);
 
         gridCaja.addItemClickListener(event ->  setItemLogic(event));
 
