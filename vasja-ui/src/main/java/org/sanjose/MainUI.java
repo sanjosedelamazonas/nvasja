@@ -124,4 +124,16 @@ public class MainUI extends UI {
     public MainScreen getMainScreen() {
         return mainScreen;
     }
+
+    public ComprobanteView getComprobanteView() {
+        return comprobanteView;
+    }
+
+    public CajaManejoView getCajaManejoView() {
+        return cajaManejoView;
+    }
+
+    public TransferenciaView getTransferenciaView() {
+        return transferenciaView;
+    }
 }

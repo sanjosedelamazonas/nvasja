@@ -1,7 +1,7 @@
 USE [SCP]
 GO
 
-/****** Object:  Table [dbo].[vsj_cajabanco]    Script Date: 09/12/2016 10:02:24 ******/
+/****** Object:  Table [dbo].[vsj_cajabanco]    Script Date: 09/21/2016 15:38:21 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -46,6 +46,8 @@ CREATE TABLE [dbo].[vsj_cajabanco](
 	[cod_uregistro] [varchar](15) NULL,
 	[fec_factualiza] [datetime] NULL,
 	[cod_uactualiza] [varchar](15) NULL,
+	[cod_tipomov] [int] NULL,
+	[cod_transcorrelativo] [varchar](16) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[cod_cajabanco] ASC
@@ -56,4 +58,5 @@ GO
 
 SET ANSI_PADDING OFF
 GO
+
 

@@ -126,6 +126,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="txt_anoproceso")
 	private String txtAnoproceso;
 
+	@Size(max=20)
 	@Column(name="txt_comprobantepago")
 	private String txtComprobantepago;
 
@@ -137,8 +138,12 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
 
+	@Size(max=5)
 	@Column(name="txt_seriecomprobantepago")
 	private String txtSeriecomprobantepago;
+
+	@Column(name="cod_transcorrelativo")
+	private String codTranscorrelativo;
 
 	public VsjCajabanco() {
 	}
@@ -421,6 +426,14 @@ public class VsjCajabanco implements Serializable {
 
 	public void setCodTipomov(Integer codTipomov) {
 		this.codTipomov = codTipomov;
+	}
+
+	public String getCodTranscorrelativo() {
+		return codTranscorrelativo;
+	}
+
+	public void setCodTranscorrelativo(String codTranscorrelativo) {
+		this.codTranscorrelativo = codTranscorrelativo;
 	}
 
 	@Override

@@ -43,6 +43,20 @@ public class TransactionUtil implements ITransactionUtil {
     public List<VsjCajabanco> saveVsjCajabancos(List<VsjCajabanco> cajabancos) {
         assert TransactionSynchronizationManager.isActualTransactionActive();
         List<VsjCajabanco> savedOperaciones = new ArrayList<VsjCajabanco>();
+
+        String transCorrelativo = null;
+        // Find at least one operation with transCorrelativo set
+        for (VsjCajabanco oper : cajabancos) {
+            if (!GenUtil.strNullOrEmpty(oper.getCodTranscorrelativo())) {
+                transCorrelativo = oper.getCodTranscorrelativo();
+                break;
+            }
+        }
+        if (transCorrelativo==null) transCorrelativo = GenUtil.getUuid();
+        for (VsjCajabanco oper : cajabancos) {
+            if (GenUtil.strNullOrEmpty(oper.getCodTranscorrelativo()))
+                oper.setCodTranscorrelativo(transCorrelativo);
+        }
         for (VsjCajabanco oper : cajabancoRep.save(cajabancos)) {
             // Tested saving each element using entityManager directly but then an Exception is raised:
             // javax.persistence.TransactionRequiredException: No EntityManager with actual transaction available for
@@ -58,8 +72,8 @@ public class TransactionUtil implements ITransactionUtil {
                 oper = cajabancoRep.save(oper);
                 log.info("Saved cajabanco from transferencia: " + oper);
 //                oper = em.merge(oper);
-                savedOperaciones.add(oper);
             }
+            savedOperaciones.add(oper);
         }
         return savedOperaciones;
     }

@@ -6,6 +6,8 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.helper.NonEditableException;
+import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.util.TransactionUtil;
 import org.sanjose.model.VsjCajabanco;
@@ -78,14 +80,30 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     @Override
     public void editarComprobante() {
-        if (tView.getSelectedRow()!=null) editarComprobante(tView.getSelectedRow());
-        view.getSelMoneda().setEnabled(false);
-        view.getModificarBtn().setEnabled(true);
+        if (tView.getSelectedRow()!=null
+                && "0".equals(tView.getSelectedRow().getFlg_Anula())) {
+            editarComprobante(tView.getSelectedRow());
+            view.getSelMoneda().setEnabled(false);
+            view.getModificarBtn().setEnabled(true);
+        }
     }
 
     @Override
     public void eliminarComprobante() {
-        tView.getContainer().removeItem(tView.getSelectedRow());
+        if (GenUtil.strNullOrEmpty(tView.getSelectedRow().getCodTranscorrelativo()))
+            tView.getContainer().removeItem(tView.getSelectedRow());
+        else {
+            VsjCajabanco anuladoVcb = prepareToEliminar(tView.getSelectedRow());
+            VsjCajabanco vcbOld = null;
+            for (VsjCajabanco vcb : tView.getContainer().getItemIds()) {
+                if (anuladoVcb .getFecFregistro().equals(vcb.getFecFregistro())) {
+                    vcbOld = anuladoVcb ;
+                    break;
+                }
+            }
+            tView.getContainer().removeItem(vcbOld);
+            tView.getContainer().addBean(anuladoVcb);
+        }
         tView.setSaldoTrans();
     }
 
@@ -160,5 +178,32 @@ public class TransferenciaLogic extends ComprobanteLogic {
         view.getNuevoComprobante().setEnabled(false);
         tView.nuevaTransBtn.setEnabled(true);
         view.refreshData();
+    }
+
+    public void editarTransferencia(VsjCajabanco vcb) throws NonEditableException {
+        if (vcb.getCodTranscorrelativo()==null) return;
+        tView.getContainer().removeAllItems();
+        if (PEN.equals(vcb.getCodTipomoneda()))
+            ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_PEN,
+                    TransferenciaView.VISIBLE_COLUMN_IDS_PEN, TransferenciaView.NONEDITABLE_COLUMN_IDS);
+        else
+            ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_USD,
+                    TransferenciaView.VISIBLE_COLUMN_IDS_USD, TransferenciaView.NONEDITABLE_COLUMN_IDS);
+
+        List<VsjCajabanco> operaciones = tView.getRepo().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());
+
+        for (VsjCajabanco oper : operaciones) {
+            if ("1".equals(oper.getFlgEnviado()))
+                throw new NonEditableException("No se puede editar porque una de los operaciones ya esta enviada a contabilidad: " + oper.getCodCajabanco());
+        }
+        for (VsjCajabanco oper : operaciones) {
+            tView.getContainer().addBean(oper);
+        }
+        tView.setSaldoTrans();
+        tView.getModificarBtn().setEnabled(true);
+        tView.getEliminarBtn().setEnabled(true);
+        tView.getGuardarBtn().setEnabled(false);
+        tView.getNuevoComprobante().setEnabled(true);
+
     }
 }

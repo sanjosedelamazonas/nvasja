@@ -52,7 +52,7 @@ public class CajaGridView extends CajaGridUI implements View {
     public static final String VIEW_NAME = "Operaciones de Caja";
 
     private CajaGridLogic viewLogic = new CajaGridLogic(this);
-    
+
     public VsjCajabancoRep repo;
 
     String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
@@ -93,6 +93,8 @@ public class CajaGridView extends CajaGridUI implements View {
     private EntityManager em;
 
     private BeanItemContainer<VsjCajabanco> container;
+
+    private VsjCajabanco itemSeleccionado;
 
     @Autowired
     public CajaGridView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
@@ -257,6 +259,8 @@ public class CajaGridView extends CajaGridUI implements View {
         if (objProyecto !=null && !objProyecto.toString().isEmpty())
             proyecto = objProyecto.toString();
 
+        Object id = event.getItem().getItemProperty("codCajabanco").getValue();
+        itemSeleccionado = repo.findByCodCajabanco((Integer)id);
         setEditorLogic(proyecto);
     }
 
@@ -314,13 +318,18 @@ public class CajaGridView extends CajaGridUI implements View {
         gridCaja.getSelectionModel().reset();
     }
 
-    public Collection<Object> getSelectedRow() {
+    public Collection<Object> getSelectedRows() {
         return gridCaja.getSelectedRows();
     }
 
-    public void removeRow(VsjCajabanco vsj) {
-    	repo.delete(vsj);    	
-    	gridCaja.getContainerDataSource().removeItem(vsj);
+    public VsjCajabanco getSelectedRow() {
+        if (getSelectedRows().isEmpty())
+            return itemSeleccionado;
+        for (Object obj : gridCaja.getSelectedRows()) {
+            log.info("selected: " + obj);
+            return (VsjCajabanco) obj;
+        }
+        return null;
     }
 
     public ScpCargocuartaRep getCargocuartaRepo() {
@@ -345,5 +354,9 @@ public class CajaGridView extends CajaGridUI implements View {
 
     public EntityManager getEm() {
         return em;
+    }
+
+    public VsjCajabanco getItemSeleccionado() {
+        return itemSeleccionado;
     }
 }

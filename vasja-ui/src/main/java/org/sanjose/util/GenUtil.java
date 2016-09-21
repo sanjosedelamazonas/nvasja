@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 public class GenUtil {
 
@@ -17,7 +18,6 @@ public class GenUtil {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
 		return sdf.format(new Date());
 	}
-
 
 	public static boolean strNullOrEmpty(String s) {
 		if (s == null || "".equals(s) || "".equals(s.trim()))
@@ -113,5 +113,9 @@ public class GenUtil {
     public static boolean isZero(Object value) {
         if (value==null) return false;
         return "0.00".equals(value.toString()) || "0,00".equals(value.toString()) || "0".equals(value.toString());
+    }
+
+    public static String getUuid() {
+        return UUID.randomUUID().toString().replace("-","").substring(0,16);
     }
 }

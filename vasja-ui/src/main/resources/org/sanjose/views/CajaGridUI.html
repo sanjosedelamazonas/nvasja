@@ -6,22 +6,25 @@
  <body> 
   <vaadin-vertical-layout spacing size-full margin> 
    <vaadin-horizontal-layout spacing _id="horizontalCabeza"> 
-    <vaadin-button plain-text _id="nuevoComprobante">
-      Nuevo 
-    </vaadin-button> 
     <vaadin-date-field _id="fechaDesde"></vaadin-date-field> 
     <vaadin-label size-auto plain-text _id="labFechas">
       - 
     </vaadin-label> 
     <vaadin-date-field _id="fechaHasta"></vaadin-date-field> 
+    <vaadin-button plain-text _id="nuevoComprobante">
+      Nuevo 
+    </vaadin-button> 
+    <vaadin-button plain-text _id="editarBtn">
+      Editar 
+    </vaadin-button> 
     <vaadin-button plain-text _id="enviarBtn">
       Enviar a contabilidad 
     </vaadin-button> 
     <vaadin-button plain-text _id="responsablesBtn">
       Responsables 
     </vaadin-button> 
-    <vaadin-button visible="false" plain-text _id="btnImprimir">
-      Imprimir 
+    <vaadin-button plain-text _id="imprimirBtn">
+      Imprimir Voucher 
     </vaadin-button> 
    </vaadin-horizontal-layout> 
    <vaadin-grid caption="Operaciones de Caja" editor-save-caption="Guardar" editor-cancel-caption="Anular" size-full editable _id="gridCaja" :expand></vaadin-grid> 

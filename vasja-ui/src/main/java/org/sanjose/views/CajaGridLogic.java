@@ -4,22 +4,19 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.window.WindowMode;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.EnviarException;
+import org.sanjose.helper.NonEditableException;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpTipocambio;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.DataUtil;
-import org.sanjose.util.GenUtil;
+import org.sanjose.util.*;
 import org.sanjose.model.VsjCajabanco;
 
 import com.vaadin.data.fieldgroup.FieldGroup.CommitEvent;
@@ -28,8 +25,6 @@ import com.vaadin.data.fieldgroup.FieldGroup.CommitHandler;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.server.Page;
-import org.sanjose.util.ProcUtil;
 
 import javax.persistence.PersistenceException;
 
@@ -59,8 +54,11 @@ public class CajaGridLogic implements Serializable {
         procUtil = new ProcUtil(view.getEm());
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.responsablesBtn.addClickListener(e -> editDestino(view.getSelectedRow()));
-        view.enviarBtn.addClickListener(e -> enviarContabilidad(view.getSelectedRow()));
-
+        view.enviarBtn.addClickListener(e -> enviarContabilidad(view.getSelectedRows()));
+        view.editarBtn.addClickListener(e -> editarComprobante(view.getSelectedRow()));
+        view.imprimirBtn.addClickListener(event -> {
+                    if (view.getSelectedRow()!=null) ViewUtil.printComprobante(view.getSelectedRow());
+                });
 
         view.gridCaja.getEditorFieldGroup().addCommitHandler(new CommitHandler() {
             @Override
@@ -133,16 +131,7 @@ public class CajaGridLogic implements Serializable {
         }
     }
 
-    private void editDestino(Collection<Object> vcbs) {
-        Optional<Object> objVcb = vcbs.stream().findFirst();
-        VsjCajabanco vcb = null;
-        try {
-            vcb = (VsjCajabanco) objVcb.get();
-        } catch (NoSuchElementException ne) {
-            vcb = null;
-        }
-        log.info("Got vcb: " + vcb);
-
+    private void editDestino(VsjCajabanco vcb) {
         Window destinoWindow = new Window();
 
         destinoWindow.setWindowMode(WindowMode.NORMAL);
@@ -218,76 +207,30 @@ public class CajaGridLogic implements Serializable {
     }
 
 
-    public void cancelProduct() {
-        setFragmentParameter("");
-        view.clearSelection();
-//        view.editProduct(null);
-    }
-
-    /**
-     * Update the fragment without causing navigator to change view
-     */
-    private void setFragmentParameter(String productId) {
-        String fragmentParameter;
-        if (productId == null || productId.isEmpty()) {
-            fragmentParameter = "";
-        } else {
-            fragmentParameter = productId;
-        }
-
-        Page page = MainUI.get().getPage();
-  /*      page.setUriFragment("!" + SampleCrudView.VIEW_NAME + "/"
-                + fragmentParameter, false);
-  */  }
-
     public void enter(String productId) {
-        if (productId != null && !productId.isEmpty()) {
-        	log.info("Configuracion Logic getting: " + productId);
-            if (productId.equals("new")) {
-     //       	newConfiguracion();
-            } else {
-                // Ensure this is selected even if coming directly here from
-                // login
-                try {
-                    int pid = Integer.parseInt(productId);
-  //                  Product product = findProduct(pid);
-    //                view.selectRow(product);
-                } catch (NumberFormatException e) {
-                }
-            }
-        }
     }
 
     public void newComprobante() {
         view.clearSelection();
-        setFragmentParameter("new");
-        VsjCajabanco vcb = new VsjCajabanco();
-        vcb.setCodMes("03");
-
-        vcb.setTxtAnoproceso("2016");
-        vcb.setFlgEnviado("0");
-        vcb.setCodDestino("000");
-        vcb.setCodTipomoneda("0");
-        vcb.setIndTipocuenta("0");
-
-        view.gridCaja.getContainerDataSource().addItem(vcb);
+        MainUI.get().getComprobanteView().viewLogic.nuevoComprobante();
+        MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
-
-    public void deleteConfiguracion() {
-        List<VsjCajabanco> rows = new ArrayList<VsjCajabanco>();
-    	
-        for (Object vsj : view.getSelectedRow()) {
-        	log.info("Got selected: " + vsj);
-        	if (vsj instanceof VsjCajabanco)
-        		rows.add((VsjCajabanco)vsj);
+    public void editarComprobante(VsjCajabanco vcb) {
+        if (vcb==null) return;
+        if (!"1".equals(vcb.getFlgEnviado()) && !"1".equals(vcb.getFlg_Anula())) {
+            // Transferencia
+            if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
+                try {
+                    MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
+                    MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
+                } catch (NonEditableException e) {
+                    Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                }
+            } else {
+                MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
+                MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+            }
         }
-        view.clearSelection();
-        //setFragmentParameter("new");
-        for (VsjCajabanco vsj : rows) {
-        	log.info("Removing: " + vsj.getCodCajabanco());        	
-        	view.removeRow(vsj);
-        }
-        //view.gridCaja.getContainerDataSource().removeItem(itemId)
-    }    
+    }
 }

@@ -1,20 +1,14 @@
 package org.sanjose.views;
 
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
 import org.sanjose.helper.DoubleDecimalFormatter;
-import org.sanjose.helper.PrintHelper;
+import org.sanjose.helper.NonEditableException;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.VsjCajabanco;
@@ -23,9 +17,6 @@ import org.sanjose.util.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import static org.sanjose.views.ComprobanteLogic.USD;
-import static org.sanjose.views.ComprobanteView.PEN;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -107,8 +98,19 @@ public class CajaManejoLogic implements Serializable {
 
     public void editarComprobante(VsjCajabanco vcb) {
         if (!"1".equals(vcb.getFlgEnviado()) && !"1".equals(vcb.getFlg_Anula())) {
-            view.getComprobanteView().viewLogic.editarComprobante(vcb);
-            MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+
+            // Transferencia
+            if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
+                try {
+                    view.getTransferenciaView().viewLogic.editarTransferencia(vcb);
+                    MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
+                } catch (NonEditableException e) {
+                    Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                }
+            } else {
+                view.getComprobanteView().viewLogic.editarComprobante(vcb);
+                MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+            }
         }
     }
 

@@ -34,6 +34,8 @@ public class CajaManejoView extends CajaManejoUI implements View {
     private CajaManejoLogic viewLogic = new CajaManejoLogic(this);
 
     private ComprobanteView comprobanteView;
+
+    private TransferenciaView transferenciaView;
     
     public VsjCajabancoRep repo;
 
@@ -166,5 +168,13 @@ public class CajaManejoView extends CajaManejoUI implements View {
 
     public EntityManager getEm() {
         return em;
+    }
+
+    public TransferenciaView getTransferenciaView() {
+        return transferenciaView;
+    }
+
+    public void setTransferenciaView(TransferenciaView transferenciaView) {
+        this.transferenciaView = transferenciaView;
     }
 }

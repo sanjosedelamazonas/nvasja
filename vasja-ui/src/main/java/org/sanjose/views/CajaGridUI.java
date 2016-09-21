@@ -23,13 +23,14 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class CajaGridUI extends VerticalLayout {
 	protected HorizontalLayout horizontalCabeza;
-	protected Button nuevoComprobante;
 	protected DateField fechaDesde;
 	protected Label labFechas;
 	protected DateField fechaHasta;
+	protected Button nuevoComprobante;
+	protected Button editarBtn;
 	protected Button enviarBtn;
 	protected Button responsablesBtn;
-	protected Button btnImprimir;
+	protected Button imprimirBtn;
 	protected Grid gridCaja;
 
 	public CajaGridUI() {

@@ -134,13 +134,15 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
         container = new BeanItemContainer(VsjCajabanco.class, new ArrayList());
         gridTrans.setContainerDataSource(container);
         gridTrans.setEditorEnabled(false);
-        gridTrans.sort("fecFecha", SortDirection.DESCENDING);
+        gridTrans.sort("fecFregistro", SortDirection.DESCENDING);
 
         gridTrans.getColumn("txtGlosaitem").setWidth(150);
 
         ViewUtil.setColumnNames(gridTrans, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
 
         ViewUtil.alignMontosInGrid(gridTrans);
+
+        ViewUtil.colorizeRows(gridTrans);
 
         gridTrans.setSelectionMode(Grid.SelectionMode.SINGLE);
 

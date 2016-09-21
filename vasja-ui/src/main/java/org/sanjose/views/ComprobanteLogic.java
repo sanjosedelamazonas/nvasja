@@ -652,6 +652,26 @@ public class ComprobanteLogic implements Serializable {
         view.getModificarBtn().setEnabled(false);
         view.getImprimirBtn().setEnabled(true);
     }
+    
+    protected VsjCajabanco prepareToEliminar(VsjCajabanco vcb) {
+        if (GenUtil.strNullOrEmpty(vcb.getCodProyecto()) && GenUtil.strNullOrEmpty(vcb.getCodTercero()))
+            throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
+
+        vcb.setCodUactualiza(CurrentUser.get());
+        vcb.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+
+        // Verify moneda and fields
+        vcb.setNumHabersol(new BigDecimal(0.00));
+        vcb.setNumDebesol(new BigDecimal(0.00));
+        vcb.setNumHaberdolar(new BigDecimal(0.00));
+        vcb.setNumDebedolar(new BigDecimal(0.00));
+
+        vcb.setTxtGlosaitem("ANULADO - " + (vcb.getTxtGlosaitem().length()>60 ?
+                vcb.getTxtGlosaitem().substring(0,60) : vcb.getTxtGlosaitem()));
+        vcb.setFlg_Anula("1");
+        return vcb;
+    }
+    
 
     public void eliminarComprobante() {
         try {
@@ -665,21 +685,8 @@ public class ComprobanteLogic implements Serializable {
                 return;
             }
             VsjCajabanco item = getVsjCajabanco();
-            if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
-                throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
 
-            item.setCodUactualiza(CurrentUser.get());
-            item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
-
-            // Verify moneda and fields
-            item.setNumHabersol(new BigDecimal(0.00));
-            item.setNumDebesol(new BigDecimal(0.00));
-            item.setNumHaberdolar(new BigDecimal(0.00));
-            item.setNumDebedolar(new BigDecimal(0.00));
-
-            item.setTxtGlosaitem("ANULADO - " + (item.getTxtGlosaitem().length()>60 ?
-                    item.getTxtGlosaitem().substring(0,60) : item.getTxtGlosaitem()));
-            item.setFlg_Anula("1");
+            item = prepareToEliminar(item);
 
             view.getGlosa().setValue(item.getTxtGlosaitem());
             log.info("Ready to ANULAR: " + item);
@@ -709,6 +716,7 @@ public class ComprobanteLogic implements Serializable {
     }
 
     public void clearSaldos() {
+        //noinspection unchecked
         Arrays.stream(new Field[]{view.getSaldoCajaPEN(), view.getSaldoCajaUSD(), view.getSaldoProyPEN(), view.getSaldoProyUSD(), view.getSaldoProyEUR()})
                 .forEach(f -> f.setValue(""));
     }
