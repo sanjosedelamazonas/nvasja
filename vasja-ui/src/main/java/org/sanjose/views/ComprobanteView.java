@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import tm.kod.widgets.numberfield.NumberField;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 
 /**
@@ -66,6 +67,7 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
 
     ScpComprobantepagoRep comprobantepagoRepo;
 
+    @PersistenceContext
     private EntityManager em;
 
     private Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,

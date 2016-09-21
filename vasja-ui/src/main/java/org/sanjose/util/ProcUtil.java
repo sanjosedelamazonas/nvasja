@@ -2,6 +2,10 @@ package org.sanjose.util;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import org.sanjose.authentication.CurrentUser;
+import org.sanjose.helper.EnviarException;
+import org.sanjose.model.VsjCajabanco;
+import org.sanjose.views.ComprobanteView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
@@ -68,6 +72,32 @@ public class ProcUtil {
         BigDecimal res = (BigDecimal) query.getOutputParameterValue(4);
         res = res.setScale(2,BigDecimal.ROUND_HALF_EVEN);
         return res;
+    }
+
+    public String enviarContabilidad(VsjCajabanco vcb) throws EnviarException {
+        StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarContabilidad");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        query.setParameter(1, vcb.getCodCajabanco());
+        query.setParameter(2, CurrentUser.get());
+        query.setParameter(3, sdf.format(vcb.getFecFecha()));
+        query.setParameter(4, vcb.getCodTipomoneda());
+        if (ComprobanteView.PEN.equals(vcb.getCodTipomoneda())) {
+            query.setParameter(5, vcb.getNumDebesol());
+            query.setParameter(6, vcb.getNumHabersol());
+        } else {
+            query.setParameter(5, vcb.getNumDebedolar());
+            query.setParameter(6, vcb.getNumHaberdolar());
+        }
+        if (!GenUtil.strNullOrEmpty(vcb.getCodProyecto())) {
+            query.setParameter(7, vcb.getCodProyecto());
+        } else {
+            query.setParameter(7, vcb.getCodTercero());
+        }
+        boolean success = query.execute();
+        String result = (String)query.getOutputParameterValue(8);
+        //if (!success)
+        //    throw new EnviarException(result, vcb);
+        return result;
     }
 
 

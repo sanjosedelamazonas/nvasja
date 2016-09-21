@@ -14,9 +14,12 @@ import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.*;
 import de.steinwedel.messagebox.MessageBox;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.converter.DateToTimestampConverter;
+import org.sanjose.helper.PrintHelper;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
@@ -25,6 +28,7 @@ import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.print.PrintException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -77,7 +81,7 @@ public class ComprobanteLogic implements Serializable {
         view.getNuevoComprobante().addClickListener(event -> nuevoComprobante());
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
         view.getImprimirBtn().addClickListener(event -> {
-            if (savedCajabanco!=null) ReportHelper.generateComprobante(savedCajabanco);
+            if (savedCajabanco!=null) ViewUtil.printComprobante(savedCajabanco);
         });
         view.getModificarBtn().addClickListener(event -> editarComprobante());
         view.getEliminarBtn().addClickListener(event -> eliminarComprobante());
@@ -213,39 +217,12 @@ public class ComprobanteLogic implements Serializable {
         view.setEnableFields(false);
     }
 
-/*
-    protected void setupSelTipoMov(List<VsjConfiguractacajabanco> vsjConfiguractacajabancos) {
-        view.getSelTipoMov().removeAllValidators();
-        if (selTipoMovValChangeListener ==null)
-            DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta", vsjConfiguractacajabancos,
-                "Sel Tipo de Movimiento", "txtTipocuenta");
-        else
-            DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta", vsjConfiguractacajabancos,
-                    "Sel Tipo de Movimiento", "txtTipocuenta");
-        if (selTipoMovValChangeListener !=null)
-            view.getSelTipoMov().removeValueChangeListener(selTipoMovValChangeListener);
-        selTipoMovValChangeListener = new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (!isEdit && !GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                    String tipoMov = event.getProperty().getValue().toString();
-                    VsjConfiguractacajabanco config = view.getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
-                    log.info("selTipoMov got: " + event.getProperty().getValue() + " from db: " + config);
-                    view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
-                    view.getSelRubroInst().setValue(config.getCodCtaespecial());
-                }
-            }
-        };
-        view.getSelTipoMov().addValueChangeListener(selTipoMovValChangeListener);
-        view.getSelTipoMov().addValidator(new BeanValidator(VsjCajabanco.class, "codTipomov"));
-    }*/
-
     private void editDestino(ComboBox comboBox) {
         Window destinoWindow = new Window();
 
         destinoWindow.setWindowMode(WindowMode.NORMAL);
         destinoWindow.setWidth(500, Sizeable.Unit.PIXELS);
-        destinoWindow.setHeight(500, Sizeable.Unit.PIXELS);
+        destinoWindow.setHeight(550, Sizeable.Unit.PIXELS);
         destinoWindow.setPositionX(200);
         destinoWindow.setPositionY(50);
         destinoWindow.setModal(true);
@@ -621,6 +598,9 @@ public class ComprobanteLogic implements Serializable {
             view.getNuevoComprobante().setEnabled(true);
             view.refreshData();
             view.getImprimirBtn().setEnabled(true);
+            if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
+                ViewUtil.printComprobante(savedCajabanco);
+            }
         } catch (CommitException ce) {
             StringBuilder sb = new StringBuilder();
             Map<Field<?>, Validator.InvalidValueException> fieldMap = ce.getInvalidFields();
@@ -712,7 +692,8 @@ public class ComprobanteLogic implements Serializable {
                 return;
             }
             if (savedCajabanco.getFlgEnviado().equals("1")) {
-                Notification.show("No se puede eliminar porque ya esta enviado a la contabilidad");
+                Notification.show("Problema al eliminar", "No se puede eliminar porque ya esta enviado a la contabilidad",
+                        Notification.Type.WARNING_MESSAGE);
                 return;
             }
             VsjCajabanco item = getVsjCajabanco();

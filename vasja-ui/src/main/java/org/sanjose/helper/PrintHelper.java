@@ -46,6 +46,7 @@ import dk.apaq.vaadin.addon.printservice.RemotePrintService;
 import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRTextExporterParameter;
+import org.sanjose.authentication.CurrentUser;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.sysviews.MainScreen;
 
@@ -70,7 +71,7 @@ public class PrintHelper extends VerticalLayout implements View {
     
 	public PrintHelper(MainScreen mainScreen) {
 		if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
-            addComponent(new Label("Imprmir Service"));
+            addComponent(new Label("Imprimir Service"));
 			printServiceManager = RemotePrintServiceManager.getInstance(mainScreen);
 		    printServiceManager.addListener(new PrintServiceListChangedListener() {
 		        public void onPrintServiceListChanged(PrintServiceListChangedEvent event) {
@@ -83,7 +84,7 @@ public class PrintHelper extends VerticalLayout implements View {
 						imprimeras.add(ps.getName());
 						c.addBean(ps);
 		            }
-					PrintService defPrintService = printServiceManager.getDefaultPrintService();
+					PrintService defPrintService = selectPrintService();
 					if (!imprimeras.isEmpty())
 						mainScreen.printerLoaded(imprimeras, defPrintService.getName());
 					table.setContainerDataSource(c);
@@ -184,11 +185,23 @@ public class PrintHelper extends VerticalLayout implements View {
 		//		"colorsupported", "defaultprinter" });
 	}
 
-	public boolean print(JasperPrint jrPrint, boolean isComprobante) throws JRException {
+	private PrintService selectPrintService() {
+		if (ConfigurationUtil.get("DEF_PRINTER_" + CurrentUser.get()) != null) {
+			for (PrintService ps : printServiceManager.getPrintServices(null, null)) {
+				if (ConfigurationUtil.get("DEF_PRINTER_" + CurrentUser.get()).equals(ps.getName()))
+					return ps;
+			}
+		}
+		return printServiceManager.getDefaultPrintService();
+	}
+
+	public boolean print(JasperPrint jrPrint, boolean isComprobante) throws JRException, PrintException {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
-		if (printService == null || printService.getName()==null)
-			printService = printServiceManager.getDefaultPrintService();
+		if (printService == null || printService.getName()==null) {
+			printService = selectPrintService();
+		}
+
 		
 		if (isComprobante && isTxt) {
 			JRTextExporter txtExporter = new JRTextExporter();
@@ -207,12 +220,7 @@ public class PrintHelper extends VerticalLayout implements View {
 			DocPrintJob job = printService.createPrintJob();
 			DocAttributeSet das = new HashDocAttributeSet();
 			Doc doc = new SimpleDoc(oStream.toByteArray(), flavor, das);
-			try {
-				job.print(doc, pras);
-			} catch (PrintException e) {
-				e.printStackTrace();
-				Notification.show("Problema de impresora de texto", "Problema: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
-			}
+			job.print(doc, pras);
 		}
 		else {
 			logger.info("Printing graphically using printService: " + printService.getName() + " pages: " + jrPrint.getPages().size());

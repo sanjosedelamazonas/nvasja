@@ -31,6 +31,9 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Grid.SelectionMode;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 /**
  * A view for performing create-read-update-delete operations on products.
  *
@@ -74,21 +77,40 @@ public class CajaGridView extends CajaGridUI implements View {
     public ScpFinancieraRep financieraRepo;
 
     public Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-    
+
+    private ScpCargocuartaRep cargocuartaRepo;
+
+    private ScpDestinoRep destinoRepo;
+
+    private ScpTipodocumentoRep tipodocumentoRepo;
+
+    private ScpTipocambioRep tipocambioRepo;
+
+    @PersistenceContext
+    private EntityManager em;
+
+    private BeanItemContainer<VsjCajabanco> container;
+
     @Autowired
     public CajaGridView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
                         ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                         ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                         ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                        Scp_ContraparteRep contraparteRepo) {
+                        Scp_ContraparteRep contraparteRepo, ScpCargocuartaRep cargocuartaRepo,
+                        ScpTipodocumentoRep tipodocumentoRepo, ScpTipocambioRep tipocambioRepo, EntityManager em) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
         this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
+        this.destinoRepo = destinoRepo;
+        this.tipodocumentoRepo = tipodocumentoRepo;
+        this.cargocuartaRepo = cargocuartaRepo;
+        this.tipocambioRepo = tipocambioRepo;
+        this.em = em;
         setSizeFull();
         addStyleName("crud-view");
 
-        BeanItemContainer<VsjCajabanco> container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
+        container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
         
         gridCaja.setContainerDataSource(container);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
@@ -269,6 +291,11 @@ public class CajaGridView extends CajaGridUI implements View {
         }
     }
 
+    public void refreshData() {
+        container.removeAllItems();
+        container.addAll(repo.findAll());
+        gridCaja.sort("fecFecha", SortDirection.DESCENDING);
+    }
 
     @Override
     public void enter(ViewChangeEvent event) {
@@ -286,5 +313,29 @@ public class CajaGridView extends CajaGridUI implements View {
     public void removeRow(VsjCajabanco vsj) {
     	repo.delete(vsj);    	
     	gridCaja.getContainerDataSource().removeItem(vsj);
+    }
+
+    public ScpCargocuartaRep getCargocuartaRepo() {
+        return cargocuartaRepo;
+    }
+
+    public ScpDestinoRep getDestinoRepo() {
+        return destinoRepo;
+    }
+
+    public ScpTipodocumentoRep getTipodocumentoRepo() {
+        return tipodocumentoRepo;
+    }
+
+    public VsjCajabancoRep getRepo() {
+        return repo;
+    }
+
+    public ScpTipocambioRep getTipocambioRepo() {
+        return tipocambioRepo;
+    }
+
+    public EntityManager getEm() {
+        return em;
     }
 }

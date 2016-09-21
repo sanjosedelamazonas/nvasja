@@ -26,6 +26,8 @@ public class CajaManejoUI extends VerticalLayout {
 	protected DateField fechaHasta;
 	protected Button nuevoComprobante;
 	protected Button btnEditar;
+	protected Button btnImprimir;
+	protected Button btnVerVoucher;
 	protected Grid gridCaja;
 	protected HorizontalLayout horizontalSaldos;
 	protected VerticalLayout verticalSaldoInicial;
@@ -33,7 +35,6 @@ public class CajaManejoUI extends VerticalLayout {
 	protected VerticalLayout verticalSaldoFinal;
 	protected Grid gridSaldoFInal;
 	protected VerticalLayout verticalButtons;
-	protected Button btnEnviar;
 	protected Button btnReporteCaja;
 
 	public CajaManejoUI() {

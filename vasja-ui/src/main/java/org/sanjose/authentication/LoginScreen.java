@@ -65,7 +65,8 @@ public class LoginScreen extends CssLayout {
         loginForm.setSizeUndefined();
         loginForm.setMargin(false);
 
-        loginForm.addComponent(username = new TextField("Usuario", "test"));
+        //loginForm.addComponent(username = new TextField("Usuario", "test"));
+        loginForm.addComponent(username = new TextField("Usuario", "abork"));
         username.setWidth(15, Unit.EM);
         loginForm.addComponent(password = new PasswordField("Clave"));
         password.setWidth(15, Unit.EM);

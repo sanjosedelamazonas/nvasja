@@ -10,6 +10,7 @@ import org.sanjose.MainUI;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.VsjCajabanco;
+import org.sanjose.util.ViewUtil;
 
 import java.io.Serializable;
 
@@ -43,8 +44,8 @@ public class CajaManejoLogic implements Serializable {
                 break;
             }
         });
-        view.btnReporteCaja.addClickListener(e -> generateComprobante());
-        view.btnEnviar.addClickListener(e -> printComprobante());
+        view.btnVerVoucher.addClickListener(e -> generateComprobante());
+        view.btnImprimir.addClickListener(e -> printComprobante());
     }
 
     /**
@@ -108,18 +109,7 @@ public class CajaManejoLogic implements Serializable {
         for (Object obj : view.getSelectedRow()) {
             log.info("selected: " + obj);
             VsjCajabanco vcb = (VsjCajabanco) obj;
-            try {
-                JasperPrint jrPrint = ReportHelper.printComprobante(vcb);
-                boolean isPrinted = false;
-
-                PrintHelper ph = ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper();
-                isPrinted = ph.print(jrPrint, true);
-                if (!isPrinted)
-                    throw new JRException("Problema al consequir un servicio de imprimir");
-            } catch (JRException e) {
-                e.printStackTrace();
-                Notification.show("Problema al imprimir el comprobante ID: " + vcb.getCodCajabanco() + " " + e.getMessage());
-            }
+            ViewUtil.printComprobante(vcb);
         }
     }
 }

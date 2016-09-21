@@ -30,11 +30,11 @@ public class ConfigurationUtil {
 		defaultParamMap.put("DEFAULT_DATE_RENDERER_FORMAT","%1$td/%1$tm/%1$ty");
 		defaultParamMap.put("DEFAULT_FILTER_WIDTH", "5");
 		defaultParamMap.put("COMMON_FIELD_WIDTH", "12em");
-		defaultParamMap.put("CSS_STYLE", "iso3166");
-		defaultParamMap.put("THEME", "mytheme");
+		//defaultParamMap.put("CSS_STYLE", "iso3166");
+		//defaultParamMap.put("THEME", "mytheme");
 		defaultParamMap.put("DEV_MODE", "1");
 		defaultParamMap.put("ALLOW_OVERDRAW", "TRUE");
-		defaultParamMap.put("IMPORTS_ENCODING", "UTF-8");
+		//defaultParamMap.put("IMPORTS_ENCODING", "UTF-8");
 		
 		/* Reports */
 		defaultParamMap.put("REPORTS_SOURCE_URL", "reports/");
@@ -44,7 +44,7 @@ public class ConfigurationUtil {
 				"../../servlets/image?image=");
 		defaultParamMap.put("REPORTS_DIARIO_CAJA_TYPE", "PDF");
 		defaultParamMap.put("REPORTS_DIARIO_BANCARIA_TYPE", "PDF");
-		defaultParamMap.put("REPORTS_cuenta_TYPE", "PDF");
+		//defaultParamMap.put("REPORTS_cuenta_TYPE", "PDF");
 		defaultParamMap.put("REPORTS_COMPROBANTE_TYPE", "TXT");
 		defaultParamMap.put("REPORTS_COMPROBANTE_OPEN", "TRUE");
 		defaultParamMap.put("REPORTS_COMPROBANTE_PRINT", "FALSE");
@@ -53,6 +53,7 @@ public class ConfigurationUtil {
 		defaultParamMap.put("REPORTE_BANCOS_PREPARADO_POR", "Cinthia del Castillo Segovia");
 		defaultParamMap.put("REPORTE_BANCOS_REVISADOR_POR", "Claudia Urrunaga R�os");
 		defaultParamMap.put("PRINTER_LIST_SHOW", "TRUE");
+		defaultParamMap.put("DEFAULT_PRINTER_test", "PDF");
 	}
 
 	public static Locale getLocale() {

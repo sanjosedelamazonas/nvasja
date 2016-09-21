@@ -7,11 +7,19 @@ import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import org.sanjose.MainUI;
 import org.sanjose.converter.BigDecimalConverter;
 import org.sanjose.converter.DateToTimestampConverter;
+import org.sanjose.helper.PrintHelper;
+import org.sanjose.helper.ReportHelper;
+import org.sanjose.model.VsjCajabanco;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 
+import javax.print.PrintException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,6 +32,26 @@ import java.util.Map;
  */
 public class ViewUtil {
 
+    public static void printComprobante(VsjCajabanco vcb) {
+        try {
+            printComprobanteAndThrow(vcb);
+        } catch (JRException | PrintException e) {
+            if (e instanceof PrintException)
+                Notification.show("Problema de impresora de texto", "Problema: " + e.getMessage(), Notification.Type.TRAY_NOTIFICATION);
+            else
+                Notification.show("Problema de impresora", "Problema: " + e.getMessage(), Notification.Type.TRAY_NOTIFICATION);
+            ReportHelper.generateComprobante(vcb);
+        }
+    }
+
+    private static void printComprobanteAndThrow(VsjCajabanco vcb) throws JRException, PrintException {
+        JasperPrint jrPrint = ReportHelper.printComprobante(vcb);
+        boolean isPrinted = false;
+        PrintHelper ph = ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper();
+        isPrinted = ph.print(jrPrint, true);
+        if (!isPrinted)
+            throw new JRException("Problema al consequir un servicio de imprimir");
+    }
 
     public static void setColumnNames(Grid grid, String[] visible_col_names, String[] visible_col_ids) {
 
