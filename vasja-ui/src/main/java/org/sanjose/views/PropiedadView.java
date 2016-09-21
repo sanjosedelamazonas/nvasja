@@ -7,6 +7,7 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Grid.HeaderRow;
@@ -57,6 +58,7 @@ public class PropiedadView extends PropiedadUI implements View {
         Object[] VISIBLE_COLUMN_IDS = new String[]{"nombre", "valor"};
         gridPropiedad.setColumns(VISIBLE_COLUMN_IDS);
         gridPropiedad.setColumnOrder("nombre", "valor");
+        gridPropiedad.sort("nombre", SortDirection.ASCENDING);
 
         gridPropiedad.setSelectionMode(SelectionMode.MULTI);
         HeaderRow filterRow = gridPropiedad.appendHeaderRow();

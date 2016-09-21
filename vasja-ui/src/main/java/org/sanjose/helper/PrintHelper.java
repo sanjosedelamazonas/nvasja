@@ -85,6 +85,7 @@ public class PrintHelper extends VerticalLayout implements View {
 						c.addBean(ps);
 		            }
 					PrintService defPrintService = selectPrintService();
+					logger.info("Selected print service for user: " + CurrentUser.get() + " - "  + defPrintService.getName());
 					if (!imprimeras.isEmpty())
 						mainScreen.printerLoaded(imprimeras, defPrintService.getName());
 					table.setContainerDataSource(c);
@@ -186,9 +187,9 @@ public class PrintHelper extends VerticalLayout implements View {
 	}
 
 	private PrintService selectPrintService() {
-		if (ConfigurationUtil.get("DEF_PRINTER_" + CurrentUser.get()) != null) {
+		if (ConfigurationUtil.get("DEFAULT_PRINTER_" + CurrentUser.get()) != null) {
 			for (PrintService ps : printServiceManager.getPrintServices(null, null)) {
-				if (ConfigurationUtil.get("DEF_PRINTER_" + CurrentUser.get()).equals(ps.getName()))
+				if (ConfigurationUtil.get("DEFAULT_PRINTER_" + CurrentUser.get()).equals(ps.getName()))
 					return ps;
 			}
 		}
@@ -201,8 +202,8 @@ public class PrintHelper extends VerticalLayout implements View {
 		if (printService == null || printService.getName()==null) {
 			printService = selectPrintService();
 		}
-
-		
+		if (printService==null)
+			throw new JRException("No se podia conseguir una impresora");
 		if (isComprobante && isTxt) {
 			JRTextExporter txtExporter = new JRTextExporter();
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
