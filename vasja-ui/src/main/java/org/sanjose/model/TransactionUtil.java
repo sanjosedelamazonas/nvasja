@@ -25,8 +25,12 @@ public class TransactionUtil implements ITransactionUtil {
 
     private static final Logger log = LoggerFactory.getLogger(TransactionUtil.class);
 
-    @Resource
     private VsjCajabancoRep cajabancoRep;
+
+    @Autowired
+    public TransactionUtil(VsjCajabancoRep cajabancoRep) {
+        this.cajabancoRep = cajabancoRep;
+    }
 
     @Transactional(rollbackFor = TestTransactionException.class)
     public List<VsjCajabanco> saveVsjCajabancos(List<VsjCajabanco> cajabancos) {
