@@ -67,8 +67,6 @@ public class ComprobanteLogic implements Serializable {
 
     protected ProcUtil procUtil;
 
-    private Property.ValueChangeListener selTipoMovValChangeListener;
-
     @Autowired
     public ComprobanteLogic(IComprobanteView  comprobanteView) {
         view = comprobanteView;
@@ -179,8 +177,17 @@ public class ComprobanteLogic implements Serializable {
         DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", view.getFinancieraRepo().findAll(),
                 "Sel Fuente", "txtDescfinanciera");
 
-        setupSelTipoMov(view.getConfiguractacajabancoRepo().findByActivoAndParaCaja(true, true));
-
+        DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta", view.getConfiguractacajabancoRepo().findByActivoAndParaCaja(true, true),
+                "Sel Tipo de Movimiento", "txtTipocuenta");
+        //getSelTipoMov().setEnabled(false);
+        view.getSelTipoMov().addValueChangeListener(event -> {
+            if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                String tipoMov = event.getProperty().getValue().toString();
+                VsjConfiguractacajabanco config = view.getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
+                view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
+                view.getSelRubroInst().setValue(config.getCodCtaespecial());
+            }
+        });
         view.getGlosa().setMaxLength(70);
 
         // Validators
@@ -198,7 +205,7 @@ public class ComprobanteLogic implements Serializable {
         view.getSerieDoc().addValidator(new BeanValidator(VsjCajabanco.class, "txtSeriecomprobantepago"));
         view.getNumDoc().addValidator(new BeanValidator(VsjCajabanco.class, "txtComprobantepago"));
         view.getSelCtaContable().addValidator(new BeanValidator(VsjCajabanco.class, "codContracta"));
-
+        view.getSelTipoMov().addValidator(new BeanValidator(VsjCajabanco.class, "codTipomov"));
         // Editing Destino
         view.getBtnDestino().addClickListener(event->editDestino(view.getSelCodAuxiliar()));
         view.getBtnResponsable().addClickListener(event->editDestino(view.getSelResponsable()));
@@ -206,7 +213,7 @@ public class ComprobanteLogic implements Serializable {
         view.setEnableFields(false);
     }
 
-
+/*
     protected void setupSelTipoMov(List<VsjConfiguractacajabanco> vsjConfiguractacajabancos) {
         view.getSelTipoMov().removeAllValidators();
         if (selTipoMovValChangeListener ==null)
@@ -231,7 +238,7 @@ public class ComprobanteLogic implements Serializable {
         };
         view.getSelTipoMov().addValueChangeListener(selTipoMovValChangeListener);
         view.getSelTipoMov().addValidator(new BeanValidator(VsjCajabanco.class, "codTipomov"));
-    }
+    }*/
 
     private void editDestino(ComboBox comboBox) {
         Window destinoWindow = new Window();
@@ -441,8 +448,9 @@ public class ComprobanteLogic implements Serializable {
                 view.getNumIngreso().setEnabled(false);
                 view.getNumEgreso().setEnabled(false);
             }
-
-            setupSelTipoMov(view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaTercero(true, true, true));
+            DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta",
+                    view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaTercero(true, true, true),
+                    "Sel Tipo de Movimiento", "txtTipocuenta");
             view.getSelFuente().setValue("");
             view.getSelFuente().setEnabled(false);
             // Reset those fields
@@ -485,8 +493,11 @@ public class ComprobanteLogic implements Serializable {
                         financieraEfectList.add(financiera);
                     }
                 }
+
                 // Sel Tipo Movimiento
-                setupSelTipoMov(view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true));
+                DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta",
+                        view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true),
+                        "Sel Tipo de Movimiento", "txtTipocuenta");
                 // Reset those fields
                 if (!isEdit) {
                     view.getSelCtaContable().setValue("");
