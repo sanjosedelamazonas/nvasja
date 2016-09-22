@@ -9,7 +9,7 @@
 
     <artifactId>vasja-production</artifactId>
     <name>vasja-production</name>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <vaadin.resource.directory>${project.build.directory}/${project.build.finalName}</vaadin.resource.directory>
@@ -78,7 +78,7 @@
                                             <artifactId>vasja-widgetset</artifactId>
                                             <version>${project.version}</version>
                                             <type>jar</type>
-                                            <includes>org/sanjose/vasja/**</includes>
+                                            <includes>org/sanjose/**</includes>
                                             <!-- Vaadin/GWT plug-in expects 
                                                 .gwt.xml to be in its warSourceDirectory -->
                                             <outputDirectory>${vaadin.resource.directory}/WEB-INF/classes</outputDirectory>
@@ -109,7 +109,7 @@
                         <groupId>com.vaadin</groupId>
                         <artifactId>vaadin-maven-plugin</artifactId>
                         <configuration>
-                            <module>org.sanjose.vasja.MyAppWidgetset</module>
+                            <module>org.sanjose.MyAppWidgetset</module>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
                             <warSourceDirectory>${vaadin.resource.directory}</warSourceDirectory>
                             <webappDirectory>${vaadin.resource.directory}/VAADIN/widgetsets</webappDirectory>
@@ -182,6 +182,13 @@
                         <version>${jetty.plugin.version}</version>
                         <configuration>
                             <baseResource>${vaadin.resource.directory}</baseResource>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <executable>true</executable>
                         </configuration>
                     </plugin>
                 </plugins>

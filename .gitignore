@@ -9,9 +9,9 @@ target
 reports/.gitignore
 vasja-reports/.gitignore
 vasja-reports/reports/.gitignore
-vasja-ui/.designer/
 /printapplet-addon/WebContent/VAADIN/widgetsets/
 printapplet-addon/src/main/resources/dk/apaq/vaadin/addon/printservice/gwt/public/printapplet-0.0.5.jar
 .classpath
 .project
+.designer
 
