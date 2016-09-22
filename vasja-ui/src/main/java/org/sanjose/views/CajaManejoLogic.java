@@ -53,6 +53,9 @@ public class CajaManejoLogic implements Serializable {
         });
         view.btnVerVoucher.addClickListener(e -> generateComprobante());
         view.btnImprimir.addClickListener(e -> printComprobante());
+        view.btnReporteCaja.addClickListener(e -> {
+            ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
+        });
     }
 
     public void enter(String productId) {

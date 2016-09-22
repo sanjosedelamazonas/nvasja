@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-22T00:59:11 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCajaDiario" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="571" leftMargin="12" rightMargin="12" topMargin="12" bottomMargin="12" uuid="cbf7024d-2a36-4fa2-8a1d-19d9bb8950a5">
+<!-- 2016-09-22T01:48:28 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCajaDiario" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="571" leftMargin="12" rightMargin="12" topMargin="12" bottomMargin="12" uuid="cbf7024d-2a36-4fa2-8a1d-19d9bb8950a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="271"/>
@@ -13,27 +13,15 @@
 	<style name="Detail" fontName="Arial" fontSize="12"/>
 	<parameter name="DIARIO_FECHA_MIN" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
-		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
-	<parameter name="DIARIO_ISPEN" class="java.lang.Boolean">
-		<defaultValueExpression><![CDATA[true]]></defaultValueExpression>
-	</parameter>
-	<parameter name="STR_FECHA_MIN" class="java.lang.String">
-		<defaultValueExpression><![CDATA[DATE(2016,9,1)]]></defaultValueExpression>
-	</parameter>
+	<parameter name="DIARIO_ISPEN" class="java.lang.Boolean"/>
+	<parameter name="STR_FECHA_MIN" class="java.lang.String"/>
 	<parameter name="STR_FECHA_MAX" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
-		<defaultValueExpression><![CDATA[DATE(2016,9,19)]]></defaultValueExpression>
 	</parameter>
-	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["/d/java/workspaces/workspace_vasja/VasjaEXT/Reports/"]]></defaultValueExpression>
-	</parameter>
-	<parameter name="REPORTE_REVISADOR_POR" class="java.lang.String">
-		<defaultValueExpression><![CDATA[fwefwe]]></defaultValueExpression>
-	</parameter>
-	<parameter name="REPORTE_PREPARADO_POR" class="java.lang.String">
-		<defaultValueExpression><![CDATA[wef]]></defaultValueExpression>
-	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="REPORTE_REVISADOR_POR" class="java.lang.String"/>
+	<parameter name="REPORTE_PREPARADO_POR" class="java.lang.String"/>
 	<parameter name="DIARIO_FECHA_MAX" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
@@ -86,26 +74,26 @@
 	<field name="flg_enviado" class="java.lang.String"/>
 	<field name="cod_transcorrelativo" class="java.lang.String"/>
 	<variable name="INGERESO_PEN" class="java.math.BigDecimal" resetType="Group" resetGroup="operacion_ISCARGO" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}== '0') ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : 0]]></variableExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("0")) ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new java.math.BigDecimal(-1)):$F{num_debesol}) : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
 	</variable>
 	<variable name="SALDO_AMOUNT" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
-		<variableExpression><![CDATA[$F{cod_tipomoneda}.compareTo( '0' ) ? (($F{Cargo}.compareTo(1))?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : (($F{Cargo}.compareTo(1))?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
+		<variableExpression><![CDATA[$F{cod_tipomoneda}.equals("0") ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : (($F{Cargo}.compareTo(1))?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
 		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
 	</variable>
 	<variable name="FECHA_MIN" class="java.lang.String">
 		<initialValueExpression><![CDATA[($P{DIARIO_FECHA_MIN}.getYear()+111).toString()+"-"+($P{DIARIO_FECHA_MIN}.getMonth()+1).toString()+"-"+$P{DIARIO_FECHA_MIN}.getDate().toString()+" 00:00"]]></initialValueExpression>
 	</variable>
 	<variable name="CAJA_PEN" class="java.math.BigDecimal" resetType="Group" resetGroup="Caja" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}== '0') ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : (0)]]></variableExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("0") ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : (0)]]></variableExpression>
 		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
 	</variable>
 	<variable name="INGERESO_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="operacion_ISCARGO" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}== '1') ? (($F{Cargo}==1)?0:$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1))):0]]></variableExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("1") ? (($F{Cargo}==1)?0:$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1))):0]]></variableExpression>
 		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
 	</variable>
 	<variable name="CAJA_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="Caja" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}== '0') ? 0 : (($F{Cargo}==1)?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("0")) ? 0 : (($F{Cargo}==1)?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
 		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
 	</variable>
 	<group name="operacion_ISCARGO">
@@ -117,7 +105,7 @@
 					<textElement>
 						<font fontName="SansSerif" size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{Cargo}== 0 ) ?"INGRESOS": "EGRESOS"]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{Cargo}==0 ) ?"INGRESOS": "EGRESOS"]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -128,7 +116,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="12" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=='0')?$V{INGERESO_PEN}:0]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("0"))?$V{INGERESO_PEN}:0]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement mode="Transparent" x="368" y="0" width="21" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="2f3a7843-3636-498f-bd0f-fa4617a75129"/>
@@ -136,7 +124,7 @@
 						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=="0" )? "S/. " : ""]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("0"))? "S/. " : ""]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="240" y="0" width="122" height="18" uuid="f7862496-329f-4ecb-abbe-9143f34ee909"/>
@@ -151,14 +139,14 @@
 						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=="0" )? "" : "USD"]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("0"))? "" : "USD"]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
 					<reportElement style="SubTitle" x="481" y="0" width="74" height="18" forecolor="#000000" uuid="24679ae6-d55f-4e22-894e-a1d278dca811"/>
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="12" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=='1')?$V{INGERESO_USD}:0]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("1"))?$V{INGERESO_USD}:0]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -182,7 +170,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="DejaVu Sans" size="10"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=='0')?$V{CAJA_PEN}:""]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("0"))?$V{CAJA_PEN}:""]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement mode="Transparent" x="373" y="0" width="16" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="b237c86c-5cf9-41ec-a797-a7639957a959"/>
@@ -190,14 +178,14 @@
 						<font fontName="DejaVu Sans" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=="0" )? "S/. " : ""]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("0"))? "S/. " : ""]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="Caja" pattern="#,##0.00;-#,##0.00">
 					<reportElement x="481" y="0" width="72" height="18" uuid="a123e4fd-75f3-4385-b336-892f954c24cb"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="DejaVu Sans" size="10"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=='1')?$V{CAJA_USD}:""]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("1"))?$V{CAJA_USD}:""]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement mode="Transparent" x="464" y="0" width="14" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="b363ce2a-e422-40ad-b20a-cfa65653f6db"/>
@@ -205,7 +193,7 @@
 						<font fontName="DejaVu Sans" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=="0" )? "" : "USD"]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("0"))? "" : "USD"]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -303,7 +291,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{cod_tipomoneda}=='0' )?
+				<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("0"))?
  (($F{Cargo}==1 )?$F{num_habersol}:$F{num_debesol}) : " "]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -318,7 +306,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{cod_tipomoneda}== '0' ) ? (" ") : (($F{Cargo}== 1 )?$F{num_haberdolar}:$F{num_debedolar})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("0")) ? (" ") : (($F{Cargo}==1)?$F{num_haberdolar}:$F{num_debedolar})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

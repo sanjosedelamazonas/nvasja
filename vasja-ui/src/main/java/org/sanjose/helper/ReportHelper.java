@@ -80,8 +80,7 @@ public class ReportHelper {
 		StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {
             byte[] b = null;
             try {
-logger.info("in getStream");
-                InputStream rep = loadReport(REPORT);
+				InputStream rep = loadReport(REPORT);
                 if (rep != null) {
                     JasperReport report = (JasperReport) JRLoader
                             .loadObject(rep);
@@ -184,6 +183,35 @@ logger.info("in getStream");
 					logger.error("Error generating report", ex);
 				}
 			return null;
+	}
+
+
+	public static void generateDiarioCaja(Date fechaMin, Date fechaMax, String format) {
+		if (fechaMax==null) fechaMax = fechaMin;
+		generateDiario("ReporteCajaDiario",
+			ConfigurationUtil.getBeginningOfDay(fechaMin),
+				ConfigurationUtil.getEndOfDay(fechaMax),
+				format,
+				ConfigurationUtil.get("REPORTE_CAJA_PREPARADO_POR"),
+				ConfigurationUtil.get("REPORTE_CAJA_REVISADOR_POR"));
+	}
+
+	public static void generateDiario(String reportName, final Date fechaMin, final Date fechaMax,
+			String format, String preparado, String revisado) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+		HashMap paramMap = new HashMap();
+		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
+		//paramMap.put("SALDO_INICIAL", (isPen ? operSaldoTotal.getSaldoPen() : operSaldoTotal.getSaldoUsd()));
+		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
+		paramMap.put("DIARIO_FECHA_MAX", fechaMax);
+		paramMap.put("DIARIO_ISPEN", true);
+		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.get("REPORTS_SOURCE_FOLDER"));
+		paramMap.put("STR_FECHA_MIN", sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)));
+		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
+		paramMap.put("REPORTE_PREPARADO_POR", preparado);
+		paramMap.put("REPORTE_REVISADOR_POR", revisado);
+		logger.info("ParamMap: " + paramMap.toString());
+		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
 	}
 
 
