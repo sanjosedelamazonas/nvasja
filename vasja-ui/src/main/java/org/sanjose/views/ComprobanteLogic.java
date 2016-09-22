@@ -291,9 +291,9 @@ class ComprobanteLogic implements Serializable {
 
     private void refreshDestino() {
         DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
-                "Responsable", "txtNombredestino");
+                "txtNombredestino");
         DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
-                "Auxiliar", "txtNombredestino");
+                "txtNombredestino");
     }
 
 
@@ -424,7 +424,7 @@ class ComprobanteLogic implements Serializable {
             }
             DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta",
                     view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaTercero(true, true, true),
-                    "Sel Tipo de Movimiento", "txtTipocuenta");
+                    "txtTipocuenta");
             view.getSelFuente().setValue("");
             view.getSelFuente().setEnabled(false);
             // Reset those fields
@@ -469,7 +469,7 @@ class ComprobanteLogic implements Serializable {
                 // Sel Tipo Movimiento
                 DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta",
                         view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true),
-                        "Sel Tipo de Movimiento", "txtTipocuenta");
+                        "txtTipocuenta");
                 // Reset those fields
                 if (!isEdit) {
                     view.getSelCtaContable().setValue("");

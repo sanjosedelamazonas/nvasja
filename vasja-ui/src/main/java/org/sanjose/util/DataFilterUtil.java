@@ -219,7 +219,7 @@ public class DataFilterUtil {
 		combo.setItemCaptionPropertyId(column);
 		combo.setImmediate(true);
 		combo.setInvalidAllowed(false);
-		combo.setInputPrompt(prompt);
+		if (prompt!=null) combo.setInputPrompt(prompt);
 		combo.setFilteringMode(FilteringMode.CONTAINS);
 	}
 
@@ -273,7 +273,8 @@ public class DataFilterUtil {
 			final String prompt, Class clas, Filter filter) {
 		bindComboBox(combo, column, prompt, clas, filter, null);
 	}	*/
-	
+
+
 	@SuppressWarnings("unchecked")
 	public static void bindComboBox(final ComboBox combo, String column,
 									final String prompt, Class clas, Filter filter, String concatenatedColumn, JpaRepository repo) {
@@ -303,7 +304,7 @@ public class DataFilterUtil {
 		combo.setItemCaptionPropertyId(column);
 		combo.setImmediate(true);
 		combo.setInvalidAllowed(false);
-		combo.setInputPrompt(prompt);
+		if (prompt!=null) combo.setInputPrompt(prompt);
 		combo.setFilteringMode(FilteringMode.CONTAINS);
 		combo.addValueChangeListener(
 				(ValueChangeListener) event -> {
@@ -316,8 +317,7 @@ public class DataFilterUtil {
 
 
 	@SuppressWarnings("unchecked")
-	public static void refreshComboBox(final ComboBox combo, String column, List elements,
-									   final String prompt, String concatenatedColumn) {
+	public static void refreshComboBox(final ComboBox combo, String column, List elements, String concatenatedColumn) {
 
 		IndexedContainer c = (IndexedContainer)combo.getContainerDataSource();
 		c.removeAllItems();
@@ -343,9 +343,9 @@ public class DataFilterUtil {
 					mth.setAccessible(true);
 					value = mth.invoke(idObj);
 				} catch (NoSuchMethodException nsm) {
-					logger.severe("Problem binding Combobox no method found for: " + column + " " + prompt + " " + concatenatedColumn + "\n" + nsm.getMessage());
+					logger.severe("Problem binding Combobox no method found for: " + column + " " + concatenatedColumn + "\n" + nsm.getMessage());
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					logger.severe("Problem binding Combobox for: " + column + " " + prompt + " " + concatenatedColumn + "\n" + e.getMessage() );
+					logger.severe("Problem binding Combobox for: " + column + "  " + concatenatedColumn + "\n" + e.getMessage() );
 					e.printStackTrace();
 				}
 				//logger.fine("Got value: " + value);
@@ -365,9 +365,12 @@ public class DataFilterUtil {
 	}
 
 
+	public static void bindComboBox(final ComboBox combo, String column, List elements,
+									String concatenatedColumn) {
+		bindComboBox(combo, column, elements, null, concatenatedColumn);
+	}
 
-
-	@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked")
 	public static void bindComboBox(final ComboBox combo, String column, List elements,
 									final String prompt, String concatenatedColumn) {
 		
@@ -419,7 +422,7 @@ public class DataFilterUtil {
 		combo.setItemCaptionPropertyId(contProp);
 		combo.setImmediate(true);
 		combo.setInvalidAllowed(false);
-		combo.setInputPrompt(prompt);
+		if (prompt!=null) combo.setInputPrompt(prompt);
 		combo.setFilteringMode(FilteringMode.CONTAINS);
 		combo.setId("my-custom-combobox");
 		combo.addValueChangeListener(
