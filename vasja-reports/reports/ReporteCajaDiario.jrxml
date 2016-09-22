@@ -1,268 +1,272 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCajaDiario" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="571" leftMargin="12" rightMargin="12" topMargin="12" bottomMargin="12">
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-09-22T00:59:11 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCajaDiario" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="571" leftMargin="12" rightMargin="12" topMargin="12" bottomMargin="12" uuid="cbf7024d-2a36-4fa2-8a1d-19d9bb8950a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="271"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="192.168.1.50"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
 	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
 	<style name="Detail" fontName="Arial" fontSize="12"/>
 	<parameter name="DIARIO_FECHA_MIN" class="java.util.Date">
+		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
 	<parameter name="DIARIO_ISPEN" class="java.lang.Boolean">
 		<defaultValueExpression><![CDATA[true]]></defaultValueExpression>
 	</parameter>
-	<parameter name="STR_FECHA_MIN" class="java.lang.String"/>
-	<parameter name="STR_FECHA_MAX" class="java.lang.String"/>
+	<parameter name="STR_FECHA_MIN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[DATE(2016,9,1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="STR_FECHA_MAX" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[DATE(2016,9,19)]]></defaultValueExpression>
+	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["/d/java/workspaces/workspace_vasja/VasjaEXT/Reports/"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="REPORTE_REVISADOR_POR" class="java.lang.String"/>
-	<parameter name="REPORTE_PREPARADO_POR" class="java.lang.String"/>
+	<parameter name="REPORTE_REVISADOR_POR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[fwefwe]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_PREPARADO_POR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[wef]]></defaultValueExpression>
+	</parameter>
 	<parameter name="DIARIO_FECHA_MAX" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT
-     operacion.`DESCRIPCION` AS operacion_DESCRIPCION,
-     operacion.`FECHA` AS operacion_FECHA,
-     operacion.`PEN` AS operacion_PEN,
-     operacion.`SALDOPEN` AS operacion_SALDOPEN,
-     operacion.`SALDOUSD` AS operacion_SALDOUSD,
-     operacion.`TIPO` AS operacion_TIPO,
-     operacion.`USD` AS operacion_USD,
-     operacion.`cuenta_ID` AS operacion_cuenta_ID,
-     operacion.`ID` AS operacion_ID,
-     operacion.`ISPEN` AS operacion_ISPEN,
-     operacion.`ISCARGO` AS operacion_ISCARGO,
-     cuenta.`NUMERO` AS cuenta_NUMERO,
-     cuenta.`NOMBRE` AS cuenta_NOMBRE,
-     usuario.`usuario` AS usuario,
-     categoriacuenta.`NOMBRE` AS categoriacuenta_NOMBRE,
-     operacion.`operacionDETALLE_ID` AS OPDET_ID,
-     categoriacuenta.`ID` AS categoriacuenta_ID,
-     cuentaDET.`NUMERO` AS cuentaDET_NUMERO
-FROM
-     `operacion` operacion INNER JOIN `cuenta` cuenta ON operacion.`cuenta_ID` = cuenta.`ID`
-     INNER JOIN `usuario` usuario ON operacion.`usuario_ID` = usuario.`ID`
-     INNER JOIN `operacion` OPDET ON operacion.`operacionDETALLE_ID` = OPDET.`ID`
-     INNER JOIN `cuenta` cuentaDET ON OPDET.`cuenta_ID` = cuentaDET.`ID`
-     INNER JOIN `categoriacuenta` categoriacuenta ON cuentaDET.`categoriacuenta_ID` = categoriacuenta.`ID`
-WHERE
-     operacion.FECHA BETWEEN $P{STR_FECHA_MIN} AND $P{STR_FECHA_MAX}
- AND operacion.ISPEN = $P{DIARIO_ISPEN}
- AND cuenta.ISCAJA = 1
- AND cuenta.ISbanco = 0
-ORDER BY
-     operacion.ISCARGO ASC,
-     categoriacuenta.ID ASC,
-     operacion.FECHA ASC]]>
+		<![CDATA[SELECT 
+[ind_tipocuenta] as tipo_cuenta
+  ,[txt_correlativo] as op_id
+  ,[fec_fecha] as op_fecha
+  ,CASE 
+       WHEN (isnull([cod_proyecto],'') ='')
+               THEN [cod_tercero]
+               ELSE [cod_proyecto]
+       END as codigo
+       ,[cod_tercero]
+       ,[cod_proyecto]
+      ,[txt_glosaitem]
+      ,[cod_tipomoneda]
+      ,[cod_ctacontable]
+,   CASE 
+            WHEN (([num_habersol] >0) OR (num_haberdolar>0))
+               THEN 1 
+               ELSE 0 
+       END as Cargo
+      ,[num_debesol]
+      ,[num_habersol]
+      ,[num_debedolar]
+      ,[num_haberdolar]
+      ,[flg_Anula]
+      ,[flg_enviado]
+      ,[cod_transcorrelativo]
+  FROM [SCP].[dbo].[vsj_cajabanco] caja
+  where caja.fec_fecha  BETWEEN $P{STR_FECHA_MIN} AND $P{STR_FECHA_MAX}
+    order by Cargo asc,cod_ctacontable,codigo,fec_fecha,cod_cajabanco]]>
 	</queryString>
-	<field name="operacion_DESCRIPCION" class="java.lang.String"/>
-	<field name="operacion_FECHA" class="java.sql.Timestamp"/>
-	<field name="operacion_PEN" class="java.math.BigDecimal"/>
-	<field name="operacion_SALDOPEN" class="java.math.BigDecimal"/>
-	<field name="operacion_SALDOUSD" class="java.math.BigDecimal"/>
-	<field name="operacion_TIPO" class="java.lang.String"/>
-	<field name="operacion_USD" class="java.math.BigDecimal"/>
-	<field name="operacion_cuenta_ID" class="java.lang.Long"/>
-	<field name="operacion_ID" class="java.lang.Long"/>
-	<field name="operacion_ISPEN" class="java.lang.Boolean"/>
-	<field name="operacion_ISCARGO" class="java.lang.Boolean"/>
-	<field name="cuenta_NUMERO" class="java.lang.Long"/>
-	<field name="cuenta_NOMBRE" class="java.lang.String"/>
-	<field name="usuario" class="java.lang.String"/>
-	<field name="categoriacuenta_NOMBRE" class="java.lang.String"/>
-	<field name="OPDET_ID" class="java.lang.Long"/>
-	<field name="categoriacuenta_ID" class="java.lang.Long"/>
-	<field name="cuentaDET_NUMERO" class="java.lang.Long"/>
-	<variable name="INGRESOS_AMOUNT" class="java.math.BigDecimal" resetType="Group" resetGroup="operacion_ISCARGO" calculation="Sum">
-		<variableExpression><![CDATA[$P{DIARIO_ISPEN} ? $F{operacion_PEN} : $F{operacion_USD}]]></variableExpression>
+	<field name="tipo_cuenta" class="java.lang.String"/>
+	<field name="op_id" class="java.lang.String"/>
+	<field name="op_fecha" class="java.sql.Timestamp"/>
+	<field name="codigo" class="java.lang.String"/>
+	<field name="cod_tercero" class="java.lang.String"/>
+	<field name="cod_proyecto" class="java.lang.String"/>
+	<field name="txt_glosaitem" class="java.lang.String"/>
+	<field name="cod_tipomoneda" class="java.lang.String"/>
+	<field name="cod_ctacontable" class="java.lang.String"/>
+	<field name="Cargo" class="java.lang.Integer"/>
+	<field name="num_debesol" class="java.math.BigDecimal"/>
+	<field name="num_habersol" class="java.math.BigDecimal"/>
+	<field name="num_debedolar" class="java.math.BigDecimal"/>
+	<field name="num_haberdolar" class="java.math.BigDecimal"/>
+	<field name="flg_Anula" class="java.lang.String"/>
+	<field name="flg_enviado" class="java.lang.String"/>
+	<field name="cod_transcorrelativo" class="java.lang.String"/>
+	<variable name="INGERESO_PEN" class="java.math.BigDecimal" resetType="Group" resetGroup="operacion_ISCARGO" calculation="Sum">
+		<variableExpression><![CDATA[($F{cod_tipomoneda}== '0') ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
 	</variable>
 	<variable name="SALDO_AMOUNT" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
-		<variableExpression><![CDATA[$P{DIARIO_ISPEN} ? $F{operacion_PEN} : $F{operacion_USD}]]></variableExpression>
+		<variableExpression><![CDATA[$F{cod_tipomoneda}.compareTo( '0' ) ? (($F{Cargo}.compareTo(1))?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : (($F{Cargo}.compareTo(1))?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
 		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
 	</variable>
 	<variable name="FECHA_MIN" class="java.lang.String">
 		<initialValueExpression><![CDATA[($P{DIARIO_FECHA_MIN}.getYear()+111).toString()+"-"+($P{DIARIO_FECHA_MIN}.getMonth()+1).toString()+"-"+$P{DIARIO_FECHA_MIN}.getDate().toString()+" 00:00"]]></initialValueExpression>
 	</variable>
-	<variable name="CATEGORIA_AMOUNT" class="java.math.BigDecimal" resetType="Group" resetGroup="Categoria" calculation="Sum">
-		<variableExpression><![CDATA[$P{DIARIO_ISPEN} ? $F{operacion_PEN} : $F{operacion_USD}]]></variableExpression>
+	<variable name="CAJA_PEN" class="java.math.BigDecimal" resetType="Group" resetGroup="Caja" calculation="Sum">
+		<variableExpression><![CDATA[($F{cod_tipomoneda}== '0') ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : (0)]]></variableExpression>
+		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
+	</variable>
+	<variable name="INGERESO_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="operacion_ISCARGO" calculation="Sum">
+		<variableExpression><![CDATA[($F{cod_tipomoneda}== '1') ? (($F{Cargo}==1)?0:$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1))):0]]></variableExpression>
+		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
+	</variable>
+	<variable name="CAJA_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="Caja" calculation="Sum">
+		<variableExpression><![CDATA[($F{cod_tipomoneda}== '0') ? 0 : (($F{Cargo}==1)?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
 		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
 	</variable>
 	<group name="operacion_ISCARGO">
-		<groupExpression><![CDATA[$F{operacion_ISCARGO}]]></groupExpression>
+		<groupExpression><![CDATA[$F{Cargo}]]></groupExpression>
 		<groupHeader>
-			<band height="26">
+			<band height="20">
 				<textField>
-					<reportElement style="SubTitle" x="43" y="4" width="214" height="18" forecolor="#000000"/>
+					<reportElement style="SubTitle" x="0" y="1" width="250" height="16" forecolor="#000000" uuid="01dc8470-af24-4c48-8bf3-cfdbcbbff77c"/>
 					<textElement>
-						<font fontName="SansSerif" size="14" isBold="true"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{operacion_ISCARGO} ? "EGRESOS" : "INGRESOS")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{Cargo}== 0 ) ?"INGRESOS": "EGRESOS"]]></textFieldExpression>
 				</textField>
-				<rectangle>
-					<reportElement mode="Opaque" x="1" y="4" width="36" height="18" forecolor="#CCCCCC" backcolor="#CCCCCC"/>
-				</rectangle>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="24">
+			<band height="18">
 				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement style="SubTitle" x="492" y="0" width="63" height="19" forecolor="#000000"/>
+					<reportElement style="SubTitle" x="390" y="0" width="69" height="18" forecolor="#000000" uuid="de642dac-bcb6-4ff4-a7f7-bf33e9e4aa7a"/>
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="12" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{INGRESOS_AMOUNT}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=='0')?$V{INGERESO_PEN}:0]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement mode="Transparent" x="470" y="0" width="21" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+					<reportElement mode="Transparent" x="368" y="0" width="21" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="2f3a7843-3636-498f-bd0f-fa4617a75129"/>
 					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
 						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($P{DIARIO_ISPEN} ? "S/. " : "\$ ")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=="0" )? "S/. " : ""]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="294" y="0" width="173" height="19"/>
+					<reportElement x="240" y="0" width="122" height="18" uuid="f7862496-329f-4ecb-abbe-9143f34ee909"/>
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="12" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{operacion_ISCARGO} ? "Total egresos " : "Total ingresos ")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{Cargo}== 1 ) ? "Total egresos " : "Total ingresos "]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="459" y="0" width="21" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="b046abc7-2183-4d52-8da7-566090e193f2"/>
+					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=="0" )? "" : "USD"]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+					<reportElement style="SubTitle" x="481" y="0" width="74" height="18" forecolor="#000000" uuid="24679ae6-d55f-4e22-894e-a1d278dca811"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="12" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=='1')?$V{INGERESO_USD}:0]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
 	</group>
-	<group name="Categoria">
-		<groupExpression><![CDATA[$F{categoriacuenta_NOMBRE}]]></groupExpression>
+	<group name="Caja">
+		<groupExpression><![CDATA[$F{cod_ctacontable}]]></groupExpression>
 		<groupHeader>
-			<band height="21">
+			<band height="23">
 				<textField>
-					<reportElement x="43" y="0" width="268" height="18"/>
-					<textElement verticalAlignment="Middle">
-						<font fontName="SansSerif" size="12"/>
+					<reportElement x="26" y="0" width="268" height="17" uuid="2c741475-58b1-4574-a883-d5e949a13fd5"/>
+					<textElement verticalAlignment="Bottom">
+						<font fontName="SansSerif" size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{categoriacuenta_NOMBRE}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{cod_ctacontable}]]></textFieldExpression>
 				</textField>
-				<rectangle>
-					<reportElement mode="Opaque" x="12" y="0" width="26" height="18" forecolor="#CCCCCC" backcolor="#CCCCCC"/>
-				</rectangle>
 				<line>
-					<reportElement x="12" y="18" width="543" height="1" forecolor="#CCCCCC"/>
+					<reportElement x="12" y="17" width="543" height="1" forecolor="#CCCCCC" uuid="47373c3d-86a4-4cbd-964c-98ff62ee810b"/>
 				</line>
-				<textField evaluationTime="Group" evaluationGroup="Categoria" pattern="#,##0.00;-#,##0.00">
-					<reportElement x="502" y="0" width="53" height="18"/>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font fontName="SansSerif" size="12"/>
+				<textField evaluationTime="Group" evaluationGroup="Caja" pattern="#,##0.00;-#,##0.00">
+					<reportElement x="392" y="0" width="68" height="18" uuid="49c721d3-bb1d-4471-878e-310516ee374a"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font fontName="DejaVu Sans" size="10"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{CATEGORIA_AMOUNT}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=='0')?$V{CAJA_PEN}:""]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement mode="Transparent" x="478" y="0" width="22" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
-					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
-						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<reportElement mode="Transparent" x="373" y="0" width="16" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="b237c86c-5cf9-41ec-a797-a7639957a959"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
+						<font fontName="DejaVu Sans" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($P{DIARIO_ISPEN} ? "S/. " : "\$ ")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=="0" )? "S/. " : ""]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Caja" pattern="#,##0.00;-#,##0.00">
+					<reportElement x="481" y="0" width="72" height="18" uuid="a123e4fd-75f3-4385-b336-892f954c24cb"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font fontName="DejaVu Sans" size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=='1')?$V{CAJA_USD}:""]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="464" y="0" width="14" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="b363ce2a-e422-40ad-b20a-cfa65653f6db"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="None" markup="none">
+						<font fontName="DejaVu Sans" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}=="0" )? "" : "USD"]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
-		<groupFooter>
-			<band height="9"/>
-		</groupFooter>
 	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="149" splitType="Stretch">
+		<band height="67" splitType="Stretch">
 			<staticText>
-				<reportElement style="Title" x="0" y="0" width="398" height="13"/>
+				<reportElement x="0" y="0" width="398" height="13" uuid="f4c04a34-0d9d-4ffe-affb-81abe9ca65bc"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Calibri" size="8" isBold="false"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Vicariato Apostólico de San José del Amazonas]]></text>
 			</staticText>
 			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="false">
-				<reportElement style="SubTitle" x="32" y="36" width="229" height="22" forecolor="#000000"/>
+				<reportElement style="SubTitle" x="32" y="36" width="229" height="22" forecolor="#000000" uuid="e2a2d8b2-fc94-4260-acc4-5f840e9626e2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($P{DIARIO_FECHA_MIN}.getDate()==$P{DIARIO_FECHA_MAX}.getDate())?"Movimientos del dia ":" Movimientos del "]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement style="SubTitle" x="1" y="14" width="570" height="22" forecolor="#000000"/>
-				<textElement textAlignment="Center" verticalAlignment="Bottom" markup="none">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{DIARIO_ISPEN} ? "Reporte de caja - Nuevos Soles" : "Reporte de caja - Dolares"]]></textFieldExpression>
-			</textField>
-			<subreport>
-				<reportElement x="189" y="70" width="340" height="73"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ISPEN">
-					<subreportParameterExpression><![CDATA[$P{DIARIO_ISPEN}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="STR_FECHA_MAX">
-					<subreportParameterExpression><![CDATA[$P{STR_FECHA_MAX}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="STR_FECHA_MIN">
-					<subreportParameterExpression><![CDATA[$P{STR_FECHA_MIN}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="DIARIO_FECHA_MIN">
-					<subreportParameterExpression><![CDATA[$P{DIARIO_FECHA_MIN}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "ReporteCajaDiario_saldoInicial.jasper"]]></subreportExpression>
-			</subreport>
 			<line>
-				<reportElement x="3" y="59" width="564" height="1"/>
-			</line>
-			<staticText>
-				<reportElement x="9" y="64" width="107" height="23"/>
-				<textElement/>
-				<text><![CDATA[Saldo inicial de caja al]]></text>
-			</staticText>
-			<line>
-				<reportElement x="3" y="146" width="564" height="1"/>
+				<reportElement x="3" y="59" width="564" height="1" uuid="73c494df-175f-4c5c-bc22-043bc05c1368"/>
 			</line>
 			<textField pattern="yyyy.MM.dd HH:mm" isBlankWhenNull="false">
-				<reportElement style="Column header" x="404" y="0" width="167" height="13" forecolor="#666666"/>
+				<reportElement x="404" y="0" width="167" height="13" forecolor="#0A0A0A" uuid="9842ff29-1da1-4f83-8bce-7138874ba2d0"/>
 				<textElement textAlignment="Right">
 					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="116" y="64" width="59" height="23"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$P{STR_FECHA_MIN}]]></textFieldExpression>
-			</textField>
 			<textField pattern="dd MMMMM yyyy">
-				<reportElement x="267" y="36" width="89" height="22"/>
+				<reportElement x="267" y="36" width="89" height="22" uuid="d6ad3d03-193c-4907-af16-81c8c0802f06"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DIARIO_FECHA_MIN}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd MMMMM yyyy">
-				<reportElement x="380" y="36" width="105" height="22"/>
+				<reportElement x="380" y="36" width="105" height="22" uuid="77258a7b-42c2-42ed-b918-372c4884b9d2"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($P{DIARIO_FECHA_MIN}.getDate()==$P{DIARIO_FECHA_MAX}.getDate())?"":$P{DIARIO_FECHA_MAX}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd MMMMM yyyy">
-				<reportElement x="356" y="36" width="24" height="22"/>
+				<reportElement x="356" y="36" width="24" height="22" uuid="1b152688-a132-49d5-bc89-7782b151c78f"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($P{DIARIO_FECHA_MIN}.getDate()==$P{DIARIO_FECHA_MAX}.getDate())?"":" al "]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="0" y="13" width="570" height="23" uuid="9987522d-2545-4a32-9b30-3cc14dd8b619"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte de caja diario]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
@@ -272,41 +276,49 @@ ORDER BY
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="19" splitType="Stretch">
+		<band height="12" splitType="Stretch">
 			<textField>
-				<reportElement style="Detail" x="139" y="0" width="251" height="17"/>
+				<reportElement style="Detail" x="139" y="0" width="241" height="10" uuid="bb375867-b6dc-453a-b910-d7d7653d2fb4"/>
 				<textElement>
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{operacion_DESCRIPCION}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{txt_glosaitem}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Detail" x="101" y="0" width="28" height="17"/>
+				<reportElement style="Detail" x="94" y="0" width="38" height="10" uuid="b425d803-e55d-411d-a829-cb95e91a0d6d"/>
 				<textElement textAlignment="Right">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cuentaDET_NUMERO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM">
-				<reportElement style="Detail" x="54" y="0" width="34" height="17"/>
+				<reportElement style="Detail" x="9" y="0" width="34" height="10" uuid="dbc79a17-e7a5-400f-9474-bf0e62e2834b"/>
 				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{operacion_FECHA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{op_fecha}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement style="Detail" x="476" y="0" width="79" height="19"/>
+				<reportElement style="Detail" x="392" y="0" width="68" height="12" uuid="a46702dd-ec45-42a5-958a-2a9a93f06911"/>
 				<textElement textAlignment="Right">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{DIARIO_ISPEN} ? $F{operacion_PEN} : $F{operacion_USD}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{cod_tipomoneda}=='0' )?
+ (($F{Cargo}==1 )?$F{num_habersol}:$F{num_debesol}) : " "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Detail" x="29" y="0" width="22" height="17"/>
+				<reportElement style="Detail" x="50" y="0" width="38" height="10" uuid="0756adaf-a6b3-4c71-8266-b71a705c7e1e"/>
 				<textElement textAlignment="Right">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{operacion_ISCARGO_COUNT}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{op_id}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" x="476" y="0" width="79" height="12" uuid="4e9a324d-e3a9-4373-b0b7-5ffe1daef604"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{cod_tipomoneda}== '0' ) ? (" ") : (($F{Cargo}== 1 )?$F{num_haberdolar}:$F{num_debedolar})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -316,14 +328,14 @@ ORDER BY
 	<pageFooter>
 		<band height="16" splitType="Stretch">
 			<textField>
-				<reportElement style="Column header" x="448" y="0" width="80" height="16"/>
+				<reportElement style="Column header" x="448" y="0" width="80" height="16" uuid="dda7e4ac-73d5-4268-97a4-6770296a0d87"/>
 				<textElement textAlignment="Right">
 					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement style="Column header" x="528" y="0" width="42" height="16"/>
+				<reportElement style="Column header" x="528" y="0" width="42" height="16" uuid="1007b0a1-d757-4546-8525-9bc314afa682"/>
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>
@@ -333,28 +345,8 @@ ORDER BY
 	</pageFooter>
 	<summary>
 		<band height="239" splitType="Stretch">
-			<subreport>
-				<reportElement x="189" y="15" width="340" height="99"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ISPEN">
-					<subreportParameterExpression><![CDATA[$P{DIARIO_ISPEN}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="STR_FECHA_MAX">
-					<subreportParameterExpression><![CDATA[$P{STR_FECHA_MAX}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="STR_FECHA_MIN">
-					<subreportParameterExpression><![CDATA[$P{STR_FECHA_MIN}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="DIARIO_FECHA_MIN">
-					<subreportParameterExpression><![CDATA[$P{DIARIO_FECHA_MIN}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "ReporteCajaDiario_saldoAlCierre.jasper"]]></subreportExpression>
-			</subreport>
 			<textField>
-				<reportElement mode="Transparent" x="71" y="189" width="117" height="15" forecolor="#333333" backcolor="#FFFFFF"/>
+				<reportElement mode="Transparent" x="71" y="189" width="117" height="15" forecolor="#333333" backcolor="#FFFFFF" uuid="d100f7c9-0c99-4d4b-9cb6-6ef90b3292ae"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -362,7 +354,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$P{REPORTE_PREPARADO_POR}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="367" y="189" width="121" height="15" forecolor="#333333" backcolor="#FFFFFF"/>
+				<reportElement mode="Transparent" x="367" y="189" width="121" height="15" forecolor="#333333" backcolor="#FFFFFF" uuid="21d69a24-74e4-4d41-a3ca-cfaab319a4ee"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -370,57 +362,63 @@ ORDER BY
 				<textFieldExpression><![CDATA[$P{REPORTE_REVISADOR_POR}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="SubTitle" x="404" y="222" width="72" height="16" forecolor="#333333"/>
+				<reportElement style="SubTitle" x="404" y="222" width="72" height="16" forecolor="#333333" uuid="6b1bd20c-87fc-4620-a13b-958ea0ddf079"/>
 				<textElement textAlignment="Right">
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Punchana, ]]></text>
 			</staticText>
 			<textField pattern="dd MMMMM yyyy">
-				<reportElement style="Column header" x="481" y="222" width="88" height="16" forecolor="#333333"/>
+				<reportElement style="Column header" x="481" y="222" width="88" height="16" forecolor="#333333" uuid="070564a9-859f-42e5-b845-1704323f2f61"/>
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="SubTitle" x="70" y="173" width="119" height="16" forecolor="#333333"/>
+				<reportElement style="SubTitle" x="70" y="173" width="119" height="16" forecolor="#333333" uuid="afff2585-8411-462f-8220-3b82c94f600a"/>
 				<textElement textAlignment="Center">
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Preparado por]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="SubTitle" x="366" y="173" width="122" height="16" forecolor="#333333"/>
+				<reportElement style="SubTitle" x="366" y="173" width="122" height="16" forecolor="#333333" uuid="df703298-5728-4a90-a0bd-e2666fe97ac5"/>
 				<textElement textAlignment="Center">
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Revisado por]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="66" y="169" width="128" height="1"/>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="66" y="169" width="128" height="1" uuid="937e1001-8ee5-47fe-acd2-adface82b6a9"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineColor="#000000"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="362" y="169" width="128" height="1"/>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="362" y="169" width="128" height="1" uuid="db4ed022-6d04-45a6-9d3e-9885ec1f1aa2"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineColor="#000000"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="3" y="0" width="564" height="1"/>
+				<reportElement x="3" y="0" width="564" height="1" uuid="8d556947-980d-4b67-b83f-9e32f093b6e2"/>
 			</line>
 			<staticText>
-				<reportElement x="9" y="5" width="103" height="20"/>
-				<textElement/>
+				<reportElement x="9" y="5" width="103" height="20" uuid="423a5056-ac15-4167-9781-7c9f9f50e6ae"/>
 				<text><![CDATA[Saldo final de caja al]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="112" y="5" width="76" height="23"/>
-				<textElement/>
+				<reportElement x="112" y="5" width="76" height="19" uuid="c0cedafa-a63c-4dd0-9095-9e9c40d0f946"/>
 				<textFieldExpression><![CDATA[$P{STR_FECHA_MAX}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="220" y="1" width="148" height="23" uuid="dd2565cc-55fe-41af-94c5-568d073a464a"/>
+				<text><![CDATA[Saldo inicial de caja al]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="392" y="1" width="59" height="23" uuid="76be602a-959a-4d14-8815-d48784785a89"/>
+				<textFieldExpression><![CDATA[$P{STR_FECHA_MIN}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
