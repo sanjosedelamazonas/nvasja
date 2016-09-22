@@ -158,6 +158,7 @@ public class JRPrinterAWT implements Printable
         // ---------
         PageFormat pageFormat = printJob.defaultPage();
         Paper paper = pageFormat.getPaper();
+        log.info("JR Print paper initial: " + paper.getWidth() + "x" + paper.getHeight());
 
         printJob.setJobName("JasperReports - " + jasperPrint.getName());
 
@@ -191,6 +192,9 @@ public class JRPrinterAWT implements Printable
         }
 
         pageFormat.setPaper(paper);
+        log.info("JR Print paper final: " + paper.getWidth() + "x" + paper.getHeight());
+
+
 
         Book book = new Book();
         book.append(this, pageFormat, lastPageIndex - firstPageIndex + 1);
@@ -243,6 +247,8 @@ public class JRPrinterAWT implements Printable
 
         try
         {
+            log.info("JR Print sending to print: " + pageFormat.getWidth() + "x" + pageFormat.getHeight());
+
             JRGraphics2DExporter exporter = new JRGraphics2DExporter(jasperReportsContext);
             exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
             SimpleGraphics2DExporterOutput output = new SimpleGraphics2DExporterOutput();
