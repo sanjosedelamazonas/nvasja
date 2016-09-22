@@ -198,7 +198,7 @@ public class ReportHelper {
 
 	public static void generateDiario(String reportName, final Date fechaMin, final Date fechaMax,
 			String format, String preparado, String revisado) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
 		HashMap paramMap = new HashMap();
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
 		//paramMap.put("SALDO_INICIAL", (isPen ? operSaldoTotal.getSaldoPen() : operSaldoTotal.getSaldoUsd()));
@@ -208,6 +208,8 @@ public class ReportHelper {
 		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.get("REPORTS_SOURCE_FOLDER"));
 		paramMap.put("STR_FECHA_MIN", sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)));
 		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
+		logger.info("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
+		logger.info("STR_FECHA_MAX=" + paramMap.get("STR_FECHA_MAX"));
 		paramMap.put("REPORTE_PREPARADO_POR", preparado);
 		paramMap.put("REPORTE_REVISADOR_POR", revisado);
 		logger.info("ParamMap: " + paramMap.toString());

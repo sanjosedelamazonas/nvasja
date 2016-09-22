@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-22T01:48:28 -->
+<!-- 2016-09-22T02:48:18 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCajaDiario" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="571" leftMargin="12" rightMargin="12" topMargin="12" bottomMargin="12" uuid="cbf7024d-2a36-4fa2-8a1d-19d9bb8950a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="271"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="192.168.1.50"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SQL Srv virtualxp"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
 	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
@@ -27,16 +27,16 @@
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT 
-[ind_tipocuenta] as tipo_cuenta
-  ,[txt_correlativo] as op_id
-  ,[fec_fecha] as op_fecha
-  ,CASE 
+		[ind_tipocuenta] as tipo_cuenta
+		,[txt_correlativo] as op_id
+		,[fec_fecha] as op_fecha
+		,CASE 
        WHEN (isnull([cod_proyecto],'') ='')
-               THEN [cod_tercero]
+               THEN isnull([cod_tercero],'')
                ELSE [cod_proyecto]
        END as codigo
-       ,[cod_tercero]
-       ,[cod_proyecto]
+       ,isnull([cod_tercero],'') as cod_tercero
+       ,isnull([cod_proyecto],'') as cod_proyecto
       ,[txt_glosaitem]
       ,[cod_tipomoneda]
       ,[cod_ctacontable]
@@ -51,7 +51,7 @@
       ,[num_haberdolar]
       ,[flg_Anula]
       ,[flg_enviado]
-      ,[cod_transcorrelativo]
+      ,isnull([cod_transcorrelativo],'') as cod_transcorrelativo      
   FROM [SCP].[dbo].[vsj_cajabanco] caja
   where caja.fec_fecha  BETWEEN $P{STR_FECHA_MIN} AND $P{STR_FECHA_MAX}
     order by Cargo asc,cod_ctacontable,codigo,fec_fecha,cod_cajabanco]]>
@@ -74,27 +74,24 @@
 	<field name="flg_enviado" class="java.lang.String"/>
 	<field name="cod_transcorrelativo" class="java.lang.String"/>
 	<variable name="INGERESO_PEN" class="java.math.BigDecimal" resetType="Group" resetGroup="operacion_ISCARGO" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("0")) ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new java.math.BigDecimal(-1)):$F{num_debesol}) : 0]]></variableExpression>
-		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("0")) ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new java.math.BigDecimal(-1)):$F{num_debesol}) : new BigDecimal(0)]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<variable name="SALDO_AMOUNT" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
-		<variableExpression><![CDATA[$F{cod_tipomoneda}.equals("0") ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : (($F{Cargo}.compareTo(1))?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
-		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
-	</variable>
-	<variable name="FECHA_MIN" class="java.lang.String">
-		<initialValueExpression><![CDATA[($P{DIARIO_FECHA_MIN}.getYear()+111).toString()+"-"+($P{DIARIO_FECHA_MIN}.getMonth()+1).toString()+"-"+$P{DIARIO_FECHA_MIN}.getDate().toString()+" 00:00"]]></initialValueExpression>
+		<variableExpression><![CDATA[$F{cod_tipomoneda}.equals("0") ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : (($F{Cargo}==1)?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<variable name="CAJA_PEN" class="java.math.BigDecimal" resetType="Group" resetGroup="Caja" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("0") ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : (0)]]></variableExpression>
-		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("0")) ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new java.math.BigDecimal(-1)):$F{num_debesol}) : new BigDecimal(0)]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<variable name="INGERESO_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="operacion_ISCARGO" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("1") ? (($F{Cargo}==1)?0:$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1))):0]]></variableExpression>
-		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("1")) ? (($F{Cargo}==1)? new BigDecimal(0):$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1))):new BigDecimal(0)]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<variable name="CAJA_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="Caja" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("0")) ? 0 : (($F{Cargo}==1)?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
-		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("0")) ? new BigDecimal(0) : (($F{Cargo}==1)?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<group name="operacion_ISCARGO">
 		<groupExpression><![CDATA[$F{Cargo}]]></groupExpression>
@@ -116,7 +113,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="12" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("0"))?$V{INGERESO_PEN}:0]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("0"))?$V{INGERESO_PEN}:new BigDecimal(0)]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement mode="Transparent" x="368" y="0" width="21" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="2f3a7843-3636-498f-bd0f-fa4617a75129"/>
@@ -146,7 +143,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="12" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("1"))?$V{INGERESO_USD}:0]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("1"))?$V{INGERESO_USD}:new BigDecimal(0)]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
