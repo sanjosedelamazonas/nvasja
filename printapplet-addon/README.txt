@@ -4,6 +4,3 @@ mvn install
 ./genjars.sh
 3. Rebuild the addon jar using maven:
 mvn install
-
-//
-//

@@ -166,15 +166,6 @@ public class ReportHelper {
 						HashMap paramMap = new HashMap();
 						paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
 						paramMap.put("OP_ID", op.getCodCajabanco());
-/*
-
-						DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
-								null, ConfigurationUtil.get("DECIMAL_FORMAT"));
-						paramMap.put(
-								"OP_AMOUNT",
-								(op.getIsPen() ? dpf.format(op.getPen()) : dpf
-										.format(op.getUsd())));
-*/
 						return prepareToPrint(REPORT, paramMap);
 					} else {
 						logger.warn("There is no report file!");
@@ -200,7 +191,7 @@ public class ReportHelper {
 			String format, String preparado, String revisado) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
 		HashMap paramMap = new HashMap();
-		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
+		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
 		//paramMap.put("SALDO_INICIAL", (isPen ? operSaldoTotal.getSaldoPen() : operSaldoTotal.getSaldoUsd()));
 		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
 		paramMap.put("DIARIO_FECHA_MAX", fechaMax);

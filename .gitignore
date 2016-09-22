@@ -1,7 +1,4 @@
-/Vasja2/build/
-/Vasja2/dist/
-/Vasja2/nbproject/private
-/NVasja/build/
+bin
 build
 target
 /*/target/
@@ -13,7 +10,8 @@ reports/.gitignore
 vasja-reports/.gitignore
 vasja-reports/reports/.gitignore
 vasja-ui/.designer/
-vasja-reports/.project
-vasja-reports/.classpath
-vasja-reports/.settings
 /printapplet-addon/WebContent/VAADIN/widgetsets/
+printapplet-addon/src/main/resources/dk/apaq/vaadin/addon/printservice/gwt/public/printapplet-0.0.5.jar
+.classpath
+.project
+
