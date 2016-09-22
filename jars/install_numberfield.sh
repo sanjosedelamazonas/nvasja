@@ -1,1 +1,0 @@
-mvn install:install-file -Dfile=numberfield7-0.0.6.jar -DgroupId=tm.kod -DartifactId=numberfield7 -Dversion=0.0.6 -Dpackaging=jar

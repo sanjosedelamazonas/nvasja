@@ -25,8 +25,7 @@ Other basic workflow steps:
 - compiling the whole project
   - install jars not available in public maven repository:
     - cd jars
-    - sh install_numberfield.sh
-    - sh install_sqljdbc4.sh
+    - "install_jars.bat" or sh "install_jars.sh" respectively
   - run "mvn install" in parent project
 - developing the application
   - edit code in the ui module
