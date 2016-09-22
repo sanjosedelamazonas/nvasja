@@ -108,9 +108,13 @@ public class RemotePrintService implements PrintService {
                             int i=0;
                             Printable p = pageable.getPrintable(i);
                             PageFormat pf = pageable.getPageFormat(i);
+                            LOG.info("got pageable: " + pageable.getPageFormat(i));
 
                             int width = (int) (pf.getWidth() * scaleTo72Dpi);
                             int height = (int) (pf.getHeight() * scaleTo72Dpi);
+                            LOG.info("got pageable width/after: " + pf.getWidth() + "/" +width);
+                            LOG.info("got pageable height/after: " + pf.getHeight() + "/" +height);
+
 
                             boolean hasMorePages = true;
                             int pageCount = 0;
@@ -120,6 +124,7 @@ public class RemotePrintService implements PrintService {
                                     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
                                     Graphics2D gfx = image.createGraphics();
                                     gfx.scale(scaleTo72Dpi, scaleTo72Dpi);
+                                    LOG.info("scaling: " + scaleTo72Dpi);
 
                                     if (p.print(gfx, pf, pageCount++) == Printable.PAGE_EXISTS) {
                                         //LOG.info(pageCount + "_" + System.currentTimeMillis() +".png");

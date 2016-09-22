@@ -7,8 +7,8 @@ import org.sanjose.authentication.MsgAccessControl;
 import org.sanjose.sysviews.MainScreen;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
-import org.sanjose.model.MsgUsuarioRep;
-import org.sanjose.model.VsjPropiedadRep;
+import org.sanjose.repo.MsgUsuarioRep;
+import org.sanjose.repo.VsjPropiedadRep;
 import org.sanjose.views.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,6 +22,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Main UI class of the application that shows either the login screen or the
@@ -39,25 +40,26 @@ public class MainUI extends UI {
 
     private AccessControl accessControl;
 
-    private ConfiguracionCtaCajaBancoView confView;
+    private final ConfiguracionCtaCajaBancoView confView;
 
-    private ConfiguracionCajaView configuracionCajaView;
+    private final ConfiguracionCajaView configuracionCajaView;
     
-    private CajaGridView cajaGridView;
+    private final CajaGridView cajaGridView;
 
-    private PropiedadView propiedadView;
+    private final PropiedadView propiedadView;
 
-    private VsjPropiedadRep propRepo;
+    private final VsjPropiedadRep propRepo;
 
-    private ComprobanteView comprobanteView;
+    private final ComprobanteView comprobanteView;
 
-    private CajaManejoView cajaManejoView;
+    private final CajaManejoView cajaManejoView;
 
-    private TransferenciaView transferenciaView;
+    private final TransferenciaView transferenciaView;
 
-    private MsgUsuarioRep msgUsuarioRep;
+    private final MsgUsuarioRep msgUsuarioRep;
 
-    private EntityManager em;
+    @PersistenceContext
+    private final EntityManager em;
 
     private MainScreen mainScreen;
 
@@ -88,12 +90,7 @@ public class MainUI extends UI {
         setLocale(ConfigurationUtil.getLocale());
         getPage().setTitle("Main");
         if (!accessControl.isUserSignedIn()) {
-            setContent(new LoginScreen(accessControl, new LoginListener() {
-                @Override
-                public void loginSuccessful() {
-                    showMainView();
-                }
-            }));
+            setContent(new LoginScreen(accessControl, (LoginListener) () -> showMainView()));
         } else {
             showMainView();
         }

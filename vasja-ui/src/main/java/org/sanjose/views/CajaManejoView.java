@@ -11,6 +11,7 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import org.sanjose.model.*;
+import org.sanjose.repo.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,48 +32,44 @@ public class CajaManejoView extends CajaManejoUI implements View {
 
     public static final String VIEW_NAME = "Manejo de Caja";
 
-    private CajaManejoLogic viewLogic = new CajaManejoLogic(this);
-
-    private ComprobanteView comprobanteView;
-
-    private TransferenciaView transferenciaView;
+    private final CajaManejoLogic viewLogic = new CajaManejoLogic(this);
     
-    public VsjCajabancoRep repo;
+    private final VsjCajabancoRep repo;
 
-    private BeanItemContainer<VsjCajabanco> container;
+    private final BeanItemContainer<VsjCajabanco> container;
 
     private Container.Filter fechaFilter;
 
-    String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
+    private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
             "flgEnviado"
     };
-    String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
+    private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "S/$",
             "Responsable", "Lug. Gasto", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
             "Env"
     };
-    int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
+    private final int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
             5, 10, 6, 6, 6, 6, 2, // S/$
             6, 4, 6, 5, 5, 2, // Tipo Doc
             4, 5, 5, 5, 4, // Fuente
             2
     };
-    String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
+    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
 
-    public ScpPlanproyectoRep planproyectoRepo;
+    private final ScpPlanproyectoRep planproyectoRepo;
 
-    public ScpFinancieraRep financieraRepo;
+    private final ScpFinancieraRep financieraRepo;
 
-    public Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
+    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
 
-    ScpPlancontableRep planRepo;
+    final ScpPlancontableRep planRepo;
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     @Autowired
     public CajaManejoView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
@@ -89,6 +86,7 @@ public class CajaManejoView extends CajaManejoUI implements View {
         setSizeFull();
         addStyleName("crud-view");
 
+        //noinspection unchecked
         container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
         gridCaja.setContainerDataSource(container);
         gridCaja.setEditorEnabled(false);
@@ -109,7 +107,7 @@ public class CajaManejoView extends CajaManejoUI implements View {
         gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
-        gridCaja.addItemClickListener(event ->  setItemLogic(event));
+        gridCaja.addItemClickListener(this::setItemLogic);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
@@ -126,21 +124,13 @@ public class CajaManejoView extends CajaManejoUI implements View {
 
     }
 
-    public void setComprobanteView(ComprobanteView comprobanteView) {
-        this.comprobanteView = comprobanteView;
-    }
-
-    public ComprobanteView getComprobanteView() {
-        return comprobanteView;
-    }
-
     public void refreshData() {
         container.removeAllItems();
         container.addAll(repo.findAll());
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
     }
 
-    public void setItemLogic(ItemClickEvent event) {
+    private void setItemLogic(ItemClickEvent event) {
         if (event.isDoubleClick()) {
             Object id = event.getItem().getItemProperty("codCajabanco").getValue();
             VsjCajabanco vcb = repo.findByCodCajabanco((Integer)id);
@@ -170,11 +160,4 @@ public class CajaManejoView extends CajaManejoUI implements View {
         return em;
     }
 
-    public TransferenciaView getTransferenciaView() {
-        return transferenciaView;
-    }
-
-    public void setTransferenciaView(TransferenciaView transferenciaView) {
-        this.transferenciaView = transferenciaView;
-    }
 }

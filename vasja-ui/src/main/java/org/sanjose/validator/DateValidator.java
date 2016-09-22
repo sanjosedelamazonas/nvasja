@@ -9,9 +9,9 @@ import com.vaadin.data.Validator;
 public class DateValidator implements Validator {
 
     private String message;
-    private String format;
-    private Date min;
-    private Date max;
+    private final String format;
+    private final Date min;
+    private final Date max;
 
     public DateValidator(String message, String format, Date min, Date max) {
         this.message = message;

@@ -30,7 +30,6 @@ import net.sf.jasperreports.engine.type.WhenNoDataTypeEnum;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 import org.hibernate.Session;
-import org.hibernate.jdbc.Work;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
@@ -50,11 +49,11 @@ public class ReportHelper {
 
     private Connection sqlConnection = null;
 
-	static final Logger logger = LoggerFactory.getLogger(ReportHelper.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ReportHelper.class.getName());
 
     private static ReportHelper instance;
 
-    public ReportHelper() {
+    private ReportHelper() {
           instance = this;
     }
 
@@ -71,54 +70,51 @@ public class ReportHelper {
     }
 
 
-	@SuppressWarnings("serial")
+	@SuppressWarnings({"serial", "unchecked"})
 	public static void generateComprobante(final VsjCajabanco op) {
 		final boolean isPdf = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("PDF");
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
 		final String REPORT = (isTxt ? "ComprobanteTxt" : "Comprobante");
-		StreamResource.StreamSource source = new StreamResource.StreamSource() {
-			@SuppressWarnings("unchecked")
-			public InputStream getStream() {
-				byte[] b = null;
-				try {
-                    logger.info("in getStream");
-					InputStream rep = loadReport(REPORT);
-					if (rep != null) {
-						JasperReport report = (JasperReport) JRLoader
-								.loadObject(rep);
-						report.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
-						@SuppressWarnings("rawtypes")
-						HashMap paramMap = new HashMap();
-						paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
-						paramMap.put("OP_ID", op.getCodCajabanco());
-						DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
-								null, ConfigurationUtil.get("DECIMAL_FORMAT"));
+		StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {
+            byte[] b = null;
+            try {
+logger.info("in getStream");
+                InputStream rep = loadReport(REPORT);
+                if (rep != null) {
+                    JasperReport report = (JasperReport) JRLoader
+                            .loadObject(rep);
+                    report.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
+                    @SuppressWarnings("rawtypes")
+                    HashMap paramMap = new HashMap();
+                    paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
+                    paramMap.put("OP_ID", op.getCodCajabanco());
+                    DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
+                            null, ConfigurationUtil.get("DECIMAL_FORMAT"));
 /*
-						paramMap.put(
-								"OP_AMOUNT",
-								(op.getIsPen() ? dpf.format(op.getPen()) : dpf
-										.format(op.getUsd())));
+                    paramMap.put(
+                            "OP_AMOUNT",
+                            (op.getIsPen() ? dpf.format(op.getPen()) : dpf
+                                    .format(op.getUsd())));
 */
-						if (isPdf)
-							b = JasperRunManager.runReportToPdf(report,
-									paramMap, get().getSqlConnection());
-						else if (isTxt) {
-							return exportToTxt(REPORT, paramMap);
-						} else {
-							return exportToHtml(REPORT, paramMap);
-						}
-					} else {
-						Notification.show("There is no report file!");
-					}
-				} catch (JRException ex) {
-					logger.error("Error generating report", ex);
+                    if (isPdf)
+                        b = JasperRunManager.runReportToPdf(report,
+                                paramMap, get().getSqlConnection());
+                    else if (isTxt) {
+                        return exportToTxt(REPORT, paramMap);
+                    } else {
+                        return exportToHtml(REPORT, paramMap);
+                    }
+                } else {
+                    Notification.show("There is no report file!");
+                }
+            } catch (JRException ex) {
+                logger.error("Error generating report", ex);
 
-				}
-				return new ByteArrayInputStream(b);
-			}
-		};
+            }
+            return new ByteArrayInputStream(b != null ? b : new byte[0]);
+        };
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		StreamResource resource = new StreamResource(source,
 				(GenUtil.isIngreso(op) ? "Ingreso_" : "Egreso_")
@@ -237,20 +233,30 @@ public class ReportHelper {
 			 Window window, String format, String type) {
 		
 		String reportName="ReporteLugarYFuenteDeFinancDetallado";
-		
-		if (type.equals("Detallado")) reportName="ReporteLugarYFuenteDeFinancDetallado";						
-		else 
-			if (type.equals("Sin lugar")) reportName="ReporteLugarYFuenteDeFinancNoTienen";
-		else 
-			if (type.equals("Informe")) reportName="ReporteLugarYFuenteDeFinancInforme";
-		else 
-			if (type.equals("DetalladoCuentaContable")) reportName="ReporteDetalladoCuentaContable";
-		else 
-			if (type.equals("Detallado por rubro institucional")) reportName="ReporteDetalladoRubroInstitucional";
-		else 
-			if (type.equals("Informe resumido por cuenta contable")) reportName="ReporteResumidoCuentaContable";
-		else 
-			if (type.equals("Informe resumido por rubro institucional")) reportName="ReporteResumidoRubroInstitucional";
+
+		switch (type) {
+			case "Detallado":
+				reportName = "ReporteLugarYFuenteDeFinancDetallado";
+				break;
+			case "Sin lugar":
+				reportName = "ReporteLugarYFuenteDeFinancNoTienen";
+				break;
+			case "Informe":
+				reportName = "ReporteLugarYFuenteDeFinancInforme";
+				break;
+			case "DetalladoCuentaContable":
+				reportName = "ReporteDetalladoCuentaContable";
+				break;
+			case "Detallado por rubro institucional":
+				reportName = "ReporteDetalladoRubroInstitucional";
+				break;
+			case "Informe resumido por cuenta contable":
+				reportName = "ReporteResumidoCuentaContable";
+				break;
+			case "Informe resumido por rubro institucional":
+				reportName = "ReporteResumidoRubroInstitucional";
+				break;
+		}
 		
 		generateLG(fechaMin, fechaMax, window,format, reportName);
 	}
@@ -306,7 +312,8 @@ public class ReportHelper {
 
 */
 
-	public static void generateCC(final Date minfecha, final Date maxfecha,boolean isPen, Window window, String format, String grouping) {
+	@SuppressWarnings("unchecked")
+	public static void generateCC(final Date minfecha, final Date maxfecha, boolean isPen, Window window, String format, String grouping) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 		logger.info("jestem w generateRep. params: "+minfecha+" maxfecha "+maxfecha+" isPen "+isPen);
 		String reportName;
@@ -320,12 +327,13 @@ public class ReportHelper {
 		else if (grouping.equals("POR CATEGORIA")) reportName="ReporteCentroDeCostosPorCategoria";
 				else reportName="ReporteCentroDeCostosPorCuenta";
 		logger.info("ParamMap: " + paramMap.toString());
-		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
+		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
 //		generateReport("ReporteCentroDeCostosStructure", "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
 	}
 
 
-	public static void generateLG(final Date minfecha, final Date maxfecha, Window window, String format, String reportName) {
+	@SuppressWarnings("unchecked")
+	private static void generateLG(final Date minfecha, final Date maxfecha, Window window, String format, String reportName) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 		logger.info("jestem w generateLG. params: "+minfecha+" maxfecha "+maxfecha);
 		HashMap paramMap = new HashMap();
@@ -337,7 +345,7 @@ public class ReportHelper {
 		else 
 			paramMap.put("str_fecha_max", sdf.format(ConfigurationUtil.getEndOfDay(minfecha)));
 		logger.info("ParamMap: " + paramMap.toString());
-		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
+		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
 //		generateReport("ReporteCentroDeCostosStructure", "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
 	}
 
@@ -369,39 +377,37 @@ public class ReportHelper {
 	}
 
 
-	private static void generateReport(final String reportName, String typeParamName, 
-			final HashMap paramMap, Window window, final String inFormat) {
+	@SuppressWarnings("unchecked")
+	private static void generateReport(final String reportName, String typeParamName,
+									   final HashMap paramMap, final String inFormat) {
 		final String format;
 		if (inFormat==null) format = ConfigurationUtil.get(typeParamName);
 		else format = inFormat;
-		StreamResource.StreamSource source = new StreamResource.StreamSource() {
-			@SuppressWarnings("unchecked")
-			public InputStream getStream() {
-				byte[] b = null;
-				try {
-					InputStream rep = loadReport(reportName);
-					if (rep != null) {
-						JasperReport report = (JasperReport) JRLoader
-								.loadObject(rep);
-						report.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
-						if (format.equalsIgnoreCase("pdf"))
-							b = JasperRunManager.runReportToPdf(report,
-									paramMap, get().getSqlConnection());
-						else if (format.equalsIgnoreCase("html"))
-							return exportToHtml(reportName, paramMap);
-						else 
-							return exportToXls(reportName, paramMap);
-					} else {
-						Notification.show(
-								"There is no report file: "  + reportName);
-					}
-				} catch (JRException ex) {
-					logger.error(ex.getMessage());
-					ex.printStackTrace();
-				}
-				return new ByteArrayInputStream(b);
-			}
-		};
+		StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {
+            byte[] b = null;
+            try {
+                InputStream rep = loadReport(reportName);
+                if (rep != null) {
+                    JasperReport report = (JasperReport) JRLoader
+                            .loadObject(rep);
+                    report.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
+                    if (format.equalsIgnoreCase("pdf"))
+                        b = JasperRunManager.runReportToPdf(report,
+                                paramMap, get().getSqlConnection());
+                    else if (format.equalsIgnoreCase("html"))
+                        return exportToHtml(reportName, paramMap);
+                    else
+                        return exportToXls(reportName, paramMap);
+                } else {
+                    Notification.show(
+                            "There is no report file: "  + reportName);
+                }
+            } catch (JRException ex) {
+                logger.error(ex.getMessage());
+                ex.printStackTrace();
+            }
+            return new ByteArrayInputStream(b != null ? b : new byte[0]);
+        };
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		StreamResource resource = new StreamResource(source, reportName + "_"
 				+ df.format(new Date()) + "." + format.toLowerCase());
@@ -511,7 +517,7 @@ public class ReportHelper {
 		return new ByteArrayInputStream(oStream.toByteArray());
 	}
 	
-	@SuppressWarnings({ "rawtypes" })
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	private static JasperPrint prepareToPrint(String reportName,
 			HashMap paramMap) throws JRException {
 		return JasperFillManager.fillReport(
@@ -520,7 +526,7 @@ public class ReportHelper {
 	}
 
     @Transactional
-	public Connection getSqlConnection() {
+	private Connection getSqlConnection() {
 		try {
 			if (sqlConnection != null && sqlConnection.isValid(100))
 				return sqlConnection;
@@ -530,13 +536,9 @@ public class ReportHelper {
         em=em.getEntityManagerFactory().createEntityManager();
         logger.info("Got entity manager: " + em.getProperties().toString());
         Session session = em.unwrap(Session.class);
-        session.doWork(new Work() {
-
-            @Override
-            public void execute(Connection connection) throws SQLException {
-                logger.info("setting connection: " + connection);
-                sqlConnection = connection;
-            }
+        session.doWork(connection -> {
+            logger.info("setting connection: " + connection);
+            sqlConnection = connection;
         });
 		return sqlConnection;
 	}

@@ -22,7 +22,7 @@ public final class CurrentUser implements Serializable {
     /**
      * The attribute key used to store the username in the session.
      */
-    public static final String CURRENT_USER_SESSION_ATTRIBUTE_KEY = CurrentUser.class
+    private static final String CURRENT_USER_SESSION_ATTRIBUTE_KEY = CurrentUser.class
             .getCanonicalName();
 
     private CurrentUser() {

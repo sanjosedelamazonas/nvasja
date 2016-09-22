@@ -3,9 +3,6 @@ package org.sanjose.validator;
 import com.vaadin.data.Validator;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.ComboBox;
-import org.sanjose.util.GenUtil;
 
 
 /**
@@ -17,7 +14,7 @@ public class NotNullNotBoundValidator implements Validator {
 
     private static final Logger log = LoggerFactory.getLogger(NotNullNotBoundValidator.class);
 
-    final String message;
+    private final String message;
 
     public NotNullNotBoundValidator(String message) {
         if (message!=null) message = "Tiene que ser selecionado";

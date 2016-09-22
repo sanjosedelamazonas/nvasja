@@ -5,7 +5,7 @@ import com.vaadin.data.Validator;
 @SuppressWarnings("serial")
 public class IntegerValidator implements Validator {
 
-    private String message;
+    private final String message;
 
     public IntegerValidator(String message) {
         this.message = message;

@@ -15,7 +15,7 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.model.VsjPropiedad;
-import org.sanjose.model.VsjPropiedadRep;
+import org.sanjose.repo.VsjPropiedadRep;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -34,9 +34,9 @@ public class PropiedadView extends PropiedadUI implements View {
 	
     public static final String VIEW_NAME = "Config del Sistema";
 
-    private PropiedadLogic viewLogic = new PropiedadLogic(this);
+    private final PropiedadLogic viewLogic = new PropiedadLogic(this);
     
-    public VsjPropiedadRep repo;
+    public final VsjPropiedadRep repo;
     
     @Autowired
     public PropiedadView(VsjPropiedadRep repo) {
@@ -50,7 +50,7 @@ public class PropiedadView extends PropiedadUI implements View {
         setSizeFull();
         addStyleName("crud-view");
 
-        BeanItemContainer<VsjPropiedad> container = new BeanItemContainer(VsjPropiedad.class, repo.findAll());
+        @SuppressWarnings("unchecked") BeanItemContainer<VsjPropiedad> container = new BeanItemContainer(VsjPropiedad.class, repo.findAll());
 
         gridPropiedad.setSelectionMode(SelectionMode.MULTI);
         gridPropiedad
@@ -64,7 +64,7 @@ public class PropiedadView extends PropiedadUI implements View {
         HeaderRow filterRow = gridPropiedad.appendHeaderRow();
         
         gridPropiedad.setEditorFieldGroup(
-        	    new BeanFieldGroup<VsjPropiedad>(VsjPropiedad.class));
+                new BeanFieldGroup<>(VsjPropiedad.class));
 
         GridContextMenu gridContextMenu = new GridContextMenu(gridPropiedad);
 
@@ -72,16 +72,10 @@ public class PropiedadView extends PropiedadUI implements View {
             gridContextMenu.removeItems();
             final Object itemId = e.getItemId();
             if (itemId == null) {
-                gridContextMenu.addItem("Add Item", k -> {
-                    Notification.show("adding");
-                });
+                gridContextMenu.addItem("Add Item", k -> Notification.show("adding"));
             } else {
-                gridContextMenu.addItem("Remove this row", k -> {
-                    Notification.show("removing");
-                });
-                gridContextMenu.addItem("Imprimir ", k -> {
-                    Notification.show("removing");
-                });
+                gridContextMenu.addItem("Remove this row", k -> Notification.show("removing"));
+                gridContextMenu.addItem("Imprimir ", k -> Notification.show("removing"));
             }
         });
 

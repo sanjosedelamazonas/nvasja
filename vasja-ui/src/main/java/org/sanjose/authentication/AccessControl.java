@@ -7,11 +7,11 @@ import java.io.Serializable;
  */
 public interface AccessControl extends Serializable {
 
-    public boolean signIn(String username, String password);
+    boolean signIn(String username, String password);
 
-    public boolean isUserSignedIn();
+    boolean isUserSignedIn();
 
-    public boolean isUserInRole(String role);
+    boolean isUserInRole(String role);
 
-    public String getPrincipalName();
+    String getPrincipalName();
 }

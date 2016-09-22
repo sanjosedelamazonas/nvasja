@@ -4,7 +4,7 @@ import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpPlancontable;
-import org.sanjose.model.ScpPlancontableRep;
+import org.sanjose.repo.ScpPlancontableRep;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.views.ComprobanteView;
 

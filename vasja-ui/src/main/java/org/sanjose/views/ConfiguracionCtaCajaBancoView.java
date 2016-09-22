@@ -5,10 +5,10 @@ import java.util.Collection;
 import org.sanjose.render.BooleanTrafficLight;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
-import org.sanjose.model.ScpPlancontableRep;
-import org.sanjose.model.ScpPlanespecialRep;
+import org.sanjose.repo.ScpPlancontableRep;
+import org.sanjose.repo.ScpPlanespecialRep;
 import org.sanjose.model.VsjConfiguractacajabanco;
-import org.sanjose.model.VsjConfiguractacajabancoRep;
+import org.sanjose.repo.VsjConfiguractacajabancoRep;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -24,8 +24,6 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid.HeaderCell;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.HtmlRenderer;
 
@@ -43,9 +41,9 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
 	
     public static final String VIEW_NAME = "Configuracion";
 
-    private ConfiguracionCtaCajaBancoLogic viewLogic = new ConfiguracionCtaCajaBancoLogic(this);
+    private final ConfiguracionCtaCajaBancoLogic viewLogic = new ConfiguracionCtaCajaBancoLogic(this);
     
-    public VsjConfiguractacajabancoRep repo;
+    public final VsjConfiguractacajabancoRep repo;
     
     @Autowired
     public ConfiguracionCtaCajaBancoView(VsjConfiguractacajabancoRep repo, ScpPlancontableRep planRepo, ScpPlanespecialRep planEspRepo) {
@@ -53,7 +51,7 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         setSizeFull();
         //addStyleName("crud-view");
 
-        BeanItemContainer<VsjConfiguractacajabanco> container = new BeanItemContainer(VsjConfiguractacajabanco.class, repo.findAll());
+        @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguractacajabanco> container = new BeanItemContainer(VsjConfiguractacajabanco.class, repo.findAll());
         gridConfigCtaCajaBanco
         	.setContainerDataSource(container);
         gridConfigCtaCajaBanco.setColumnOrder("activo", "codTipocuenta", "txtTipocuenta", "codCtacontablecaja",
@@ -71,7 +69,7 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         HeaderRow filterRow = gridConfigCtaCajaBanco.appendHeaderRow();
         
         gridConfigCtaCajaBanco.setEditorFieldGroup(
-        	    new BeanFieldGroup<VsjConfiguractacajabanco>(VsjConfiguractacajabanco.class));
+                new BeanFieldGroup<>(VsjConfiguractacajabanco.class));
         
         ComboBox selCtacontablecaja = new ComboBox();  
         DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
@@ -96,9 +94,9 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         
         // Grey out inactive rows
         gridConfigCtaCajaBanco.setRowStyleGenerator(rowRef -> {// Java 8
-		  if (! ((Boolean) rowRef.getItem()
-					.getItemProperty("activo")
-					.getValue()).booleanValue())
+		  if (!(Boolean) rowRef.getItem()
+                  .getItemProperty("activo")
+                  .getValue())
 		      return "grayed";
 		  else
 		      return null;
@@ -137,18 +135,9 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         this(null, null, null);
     }
 
-
     @Override
     public void enter(ViewChangeEvent event) {
         viewLogic.enter(event.getParameters());
-    }
-
-    public void showError(String msg) {
-        Notification.show(msg, Type.ERROR_MESSAGE);
-    }
-
-    public void showSaveNotification(String msg) {
-        Notification.show(msg, Type.TRAY_NOTIFICATION);
     }
 
     public void clearSelection() {

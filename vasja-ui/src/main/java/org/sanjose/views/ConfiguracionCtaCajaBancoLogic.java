@@ -29,7 +29,7 @@ public class ConfiguracionCtaCajaBancoLogic implements Serializable {
 	
 	private static final Logger log = LoggerFactory.getLogger(ConfiguracionCtaCajaBancoLogic.class);
 	
-    private ConfiguracionCtaCajaBancoView view;
+    private final ConfiguracionCtaCajaBancoView view;
 
     public ConfiguracionCtaCajaBancoLogic(ConfiguracionCtaCajaBancoView configuracionCtaCajaBancoView) {
         view = configuracionCtaCajaBancoView;
@@ -57,55 +57,17 @@ public class ConfiguracionCtaCajaBancoLogic implements Serializable {
         view.btnEliminar.addClickListener(e -> deleteConfiguracion());
     }
 
-    public void cancelProduct() {
-        setFragmentParameter("");
-        view.clearSelection();
-//        view.editProduct(null);
-    }
-
-    /**
-     * Update the fragment without causing navigator to change view
-     */
-    private void setFragmentParameter(String productId) {
-        String fragmentParameter;
-        if (productId == null || productId.isEmpty()) {
-            fragmentParameter = "";
-        } else {
-            fragmentParameter = productId;
-        }
-
-        Page page = MainUI.get().getPage();
-  /*      page.setUriFragment("!" + SampleCrudView.VIEW_NAME + "/"
-                + fragmentParameter, false);
-  */  }
-
     public void enter(String productId) {
-        if (productId != null && !productId.isEmpty()) {
-        	log.info("Configuracion Logic getting: " + productId);
-            if (productId.equals("new")) {
-            	newConfiguracion();
-            } else {
-                // Ensure this is selected even if coming directly here from
-                // login
-                try {
-                    int pid = Integer.parseInt(productId);
-  //                  Product product = findProduct(pid);
-    //                view.selectRow(product);
-                } catch (NumberFormatException e) {
-                }
-            }
-        }
     }
     
-    public void newConfiguracion() {
+    private void newConfiguracion() {
         view.clearSelection();
-        setFragmentParameter("new");
-        view.gridConfigCtaCajaBanco.getContainerDataSource().addItem(new VsjConfiguractacajabanco());              
+        view.gridConfigCtaCajaBanco.getContainerDataSource().addItem(new VsjConfiguractacajabanco());
     }
     
     
-    public void deleteConfiguracion() {
-        List<VsjConfiguractacajabanco> rows = new ArrayList<VsjConfiguractacajabanco>();
+    private void deleteConfiguracion() {
+        List<VsjConfiguractacajabanco> rows = new ArrayList<>();
     	
         for (Object vsj : view.getSelectedRow()) {
         	log.info("Got selected: " + vsj);
@@ -113,58 +75,9 @@ public class ConfiguracionCtaCajaBancoLogic implements Serializable {
         		rows.add((VsjConfiguractacajabanco)vsj);
         }
         view.clearSelection();
-        //setFragmentParameter("new");
         for (VsjConfiguractacajabanco vsj : rows) {
         	log.info("Removing: " + vsj.getCodTipocuenta());        	
         	view.removeRow(vsj);
         }
-        //view.gridConfigCtaCajaBanco.getContainerDataSource().removeItem(itemId)
     }
-    
-/*
-    private Product findProduct(int productId) {
-        return DataService.get().getProductById(productId);
-    }
-
-    public void saveProduct(Product product) {
-        view.showSaveNotification(product.getProductName() + " ("
-                + product.getId() + ") updated");
-        view.clearSelection();
-//        view.editProduct(null);
-//        view.refreshProduct(product);
-        setFragmentParameter("");
-    }
-
-    public void deleteProduct(Product product) {
-        DataService.get().deleteProduct(product.getId());
-        view.showSaveNotification(product.getProductName() + " ("
-                + product.getId() + ") removed");
-
-        view.clearSelection();
-  //      view.editProduct(null);
-   //     view.removeProduct(product);
-        setFragmentParameter("");
-    }
-
-    public void editProduct(Product product) {
-        if (product == null) {
-            setFragmentParameter("");
-        } else {
-            setFragmentParameter(product.getId() + "");
-        }
-   //     view.editProduct(product);
-    }
-
-    public void newProduct() {
-        view.clearSelection();
-        setFragmentParameter("new");
-    //    view.editProduct(new Product());
-    }
-
-    public void rowSelected(Product product) {
-        if (MainUI.get().getAccessControl().isUserInRole("admin")) {
-     //       view.editProduct(product);
-        }
-    }
-    */
 }

@@ -1,7 +1,7 @@
 package org.sanjose.helper;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 21.09.16
  */

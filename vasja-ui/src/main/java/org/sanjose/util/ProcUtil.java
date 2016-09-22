@@ -24,6 +24,7 @@ public class ProcUtil {
     private static final Logger log = LoggerFactory.getLogger(ProcUtil.class);
 
     @PersistenceContext
+    private
     EntityManager em;
 
     public ProcUtil(EntityManager em) {
@@ -75,7 +76,7 @@ public class ProcUtil {
         return res;
     }
 
-    public String enviarContabilidad(VsjCajabanco vcb) throws EnviarException {
+    public String enviarContabilidad(VsjCajabanco vcb) {
         StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarContabilidad");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         query.setParameter(1, vcb.getCodCajabanco());
@@ -95,10 +96,9 @@ public class ProcUtil {
             query.setParameter(7, vcb.getCodTercero());
         }
         boolean success = query.execute();
-        String result = (String)query.getOutputParameterValue(8);
         //if (!success)
         //    throw new EnviarException(result, vcb);
-        return result;
+        return (String)query.getOutputParameterValue(8);
     }
 
 

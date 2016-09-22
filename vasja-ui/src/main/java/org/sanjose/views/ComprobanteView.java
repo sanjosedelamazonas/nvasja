@@ -8,7 +8,9 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
+import org.sanjose.MainUI;
 import org.sanjose.model.*;
+import org.sanjose.repo.*;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.ProcUtil;
 import org.sanjose.util.ViewUtil;
@@ -37,52 +39,50 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
 
     public static final String USD="1";
 
-    ComprobanteLogic viewLogic = new ComprobanteLogic(this);
+    final ComprobanteLogic viewLogic = new ComprobanteLogic(this);
 
-    VsjCajabancoRep repo;
+    private final VsjCajabancoRep repo;
 
-    ScpPlanproyectoRep planproyectoRepo;
+    private final ScpPlanproyectoRep planproyectoRepo;
 
-    ScpFinancieraRep financieraRepo;
+    private final ScpFinancieraRep financieraRepo;
 
-    Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
+    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
 
-    VsjConfiguractacajabancoRep configuractacajabancoRepo;
+    private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
 
-    VsjConfiguracioncajaRep configuracioncajaRepo;
+    private final VsjConfiguracioncajaRep configuracioncajaRepo;
 
-    ScpProyectoRep proyectoRepo;
+    private final ScpProyectoRep proyectoRepo;
 
-    ScpDestinoRep destinoRepo;
+    private final ScpDestinoRep destinoRepo;
 
-    ScpPlanespecialRep planespecialRep;
+    private final ScpPlanespecialRep planespecialRep;
 
-    ScpCargocuartaRep cargocuartaRepo;
+    private final ScpCargocuartaRep cargocuartaRepo;
 
-    ScpTipodocumentoRep tipodocumentoRepo;
+    private final ScpTipodocumentoRep tipodocumentoRepo;
 
-    ScpPlancontableRep planRepo;
+    private final ScpPlancontableRep planRepo;
 
-    Scp_ContraparteRep contraparteRepo;
+    private final Scp_ContraparteRep contraparteRepo;
 
-    ScpComprobantepagoRep comprobantepagoRepo;
+    private final ScpComprobantepagoRep comprobantepagoRepo;
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
+    private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
 
-    public CajaManejoView cajaManejoView;
-
     @Autowired
-    public ComprobanteView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
-                           ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
-                           ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                           ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                           Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                           ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
+    private ComprobanteView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
+                            ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
+                            ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
+                            ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
+                            Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
+                            ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -148,18 +148,13 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         }
     }
 
-    public boolean isPEN() {
+    private boolean isPEN() {
         return PEN.equals(selMoneda.getValue().toString());
     }
 
     @Override
     public void refreshData() {
-        if (cajaManejoView!=null) cajaManejoView.refreshData();
-    }
-
-
-    public void setCajaManejoView(CajaManejoView cajaManejoView) {
-        this.cajaManejoView = cajaManejoView;
+        MainUI.get().getCajaManejoView().refreshData();
     }
 
     @Override

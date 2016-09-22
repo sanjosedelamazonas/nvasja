@@ -3,7 +3,7 @@ package org.sanjose.util;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.sanjose.model.VsjCajabanco;
-import org.sanjose.model.VsjCajabancoRep;
+import org.sanjose.repo.VsjCajabancoRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -28,10 +28,10 @@ public class TransactionUtil implements ITransactionUtil {
 
     private static final Logger log = LoggerFactory.getLogger(TransactionUtil.class);
 
-    private VsjCajabancoRep cajabancoRep;
+    private final VsjCajabancoRep cajabancoRep;
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     @Autowired
     public TransactionUtil(VsjCajabancoRep cajabancoRep, EntityManager em) {
@@ -42,7 +42,7 @@ public class TransactionUtil implements ITransactionUtil {
     @Transactional(readOnly = false)
     public List<VsjCajabanco> saveVsjCajabancos(List<VsjCajabanco> cajabancos) {
         assert TransactionSynchronizationManager.isActualTransactionActive();
-        List<VsjCajabanco> savedOperaciones = new ArrayList<VsjCajabanco>();
+        List<VsjCajabanco> savedOperaciones = new ArrayList<>();
 
         String transCorrelativo = null;
         // Find at least one operation with transCorrelativo set

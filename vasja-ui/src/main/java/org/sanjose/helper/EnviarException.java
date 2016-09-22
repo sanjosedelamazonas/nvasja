@@ -3,13 +3,13 @@ package org.sanjose.helper;
 import org.sanjose.model.VsjCajabanco;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 21.09.16
  */
 public class EnviarException extends Exception {
 
-    private VsjCajabanco cajabanco;
+    private final VsjCajabanco cajabanco;
 
     public EnviarException(String message, VsjCajabanco cajabanco) {
         super(message);

@@ -53,21 +53,23 @@ import org.sanjose.sysviews.MainScreen;
 @SuppressWarnings("serial")
 public class PrintHelper extends VerticalLayout implements View {
 	
-    private Table table = new Table();
+    private final Table table = new Table();
     private RemotePrintServiceManager printServiceManager;
 
     public static final String VIEW_NAME = "Imprimir service";
 
-    static final Logger logger = Logger
+    private static final Logger logger = Logger
 			.getLogger(PrintHelper.class.getName());
     
-    Graphics2D g2d;
+    private Graphics2D g2d;
     
-    PrintService printService = null;
+    private PrintService printService = null;
     
-    TextArea printOptions = new TextArea();
+    private final TextArea printOptions = new TextArea();
 	
-    BeanContainer c = new BeanContainer(RemotePrintService.class);
+    @SuppressWarnings("unchecked")
+	private final
+	BeanContainer c = new BeanContainer(RemotePrintService.class);
     
 	public PrintHelper(MainScreen mainScreen) {
 		if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
@@ -78,10 +80,11 @@ public class PrintHelper extends VerticalLayout implements View {
 		        	c.removeAllItems();
 		            c.setBeanIdProperty("id");
 		            logger.info("Found printServices");
-					List<String> imprimeras = new ArrayList<String>();
+					List<String> imprimeras = new ArrayList<>();
 					for (PrintService ps : event.getPrintServices()) {
                         logger.fine("Printservice loaded: " + ps.getName());
 						imprimeras.add(ps.getName());
+						//noinspection unchecked
 						c.addBean(ps);
 		            }
 					PrintService defPrintService = selectPrintService();
@@ -124,7 +127,7 @@ public class PrintHelper extends VerticalLayout implements View {
 	    if (ConfigurationUtil.is("PRINTER_LIST_SHOW")) drawPrinterTable();
 	}
 
-	public void drawPrinterTable() {
+	private void drawPrinterTable() {
 	    setCaption("Imprimir");
 	    Button button = new Button("Imprimir");
 	    button.addListener(new Button.ClickListener() {
@@ -137,12 +140,10 @@ public class PrintHelper extends VerticalLayout implements View {
 	                		jrPrint.getLeftMargin() + " " + jrPrint.getRightMargin());
 	                
 					JRPrinterAWT.printPages(jrPrint, 0, jrPrint.getPages().size()-1, false, printService);
-	            } catch (JRException e) {
+	            } catch (JRException | ParseException e) {
 	            	Logger.getLogger(PrintHelper.class.getName()).log(Level.SEVERE, null, e);				
-	            } catch (ParseException e) {
-	            	Logger.getLogger(PrintHelper.class.getName()).log(Level.SEVERE, null, e);
 	            }
-	        }
+			}
 	    });	    
 	    Button buttonText = new Button("Imprimir texto");
 	    buttonText.addListener(new Button.ClickListener() {
@@ -166,14 +167,10 @@ public class PrintHelper extends VerticalLayout implements View {
 					Doc doc = new SimpleDoc(data, flavor, das);
 					logger.info("Sending to job: " + job.toString() + " " + doc.toString());
 					job.print(doc, pras);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (PrintException e) {
+				} catch (PrintException | IOException e) {
 					e.printStackTrace();
 				}
-	        }
+			}
 	    });
 	    printOptions.setImmediate(true);
 	    addComponent(table);

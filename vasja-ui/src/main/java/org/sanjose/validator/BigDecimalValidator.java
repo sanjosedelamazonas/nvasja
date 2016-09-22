@@ -9,7 +9,7 @@ import org.sanjose.util.ConfigurationUtil;
 @SuppressWarnings("serial")
 public class BigDecimalValidator implements Validator {
 
-	    private String message;
+	    private final String message;
 
 	    public BigDecimalValidator(String message) {
 	        this.message = message;

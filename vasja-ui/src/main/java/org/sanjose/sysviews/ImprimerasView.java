@@ -15,9 +15,9 @@ public class ImprimerasView extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "Imprimeras";
 
-    private Label label;
+    private final Label label;
 
-    private CustomLayout aboutContent;
+    private final CustomLayout aboutContent;
 
     public ImprimerasView(List<String> imprimeras, String defPrinter) {
         aboutContent = new CustomLayout("aboutview");
@@ -28,9 +28,9 @@ public class ImprimerasView extends VerticalLayout implements View {
         StringBuilder sb = new StringBuilder(" Printer Applet loaded correctly and found " + imprimeras.size() + " printers: <UL>" );
         for (String s : imprimeras) {
             if (s.equals(defPrinter))
-                sb.append("<LI><b>" + s + "</b>");
+                sb.append("<LI><b>").append(s).append("</b>");
             else
-                sb.append("<LI>" + s);
+                sb.append("<LI>").append(s);
         }
         label = new Label(FontAwesome.PRINT.getHtml()
                 + sb.toString()

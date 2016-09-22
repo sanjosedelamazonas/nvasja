@@ -1,7 +1,8 @@
-package org.sanjose.model;
+package org.sanjose.repo;
 
 import java.util.List;
 
+import org.sanjose.model.ScpPlancontable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ScpPlancontableRep extends JpaRepository<ScpPlancontable, Long> {

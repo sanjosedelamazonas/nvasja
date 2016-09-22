@@ -35,7 +35,7 @@ import com.vaadin.ui.ComboBox;
 
 public class DataFilterUtil {
 
-	static final Logger logger = Logger.getLogger(DataFilterUtil.class
+	private static final Logger logger = Logger.getLogger(DataFilterUtil.class
 			.getName());	
 
 /*	public static void bindSearchTextField(final TextField tf, final String column, final String prompt, final BeanItemContainer container, 
@@ -91,8 +91,9 @@ public class DataFilterUtil {
  * Bind Combo to a boolean type of field. 
  * @values contains string values that represent true and false - in this order	
  */
-	public static void bindBooleanComboBox(final ComboBox combo, String column,
-			final String prompt, String[] values) {
+	@SuppressWarnings("unchecked")
+    public static void bindBooleanComboBox(final ComboBox combo, String column,
+                                           final String prompt, String[] values) {
 
 		// propietarios.setWidth(ConfigurationUtil.get("COMMON_FIELD_WIDTH"));
 		IndexedContainer c = new IndexedContainer();
@@ -102,9 +103,9 @@ public class DataFilterUtil {
 		for (String value : values) {
 			Item item = null; 
 			if (i==0)
-				item = c.addItem(new Boolean(true));
+				item = c.addItem(Boolean.TRUE);
 			else
-				item = c.addItem(new Boolean(false));
+				item = c.addItem(Boolean.FALSE);
 			item.getItemProperty(column)
 					.setValue(value);
 			i++;
@@ -123,6 +124,7 @@ public class DataFilterUtil {
 	 * Bind Combo to a boolean type of field.
 	 * @values contains string values that represent true and false - in this order
 	 */
+	@SuppressWarnings("unchecked")
 	public static void bindTipoMonedaOptionGroup(final OptionGroup combo, String column) {
 
 		Map<String, String> valMap = new TreeMap<>();
@@ -144,8 +146,9 @@ public class DataFilterUtil {
 		combo.setInvalidAllowed(false);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void bindTipoMonedaComboBox(final ComboBox combo, String column,
-										   final String prompt) {
+											  final String prompt) {
 
 		Map<String, String> valMap = new TreeMap<>();
 		valMap.put("0","S/");
@@ -198,8 +201,9 @@ public class DataFilterUtil {
 		bindFixedValComboBox(combo, column, prompt, new String[]{"0", "1", "2", "3"}, valMap);
 	}
 
-	public static void bindFixedValComboBox(final ComboBox combo, String column,
-										  final String prompt, String[] keys, Map valMap) {
+	@SuppressWarnings("unchecked")
+	private static void bindFixedValComboBox(final ComboBox combo, String column,
+											 final String prompt, String[] keys, Map valMap) {
 
 		IndexedContainer c = new IndexedContainer();
 		c.addContainerProperty(column, String.class, "");
@@ -270,8 +274,9 @@ public class DataFilterUtil {
 		bindComboBox(combo, column, prompt, clas, filter, null);
 	}	*/
 	
-	public static void bindComboBox(final ComboBox combo, String column,  
-			final String prompt, Class clas, Filter filter, String concatenatedColumn, JpaRepository repo) {
+	@SuppressWarnings("unchecked")
+	public static void bindComboBox(final ComboBox combo, String column,
+									final String prompt, Class clas, Filter filter, String concatenatedColumn, JpaRepository repo) {
 		
 		BeanItemContainer beanItemContainer;  
 		//if (elements==null) {
@@ -301,21 +306,18 @@ public class DataFilterUtil {
 		combo.setInputPrompt(prompt);
 		combo.setFilteringMode(FilteringMode.CONTAINS);
 		combo.addValueChangeListener(
-				new ValueChangeListener() {
-			
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				if (event.getProperty() != null
-						&& !event.getProperty().equals("")) {
-					combo.select(event.getProperty().getValue());
-				}
-			}
-		});
+				(ValueChangeListener) event -> {
+                    if (event.getProperty() != null
+                            && !event.getProperty().equals("")) {
+                        combo.select(event.getProperty().getValue());
+                    }
+                });
 	}
 
 
+	@SuppressWarnings("unchecked")
 	public static void refreshComboBox(final ComboBox combo, String column, List elements,
-									final String prompt, String concatenatedColumn) {
+									   final String prompt, String concatenatedColumn) {
 
 		IndexedContainer c = (IndexedContainer)combo.getContainerDataSource();
 		c.removeAllItems();
@@ -336,7 +338,7 @@ public class DataFilterUtil {
 				Object idObj = bItem.getItemProperty(idCol).getValue();
 				//logger.info("Got subItem: " + idObj + " method: " + "get" + colProp.substring(0,1).toUpperCase() + colProp.substring(1));
 				try {
-					Method mth = idObj.getClass().getMethod("get" + colProp.substring(0,1).toUpperCase() + colProp.substring(1), new Class[] {});
+					Method mth = idObj.getClass().getMethod("get" + (colProp != null ? colProp.substring(0, 1).toUpperCase() : null) + colProp.substring(1), new Class[] {});
 					logger.fine("Got method: " + mth);
 					mth.setAccessible(true);
 					value = mth.invoke(idObj);
@@ -365,8 +367,9 @@ public class DataFilterUtil {
 
 
 
-	public static void bindComboBox(final ComboBox combo, String column, List elements, 
-			final String prompt, String concatenatedColumn) {
+	@SuppressWarnings("unchecked")
+	public static void bindComboBox(final ComboBox combo, String column, List elements,
+									final String prompt, String concatenatedColumn) {
 		
 		IndexedContainer c = new IndexedContainer();
 		String idCol = null;
@@ -384,7 +387,7 @@ public class DataFilterUtil {
 			if (column.contains(".")) {
 				logger.fine("idCol: " + idCol + " colProp: " + colProp);
 				Object idObj = bItem.getItemProperty(idCol).getValue();						
-				logger.fine("Got subItem: " + idObj + " method: " + "get" + colProp.substring(0,1).toUpperCase() + colProp.substring(1));
+				logger.fine("Got subItem: " + idObj + " method: " + "get" + (colProp != null ? colProp.substring(0, 1).toUpperCase() : null) + colProp.substring(1));
 				try {
 					Method mth = idObj.getClass().getMethod("get" + colProp.substring(0,1).toUpperCase() + colProp.substring(1), new Class[] {});
 					logger.fine("Got method: " + mth);
@@ -420,17 +423,14 @@ public class DataFilterUtil {
 		combo.setFilteringMode(FilteringMode.CONTAINS);
 		combo.setId("my-custom-combobox");
 		combo.addValueChangeListener(
-				new ValueChangeListener() {			
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				if (event.getProperty() != null
-						&& !event.getProperty().equals("")) {
-					//logger.info("got val: " + event.getProperty().getValue());
-					combo.select(event.getProperty().getValue());
-				}								
-				
-			}
-		});
+				(ValueChangeListener) event -> {
+                    if (event.getProperty() != null
+                            && !event.getProperty().equals("")) {
+                        //logger.info("got val: " + event.getProperty().getValue());
+                        combo.select(event.getProperty().getValue());
+                    }
+
+                });
 	}	
 
 /*

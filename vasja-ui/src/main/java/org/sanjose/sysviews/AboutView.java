@@ -16,7 +16,7 @@ public class AboutView extends VerticalLayout implements View {
 
     private Label label;
 
-    private CustomLayout aboutContent;
+    private final CustomLayout aboutContent;
 
     public AboutView() {
         aboutContent = new CustomLayout("aboutview");

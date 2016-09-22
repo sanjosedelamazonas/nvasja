@@ -1,28 +1,25 @@
 package org.sanjose.util;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 import org.sanjose.model.VsjPropiedad;
-import org.sanjose.model.VsjPropiedadRep;
+import org.sanjose.repo.VsjPropiedadRep;
 
 public class ConfigurationUtil {
 
-	public final static HashMap<String, String> defaultParamMap = new HashMap<String, String>();
-	private static HashMap<String, String> paramMap = new HashMap<String, String>();
+	private final static HashMap<String, String> defaultParamMap = new HashMap<>();
+	private static final HashMap<String, String> paramMap = new HashMap<>();
 
 	private static VsjPropiedadRep propRepo = null;
 
 	public final static Locale LOCALE = new Locale("es", "PE");
 	public final static String CSS_RED = "red";
 
-	public static void init() {
+	private static void init() {
 		defaultParamMap.put("LOCALE", "es_PE");
 		defaultParamMap.put("DECIMAL_FORMAT", "#,##0.00");
 		defaultParamMap.put("SHORT_DATE_FORMAT", "MM/dd");
@@ -61,7 +58,7 @@ public class ConfigurationUtil {
         return new Locale(locStr.substring(0,2), locStr.substring(3,5));
     }
 
-	public static String getDefaultValue(String name) {
+	private static String getDefaultValue(String name) {
 		if (defaultParamMap.isEmpty())
 			init();
 		return defaultParamMap.get(name);
@@ -97,11 +94,7 @@ public class ConfigurationUtil {
 	}
 
 	public static Boolean is(String name) {
-		if (get(name)!=null)
-			return (get(name).equalsIgnoreCase("TRUE") || get(name)
-				.equalsIgnoreCase("1"));
-		else
-			return false;
+		return get(name) != null && (get(name).equalsIgnoreCase("TRUE") || get(name).equalsIgnoreCase("1"));
 	}
 
 	public static Date getBeginningOfMonth(Date date) {
@@ -125,7 +118,7 @@ public class ConfigurationUtil {
 		return getTimeOfDay(date, "23:59:59");
 	}
 
-	public static Date getTimeOfDay(Date date, String hourMinutes) {
+	private static Date getTimeOfDay(Date date, String hourMinutes) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
 		try {
 			String d = format.format(date);

@@ -10,6 +10,8 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
+import org.sanjose.MainUI;
+import org.sanjose.repo.*;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,41 +41,39 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
 
     TransferenciaLogic viewLogic = null;
 
-    VsjCajabancoRep repo;
+    private final VsjCajabancoRep repo;
 
-    ScpPlanproyectoRep planproyectoRepo;
+    private final ScpPlanproyectoRep planproyectoRepo;
 
-    ScpFinancieraRep financieraRepo;
+    private final ScpFinancieraRep financieraRepo;
 
-    Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
+    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
 
-    VsjConfiguractacajabancoRep configuractacajabancoRepo;
+    private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
 
-    VsjConfiguracioncajaRep configuracioncajaRepo;
+    private final VsjConfiguracioncajaRep configuracioncajaRepo;
 
-    ScpProyectoRep proyectoRepo;
+    private final ScpProyectoRep proyectoRepo;
 
-    ScpDestinoRep destinoRepo;
+    private final ScpDestinoRep destinoRepo;
 
-    ScpPlanespecialRep planespecialRep;
+    private final ScpPlanespecialRep planespecialRep;
 
-    ScpCargocuartaRep cargocuartaRepo;
+    private final ScpCargocuartaRep cargocuartaRepo;
 
-    ScpTipodocumentoRep tipodocumentoRepo;
+    private final ScpTipodocumentoRep tipodocumentoRepo;
 
-    ScpPlancontableRep planRepo;
+    private final ScpPlancontableRep planRepo;
 
-    Scp_ContraparteRep contraparteRepo;
+    private final Scp_ContraparteRep contraparteRepo;
 
-    ScpComprobantepagoRep comprobantepagoRepo;
+    private final ScpComprobantepagoRep comprobantepagoRepo;
 
-    private EntityManager em;
+    private final EntityManager em;
 
-    private CajaManejoView cajaManejoView;
+    private final BeanItemContainer<VsjCajabanco> container;
 
-    private BeanItemContainer<VsjCajabanco> container;
-
-    private Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
+    private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
 
@@ -94,12 +94,12 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{  };
 
     @Autowired
-    public TransferenciaView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
-                             ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
-                             ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                             ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                             Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                             ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
+    private TransferenciaView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
+                              ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
+                              ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
+                              ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
+                              Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
+                              ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -131,6 +131,7 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
         viewLogic.setupEditComprobanteView();
 
         // Grid
+        //noinspection unchecked
         container = new BeanItemContainer(VsjCajabanco.class, new ArrayList());
         gridTrans.setContainerDataSource(container);
         gridTrans.setEditorEnabled(false);
@@ -167,7 +168,7 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
         return container;
     }
 
-    public BigDecimal calcDifference() {
+    private BigDecimal calcDifference() {
         BigDecimal total = new BigDecimal(0.00);
 
         for (VsjCajabanco cajabanco : container.getItemIds()) {
@@ -199,20 +200,15 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
 
     @Override
     public void refreshData() {
-        cajaManejoView.refreshData();
+        MainUI.get().getCajaManejoView().refreshData();
     }
 
     @Override
     public void setSaldoDeCajas() {
     }
 
-    public boolean isPEN() {
-        if (selMoneda.getValue()==null) return true;
-        return PEN.equals(selMoneda.getValue().toString());
-    }
-
-    public void setCajaManejoView(CajaManejoView cajaManejoView) {
-        this.cajaManejoView = cajaManejoView;
+    private boolean isPEN() {
+        return selMoneda.getValue() == null || PEN.equals(selMoneda.getValue().toString());
     }
 
     @Override

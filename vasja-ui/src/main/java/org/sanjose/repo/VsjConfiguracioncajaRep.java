@@ -1,5 +1,6 @@
-package org.sanjose.model;
+package org.sanjose.repo;
 
+import org.sanjose.model.VsjConfiguracioncaja;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,8 +1,7 @@
-package org.sanjose.model;
+package org.sanjose.repo;
 
+import org.sanjose.model.MsgUsuario;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface MsgUsuarioRep extends JpaRepository<MsgUsuario, Long> {
 

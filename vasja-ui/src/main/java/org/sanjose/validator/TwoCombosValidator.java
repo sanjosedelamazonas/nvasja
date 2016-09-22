@@ -16,11 +16,11 @@ public class TwoCombosValidator implements Validator {
 
     private static final Logger log = LoggerFactory.getLogger(TwoCombosValidator.class);
 
-    final AbstractSelect field;
+    private final AbstractSelect field;
 
-    final String message;
+    private final String message;
 
-    final boolean isPermitEmpty;
+    private final boolean isPermitEmpty;
 
     public TwoCombosValidator(AbstractSelect field, boolean isPermitEmpty, String message) {
         if (message!=null) message = "los dos no pueden ser rellenados en mismo tiempo";

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fontFamilies>
+
+	<fontFamily name="Arial">
+		<normal>net/sf/jasperreports/fonts/arial/arial.ttf</normal>
+		<bold>net/sf/jasperreports/fonts/arial/arialbd.ttf</bold>
+		<italic>net/sf/jasperreports/fonts/arial/ariali.ttf</italic>
+		<boldItalic>net/sf/jasperreports/fonts/arial/arialbi.ttf</boldItalic>
+		<pdfEncoding>Identity-H</pdfEncoding>
+		<pdfEmbedded>true</pdfEmbedded>
+		<exportFonts>
+			<export key="net.sf.jasperreports.html">Arial, Helvetica, sans-serif</export>
+			<export key="net.sf.jasperreports.xhtml">Arial, Helvetica, sans-serif</export>
+		</exportFonts>
+		<!--
+		<locales>
+			<locale>en_US</locale>
+			<locale>de_DE</locale>
+		</locales>
+		-->
+	</fontFamily>
+	
+	<fontFamily name="Arial Black">
+	  <normal>net/sf/jasperreports/fonts/arial/arialbd.ttf</normal>
+	  <italic>net/sf/jasperreports/fonts/arial/arialbi.ttf</italic>
+	  <pdfEncoding>Identity-H</pdfEncoding>
+		<pdfEmbedded>true</pdfEmbedded>
+		<exportFonts>
+			<export key="net.sf.jasperreports.html">Arial Black, Helvetica, sans-serif</export>
+			<export key="net.sf.jasperreports.xhtml">Arial Black, Helvetica, sans-serif</export>
+		</exportFonts>
+	 </fontFamily>
+	
+	  
+	<!--
+		Mapping Java logical fonts, for the sake of HTML export only.
+	-->
+	
+	<fontFamily name="SansSerif">
+		<exportFonts>
+			<export key="net.sf.jasperreports.html">Arial, Helvetica, sans-serif</export>
+			<export key="net.sf.jasperreports.xhtml">Arial, Helvetica, sans-serif</export>
+		</exportFonts>
+	</fontFamily>
+</fontFamilies>

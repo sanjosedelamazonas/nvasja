@@ -26,8 +26,8 @@ public class LoginScreen extends CssLayout {
     private PasswordField password;
     private Button login;
     private Button forgotPassword;
-    private LoginListener loginListener;
-    private AccessControl accessControl;
+    private final LoginListener loginListener;
+    private final AccessControl accessControl;
 
     public LoginScreen(AccessControl accessControl, LoginListener loginListener) {
         this.loginListener = loginListener;
@@ -77,14 +77,11 @@ public class LoginScreen extends CssLayout {
 
         buttons.addComponent(login = new Button("Login"));
         login.setDisableOnClick(true);
-        login.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                try {
-                    login();
-                } finally {
-                    login.setEnabled(true);
-                }
+        login.addClickListener((Button.ClickListener) event -> {
+            try {
+                login();
+            } finally {
+                login.setEnabled(true);
             }
         });
         login.setClickShortcut(ShortcutAction.KeyCode.ENTER);

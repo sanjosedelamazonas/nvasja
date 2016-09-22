@@ -9,9 +9,11 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 import org.sanjose.model.*;
+import org.sanjose.repo.ScpCargocuartaRep;
+import org.sanjose.repo.ScpDestinoRep;
+import org.sanjose.repo.ScpTipodocumentoRep;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +32,19 @@ public class DestinoView extends DestinoUI implements View {
 	
     public static final String VIEW_NAME = "Destino";
 
-    public DestinoLogic viewLogic = new DestinoLogic(this);
+    public final DestinoLogic viewLogic = new DestinoLogic(this);
 
     public ScpDestino item;
 
-    public BeanItem<ScpDestino> beanItem;
+    private BeanItem<ScpDestino> beanItem;
 
-    public ScpDestinoRep destinoRepo;
+    public final ScpDestinoRep destinoRepo;
 
-    public FieldGroup fieldGroup;
+    private FieldGroup fieldGroup;
 
-    boolean isLoading = true;
+    private boolean isLoading = true;
 
-    boolean isEdit = false;
-
-    public CajaManejoView cajaManejoView;
+    private boolean isEdit = false;
 
     @Autowired
     public DestinoView(ScpDestinoRep destinoRepo,
@@ -84,9 +84,8 @@ public class DestinoView extends DestinoUI implements View {
     public void bindForm(ScpDestino item) {
         isLoading = true;
 
-        isEdit = false;
-        if (!GenUtil.strNullOrEmpty(item.getCodDestino())) isEdit = true;
-        beanItem = new BeanItem<ScpDestino>(item);
+        isEdit = !GenUtil.strNullOrEmpty(item.getCodDestino());
+        beanItem = new BeanItem<>(item);
         fieldGroup = new FieldGroup(beanItem);
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.bind(codigo, "codDestino");
@@ -104,10 +103,7 @@ public class DestinoView extends DestinoUI implements View {
         fieldGroup.bind(ruc, "txtRuc");
         fieldGroup.bind(tipoDePersona, "indTipopersona");
         fieldGroup.bind(cargo, "codCargo");
-        for (Field f: fieldGroup.getFields()) {
-            if (f instanceof TextField)
-                ((TextField)f).setNullRepresentation("");
-        }
+        fieldGroup.getFields().stream().filter(f -> f instanceof TextField).forEach(f -> ((TextField) f).setNullRepresentation(""));
         isLoading = false;
         if (isEdit) {
             // EDITING
@@ -124,10 +120,6 @@ public class DestinoView extends DestinoUI implements View {
     public ScpDestino getScpDestino() throws FieldGroup.CommitException {
         fieldGroup.commit();
         return beanItem.getBean();
-    }
-
-    public void setCajaManejoView(CajaManejoView cajaManejoView) {
-        this.cajaManejoView = cajaManejoView;
     }
 
     @Override

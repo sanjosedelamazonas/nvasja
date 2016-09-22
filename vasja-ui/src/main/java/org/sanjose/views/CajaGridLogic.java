@@ -42,13 +42,13 @@ public class CajaGridLogic implements Serializable {
 	
 	private static final Logger log = LoggerFactory.getLogger(CajaGridLogic.class);
 	
-    private CajaGridView view;
+    private final CajaGridView view;
 
     public CajaGridLogic(CajaGridView cajaGridView) {
         view = cajaGridView;
     }
 
-    protected ProcUtil procUtil;
+    private ProcUtil procUtil;
 
     public void init() {
         procUtil = new ProcUtil(view.getEm());
@@ -75,9 +75,7 @@ public class CajaGridLogic implements Serializable {
                                 .createQuestion()
                                 .withCaption("Esta operacion ya esta enviado")
                                 .withMessage("?Esta seguro que quiere guardar los cambios?")
-                                .withYesButton(() -> {
-                                    view.repo.save(vcbToSave);
-                                })
+                                .withYesButton(() -> view.repo.save(vcbToSave))
                                 .withNoButton()
                                 .open();
                     } else
@@ -120,14 +118,11 @@ public class CajaGridLogic implements Serializable {
             }
             view.refreshData();
         } catch (PersistenceException pe){
-            Notification.show("Problema al enviar a contabilidad operacion: " + vcb.getCodCajabanco()
+            Notification.show("Problema al enviar a contabilidad operacion: " + (vcb != null ? vcb.getCodCajabanco() : 0)
                     + "\n\n" + pe.getMessage() +
                     (pe.getCause()!=null ? "\n" + pe.getCause().getMessage() : "")
                     + (pe.getCause()!=null && pe.getCause().getCause()!=null ? "\n" + pe.getCause().getCause().getMessage() : "")
                     , Notification.Type.ERROR_MESSAGE);
-        } catch (EnviarException e) {
-            Notification.show("Problema al enviar a contabilidad operacion: " + e.getCajabanco().getCodCajabanco()
-                    + "\n" + e.getMessage() +"\n", Notification.Type.ERROR_MESSAGE);
         }
     }
 
@@ -168,7 +163,6 @@ public class CajaGridLogic implements Serializable {
         destinoView.btnEliminar.addClickListener(clickEvent -> {
             try {
                 ScpDestino item = destinoView.getScpDestino();
-                //log.info("eliminar: " + item);
                 String codDestino = item.getCodDestino();
                 MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
                 MessageBox
@@ -186,7 +180,7 @@ public class CajaGridLogic implements Serializable {
                             } else {
                                 StringBuilder sb = new StringBuilder();
                                 for (VsjCajabanco vacb : comprobantes) {
-                                    sb.append("\n" + vacb.getTxtCorrelativo() + " " + vacb.getFecFecha() + " " + vacb.getTxtGlosaitem());
+                                    sb.append("\n").append(vacb.getTxtCorrelativo()).append(" ").append(vacb.getFecFecha()).append(" ").append(vacb.getTxtGlosaitem());
                                 }
                                 MessageBox
                                         .createWarning()
@@ -210,13 +204,13 @@ public class CajaGridLogic implements Serializable {
     public void enter(String productId) {
     }
 
-    public void newComprobante() {
+    private void newComprobante() {
         view.clearSelection();
         MainUI.get().getComprobanteView().viewLogic.nuevoComprobante();
         MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
-    public void editarComprobante(VsjCajabanco vcb) {
+    private void editarComprobante(VsjCajabanco vcb) {
         if (vcb==null) return;
         if (!"1".equals(vcb.getFlgEnviado()) && !"1".equals(vcb.getFlg_Anula())) {
             // Transferencia

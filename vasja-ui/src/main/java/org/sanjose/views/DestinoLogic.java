@@ -24,7 +24,7 @@ public class DestinoLogic implements Serializable {
 	
 	private static final Logger log = LoggerFactory.getLogger(DestinoLogic.class);
 	
-    private DestinoView view;
+    private final DestinoView view;
 
     public DestinoLogic(DestinoView DestinoView) {
         view = DestinoView;
@@ -47,8 +47,7 @@ public class DestinoLogic implements Serializable {
             view.btnAnular.setEnabled(false);
 
             log.info("Ready to save: " + item);
-            ScpDestino saved = view.destinoRepo.save(item);
-            return saved;
+            return view.destinoRepo.save(item);
         } catch (CommitException ce) {
             Notification.show("Error al guardar el destino: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             log.info("Got Commit Exception: " + ce.getMessage());
@@ -70,7 +69,6 @@ public class DestinoLogic implements Serializable {
         view.anularDestino();
         ScpDestino vcb = new ScpDestino();
         view.bindForm(vcb);
-//        view.nuevoDestino.setEnabled(false);
         view.btnGuardar.setEnabled(true);
         view.btnAnular.setEnabled(true);
         view.btnEliminar.setEnabled(false);
@@ -79,7 +77,6 @@ public class DestinoLogic implements Serializable {
 
     public void editarDestino(ScpDestino vcb) {
         view.bindForm(vcb);
-        //view.nuevoDestino.setEnabled(false);
         view.btnGuardar.setEnabled(true);
         view.btnAnular.setEnabled(true);
         view.btnEliminar.setEnabled(true);

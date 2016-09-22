@@ -31,11 +31,11 @@ public class Menu extends CssLayout {
     private static final String VALO_MENUITEMS = "valo-menuitems";
     private static final String VALO_MENU_TOGGLE = "valo-menu-toggle";
     private static final String VALO_MENU_VISIBLE = "valo-menu-visible";
-    private Navigator navigator;
-    private Map<String, Button> viewButtons = new HashMap<String, Button>();
+    private final Navigator navigator;
+    private final Map<String, Button> viewButtons = new HashMap<>();
 
-    private CssLayout menuItemsLayout;
-    private CssLayout menuPart;
+    private final CssLayout menuItemsLayout;
+    private final CssLayout menuPart;
 
     public Menu(Navigator navigator) {
         this.navigator = navigator;
@@ -59,27 +59,20 @@ public class Menu extends CssLayout {
 
         // logout menu item
         MenuBar logoutMenu = new MenuBar();
-        logoutMenu.addItem("Cerrar", FontAwesome.SIGN_OUT, new Command() {
-
-            @Override
-            public void menuSelected(MenuItem selectedItem) {
-                VaadinSession.getCurrent().getSession().invalidate();
-                Page.getCurrent().reload();
-            }
+        logoutMenu.addItem("Cerrar", FontAwesome.SIGN_OUT, (Command) selectedItem -> {
+            VaadinSession.getCurrent().getSession().invalidate();
+            Page.getCurrent().reload();
         });
 
         logoutMenu.addStyleName("user-menu");
         menuPart.addComponent(logoutMenu);
 
         // button for toggling the visibility of the menu when on a small screen
-        final Button showMenu = new Button("Menu", new ClickListener() {
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                if (menuPart.getStyleName().contains(VALO_MENU_VISIBLE)) {
-                    menuPart.removeStyleName(VALO_MENU_VISIBLE);
-                } else {
-                    menuPart.addStyleName(VALO_MENU_VISIBLE);
-                }
+        final Button showMenu = new Button("Menu", (ClickListener) event -> {
+            if (menuPart.getStyleName().contains(VALO_MENU_VISIBLE)) {
+                menuPart.removeStyleName(VALO_MENU_VISIBLE);
+            } else {
+                menuPart.addStyleName(VALO_MENU_VISIBLE);
             }
         });
         showMenu.addStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -140,14 +133,7 @@ public class Menu extends CssLayout {
 
     private void createViewButton(final String name, String caption,
             Resource icon) {
-        Button button = new Button(caption, new ClickListener() {
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                navigator.navigateTo(name);
-
-            }
-        });
+        Button button = new Button(caption, (ClickListener) event -> navigator.navigateTo(name));
         button.setPrimaryStyleName(ValoTheme.MENU_ITEM);
         button.setIcon(icon);
         menuItemsLayout.addComponent(button);

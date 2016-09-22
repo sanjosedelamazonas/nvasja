@@ -14,6 +14,7 @@ import org.sanjose.model.VsjPropiedad;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -29,7 +30,7 @@ public class PropiedadLogic implements Serializable {
 
 	private static final Logger log = LoggerFactory.getLogger(PropiedadLogic.class);
 
-    private PropiedadView view;
+    private final PropiedadView view;
 
     public PropiedadLogic(PropiedadView propiedadView) {
         view = propiedadView;
@@ -55,50 +56,18 @@ public class PropiedadLogic implements Serializable {
                
     }
 
-    /**
-     * Update the fragment without causing navigator to change view
-     */
-    private void setFragmentParameter(String productId) {
-        String fragmentParameter;
-        if (productId == null || productId.isEmpty()) {
-            fragmentParameter = "";
-        } else {
-            fragmentParameter = productId;
-        }
-
-        Page page = MainUI.get().getPage();
-  /*      page.setUriFragment("!" + SampleCrudView.VIEW_NAME + "/"
-                + fragmentParameter, false);
-  */  }
-
     public void enter(String productId) {
-        if (productId != null && !productId.isEmpty()) {
-        	log.info("Configuracion Logic getting: " + productId);
-            if (productId.equals("new")) {
-            	newPropiedad();
-            } else {
-                try {
-                    int pid = Integer.parseInt(productId);
-                } catch (NumberFormatException e) {
-                }
-            }
-        }
     }
 
-    public void newPropiedad() {
+    private void newPropiedad() {
         view.clearSelection();
-        setFragmentParameter("new");
         VsjPropiedad vcb = new VsjPropiedad();
         view.gridPropiedad.getContainerDataSource().addItem(vcb);
     }
 
 
-    public void deletePropiedad() {
-        List<VsjPropiedad> rows = new ArrayList<VsjPropiedad>();
-        for (Object vsj : view.getSelectedRow()) {
-        	if (vsj instanceof VsjPropiedad)
-        		rows.add((VsjPropiedad)vsj);
-        }
+    private void deletePropiedad() {
+        List<VsjPropiedad> rows = view.getSelectedRow().stream().filter(vsj -> vsj instanceof VsjPropiedad).map(vsj -> (VsjPropiedad) vsj).collect(Collectors.toList());
         view.clearSelection();
         for (VsjPropiedad vsj : rows) {
         	view.removeRow(vsj);

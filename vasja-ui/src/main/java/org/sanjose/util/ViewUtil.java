@@ -53,7 +53,7 @@ public class ViewUtil {
             throw new JRException("Problema al consequir un servicio de imprimir");
     }
 
-    public static void setColumnNames(Grid grid, String[] visible_col_names, String[] visible_col_ids) {
+    private static void setColumnNames(Grid grid, String[] visible_col_names, String[] visible_col_ids) {
 
         grid.setColumns(visible_col_ids);
         grid.setColumnOrder(visible_col_ids);
@@ -180,10 +180,10 @@ public class ViewUtil {
         setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfDay(new Date()), GenUtil.getEndOfDay(new Date()));
     }
 
-    public static void setupDateFilters(BeanItemContainer container, String propertyId, DateField fechaDesde, DateField fechaHasta, Date defDesde, Date defHasta) {
+    private static void setupDateFilters(BeanItemContainer container, String propertyId, DateField fechaDesde, DateField fechaHasta, Date defDesde, Date defHasta) {
         // Fecha Desde
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
+        ObjectProperty<Timestamp> prop = new ObjectProperty<>(ts);
         fechaDesde.setPropertyDataSource(prop);
         fechaDesde.setConverter(DateToTimestampConverter.INSTANCE);
         fechaDesde.setResolution(Resolution.DAY);
@@ -191,7 +191,7 @@ public class ViewUtil {
         fechaDesde.addValueChangeListener(valueChangeEvent -> ViewUtil.filterComprobantes(container, propertyId, fechaDesde, fechaHasta));
 
         ts = new Timestamp(System.currentTimeMillis());
-        prop = new ObjectProperty<Timestamp>(ts);
+        prop = new ObjectProperty<>(ts);
         fechaHasta.setPropertyDataSource(prop);
         fechaHasta.setConverter(DateToTimestampConverter.INSTANCE);
         fechaHasta.setResolution(Resolution.DAY);

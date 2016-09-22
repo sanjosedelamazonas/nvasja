@@ -1,8 +1,7 @@
-package org.sanjose.model;
+package org.sanjose.repo;
 
+import org.sanjose.model.Scp_Contraparte;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface Scp_ContraparteRep extends JpaRepository<Scp_Contraparte, Long> {
 

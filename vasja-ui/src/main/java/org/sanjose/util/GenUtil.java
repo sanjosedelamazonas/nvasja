@@ -2,7 +2,6 @@ package org.sanjose.util;
 
 //import org.vaadin.ui.NumberField;
 
-import com.vaadin.ui.Grid;
 import org.sanjose.model.VsjCajabanco;
 
 import java.math.BigDecimal;
@@ -20,23 +19,16 @@ public class GenUtil {
 	}
 
 	public static boolean strNullOrEmpty(String s) {
-		if (s == null || "".equals(s) || "".equals(s.trim()))
-			return true;
-		else
-			return false;
+        return s == null || "".equals(s) || "".equals(s.trim());
 	}
 
 	public static boolean objNullOrEmpty(Object s) {
-		if (s == null)
-			return true;
-		else
-			return strNullOrEmpty(s.toString());
-	}
+        return s == null || strNullOrEmpty(s.toString());
+    }
 
 	public static boolean isNullOrZero(BigDecimal val) {
-		if (val==null) return true;
-		return (val.compareTo(new BigDecimal(0.00)))==0;
-	}
+        return val == null || (val.compareTo(new BigDecimal(0.00))) == 0;
+    }
 
 	public static boolean isIngreso(VsjCajabanco vcb) {
         return vcb.getNumDebesol().compareTo(new BigDecimal(0))>0
@@ -110,9 +102,8 @@ public class GenUtil {
     }
 
 
-    public static boolean isZero(Object value) {
-        if (value==null) return false;
-        return "0.00".equals(value.toString()) || "0,00".equals(value.toString()) || "0".equals(value.toString());
+    public static boolean isInvertedZero(Object value) {
+        return value == null || !"0.00".equals(value.toString()) && !"0,00".equals(value.toString()) && !"0".equals(value.toString());
     }
 
     public static String getUuid() {

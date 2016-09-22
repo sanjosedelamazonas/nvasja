@@ -26,7 +26,7 @@ import java.util.List;
 @SpringComponent
 @UIScope
 public class MainScreen extends HorizontalLayout {
-    private Menu menu;
+    private final Menu menu;
 
     private PrintHelper printHelper = null;
 
@@ -76,10 +76,6 @@ public class MainScreen extends HorizontalLayout {
 
         menu.addView(new AboutView(), AboutView.VIEW_NAME, AboutView.VIEW_NAME,
                 FontAwesome.INFO_CIRCLE);
-        cajaManejoView.setComprobanteView(comprobanteView);
-        cajaManejoView.setTransferenciaView(transferenciaView);
-        comprobanteView.setCajaManejoView(cajaManejoView);
-        transferenciaView.setCajaManejoView(cajaManejoView);
         navigator.addViewChangeListener(viewChangeListener);
 
         printHelper = new PrintHelper(this);
@@ -102,7 +98,7 @@ public class MainScreen extends HorizontalLayout {
 
     // notify the view menu about view changes so that it can display which view
     // is currently active
-    ViewChangeListener viewChangeListener = new ViewChangeListener() {
+    private final ViewChangeListener viewChangeListener = new ViewChangeListener() {
 
         @Override
         public boolean beforeViewChange(ViewChangeEvent event) {

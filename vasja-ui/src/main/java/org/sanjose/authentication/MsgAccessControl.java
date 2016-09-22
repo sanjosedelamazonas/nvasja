@@ -2,7 +2,7 @@ package org.sanjose.authentication;
 
 import org.sanjose.util.Rot10;
 import org.sanjose.model.MsgUsuario;
-import org.sanjose.model.MsgUsuarioRep;
+import org.sanjose.repo.MsgUsuarioRep;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,11 +14,11 @@ import java.util.Map;
  */
 public class MsgAccessControl implements AccessControl {
 
-    private MsgUsuarioRep msgUsuarioRep;
+    private final MsgUsuarioRep msgUsuarioRep;
 
     private boolean devMode = false;
 
-    private Map<String, String> roles = new HashMap<>();
+    private final Map<String, String> roles = new HashMap<>();
 
     public MsgAccessControl(MsgUsuarioRep repo, boolean devMode) {
         this.msgUsuarioRep = repo;
@@ -46,10 +46,7 @@ public class MsgAccessControl implements AccessControl {
     @Override
     public boolean isUserInRole(String role) {
 
-        if (role.equals(roles.get(getPrincipalName())))
-            return true;
-        else
-            return false;
+        return role.equals(roles.get(getPrincipalName()));
     }
 
     @Override

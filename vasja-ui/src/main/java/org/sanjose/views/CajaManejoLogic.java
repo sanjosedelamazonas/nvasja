@@ -3,7 +3,6 @@ package org.sanjose.views;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.server.Page;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import org.sanjose.MainUI;
@@ -32,7 +31,7 @@ public class CajaManejoLogic implements Serializable {
 
 	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);
 
-    private CajaManejoView view;
+    private final CajaManejoView view;
 
     private Grid.FooterRow saldosFooterInicial;
 
@@ -56,43 +55,12 @@ public class CajaManejoLogic implements Serializable {
         view.btnImprimir.addClickListener(e -> printComprobante());
     }
 
-    /**
-     * Update the fragment without causing navigator to change view
-     */
-    private void setFragmentParameter(String productId) {
-        String fragmentParameter;
-        if (productId == null || productId.isEmpty()) {
-            fragmentParameter = "";
-        } else {
-            fragmentParameter = productId;
-        }
-
-        Page page = MainUI.get().getPage();
-  /*      page.setUriFragment("!" + SampleCrudView.VIEW_NAME + "/"
-                + fragmentParameter, false);
-  */  }
-
     public void enter(String productId) {
-        if (productId != null && !productId.isEmpty()) {
-        	log.info("Configuracion Logic getting: " + productId);
-            if (productId.equals("new")) {
-     //       	newConfiguracion();
-            } else {
-                // Ensure this is selected even if coming directly here from
-                // login
-                try {
-                    int pid = Integer.parseInt(productId);
-  //                  Product product = findProduct(pid);
-    //                view.selectRow(product);
-                } catch (NumberFormatException e) {
-                }
-            }
-        }
     }
 
-    public void newComprobante() {
+    private void newComprobante() {
         view.clearSelection();
-        view.getComprobanteView().viewLogic.nuevoComprobante();
+        MainUI.get().getComprobanteView().viewLogic.nuevoComprobante();
         MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
@@ -102,20 +70,20 @@ public class CajaManejoLogic implements Serializable {
             // Transferencia
             if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
                 try {
-                    view.getTransferenciaView().viewLogic.editarTransferencia(vcb);
+                    MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
                     MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
                 } catch (NonEditableException e) {
                     Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
                 }
             } else {
-                view.getComprobanteView().viewLogic.editarComprobante(vcb);
+                MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
                 MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
             }
         }
     }
 
 
-    public void generateComprobante() {
+    private void generateComprobante() {
         for (Object obj : view.getSelectedRow()) {
             log.info("selected: " + obj);
             VsjCajabanco vcb = (VsjCajabanco)obj;
@@ -123,7 +91,7 @@ public class CajaManejoLogic implements Serializable {
         }
     }
 
-    public void printComprobante() {
+    private void printComprobante() {
         for (Object obj : view.getSelectedRow()) {
             log.info("selected: " + obj);
             VsjCajabanco vcb = (VsjCajabanco) obj;
@@ -134,8 +102,7 @@ public class CajaManejoLogic implements Serializable {
 
     public void setSaldos(Grid grid, boolean isInicial) {
         grid.getContainerDataSource().removeAllItems();
-        //if (saldosFooter!=null) grid.removeFooterRow(saldosFooter);
-        BeanItemContainer<Caja> c = new BeanItemContainer<Caja>(Caja.class);
+        BeanItemContainer<Caja> c = new BeanItemContainer<>(Caja.class);
         grid.setContainerDataSource(c);
         grid.setColumnOrder("codigo", "descripcion", "soles", "dolares");
         BigDecimal totalSoles = new BigDecimal(0.00);

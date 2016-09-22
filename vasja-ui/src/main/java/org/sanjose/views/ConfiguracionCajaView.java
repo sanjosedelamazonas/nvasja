@@ -3,6 +3,7 @@ package org.sanjose.views;
 import java.util.Collection;
 import java.util.Date;
 
+import org.sanjose.repo.*;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.model.*;
@@ -37,9 +38,9 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
 	
     public static final String VIEW_NAME = "Configuracion de Caja";
 
-    private ConfiguracionCajaLogic viewLogic = new ConfiguracionCajaLogic(this);
+    private final ConfiguracionCajaLogic viewLogic = new ConfiguracionCajaLogic(this);
     
-    public VsjConfiguracioncajaRep repo;
+    public final VsjConfiguracioncajaRep repo;
     
     @Autowired
     public ConfiguracionCajaView(VsjConfiguracioncajaRep repo, ScpPlancontableRep planRepo,
@@ -47,7 +48,7 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
     	this.repo = repo;
         setSizeFull();
 
-        BeanItemContainer<VsjConfiguracioncaja> container = new BeanItemContainer(VsjConfiguracioncaja.class, repo.findAll());
+        @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguracioncaja> container = new BeanItemContainer(VsjConfiguracioncaja.class, repo.findAll());
         gridConfigCaja
         	.setContainerDataSource(container);
         gridConfigCaja.setColumnOrder("codConfiguracion", "txtConfiguracion", "indTipomoneda",
@@ -63,7 +64,7 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
         HeaderRow filterRow = gridConfigCaja.appendHeaderRow();
         
         gridConfigCaja.setEditorFieldGroup(
-        	    new BeanFieldGroup<VsjConfiguracioncaja>(VsjConfiguracioncaja.class));
+                new BeanFieldGroup<>(VsjConfiguracioncaja.class));
 
         ComboBox selCategoriaproy = new ComboBox();
         DataFilterUtil.bindComboBox(selCategoriaproy, "codCategoriaproyecto", categoriaproyectoRepo.findAll(), "Sel Cat Proyecto", "txtDescripcion");

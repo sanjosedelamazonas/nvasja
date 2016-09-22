@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package org.sanjose.helper;
 
 import java.text.DecimalFormat;
@@ -13,7 +11,7 @@ public class DoubleDecimalFormatter extends PropertyFormatter {
     private static final long serialVersionUID = -8487454652016030363L;
     private static final Logger logger = Logger.getLogger(DoubleDecimalFormatter.class.getName());
     
-    DecimalFormat df;
+    private DecimalFormat df;
 
     public DoubleDecimalFormatter() {
         super();
@@ -47,9 +45,8 @@ public class DoubleDecimalFormatter extends PropertyFormatter {
             logger.severe("DecimalFormat not initialized yet in constructor - bug #4484");
             return "";
         }
-        
-        String result = df.format((Double) value);
-        return result;
+
+        return df.format((Double) value);
     }
 
     @Override

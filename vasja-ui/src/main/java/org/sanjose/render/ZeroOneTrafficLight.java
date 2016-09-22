@@ -1,7 +1,6 @@
 package org.sanjose.render;
 
 import com.vaadin.data.util.converter.Converter;
-import com.vaadin.data.util.converter.StringToBooleanConverter;
 import com.vaadin.server.FontAwesome;
 
 import java.util.Locale;

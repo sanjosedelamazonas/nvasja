@@ -4,7 +4,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 /**
- * Created by pol on 12.09.16.
+ * VASJA class
+ * User: prubach
+ * Date: 12.09.16
  */
 
 

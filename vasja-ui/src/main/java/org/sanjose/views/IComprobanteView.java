@@ -1,7 +1,7 @@
 package org.sanjose.views;
 
 import com.vaadin.ui.*;
-import org.sanjose.model.*;
+import org.sanjose.repo.*;
 import tm.kod.widgets.numberfield.NumberField;
 
 import javax.persistence.EntityManager;

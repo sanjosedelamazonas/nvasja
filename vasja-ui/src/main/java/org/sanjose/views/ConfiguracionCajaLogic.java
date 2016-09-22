@@ -29,7 +29,7 @@ public class ConfiguracionCajaLogic implements Serializable {
 
 	private static final Logger log = LoggerFactory.getLogger(ConfiguracionCajaLogic.class);
 
-    private ConfiguracionCajaView view;
+    private final ConfiguracionCajaView view;
 
     public ConfiguracionCajaLogic(ConfiguracionCajaView configuracionCtaCajaBancoView) {
         view = configuracionCtaCajaBancoView;
@@ -57,55 +57,16 @@ public class ConfiguracionCajaLogic implements Serializable {
         view.btnEliminar.addClickListener(e -> deleteConfiguracion());
     }
 
-    public void cancelProduct() {
-        setFragmentParameter("");
-        view.clearSelection();
-//        view.editProduct(null);
-    }
-
-    /**
-     * Update the fragment without causing navigator to change view
-     */
-    private void setFragmentParameter(String productId) {
-        String fragmentParameter;
-        if (productId == null || productId.isEmpty()) {
-            fragmentParameter = "";
-        } else {
-            fragmentParameter = productId;
-        }
-
-        Page page = MainUI.get().getPage();
-  /*      page.setUriFragment("!" + SampleCrudView.VIEW_NAME + "/"
-                + fragmentParameter, false);
-  */  }
-
     public void enter(String productId) {
-        if (productId != null && !productId.isEmpty()) {
-        	log.info("Configuracion Logic getting: " + productId);
-            if (productId.equals("new")) {
-            	newConfiguracion();
-            } else {
-                // Ensure this is selected even if coming directly here from
-                // login
-                try {
-                    int pid = Integer.parseInt(productId);
-  //                  Product product = findProduct(pid);
-    //                view.selectRow(product);
-                } catch (NumberFormatException e) {
-                }
-            }
-        }
     }
     
-    public void newConfiguracion() {
+    private void newConfiguracion() {
         view.clearSelection();
-        setFragmentParameter("new");
         view.gridConfigCaja.getContainerDataSource().addItem(new VsjConfiguracioncaja());
     }
-    
-    
-    public void deleteConfiguracion() {
-        List<VsjConfiguracioncaja> rows = new ArrayList<VsjConfiguracioncaja>();
+
+    private void deleteConfiguracion() {
+        List<VsjConfiguracioncaja> rows = new ArrayList<>();
     	
         for (Object vsj : view.getSelectedRow()) {
         	log.info("Got selected: " + vsj);
@@ -113,7 +74,6 @@ public class ConfiguracionCajaLogic implements Serializable {
         		rows.add((VsjConfiguracioncaja)vsj);
         }
         view.clearSelection();
-        //setFragmentParameter("new");
         for (VsjConfiguracioncaja vsj : rows) {
         	log.info("Removing: " + vsj.getCodConfiguracion());
         	view.removeRow(vsj);

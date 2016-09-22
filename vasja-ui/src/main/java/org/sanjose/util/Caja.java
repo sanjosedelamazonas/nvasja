@@ -3,7 +3,7 @@ package org.sanjose.util;
 import java.math.BigDecimal;
 
 /**
- * SORCER class
+ * VASJA class
  * User: prubach
  * Date: 21.09.16
  */

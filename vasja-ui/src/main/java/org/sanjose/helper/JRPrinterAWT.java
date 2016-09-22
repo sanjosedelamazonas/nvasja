@@ -25,34 +25,12 @@ package org.sanjose.helper;
  */
 
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
-import net.sf.jasperreports.engine.util.JRGraphEnvInitializer;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleGraphics2DExporterOutput;
-import net.sf.jasperreports.export.SimpleGraphics2DReportConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.awt.print.*;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.print.Book;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 
-import net.sf.jasperreports.engine.DefaultJasperReportsContext;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReportsContext;
-import net.sf.jasperreports.engine.PrintPageFormat;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.util.JRGraphEnvInitializer;
 import net.sf.jasperreports.export.SimpleExporterInput;
@@ -78,8 +56,8 @@ public class JRPrinterAWT implements Printable
     /**
      *
      */
-    private JasperReportsContext jasperReportsContext;
-    private JasperPrint jasperPrint;
+    private final JasperReportsContext jasperReportsContext;
+    private final JasperPrint jasperPrint;
     private int pageOffset;
 
 

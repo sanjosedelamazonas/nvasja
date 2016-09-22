@@ -2,6 +2,7 @@ package org.sanjose.views;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
@@ -13,10 +14,8 @@ import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.*;
-import org.sanjose.model.VsjCajabanco;
-import org.sanjose.model.VsjCajabancoRep;
-import org.sanjose.render.BooleanTrafficLight;
 import org.sanjose.render.ZeroOneTrafficLight;
+import org.sanjose.repo.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
@@ -51,58 +50,59 @@ public class CajaGridView extends CajaGridUI implements View {
 	
     public static final String VIEW_NAME = "Operaciones de Caja";
 
-    private CajaGridLogic viewLogic = new CajaGridLogic(this);
+    private final CajaGridLogic viewLogic = new CajaGridLogic(this);
 
-    public VsjCajabancoRep repo;
+    public final VsjCajabancoRep repo;
 
-    String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
-            "codContracta", "txtGlosaitem",  "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda",
+    private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
+            "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
             "flg_Anula", "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
-    String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
+
+    private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "S/$",
             "Responsable", "Lug. Gasto", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
             "Anl", "Env", "Origen", "Comprobante"
     };
-    int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
+    private final int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
             5, 10, 6, 6, 6, 6, 2, // S/$
             6, 4, 6, 5, 5, 2, // Tipo Doc
             4, 5, 5, 5, 4, // Fuente
             2, 2, 6, 6
     };
-    String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
+    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
 
-    public ScpPlanproyectoRep planproyectoRepo;
+    private final ScpPlanproyectoRep planproyectoRepo;
 
-    public ScpFinancieraRep financieraRepo;
+    private final ScpFinancieraRep financieraRepo;
 
-    public Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
+    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
 
-    private ScpCargocuartaRep cargocuartaRepo;
+    private final ScpCargocuartaRep cargocuartaRepo;
 
-    private ScpDestinoRep destinoRepo;
+    private final ScpDestinoRep destinoRepo;
 
-    private ScpTipodocumentoRep tipodocumentoRepo;
+    private final ScpTipodocumentoRep tipodocumentoRepo;
 
-    private ScpTipocambioRep tipocambioRepo;
+    private final ScpTipocambioRep tipocambioRepo;
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
-    private BeanItemContainer<VsjCajabanco> container;
+    private final BeanItemContainer<VsjCajabanco> container;
 
     private VsjCajabanco itemSeleccionado;
 
     @Autowired
-    public CajaGridView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
-                        ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
-                        ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                        ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                        Scp_ContraparteRep contraparteRepo, ScpCargocuartaRep cargocuartaRepo,
-                        ScpTipodocumentoRep tipodocumentoRepo, ScpTipocambioRep tipocambioRepo, EntityManager em) {
+    private CajaGridView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
+                         ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
+                         ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
+                         ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
+                         Scp_ContraparteRep contraparteRepo, ScpCargocuartaRep cargocuartaRepo,
+                         ScpTipodocumentoRep tipodocumentoRepo, ScpTipocambioRep tipocambioRepo, EntityManager em) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -115,6 +115,7 @@ public class CajaGridView extends CajaGridUI implements View {
         setSizeFull();
         addStyleName("crud-view");
 
+        //noinspection unchecked
         container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
         
         gridCaja.setContainerDataSource(container);
@@ -132,12 +133,12 @@ public class CajaGridView extends CajaGridUI implements View {
         gridCaja.setSelectionMode(SelectionMode.MULTI);
 
         gridCaja.setEditorFieldGroup(
-        	    new BeanFieldGroup<VsjCajabanco>(VsjCajabanco.class));
+                new BeanFieldGroup<>(VsjCajabanco.class));
 
         // Fecha
         PopupDateField pdf = new PopupDateField();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
+        ObjectProperty<Timestamp> prop = new ObjectProperty<>(ts);
         pdf.setPropertyDataSource(prop);
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
         pdf.setResolution(Resolution.MINUTE);
@@ -146,7 +147,7 @@ public class CajaGridView extends CajaGridUI implements View {
 
         // Fecha Doc
         pdf = new PopupDateField();
-        prop = new ObjectProperty<Timestamp>(ts);
+        prop = new ObjectProperty<>(ts);
         pdf.setPropertyDataSource(prop);
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
         pdf.setResolution(Resolution.MINUTE);
@@ -157,13 +158,13 @@ public class CajaGridView extends CajaGridUI implements View {
         ComboBox selTercero = new ComboBox();
         ComboBox selProyecto = new ComboBox();
         DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
-        selProyecto.addValueChangeListener(event -> setProyectoLogic(event));
+        selProyecto.addValueChangeListener(this::setProyectoLogic);
         selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
         gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
         // Tercero
         DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
-        selTercero.addValueChangeListener(event -> setTerceroLogic(event));
+        selTercero.addValueChangeListener(this::setTerceroLogic);
         selTercero.addValidator(new TwoCombosValidator(selProyecto, true, null));
         gridCaja.getColumn("codTercero").setEditorField(selTercero);
 
@@ -230,7 +231,7 @@ public class CajaGridView extends CajaGridUI implements View {
 
         ViewUtil.colorizeRows(gridCaja);
 
-        gridCaja.addItemClickListener(event ->  setItemLogic(event));
+        gridCaja.addItemClickListener(this::setItemLogic);
 
         // Fecha Desde Hasta
         ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta);
@@ -240,20 +241,20 @@ public class CajaGridView extends CajaGridUI implements View {
         viewLogic.init();
     }
 
-    public void setProyectoLogic(Property.ValueChangeEvent event) {
+    private void setProyectoLogic(Property.ValueChangeEvent event) {
         if (event.getProperty().getValue()!=null)
             setEditorLogic(event.getProperty().getValue().toString());
         ComboBox selProyecto = (ComboBox)gridCaja.getColumn("codProyecto").getEditorField();
-        selProyecto.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
+        selProyecto.getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
-    public void setTerceroLogic(Property.ValueChangeEvent event) {
+    private void setTerceroLogic(Property.ValueChangeEvent event) {
         ComboBox selTercero = (ComboBox)gridCaja.getColumn("codTercero").getEditorField();
-        selTercero.getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
+        selTercero.getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
 
-    public void setItemLogic(ItemClickEvent event) {
+    private void setItemLogic(ItemClickEvent event) {
         String proyecto = null;
         Object objProyecto = event.getItem().getItemProperty("codProyecto").getValue();
         if (objProyecto !=null && !objProyecto.toString().isEmpty())
@@ -264,7 +265,7 @@ public class CajaGridView extends CajaGridUI implements View {
         setEditorLogic(proyecto);
     }
 
-    public void setEditorLogic(String codProyecto) {
+    private void setEditorLogic(String codProyecto) {
         ComboBox selFinanciera = (ComboBox)gridCaja.getColumn("codFinanciera").getEditorField();
         ComboBox selPlanproyecto = (ComboBox) gridCaja.getColumn("codCtaproyecto").getEditorField();
 
@@ -280,9 +281,7 @@ public class CajaGridView extends CajaGridUI implements View {
             List<ScpFinanciera> financieraList = financieraRepo.findAll();
             List<ScpFinanciera> financieraEfectList = new ArrayList<>();
             if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
-                List<String> codFinancieraList = new ArrayList<>();
-                for (Scp_ProyectoPorFinanciera proyectoPorFinanciera : proyectoPorFinancieraList)
-                    codFinancieraList.add(proyectoPorFinanciera.getId().getCodFinanciera());
+                List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
 
                 for (ScpFinanciera financiera : financieraList) {
                     if (financiera.getCodFinanciera()!=null &&

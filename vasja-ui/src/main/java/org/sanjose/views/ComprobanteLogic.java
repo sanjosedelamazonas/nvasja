@@ -14,13 +14,9 @@ import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.*;
 import de.steinwedel.messagebox.MessageBox;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.converter.DateToTimestampConverter;
-import org.sanjose.helper.PrintHelper;
-import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.validator.TwoCombosValidator;
@@ -28,14 +24,13 @@ import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.print.PrintException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -46,30 +41,30 @@ import java.util.*;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class ComprobanteLogic implements Serializable {
+class ComprobanteLogic implements Serializable {
 
 	
 	private static final Logger log = LoggerFactory.getLogger(ComprobanteLogic.class);
 
-    protected IComprobanteView view;
+    final IComprobanteView view;
 
-    protected VsjCajabanco savedCajabanco;
+    private VsjCajabanco savedCajabanco;
 
     protected VsjCajabanco item;
 
-    protected BeanItem<VsjCajabanco> beanItem;
+    private BeanItem<VsjCajabanco> beanItem;
 
-    protected FieldGroup fieldGroup;
+    private FieldGroup fieldGroup;
 
-    protected boolean isLoading = true;
+    private boolean isLoading = true;
 
-    protected boolean isEdit = false;
+    private boolean isEdit = false;
 
-    public static final String PEN="0";
+    static final String PEN="0";
 
-    public static final String USD="1";
+    private static final String USD="1";
 
-    protected ProcUtil procUtil;
+    private ProcUtil procUtil;
 
     @Autowired
     public ComprobanteLogic(IComprobanteView  comprobanteView) {
@@ -92,7 +87,7 @@ public class ComprobanteLogic implements Serializable {
     public void setupEditComprobanteView() {
         // Fecha
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        ObjectProperty<Timestamp> prop = new ObjectProperty<Timestamp>(ts);
+        ObjectProperty<Timestamp> prop = new ObjectProperty<>(ts);
         view.getDataFechaComprobante().setPropertyDataSource(prop);
         view.getDataFechaComprobante().setConverter(DateToTimestampConverter.INSTANCE);
         view.getDataFechaComprobante().setResolution(Resolution.DAY);
@@ -103,7 +98,7 @@ public class ComprobanteLogic implements Serializable {
         });
 
         // Fecha Doc
-        prop = new ObjectProperty<Timestamp>(ts);
+        prop = new ObjectProperty<>(ts);
         view.getFechaDoc().setPropertyDataSource(prop);
         view.getFechaDoc().setConverter(DateToTimestampConverter.INSTANCE);
         view.getFechaDoc().setResolution(Resolution.DAY);
@@ -111,12 +106,12 @@ public class ComprobanteLogic implements Serializable {
         // Proyecto
         DataFilterUtil.bindComboBox(view.getSelProyecto(), "codProyecto", view.getProyectoRepo().findByFecFinalGreaterThan(new Date()),
                 "Sel Proyecto", "txtDescproyecto");
-        view.getSelProyecto().addValueChangeListener(event -> setProyectoLogic(event));
+        view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
 
         // Tercero
         DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getDestinoRepo().findByIndTipodestino("3"), "Sel Tercero",
                 "txtNombredestino");
-        view.getSelTercero().addValueChangeListener(event -> setTerceroLogic(event));
+        view.getSelTercero().addValueChangeListener(this::setTerceroLogic);
 
         // Tipo Moneda
         DataFilterUtil.bindTipoMonedaOptionGroup(view.getSelMoneda(), "codTipomoneda");
@@ -124,7 +119,7 @@ public class ComprobanteLogic implements Serializable {
 
         view.getNumIngreso().addValueChangeListener(event -> {
                     if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                        if (!GenUtil.isZero(event.getProperty().getValue())) {
+                        if (GenUtil.isInvertedZero(event.getProperty().getValue())) {
                             view.getNumEgreso().setValue("");
                         }
                     }
@@ -132,7 +127,7 @@ public class ComprobanteLogic implements Serializable {
         );
         view.getNumEgreso().addValueChangeListener(event -> {
                     if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                        if (!GenUtil.isZero(event.getProperty().getValue())) {
+                        if (GenUtil.isInvertedZero(event.getProperty().getValue())) {
                             view.getNumIngreso().setValue("");
                         }
                     }
@@ -271,7 +266,7 @@ public class ComprobanteLogic implements Serializable {
                             } else {
                                 StringBuilder sb = new StringBuilder();
                                 for (VsjCajabanco vcb : comprobantes) {
-                                    sb.append("\n" + vcb.getTxtCorrelativo() + " " + vcb.getFecFecha() + " " + vcb.getTxtGlosaitem());
+                                    sb.append("\n").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosaitem());
                                 }
                                 MessageBox
                                         .createWarning()
@@ -335,7 +330,7 @@ public class ComprobanteLogic implements Serializable {
     }
 
 
-    public void setSaldos() {
+    private void setSaldos() {
         if (view.getDataFechaComprobante().getValue()!=null) {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             ProcUtil.Saldos res = null;
@@ -355,7 +350,7 @@ public class ComprobanteLogic implements Serializable {
         }
     }
 
-    public void setSaldoCaja() {
+    private void setSaldoCaja() {
         if (view.getDataFechaComprobante().getValue()!=null && view.getSelCaja().getValue()!=null && view.getSelMoneda().getValue()!=null) {
             BigDecimal saldo = procUtil.getSaldoCaja(view.getDataFechaComprobante().getValue(),
                     view.getSelCaja().getValue().toString(), view.getSelMoneda().getValue().toString());
@@ -374,7 +369,7 @@ public class ComprobanteLogic implements Serializable {
         setCajaLogic(view.getSelMoneda().getValue().toString());
     }
 
-    public void setCajaLogic(String tipomoneda) {
+    private void setCajaLogic(String tipomoneda) {
 
         if (isProyecto()) {
             List<VsjConfiguracioncaja> configs = view.getConfiguracioncajaRepo().findByCodProyectoAndIndTipomoneda(
@@ -403,22 +398,22 @@ public class ComprobanteLogic implements Serializable {
         setSaldoCaja();
     }
 
-    public void setProyectoLogic(Property.ValueChangeEvent event) {
+    private void setProyectoLogic(Property.ValueChangeEvent event) {
         if (isLoading) return;
         if (event.getProperty().getValue()!=null)
             setEditorLogic(event.getProperty().getValue().toString());
-        view.getSelProyecto().getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
+        view.getSelProyecto().getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
-    public void setTerceroLogic(Property.ValueChangeEvent event) {
+    private void setTerceroLogic(Property.ValueChangeEvent event) {
         if (isLoading) return;
         if (event.getProperty().getValue() != null) {
             setEditorTerceroLogic(event.getProperty().getValue().toString());
-            view.getSelTercero().getValidators().stream().forEach(validator -> validator.validate(event.getProperty().getValue()));
+            view.getSelTercero().getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
         }
     }
 
-    public void setEditorTerceroLogic(String codTercero)  {
+    private void setEditorTerceroLogic(String codTercero)  {
         if (!GenUtil.strNullOrEmpty(codTercero)) {
             view.setEnableFields(true);
             if (view.getSelMoneda().getValue() == null) {
@@ -442,7 +437,7 @@ public class ComprobanteLogic implements Serializable {
         }
     }
 
-    public void setEditorLogic(String codProyecto) {
+    private void setEditorLogic(String codProyecto) {
         if (!GenUtil.strNullOrEmpty(codProyecto)) {
             view.setEnableFields(true);
             if (view.getSelMoneda().getValue()==null) {
@@ -460,9 +455,7 @@ public class ComprobanteLogic implements Serializable {
             List<ScpFinanciera> financieraList = view.getFinancieraRepo().findAll();
             List<ScpFinanciera> financieraEfectList = new ArrayList<>();
             if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
-                List<String> codFinancieraList = new ArrayList<>();
-                for (Scp_ProyectoPorFinanciera proyectoPorFinanciera : proyectoPorFinancieraList)
-                    codFinancieraList.add(proyectoPorFinanciera.getId().getCodFinanciera());
+                List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
 
                 for (ScpFinanciera financiera : financieraList) {
                     if (financiera.getCodFinanciera()!=null &&
@@ -503,13 +496,13 @@ public class ComprobanteLogic implements Serializable {
         }
     }
 
-    public void bindForm(VsjCajabanco item) {
+    private void bindForm(VsjCajabanco item) {
         isLoading = true;
 
         isEdit = !GenUtil.strNullOrEmpty(item.getCodUregistro());
         clearSaldos();
         //getSelMoneda().setValue(null);
-        beanItem = new BeanItem<VsjCajabanco>(item);
+        beanItem = new BeanItem<>(item);
         fieldGroup = new FieldGroup(beanItem);
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.bind(view.getSelProyecto(), "codProyecto");
@@ -558,12 +551,12 @@ public class ComprobanteLogic implements Serializable {
             if (!GenUtil.strNullOrEmpty(item.getTxtCorrelativo())) {
                 view.getNumVoucher().setValue(item.getTxtCorrelativo());
             } else
-                view.getNumVoucher().setValue(new Integer(item.getCodCajabanco()).toString());
+                view.getNumVoucher().setValue(Integer.toString(item.getCodCajabanco()));
             view.setEnableFields(true);
             setSaldos();
             setSaldoCaja();
             if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {
-                setEditorLogic(item.getCodProyecto().toString());
+                setEditorLogic(item.getCodProyecto());
             } else {
                 setEditorTerceroLogic(item.getCodTercero());
             }
@@ -578,12 +571,12 @@ public class ComprobanteLogic implements Serializable {
 
     // Buttons
 
-    public void cerrarAlManejo() {
+    void cerrarAlManejo() {
         MainUI.get().getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
     }
 
     @Transactional
-    public void saveComprobante() {
+    void saveComprobante() {
         try {
             VsjCajabanco item = prepareToSave();
             savedCajabanco = view.getRepo().save(item);
@@ -605,21 +598,21 @@ public class ComprobanteLogic implements Serializable {
             StringBuilder sb = new StringBuilder();
             Map<Field<?>, Validator.InvalidValueException> fieldMap = ce.getInvalidFields();
             for (Field f : fieldMap.keySet()) {
-                sb.append(f.getConnectorId() + " " + fieldMap.get(f).getHtmlMessage() + "\n");
+                sb.append(f.getConnectorId()).append(" ").append(fieldMap.get(f).getHtmlMessage()).append("\n");
             }
             Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage() + "\n" + sb.toString(), Notification.Type.ERROR_MESSAGE);
             log.warn("Got Commit Exception: " + ce.getMessage() + "\n" + sb.toString());
         }
     }
 
-    public VsjCajabanco prepareToSave() throws CommitException {
+    VsjCajabanco prepareToSave() throws CommitException {
         VsjCajabanco item = getVsjCajabanco();
         item = DataUtil.prepareToSave(item);
         log.info("Ready to save: " + item);
         return item;
     }
 
-    public void nuevoComprobante(String moneda) {
+    void nuevoComprobante(String moneda) {
         savedCajabanco = null;
         VsjCajabanco vcb = new VsjCajabanco();
         vcb.setFlgEnviado("0");
@@ -639,7 +632,7 @@ public class ComprobanteLogic implements Serializable {
         nuevoComprobante(PEN);
     }
 
-    public void editarComprobante() {
+    void editarComprobante() {
         editarComprobante(savedCajabanco);
     }
 
@@ -653,7 +646,7 @@ public class ComprobanteLogic implements Serializable {
         view.getImprimirBtn().setEnabled(true);
     }
     
-    protected VsjCajabanco prepareToEliminar(VsjCajabanco vcb) {
+    VsjCajabanco prepareToEliminar(VsjCajabanco vcb) {
         if (GenUtil.strNullOrEmpty(vcb.getCodProyecto()) && GenUtil.strNullOrEmpty(vcb.getCodTercero()))
             throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
 
@@ -673,7 +666,7 @@ public class ComprobanteLogic implements Serializable {
     }
     
 
-    public void eliminarComprobante() {
+    void eliminarComprobante() {
         try {
             if (savedCajabanco==null) {
                 log.info("no se puede eliminar si no esta ya guardado");
@@ -691,7 +684,7 @@ public class ComprobanteLogic implements Serializable {
             view.getGlosa().setValue(item.getTxtGlosaitem());
             log.info("Ready to ANULAR: " + item);
             savedCajabanco = view.getRepo().save(item);
-            view.getNumVoucher().setValue(new Integer(savedCajabanco.getCodCajabanco()).toString());
+            view.getNumVoucher().setValue(Integer.toString(savedCajabanco.getCodCajabanco()));
             savedCajabanco = null;
             view.getGuardarBtn().setEnabled(false);
             view.getModificarBtn().setEnabled(false);
@@ -715,13 +708,13 @@ public class ComprobanteLogic implements Serializable {
         return !GenUtil.objNullOrEmpty(view.getSelTercero().getValue());
     }
 
-    public void clearSaldos() {
+    private void clearSaldos() {
         //noinspection unchecked
         Arrays.stream(new Field[]{view.getSaldoCajaPEN(), view.getSaldoCajaUSD(), view.getSaldoProyPEN(), view.getSaldoProyUSD(), view.getSaldoProyEUR()})
                 .forEach(f -> f.setValue(""));
     }
 
-    public VsjCajabanco getVsjCajabanco() throws FieldGroup.CommitException {
+    VsjCajabanco getVsjCajabanco() throws FieldGroup.CommitException {
         fieldGroup.commit();
         VsjCajabanco item = beanItem.getBean();
         view.setEnableFields(false);

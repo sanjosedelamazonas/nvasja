@@ -10,11 +10,11 @@ public class AmountValidator implements Validator {
 
 			private static final long serialVersionUID = -9007565688398484768L;
 
-			private String message;
+			private final String message;
 		    
-		    private BigDecimal minValue;
+		    private final BigDecimal minValue;
 		    
-		    private BigDecimal maxValue;
+		    private final BigDecimal maxValue;
 
 		    public AmountValidator(String message, BigDecimal minValue, BigDecimal maxValue) {
 		        this.message = message;
