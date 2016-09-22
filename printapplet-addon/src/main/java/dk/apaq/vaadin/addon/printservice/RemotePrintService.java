@@ -23,9 +23,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Pageable;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.io.ByteArrayOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -73,6 +71,8 @@ public class RemotePrintService implements PrintService {
     private final boolean defaultPrinter;
     private final HashPrintServiceAttributeSet attributeSet = new HashPrintServiceAttributeSet();
 
+    private boolean debug = false;
+
     public RemotePrintService(RemotePrintExecutor printExecutor, String id, String name, int resolution, boolean colorSupported, boolean defaultPrinter) {
         this.printExecutor = printExecutor;
         this.id = id;
@@ -98,6 +98,14 @@ public class RemotePrintService implements PrintService {
             if (flavorClassName.equals(Pageable.class.getCanonicalName())) {
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 ZipOutputStream zout = new ZipOutputStream(os);
+                FileOutputStream tempFile = null;
+                ZipOutputStream zoutFile = null;
+                TeeOutputStream teeOutputStream = null;
+                if (debug) {
+                    tempFile = new FileOutputStream(new File(System.getProperty("java.io.tmpdir"), "print.zip"));
+                    zoutFile = new ZipOutputStream(tempFile);
+                    teeOutputStream = new TeeOutputStream(zout, zoutFile);
+                }
                 Pageable pageable = (Pageable) doc.getPrintData();
                 try {
                     //LOG.info("got pageable: " + pageable.getNumberOfPages());
@@ -108,12 +116,12 @@ public class RemotePrintService implements PrintService {
                             int i=0;
                             Printable p = pageable.getPrintable(i);
                             PageFormat pf = pageable.getPageFormat(i);
-                            LOG.info("got pageable: " + pageable.getPageFormat(i));
+                            LOG.debug("got pageable: " + pageable.getPageFormat(i));
 
                             int width = (int) (pf.getWidth() * scaleTo72Dpi);
                             int height = (int) (pf.getHeight() * scaleTo72Dpi);
-                            LOG.info("got pageable width/after: " + pf.getWidth() + "/" +width);
-                            LOG.info("got pageable height/after: " + pf.getHeight() + "/" +height);
+                            LOG.debug("got pageable width/after: " + pf.getWidth() + "/" +width);
+                            LOG.debug("got pageable height/after: " + pf.getHeight() + "/" +height);
 
 
                             boolean hasMorePages = true;
@@ -124,18 +132,23 @@ public class RemotePrintService implements PrintService {
                                     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
                                     Graphics2D gfx = image.createGraphics();
                                     gfx.scale(scaleTo72Dpi, scaleTo72Dpi);
-                                    LOG.info("scaling: " + scaleTo72Dpi);
+                                    LOG.debug("scaling: " + scaleTo72Dpi);
 
                                     if (p.print(gfx, pf, pageCount++) == Printable.PAGE_EXISTS) {
                                         //LOG.info(pageCount + "_" + System.currentTimeMillis() +".png");
                                         ZipEntry entry = new ZipEntry(pageCount + "_" + System.currentTimeMillis() +".png");
                                         zout.putNextEntry(entry);
+                                        if (debug) zoutFile.putNextEntry(entry);
                                         entry.setExtra("image/png".getBytes("utf-8"));
-                                        ImageIO.write(image, "png", zout);
+                                        ImageIO.write(image, "png", (debug ? teeOutputStream : zout));
                                         zout.flush();
                                         zout.closeEntry();
+                                        if (debug) {
+                                            zoutFile.flush();
+                                            zoutFile.closeEntry();
+                                        }
                                         image.flush();
-                                        LOG.info("Page printed in " + (System.currentTimeMillis() - start) + "ms.");
+                                        LOG.info("Page size: " + pf.getWidth() + "x" + pf.getHeight() + " printed in " + (System.currentTimeMillis() - start) + "ms.");
                                     } else {
                                         hasMorePages = false;
                                     }
@@ -155,9 +168,14 @@ public class RemotePrintService implements PrintService {
                     throw new PrintException(ex);
 
                 } finally {
+                    if (debug) {
+                        zoutFile.flush();
+                        teeOutputStream.flush();
+                    }
                     zout.flush();
                     os.flush();
                     zout.close();
+                    if (debug) zoutFile.close();
                 }
 
                 printExecutor.executeRemotePrint(this, os.toByteArray());

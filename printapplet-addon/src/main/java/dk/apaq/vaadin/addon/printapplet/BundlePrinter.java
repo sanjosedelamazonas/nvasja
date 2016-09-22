@@ -1,6 +1,7 @@
 /*    */ package dk.apaq.vaadin.addon.printapplet;
 /*    */ 
 /*    */ import java.awt.Dimension;
+import java.awt.geom.Arc2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
@@ -33,6 +34,7 @@ import javax.print.PrintService;
 /*    */   public void print(String flavour, InputStream in)
 /*    */     throws PrinterException
 /*    */   {
+			 double scaleFrom300dpi = 300/72;
 /* 64 */     Printable printable = null;
 /* 65 */     Dimension dimension = null;
 /* 66 */     String contenttype = null;
@@ -55,9 +57,11 @@ import javax.print.PrintService;
 /*    */ 
 /* 84 */           if (("image/png".equals(mimetype)) || ("image/png".equals(mimetype)) || ("image/png".equals(mimetype))) {
 /* 85 */             BufferedImage image = ImageIO.read(zin);
-/*    */ 
+/*    */
+
 /* 87 */             if (dimension == null) {
-/* 88 */               dimension = new Dimension(image.getWidth(), image.getHeight());
+/* 88 */               dimension = new Dimension(Double.valueOf(image.getWidth()/scaleFrom300dpi).intValue(),
+								Double.valueOf(image.getHeight()/scaleFrom300dpi).intValue());
 /*    */             }
 /*    */ 
 /* 92 */             if (imagePrintable == null) {
@@ -74,12 +78,12 @@ import javax.print.PrintService;
 /* 128 */       PageFormat pf = new PageFormat();
 /*    */ 
 /* 130 */       Paper paper = new Paper();
-/* 131 */       paper.setSize(dimension.width, dimension.height);
+				paper.setSize(dimension.width, dimension.height);
 /* 132 */       paper.setImageableArea(0.0D, 0.0D, dimension.width, dimension.height);
 /* 133 */       pf.setPaper(paper);
-/* 134 */       System.out.println(pf.getWidth() + "X" + pf.getHeight());
+				//System.out.println(pf.getWidth() + "X" + pf.getHeight());
 /* 135 */       pf = job.validatePage(pf);
-/* 136 */       System.out.println(pf.getWidth() + "X" + pf.getHeight());
+/* 136 */       //System.out.println(pf.getWidth() + "X" + pf.getHeight());
 /*    */ 
 /* 138 */       job.setPrintable(printable, pf);
 /* 139 */       job.print();

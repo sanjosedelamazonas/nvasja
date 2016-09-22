@@ -148,6 +148,8 @@ public class JRPrinterAWT implements Printable
 
         // fix for bug ID 6255588 from Sun bug database
         initPrinterJobFields(printJob);
+// MAGIC Jasper SCALING FACTOR
+        //double scaleFactor = 2.837837d;
         // --------- Added by Pawel Rubach
         try {
             printJob.setPrintService(printService);
@@ -158,7 +160,8 @@ public class JRPrinterAWT implements Printable
         // ---------
         PageFormat pageFormat = printJob.defaultPage();
         Paper paper = pageFormat.getPaper();
-        log.info("JR Print paper initial: " + paper.getWidth() + "x" + paper.getHeight());
+        log.debug("JR Print paper initial: " + paper.getWidth() + "x" + paper.getHeight());
+        log.debug("JR Print pageFormat initial: " + jasperPrint.getPageFormat().getPageWidth() + "x" + jasperPrint.getPageFormat().getPageHeight());
 
         printJob.setJobName("JasperReports - " + jasperPrint.getName());
 
@@ -247,7 +250,7 @@ public class JRPrinterAWT implements Printable
 
         try
         {
-            log.info("JR Print sending to print: " + pageFormat.getWidth() + "x" + pageFormat.getHeight());
+            //log.info("JR Print sending to print: " + pageFormat.getWidth() + "x" + pageFormat.getHeight());
 
             JRGraphics2DExporter exporter = new JRGraphics2DExporter(jasperReportsContext);
             exporter.setExporterInput(new SimpleExporterInput(jasperPrint));

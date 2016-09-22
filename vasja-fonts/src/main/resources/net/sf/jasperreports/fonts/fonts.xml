@@ -22,8 +22,7 @@
 	</fontFamily>
 	
 	<fontFamily name="Arial Black">
-	  <normal>net/sf/jasperreports/fonts/arial/arialbd.ttf</normal>
-	  <italic>net/sf/jasperreports/fonts/arial/arialbi.ttf</italic>
+	  <normal>net/sf/jasperreports/fonts/arial/ariblk.ttf</normal>
 	  <pdfEncoding>Identity-H</pdfEncoding>
 		<pdfEmbedded>true</pdfEmbedded>
 		<exportFonts>
