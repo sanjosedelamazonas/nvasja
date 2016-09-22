@@ -28,7 +28,7 @@ import java.util.*;
  */
 @SpringComponent
 @UIScope
-public class CajaManejoView extends CajaManejoUI implements View {
+public class CajaManejoView extends CajaManejoUI implements View, INavigatorView {
 
     public static final String VIEW_NAME = "Manejo de Caja";
 
@@ -160,4 +160,8 @@ public class CajaManejoView extends CajaManejoUI implements View {
         return em;
     }
 
+    @Override
+    public String getNavigatorViewName() {
+        return VIEW_NAME;
+    }
 }

@@ -12,7 +12,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
-import org.sanjose.helper.EnviarException;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpTipocambio;
@@ -206,6 +205,7 @@ public class CajaGridLogic implements Serializable {
 
     private void newComprobante() {
         view.clearSelection();
+        MainUI.get().getComprobanteView().viewLogic.setNavigatorView(this.view);
         MainUI.get().getComprobanteView().viewLogic.nuevoComprobante();
         MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
@@ -217,11 +217,13 @@ public class CajaGridLogic implements Serializable {
             if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
                 try {
                     MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
+                    MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
                     MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
                 } catch (NonEditableException e) {
                     Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
                 }
             } else {
+                MainUI.get().getComprobanteView().viewLogic.setNavigatorView(this.view);
                 MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
                 MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
             }

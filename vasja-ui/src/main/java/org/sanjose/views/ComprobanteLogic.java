@@ -66,6 +66,8 @@ class ComprobanteLogic implements Serializable {
 
     private ProcUtil procUtil;
 
+    protected INavigatorView navigatorView;
+
     @Autowired
     public ComprobanteLogic(IComprobanteView  comprobanteView) {
         view = comprobanteView;
@@ -572,7 +574,9 @@ class ComprobanteLogic implements Serializable {
     // Buttons
 
     void cerrarAlManejo() {
-        MainUI.get().getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
+        if (navigatorView==null)
+            navigatorView = MainUI.get().getCajaManejoView();
+        MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
 
     @Transactional
@@ -626,6 +630,10 @@ class ComprobanteLogic implements Serializable {
         view.getModificarBtn().setEnabled(false);
         view.getEliminarBtn().setEnabled(false);
         view.getImprimirBtn().setEnabled(false);
+    }
+
+    public void setNavigatorView(INavigatorView navigatorView) {
+        this.navigatorView = navigatorView;
     }
 
     public void nuevoComprobante() {

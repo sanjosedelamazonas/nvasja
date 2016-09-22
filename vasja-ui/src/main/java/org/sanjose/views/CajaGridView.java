@@ -44,7 +44,7 @@ import javax.persistence.PersistenceContext;
  */
 @SpringComponent
 @UIScope
-public class CajaGridView extends CajaGridUI implements View {
+public class CajaGridView extends CajaGridUI implements View, INavigatorView {
 
 	private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
 	
@@ -357,5 +357,10 @@ public class CajaGridView extends CajaGridUI implements View {
 
     public VsjCajabanco getItemSeleccionado() {
         return itemSeleccionado;
+    }
+
+    @Override
+    public String getNavigatorViewName() {
+        return VIEW_NAME;
     }
 }

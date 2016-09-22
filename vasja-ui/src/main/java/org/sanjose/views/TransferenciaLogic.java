@@ -29,6 +29,8 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     private final TransactionUtil transactionUtil;
 
+    private boolean isEdited = false;
+
     public TransferenciaLogic(IComprobanteView comprobanteView) {
         super(comprobanteView);
         tView = (TransferenciaView) comprobanteView;
@@ -45,7 +47,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     }
 
     private void nuevaTrans() {
-        if (!tView.getContainer().getItemIds().isEmpty())
+        if (!tView.getContainer().getItemIds().isEmpty() && isEdited)
             MessageBox
                 .createQuestion()
                 .withCaption("Nueva transferencia")
@@ -66,6 +68,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     @Override
     public void nuevoComprobante() {
+        isEdited = true;
         if (moneda!=null) {
             super.nuevoComprobante(moneda);
             view.getSelMoneda().setEnabled(false);
@@ -82,6 +85,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     public void editarComprobante() {
         if (tView.getSelectedRow()!=null
                 && "0".equals(tView.getSelectedRow().getFlg_Anula())) {
+            isEdited = true;
             editarComprobante(tView.getSelectedRow());
             view.getSelMoneda().setEnabled(false);
             view.getModificarBtn().setEnabled(true);
@@ -109,14 +113,17 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     @Override
     public void cerrarAlManejo() {
-        MessageBox
+        if (isEdited)
+            MessageBox
                 .createQuestion()
                 .withCaption("Quitar la transferencia")
                 .withMessage("?Esta seguro que quiere eliminar todos operaciones de esta transferencia \n" +
                         "y regresar al Manejo de Caja?\n")
-                .withYesButton(() -> MainUI.get().getNavigator().navigateTo(CajaManejoView.VIEW_NAME))
+                .withYesButton(() -> MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName()))
                 .withNoButton()
                 .open();
+        else
+            MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
 
     @Override
@@ -178,6 +185,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         view.getNuevoComprobante().setEnabled(false);
         tView.nuevaTransBtn.setEnabled(true);
         view.refreshData();
+        isEdited = false;
     }
 
     public void editarTransferencia(VsjCajabanco vcb) throws NonEditableException {
@@ -204,6 +212,6 @@ public class TransferenciaLogic extends ComprobanteLogic {
         tView.getEliminarBtn().setEnabled(true);
         tView.getGuardarBtn().setEnabled(false);
         tView.getNuevoComprobante().setEnabled(true);
-
+        isEdited = false;
     }
 }
