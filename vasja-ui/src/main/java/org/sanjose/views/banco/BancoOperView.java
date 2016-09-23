@@ -160,6 +160,7 @@ public class BancoOperView extends BancoOperUI implements View {
         gridBanco.setSelectionMode(Grid.SelectionMode.SINGLE);
 
         setSaldoTrans();
+        setEnableCabezeraFields(false);
         viewLogic.init();
     }
 

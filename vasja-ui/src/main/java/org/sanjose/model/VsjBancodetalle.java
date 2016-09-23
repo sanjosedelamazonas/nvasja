@@ -70,10 +70,6 @@ public class VsjBancodetalle implements Serializable {
 	@Column(name="cod_tipomoneda")
 	private Character codTipomoneda;
 
-	@NotNull
-	@Column(name="cod_tipomov")
-	private int codTipomov;
-
 	@Column(name="cod_uactualiza")
 	private String codUactualiza;
 
@@ -303,14 +299,6 @@ public class VsjBancodetalle implements Serializable {
 
 	public void setCodTipomoneda(Character codTipomoneda) {
 		this.codTipomoneda = codTipomoneda;
-	}
-
-	public int getCodTipomov() {
-		return this.codTipomov;
-	}
-
-	public void setCodTipomov(int codTipomov) {
-		this.codTipomov = codTipomov;
 	}
 
 	public String getCodUactualiza() {

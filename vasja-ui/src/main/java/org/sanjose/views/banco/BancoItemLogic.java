@@ -114,7 +114,7 @@ class BancoItemLogic implements Serializable {
         view.getFechaDoc().setResolution(Resolution.DAY);
 
         // Cod. Auxiliar
-        DataFilterUtil.bindComboBox(view.getSelCodAuxCabeza(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
+        DataFilterUtil.bindComboBox(view.getSelCodAuxCabeza(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
 
 
@@ -127,7 +127,7 @@ class BancoItemLogic implements Serializable {
         view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
 
         // Tercero
-        DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getDestinoRepo().findByIndTipodestino("3"),
+        DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getDestinoRepo().findByIndTipodestino('3'),
                 "txtNombredestino");
         view.getSelTercero().addValueChangeListener(this::setTerceroLogic);
 
@@ -153,7 +153,7 @@ class BancoItemLogic implements Serializable {
         );
 
         // Responsable
-        DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
+        DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
 
         view.getSelResponsable().addValueChangeListener(valueChangeEvent ->  {
@@ -163,10 +163,10 @@ class BancoItemLogic implements Serializable {
 
         // Lugar de gasto
         DataFilterUtil.bindComboBox(view.getSelLugarGasto(), "codContraparte", view.getContraparteRepo().findAll(),
-                "txt_DescContraparte");
+                "txtDescContraparte");
 
         // Cod. Auxiliar
-        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
+        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
 
         // Tipo doc
@@ -177,18 +177,18 @@ class BancoItemLogic implements Serializable {
         // Cta Contable
         DataFilterUtil.bindComboBox(view.getSelCtaContable(), "id.codCtacontable",
                 view.getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
-                        "0","N", GenUtil.getYear(view.getDataFechaComprobante().getValue()), "101%", "102%", "104%", "106%"),
+                        '0','N', GenUtil.getYear(view.getDataFechaComprobante().getValue()), "101%", "102%", "104%", "106%"),
                 //getPlanRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""),
                 "txtDescctacontable");
 
         // Rubro inst
         DataFilterUtil.bindComboBox(view.getSelRubroInst(), "id.codCtaespecial",
-                view.getPlanespecialRep().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
+                view.getPlanespecialRep().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getYear(view.getDataFechaComprobante().getValue())),
                 "txtDescctaespecial");
 
         // Rubro Proy
         DataFilterUtil.bindComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
-                view.getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
+                view.getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getYear(view.getDataFechaComprobante().getValue())),
                 "txtDescctaproyecto");
 
         DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta", view.getConfiguractacajabancoRepo().findByActivoAndParaBanco(true, true),
@@ -303,11 +303,11 @@ class BancoItemLogic implements Serializable {
 
 
     private void refreshDestino() {
-        DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
+        DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
-        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
+        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
-        DataFilterUtil.refreshComboBox(view.getSelCodAuxCabeza(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
+        DataFilterUtil.refreshComboBox(view.getSelCodAuxCabeza(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
     }
 
@@ -317,14 +317,16 @@ class BancoItemLogic implements Serializable {
                     GenUtil.getYear(view.getDataFechaComprobante().getValue()), view.getSelCuenta().getValue().toString());
             BigDecimal saldo = procUtil.getSaldoCaja(view.getDataFechaComprobante().getValue(),
                     view.getSelCuenta().getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
-            log.info("In setCuentaLogic: " + saldo);
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+            String s = GenUtil.getSymMoneda(cuenta.getIndTipomoneda());
             view.getSaldoCuenta().setCaption(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
+            log.info("In setCuentaLogic: " + saldo + "cap: " + s + " " + cuenta.getIndTipomoneda());
             view.getSaldoCuenta().setValue("");
             log.info("In setCuentaLogic: " + df.format(saldo));
             setMonedaLogic(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             // If still no item created
             if (item==null) {
+                log.info("In setCuentaLogic item is null");
                 nuevoComprobante(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             } else {
                 item.setCodTipomoneda(cuenta.getIndTipomoneda());
@@ -334,7 +336,7 @@ class BancoItemLogic implements Serializable {
     }
 
 
-    private void setMonedaLogic(String moneda) {
+    private void setMonedaLogic(Character moneda) {
         if (!isLoading) {
             try {
                 fieldGroup.unbind(view.getNumEgreso());
@@ -639,12 +641,12 @@ class BancoItemLogic implements Serializable {
         return item;
     }
 
-    void nuevoComprobante(String moneda) {
+    void nuevoComprobante(Character moneda) {
         savedBancodetalle = null;
         VsjBancodetalle vcb = new VsjBancodetalle();
         //vcb.setFlgEnviado("0");
-        vcb.setFlg_Anula("0");
-        vcb.setIndTipocuenta("0");
+        vcb.setFlg_Anula('0');
+        vcb.setIndTipocuenta('0');
         vcb.setCodTipomoneda(moneda);
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
@@ -695,7 +697,7 @@ class BancoItemLogic implements Serializable {
 
         vcb.setTxtGlosaitem("ANULADO - " + (vcb.getTxtGlosaitem().length()>60 ?
                 vcb.getTxtGlosaitem().substring(0,60) : vcb.getTxtGlosaitem()));
-        vcb.setFlg_Anula("1");
+        vcb.setFlg_Anula('1');
         return vcb;
     }
 

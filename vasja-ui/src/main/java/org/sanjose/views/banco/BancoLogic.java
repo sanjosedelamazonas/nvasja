@@ -31,7 +31,7 @@ public class BancoLogic extends BancoItemLogic {
 
     //private final BancoOperView view;
 
-    private String moneda;
+    private Character moneda;
 
     private FieldGroup fieldGroupCabezera;
 
@@ -71,14 +71,16 @@ public class BancoLogic extends BancoItemLogic {
     }
 
     private void resetTrans() {
+        log.info("new cheque");
         view.getContainer().removeAllItems();
         moneda = null;
         view.setSaldoTrans();
         view.setEnableCabezeraFields(true);
         VsjBancocabecera vcb = new VsjBancocabecera();
-        vcb.setIndTipocuenta("0");
+        vcb.setIndTipocuenta('0');
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         bindForm(vcb);
+        view.setEnableCabezeraFields(true);
         //view.getGuardarBtn().setEnabled(true);
         view.getModificarBtn().setEnabled(false);
         view.getEliminarBtn().setEnabled(false);
