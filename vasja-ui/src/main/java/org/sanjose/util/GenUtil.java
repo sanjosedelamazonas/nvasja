@@ -12,20 +12,20 @@ import java.util.*;
 public class GenUtil {
 
 
-    public static final String PEN="0";
+    public static final Character PEN='0';
 
-    public static final String USD="1";
+    public static final Character USD='1';
 
-    public static final String EUR="2";
+    public static final Character EUR='2';
 
-    public static final String _PEN="N";
+    public static final Character _PEN='N';
 
-    public static final String _USD="D";
+    public static final Character _USD='D';
 
-    public static final String _EUR="E";
+    public static final Character _EUR='E';
 
 
-    private static Map<String, String> symMoneda = new HashMap<>();
+    private static Map<Character, String> symMoneda = new HashMap<>();
 
     public static boolean strNullOrEmpty(String s) {
         return s == null || "".equals(s) || "".equals(s.trim());
@@ -130,33 +130,33 @@ public class GenUtil {
         return UUID.randomUUID().toString().replace("-","").substring(0,16);
     }
 
-    public static String getLitMoneda(String numMoneda) {
+    public static Character getLitMoneda(Character numMoneda) {
         switch (numMoneda) {
-            case "0" :
-                return "N";
-            case "1" :
-                return "D";
+            case '0' :
+                return 'N';
+            case '1' :
+                return 'D';
             default:
-                return "E";
+                return 'E';
         }
     }
 
-    public static String getNumMoneda(String litMoneda) {
+    public static Character getNumMoneda(Character litMoneda) {
         switch (litMoneda) {
-            case "N" :
-                return "0";
-            case "D" :
-                return "1";
+            case 'N' :
+                return '0';
+            case 'D' :
+                return '1';
             default:
-                return "2";
+                return '2';
         }
     }
 
-    public static String getSymMoneda(String litMoneda) {
+    public static String getSymMoneda(Character litMoneda) {
         if (symMoneda.isEmpty()) {
-            symMoneda.put("N", "S/.");
-            symMoneda.put("D", "$");
-            symMoneda.put("N", "€");
+            symMoneda.put('N', "S/.");
+            symMoneda.put('D', "$");
+            symMoneda.put('E', "€");
         }
         return symMoneda.get(litMoneda);
     }

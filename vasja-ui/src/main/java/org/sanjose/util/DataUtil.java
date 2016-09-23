@@ -104,8 +104,8 @@ public class DataUtil {
 
     public static List<ScpPlancontable> getBancoCuentas(Date ano, ScpPlancontableRep planRepo) {
         return planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike (
-                "0", "N", GenUtil.getYear(ano), "104%",
-                "0", "N", GenUtil.getYear(ano), "106%");
+                '0', 'N', GenUtil.getYear(ano), "104%",
+                '0', 'N', GenUtil.getYear(ano), "106%");
     }
 
     public static VsjCajabanco prepareToSave(VsjCajabanco item) throws FieldGroup.CommitException {
@@ -154,9 +154,9 @@ public class DataUtil {
         sdf = new SimpleDateFormat("yyyy");
         item.setTxtAnoproceso(sdf.format(item.getFecFecha()));
         if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
-            item.setIndTipocuenta("0");
+            item.setIndTipocuenta('0');
         } else {
-            item.setIndTipocuenta("1");
+            item.setIndTipocuenta('1');
         }
         if (item.getCodUregistro() == null) item.setCodUregistro(CurrentUser.get());
         if (item.getFecFregistro() == null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
