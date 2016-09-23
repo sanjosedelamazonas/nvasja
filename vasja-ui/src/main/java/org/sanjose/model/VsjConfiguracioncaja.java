@@ -17,7 +17,7 @@ public class VsjConfiguracioncaja implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="cod_configuracion")
-	private int codConfiguracion;
+	private Integer codConfiguracion;
 
 	@Column(name="cod_categoriaproyecto")
 	private String codCategoriaproyecto;
@@ -32,7 +32,7 @@ public class VsjConfiguracioncaja implements Serializable {
 	private String codProyecto;
 
 	@Column(name="ind_tipomoneda")
-	private String indTipomoneda;
+	private Character indTipomoneda;
 
 	@Column(name="txt_configuracion")
 	private String txtConfiguracion;
@@ -40,11 +40,11 @@ public class VsjConfiguracioncaja implements Serializable {
 	public VsjConfiguracioncaja() {
 	}
 
-	public int getCodConfiguracion() {
+	public Integer getCodConfiguracion() {
 		return this.codConfiguracion;
 	}
 
-	public void setCodConfiguracion(int codConfiguracion) {
+	public void setCodConfiguracion(Integer codConfiguracion) {
 		this.codConfiguracion = codConfiguracion;
 	}
 
@@ -80,11 +80,11 @@ public class VsjConfiguracioncaja implements Serializable {
 		this.codProyecto = codProyecto;
 	}
 
-	public String getIndTipomoneda() {
+	public Character getIndTipomoneda() {
 		return this.indTipomoneda;
 	}
 
-	public void setIndTipomoneda(String indTipomoneda) {
+	public void setIndTipomoneda(Character indTipomoneda) {
 		this.indTipomoneda = indTipomoneda;
 	}
 

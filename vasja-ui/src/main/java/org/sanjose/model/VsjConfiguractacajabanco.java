@@ -1,10 +1,7 @@
 package org.sanjose.model;
 
 import java.io.Serializable;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 
 /**
@@ -20,10 +17,9 @@ public class VsjConfiguractacajabanco implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="cod_tipocuenta")
-	private int codTipocuenta;
+	private Integer codTipocuenta;
 
-	@NotNull
-	private boolean activo = true;
+	private boolean activo;
 
 	@Column(name="cod_ctacontablecaja")
 	private String codCtacontablecaja;
@@ -35,29 +31,28 @@ public class VsjConfiguractacajabanco implements Serializable {
 	private String codCtaespecial;
 
 	@Column(name="para_banco")
-	private boolean paraBanco = true;
+	private boolean paraBanco;
 
 	@Column(name="para_caja")
-	private boolean paraCaja = true;
+	private boolean paraCaja;
 
 	@Column(name="para_proyecto")
-	private boolean paraProyecto = true;
+	private boolean paraProyecto;
 
 	@Column(name="para_tercero")
-	private boolean paraTercero = true;
+	private boolean paraTercero;
 
-	@Size(min=2, max=50)
 	@Column(name="txt_tipocuenta")
-	private String txtTipocuenta = "";
+	private String txtTipocuenta;
 
 	public VsjConfiguractacajabanco() {
 	}
 
-	public int getCodTipocuenta() {
+	public Integer getCodTipocuenta() {
 		return this.codTipocuenta;
 	}
 
-	public void setCodTipocuenta(int codTipocuenta) {
+	public void setCodTipocuenta(Integer codTipocuenta) {
 		this.codTipocuenta = codTipocuenta;
 	}
 
@@ -133,19 +128,4 @@ public class VsjConfiguractacajabanco implements Serializable {
 		this.txtTipocuenta = txtTipocuenta;
 	}
 
-	@Override
-	public String toString() {
-		return "VsjConfiguractacajabanco{" +
-				"codTipocuenta=" + codTipocuenta +
-				", activo=" + activo +
-				", codCtacontablecaja='" + codCtacontablecaja + '\'' +
-				", codCtacontablegasto='" + codCtacontablegasto + '\'' +
-				", codCtaespecial='" + codCtaespecial + '\'' +
-				", paraBanco=" + paraBanco +
-				", paraCaja=" + paraCaja +
-				", paraProyecto=" + paraProyecto +
-				", paraTercero=" + paraTercero +
-				", txtTipocuenta='" + txtTipocuenta + '\'' +
-				'}';
-	}
 }

@@ -72,18 +72,18 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
                 new BeanFieldGroup<>(VsjConfiguractacajabanco.class));
         
         ComboBox selCtacontablecaja = new ComboBox();  
-        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridConfigCtaCajaBanco.getColumn("codCtacontablecaja").setEditorField(selCtacontablecaja);
         
         ComboBox selCtacontablegasto = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable",
                 planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
-                        "N", GenUtil.getCurYear(), "101%", "102%", "104%", "106%")
+                        'N', GenUtil.getCurYear(), "101%", "102%", "104%", "106%")
                 , "Sel cta contable", "txtDescctacontable");
         gridConfigCtaCajaBanco.getColumn("codCtacontablegasto").setEditorField(selCtacontablegasto);
         
         ComboBox selCtaespecial = new ComboBox();  
-        DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial", planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()), "Sel cta especial", "txtDescctaespecial");
+        DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial", planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()), "Sel cta especial", "txtDescctaespecial");
         gridConfigCtaCajaBanco.getColumn("codCtaespecial").setEditorField(selCtaespecial);
         
         gridConfigCtaCajaBanco.getColumn("activo").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());

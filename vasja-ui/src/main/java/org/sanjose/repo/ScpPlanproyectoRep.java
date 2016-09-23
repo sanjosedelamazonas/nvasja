@@ -3,6 +3,7 @@ package org.sanjose.repo;
 import org.sanjose.model.ScpPlanproyecto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import javax.print.DocFlavor;
 import java.util.List;
 
 public interface ScpPlanproyectoRep extends JpaRepository<ScpPlanproyecto, Long> {

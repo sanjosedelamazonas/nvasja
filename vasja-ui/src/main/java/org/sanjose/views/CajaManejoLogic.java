@@ -68,8 +68,7 @@ public class CajaManejoLogic implements Serializable {
     }
 
     public void editarComprobante(VsjCajabanco vcb) {
-        if (!"1".equals(vcb.getFlgEnviado()) && !"1".equals(vcb.getFlg_Anula())) {
-
+        if (!vcb.isEnviado() && !vcb.isAnula()) {
             // Transferencia
             if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
                 try {
@@ -111,18 +110,18 @@ public class CajaManejoLogic implements Serializable {
         BigDecimal totalSoles = new BigDecimal(0.00);
         BigDecimal totalUsd = new BigDecimal(0.00);
         for (ScpPlancontable caja : DataUtil.getCajas(view.planRepo)) {
-            String moneda = "N".equals(caja.getIndTipomoneda()) ? "0" : "1";
+            char moneda = caja.getIndTipomoneda().equals('N') ? '0' : '1';
             BigDecimal saldo = new ProcUtil(view.getEm()).getSaldoCaja(
                     (isInicial ? view.fechaDesde.getValue() : view.fechaHasta.getValue()),
                     caja.getId().getCodCtacontable()
                     , moneda);
             Caja cajaItem = new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
-                    ("N".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0.00)),
-                    ("D".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0.00))
+                    (caja.getIndTipomoneda().equals('N') ? saldo : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals('D') ? saldo : new BigDecimal(0.00))
             );
             c.addItem(cajaItem);
-            totalSoles = totalSoles.add("N".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0));
-            totalUsd = totalUsd.add("D".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0));
+            totalSoles = totalSoles.add(caja.getIndTipomoneda().equals('N') ? saldo : new BigDecimal(0));
+            totalUsd = totalUsd.add(caja.getIndTipomoneda().equals('D') ? saldo : new BigDecimal(0));
         }
         grid.getColumn("soles").setRenderer(new EmptyZeroNumberRendrer(
                 "%02.2f", ConfigurationUtil.getLocale()));

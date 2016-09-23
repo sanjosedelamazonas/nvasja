@@ -24,13 +24,13 @@ public class DataUtil {
     public static List<ScpPlancontable> getCajas(ScpPlancontableRep planRepo, boolean isPEN) {
         return planRepo.
                 findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                        "N", GenUtil.getCurYear(), (isPEN ? "N" : "D") , "101");
+                        'N', GenUtil.getCurYear(), (isPEN ? 'N' : 'D') , "101");
     }
 
     public static List<ScpPlancontable> getCajas(ScpPlancontableRep planRepo) {
         return planRepo.
                 findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
-                        "N", GenUtil.getCurYear(), "101");
+                        'N', GenUtil.getCurYear(), "101");
     }
 
 
@@ -43,9 +43,9 @@ public class DataUtil {
         sdf = new SimpleDateFormat("yyyy");
         item.setTxtAnoproceso(sdf.format(item.getFecFecha()));
         if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
-            item.setIndTipocuenta("0");
+            item.setIndTipocuenta('0');
         } else {
-            item.setIndTipocuenta("1");
+            item.setIndTipocuenta('1');
         }
         if (item.getCodUregistro() == null) item.setCodUregistro(CurrentUser.get());
         if (item.getFecFregistro() == null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));

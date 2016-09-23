@@ -203,6 +203,8 @@ public class PrintHelper extends VerticalLayout implements View {
 		}
 		if (printService==null)
 			throw new JRException("No se podia conseguir una impresora");
+		if (jrPrint==null)
+			throw new JRException("No se podia conseguir el reporte");
 		if (isComprobante && isTxt) {
 			JRTextExporter txtExporter = new JRTextExporter();
 			ByteArrayOutputStream oStream = new ByteArrayOutputStream();

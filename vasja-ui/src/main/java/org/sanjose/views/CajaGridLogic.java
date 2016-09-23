@@ -70,7 +70,7 @@ public class CajaGridLogic implements Serializable {
                 if (item!=null) {
                     VsjCajabanco vcb = (VsjCajabanco) ((BeanItem) item).getBean();
                     final VsjCajabanco vcbToSave = DataUtil.prepareToSave(vcb);
-                    if ("1".equals(vcb.getFlgEnviado())) {
+                    if (vcb.isEnviado()) {
                         MessageBox
                                 .createQuestion()
                                 .withCaption("Esta operacion ya esta enviado")
@@ -92,7 +92,7 @@ public class CajaGridLogic implements Serializable {
             List<VsjCajabanco> vsjCajabancoList = new ArrayList<>();
             for (Object objVcb : vcbs) {
                 vcb = (VsjCajabanco) objVcb;
-                if ("1".equals(vcb.getFlgEnviado())) {
+                if (vcb.isEnviado()) {
                     continue;
                 }
                 vsjCajabancoList.add(vcb);
@@ -212,7 +212,7 @@ public class CajaGridLogic implements Serializable {
 
     private void editarComprobante(VsjCajabanco vcb) {
         if (vcb==null) return;
-        if (!"1".equals(vcb.getFlgEnviado()) && !"1".equals(vcb.getFlg_Anula())) {
+        if (!vcb.isEnviado() && !vcb.isAnula()) {
             // Transferencia
             if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
                 try {

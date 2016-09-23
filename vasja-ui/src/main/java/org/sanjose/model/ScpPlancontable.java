@@ -11,8 +11,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name="scp_plancontable")
-//@NamedQuery(name="ScpPlancontable.findAll", query="SELECT s FROM ScpPlancontable s")
-@NamedQuery(name="ScpPlancontable.findAllActual", query="SELECT s FROM ScpPlancontable s WHERE s.id.txtAnoproceso = '2016'")
+@NamedQuery(name="ScpPlancontable.findAll", query="SELECT s FROM ScpPlancontable s")
 public class ScpPlancontable implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -62,46 +61,46 @@ public class ScpPlancontable implements Serializable {
 	private Timestamp fecFregistro;
 
 	@Column(name="flg_ajuste")
-	private String flgAjuste;
+	private Character flgAjuste;
 
 	@Column(name="flg_estadocuenta")
-	private String flgEstadocuenta;
+	private Character flgEstadocuenta;
 
 	@Column(name="flg_fifo")
-	private String flgFifo;
+	private Character flgFifo;
 
 	@Column(name="flg_gasto")
-	private String flgGasto;
+	private Character flgGasto;
 
 	@Column(name="flg_im")
-	private String flgIm;
+	private Character flgIm;
 
 	@Column(name="flg_movimiento")
-	private String flgMovimiento;
+	private Character flgMovimiento;
 
 	@Column(name="flg_validaproyecto")
-	private String flgValidaproyecto;
+	private Character flgValidaproyecto;
 
 	@Column(name="ind_cierrecontable")
 	private String indCierrecontable;
 
 	@Column(name="ind_ctaenlace")
-	private String indCtaenlace;
+	private Character indCtaenlace;
 
 	@Column(name="ind_ingreso")
-	private String indIngreso;
+	private Character indIngreso;
 
 	@Column(name="ind_tipoajuste")
-	private String indTipoajuste;
+	private Character indTipoajuste;
 
 	@Column(name="ind_tipocuenta")
-	private String indTipocuenta;
+	private Character indTipocuenta;
 
 	@Column(name="ind_tipocuentabalance")
 	private String indTipocuentabalance;
 
 	@Column(name="ind_tipomoneda")
-	private String indTipomoneda;
+	private Character indTipomoneda;
 
 	@Column(name="txt_desccta1")
 	private String txtDesccta1;
@@ -253,59 +252,59 @@ public class ScpPlancontable implements Serializable {
 		this.fecFregistro = fecFregistro;
 	}
 
-	public String getFlgAjuste() {
+	public Character getFlgAjuste() {
 		return this.flgAjuste;
 	}
 
-	public void setFlgAjuste(String flgAjuste) {
+	public void setFlgAjuste(Character flgAjuste) {
 		this.flgAjuste = flgAjuste;
 	}
 
-	public String getFlgEstadocuenta() {
+	public Character getFlgEstadocuenta() {
 		return this.flgEstadocuenta;
 	}
 
-	public void setFlgEstadocuenta(String flgEstadocuenta) {
+	public void setFlgEstadocuenta(Character flgEstadocuenta) {
 		this.flgEstadocuenta = flgEstadocuenta;
 	}
 
-	public String getFlgFifo() {
+	public Character getFlgFifo() {
 		return this.flgFifo;
 	}
 
-	public void setFlgFifo(String flgFifo) {
+	public void setFlgFifo(Character flgFifo) {
 		this.flgFifo = flgFifo;
 	}
 
-	public String getFlgGasto() {
+	public Character getFlgGasto() {
 		return this.flgGasto;
 	}
 
-	public void setFlgGasto(String flgGasto) {
+	public void setFlgGasto(Character flgGasto) {
 		this.flgGasto = flgGasto;
 	}
 
-	public String getFlgIm() {
+	public Character getFlgIm() {
 		return this.flgIm;
 	}
 
-	public void setFlgIm(String flgIm) {
+	public void setFlgIm(Character flgIm) {
 		this.flgIm = flgIm;
 	}
 
-	public String getFlgMovimiento() {
+	public Character getFlgMovimiento() {
 		return this.flgMovimiento;
 	}
 
-	public void setFlgMovimiento(String flgMovimiento) {
+	public void setFlgMovimiento(Character flgMovimiento) {
 		this.flgMovimiento = flgMovimiento;
 	}
 
-	public String getFlgValidaproyecto() {
+	public Character getFlgValidaproyecto() {
 		return this.flgValidaproyecto;
 	}
 
-	public void setFlgValidaproyecto(String flgValidaproyecto) {
+	public void setFlgValidaproyecto(Character flgValidaproyecto) {
 		this.flgValidaproyecto = flgValidaproyecto;
 	}
 
@@ -317,35 +316,35 @@ public class ScpPlancontable implements Serializable {
 		this.indCierrecontable = indCierrecontable;
 	}
 
-	public String getIndCtaenlace() {
+	public Character getIndCtaenlace() {
 		return this.indCtaenlace;
 	}
 
-	public void setIndCtaenlace(String indCtaenlace) {
+	public void setIndCtaenlace(Character indCtaenlace) {
 		this.indCtaenlace = indCtaenlace;
 	}
 
-	public String getIndIngreso() {
+	public Character getIndIngreso() {
 		return this.indIngreso;
 	}
 
-	public void setIndIngreso(String indIngreso) {
+	public void setIndIngreso(Character indIngreso) {
 		this.indIngreso = indIngreso;
 	}
 
-	public String getIndTipoajuste() {
+	public Character getIndTipoajuste() {
 		return this.indTipoajuste;
 	}
 
-	public void setIndTipoajuste(String indTipoajuste) {
+	public void setIndTipoajuste(Character indTipoajuste) {
 		this.indTipoajuste = indTipoajuste;
 	}
 
-	public String getIndTipocuenta() {
+	public Character getIndTipocuenta() {
 		return this.indTipocuenta;
 	}
 
-	public void setIndTipocuenta(String indTipocuenta) {
+	public void setIndTipocuenta(Character indTipocuenta) {
 		this.indTipocuenta = indTipocuenta;
 	}
 
@@ -357,11 +356,11 @@ public class ScpPlancontable implements Serializable {
 		this.indTipocuentabalance = indTipocuentabalance;
 	}
 
-	public String getIndTipomoneda() {
+	public Character getIndTipomoneda() {
 		return this.indTipomoneda;
 	}
 
-	public void setIndTipomoneda(String indTipomoneda) {
+	public void setIndTipomoneda(Character indTipomoneda) {
 		this.indTipomoneda = indTipomoneda;
 	}
 
@@ -435,34 +434,6 @@ public class ScpPlancontable implements Serializable {
 
 	public void setTxtDescctacontable(String txtDescctacontable) {
 		this.txtDescctacontable = txtDescctacontable;
-	}
-
-	@Override
-	public String toString() {
-		return "ScpPlancontable [id=" + id + ", codCta1=" + codCta1
-				+ ", codCta2=" + codCta2 + ", codCta3=" + codCta3
-				+ ", codCta4=" + codCta4 + ", codCta5=" + codCta5
-				+ ", codCta6=" + codCta6 + ", codCta7=" + codCta7
-				+ ", codCta8=" + codCta8 + ", codCtaenlace=" + codCtaenlace
-				+ ", codDestino=" + codDestino + ", codUactualiza="
-				+ codUactualiza + ", codUregistro=" + codUregistro
-				+ ", fecFactualiza=" + fecFactualiza + ", fecFregistro="
-				+ fecFregistro + ", flgAjuste=" + flgAjuste
-				+ ", flgEstadocuenta=" + flgEstadocuenta + ", flgFifo="
-				+ flgFifo + ", flgGasto=" + flgGasto + ", flgIm=" + flgIm
-				+ ", flgMovimiento=" + flgMovimiento + ", flgValidaproyecto="
-				+ flgValidaproyecto + ", indCierrecontable="
-				+ indCierrecontable + ", indCtaenlace=" + indCtaenlace
-				+ ", indIngreso=" + indIngreso + ", indTipoajuste="
-				+ indTipoajuste + ", indTipocuenta=" + indTipocuenta
-				+ ", indTipocuentabalance=" + indTipocuentabalance
-				+ ", indTipomoneda=" + indTipomoneda + ", txtDesccta1="
-				+ txtDesccta1 + ", txtDesccta2=" + txtDesccta2
-				+ ", txtDesccta3=" + txtDesccta3 + ", txtDesccta4="
-				+ txtDesccta4 + ", txtDesccta5=" + txtDesccta5
-				+ ", txtDesccta6=" + txtDesccta6 + ", txtDesccta7="
-				+ txtDesccta7 + ", txtDesccta8=" + txtDesccta8
-				+ ", txtDescctacontable=" + txtDescctacontable + "]";
 	}
 
 }

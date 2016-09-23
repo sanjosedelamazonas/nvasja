@@ -7,22 +7,19 @@ import java.sql.Timestamp;
 
 
 /**
- * The persistent class for the vsj_cajabanco database table.
+ * The persistent class for the vsj_bancodetalle database table.
  * 
  */
 @Entity
-@Table(name="vsj_cajabanco")
-@NamedQuery(name="VsjCajabanco.findAll", query="SELECT v FROM VsjCajabanco v")
-public class VsjCajabanco implements Serializable {
+@Table(name="vsj_bancodetalle")
+@NamedQuery(name="VsjBancodetalle.findAll", query="SELECT v FROM VsjBancodetalle v")
+public class VsjBancodetalle implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="cod_cajabanco")
-	private Integer codCajabanco;
-
-	@Column(name="cod_comprobanteenlace")
-	private String codComprobanteenlace;
+	@Column(name="cod_bancodetalle")
+	private Integer codBancodetalle;
 
 	@Column(name="cod_contracta")
 	private String codContracta;
@@ -48,11 +45,11 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_financiera")
 	private String codFinanciera;
 
+	@Column(name="cod_formapago")
+	private String codFormapago;
+
 	@Column(name="cod_mes")
 	private String codMes;
-
-	@Column(name="cod_origenenlace")
-	private String codOrigenenlace;
 
 	@Column(name="cod_proyecto")
 	private String codProyecto;
@@ -63,14 +60,17 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_tipocomprobantepago")
 	private String codTipocomprobantepago;
 
+	@Column(name="cod_tipogasto")
+	private String codTipogasto;
+
+	@Column(name="cod_tipoingreso")
+	private String codTipoingreso;
+
 	@Column(name="cod_tipomoneda")
 	private Character codTipomoneda;
 
 	@Column(name="cod_tipomov")
 	private int codTipomov;
-
-	@Column(name="cod_transcorrelativo")
-	private String codTranscorrelativo;
 
 	@Column(name="cod_uactualiza")
 	private String codUactualiza;
@@ -92,9 +92,11 @@ public class VsjCajabanco implements Serializable {
 
 	private Character flg_Anula;
 
-	@Column(name="flg_enviado")
-	private Character flgEnviado;
+	@Column(name="flg_im")
+	private Character flgIm;
 
+	@Column(name="flg_saldo")
+	private Character flgSaldo;
 
 	@Column(name="ind_tipocuenta")
 	private Character indTipocuenta;
@@ -102,17 +104,41 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="num_debedolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebedolar;
 
+	@Column(name="num_debemo", columnDefinition="decimal(12,2)")
+	private BigDecimal numDebemo;
+
 	@Column(name="num_debesol", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebesol;
 
 	@Column(name="num_haberdolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numHaberdolar;
 
+	@Column(name="num_habermo", columnDefinition="decimal(12,2)")
+	private BigDecimal numHabermo;
+
 	@Column(name="num_habersol", columnDefinition="decimal(12,2)")
 	private BigDecimal numHabersol;
 
+	@Column(name="num_saldodolar", columnDefinition="decimal(12,2)")
+	private BigDecimal numSaldodolar;
+
+	@Column(name="num_saldomo", columnDefinition="decimal(12,2)")
+	private BigDecimal numSaldomo;
+
+	@Column(name="num_saldosol", columnDefinition="decimal(12,2)")
+	private BigDecimal numSaldosol;
+
+	@Column(name="num_tcmo")
+	private double numTcmo;
+
+	@Column(name="num_tcvdolar", columnDefinition="decimal(12,2)")
+	private BigDecimal numTcvdolar;
+
 	@Column(name="txt_anoproceso")
 	private String txtAnoproceso;
+
+	@Column(name="txt_cheque")
+	private String txtCheque;
 
 	@Column(name="txt_comprobantepago")
 	private String txtComprobantepago;
@@ -120,29 +146,29 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="txt_correlativo")
 	private String txtCorrelativo;
 
+	@Column(name="txt_detallepago")
+	private String txtDetallepago;
+
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
 
 	@Column(name="txt_seriecomprobantepago")
 	private String txtSeriecomprobantepago;
 
-	public VsjCajabanco() {
+	//bi-directional many-to-one association to VsjBancocabecera
+	@ManyToOne
+	@JoinColumn(name="cod_bancocabecera")
+	private VsjBancocabecera vsjBancocabecera;
+
+	public VsjBancodetalle() {
 	}
 
-	public Integer getCodCajabanco() {
-		return this.codCajabanco;
+	public Integer getCodBancodetalle() {
+		return this.codBancodetalle;
 	}
 
-	public void setCodCajabanco(Integer codCajabanco) {
-		this.codCajabanco = codCajabanco;
-	}
-
-	public String getCodComprobanteenlace() {
-		return this.codComprobanteenlace;
-	}
-
-	public void setCodComprobanteenlace(String codComprobanteenlace) {
-		this.codComprobanteenlace = codComprobanteenlace;
+	public void setCodBancodetalle(Integer codBancodetalle) {
+		this.codBancodetalle = codBancodetalle;
 	}
 
 	public String getCodContracta() {
@@ -209,20 +235,20 @@ public class VsjCajabanco implements Serializable {
 		this.codFinanciera = codFinanciera;
 	}
 
+	public String getCodFormapago() {
+		return this.codFormapago;
+	}
+
+	public void setCodFormapago(String codFormapago) {
+		this.codFormapago = codFormapago;
+	}
+
 	public String getCodMes() {
 		return this.codMes;
 	}
 
 	public void setCodMes(String codMes) {
 		this.codMes = codMes;
-	}
-
-	public String getCodOrigenenlace() {
-		return this.codOrigenenlace;
-	}
-
-	public void setCodOrigenenlace(String codOrigenenlace) {
-		this.codOrigenenlace = codOrigenenlace;
 	}
 
 	public String getCodProyecto() {
@@ -249,6 +275,22 @@ public class VsjCajabanco implements Serializable {
 		this.codTipocomprobantepago = codTipocomprobantepago;
 	}
 
+	public String getCodTipogasto() {
+		return this.codTipogasto;
+	}
+
+	public void setCodTipogasto(String codTipogasto) {
+		this.codTipogasto = codTipogasto;
+	}
+
+	public String getCodTipoingreso() {
+		return this.codTipoingreso;
+	}
+
+	public void setCodTipoingreso(String codTipoingreso) {
+		this.codTipoingreso = codTipoingreso;
+	}
+
 	public Character getCodTipomoneda() {
 		return this.codTipomoneda;
 	}
@@ -263,14 +305,6 @@ public class VsjCajabanco implements Serializable {
 
 	public void setCodTipomov(int codTipomov) {
 		this.codTipomov = codTipomov;
-	}
-
-	public String getCodTranscorrelativo() {
-		return this.codTranscorrelativo;
-	}
-
-	public void setCodTranscorrelativo(String codTranscorrelativo) {
-		this.codTranscorrelativo = codTranscorrelativo;
 	}
 
 	public String getCodUactualiza() {
@@ -329,12 +363,20 @@ public class VsjCajabanco implements Serializable {
 		this.flg_Anula = flg_Anula;
 	}
 
-	public Character getFlgEnviado() {
-		return this.flgEnviado;
+	public Character getFlgIm() {
+		return this.flgIm;
 	}
 
-	public void setFlgEnviado(Character flgEnviado) {
-		this.flgEnviado = flgEnviado;
+	public void setFlgIm(Character flgIm) {
+		this.flgIm = flgIm;
+	}
+
+	public Character getFlgSaldo() {
+		return this.flgSaldo;
+	}
+
+	public void setFlgSaldo(Character flgSaldo) {
+		this.flgSaldo = flgSaldo;
 	}
 
 	public Character getIndTipocuenta() {
@@ -353,6 +395,14 @@ public class VsjCajabanco implements Serializable {
 		this.numDebedolar = numDebedolar;
 	}
 
+	public BigDecimal getNumDebemo() {
+		return this.numDebemo;
+	}
+
+	public void setNumDebemo(BigDecimal numDebemo) {
+		this.numDebemo = numDebemo;
+	}
+
 	public BigDecimal getNumDebesol() {
 		return this.numDebesol;
 	}
@@ -369,6 +419,14 @@ public class VsjCajabanco implements Serializable {
 		this.numHaberdolar = numHaberdolar;
 	}
 
+	public BigDecimal getNumHabermo() {
+		return this.numHabermo;
+	}
+
+	public void setNumHabermo(BigDecimal numHabermo) {
+		this.numHabermo = numHabermo;
+	}
+
 	public BigDecimal getNumHabersol() {
 		return this.numHabersol;
 	}
@@ -377,12 +435,60 @@ public class VsjCajabanco implements Serializable {
 		this.numHabersol = numHabersol;
 	}
 
+	public BigDecimal getNumSaldodolar() {
+		return this.numSaldodolar;
+	}
+
+	public void setNumSaldodolar(BigDecimal numSaldodolar) {
+		this.numSaldodolar = numSaldodolar;
+	}
+
+	public BigDecimal getNumSaldomo() {
+		return this.numSaldomo;
+	}
+
+	public void setNumSaldomo(BigDecimal numSaldomo) {
+		this.numSaldomo = numSaldomo;
+	}
+
+	public BigDecimal getNumSaldosol() {
+		return this.numSaldosol;
+	}
+
+	public void setNumSaldosol(BigDecimal numSaldosol) {
+		this.numSaldosol = numSaldosol;
+	}
+
+	public double getNumTcmo() {
+		return this.numTcmo;
+	}
+
+	public void setNumTcmo(double numTcmo) {
+		this.numTcmo = numTcmo;
+	}
+
+	public BigDecimal getNumTcvdolar() {
+		return this.numTcvdolar;
+	}
+
+	public void setNumTcvdolar(BigDecimal numTcvdolar) {
+		this.numTcvdolar = numTcvdolar;
+	}
+
 	public String getTxtAnoproceso() {
 		return this.txtAnoproceso;
 	}
 
 	public void setTxtAnoproceso(String txtAnoproceso) {
 		this.txtAnoproceso = txtAnoproceso;
+	}
+
+	public String getTxtCheque() {
+		return this.txtCheque;
+	}
+
+	public void setTxtCheque(String txtCheque) {
+		this.txtCheque = txtCheque;
 	}
 
 	public String getTxtComprobantepago() {
@@ -401,6 +507,14 @@ public class VsjCajabanco implements Serializable {
 		this.txtCorrelativo = txtCorrelativo;
 	}
 
+	public String getTxtDetallepago() {
+		return this.txtDetallepago;
+	}
+
+	public void setTxtDetallepago(String txtDetallepago) {
+		this.txtDetallepago = txtDetallepago;
+	}
+
 	public String getTxtGlosaitem() {
 		return this.txtGlosaitem;
 	}
@@ -417,12 +531,12 @@ public class VsjCajabanco implements Serializable {
 		this.txtSeriecomprobantepago = txtSeriecomprobantepago;
 	}
 
-	public boolean isAnula() {
-		return flg_Anula!=null && flg_Anula.equals('1');
+	public VsjBancocabecera getVsjBancocabecera() {
+		return this.vsjBancocabecera;
 	}
 
-	public boolean isEnviado() {
-		return flgEnviado!=null && flgEnviado.equals('1');
+	public void setVsjBancocabecera(VsjBancocabecera vsjBancocabecera) {
+		this.vsjBancocabecera = vsjBancocabecera;
 	}
 
 }

@@ -163,47 +163,48 @@ public class CajaGridView extends CajaGridUI implements View {
         gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
         // Tercero
-        DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
+        DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino('3'), "Sel Tercero", "txtNombredestino");
         selTercero.addValueChangeListener(this::setTerceroLogic);
         selTercero.addValidator(new TwoCombosValidator(selProyecto, true, null));
         gridCaja.getColumn("codTercero").setEditorField(selTercero);
 
         // Cta Caja
         ComboBox selCtacontablecaja = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codContracta").setEditorField(selCtacontablecaja);
 
         // Tipo Moneda
         ComboBox selTipomoneda = new ComboBox();
-        DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "codTipomoneda", "Moneda");
-        gridCaja.getColumn("codTipomoneda").setEditorField(selTipomoneda);
+        //DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "codTipomoneda", "Moneda");
+        //gridCaja.getColumn("codTipomoneda").setEditorField(selTipomoneda);
+        //gridCaja.getColumn("codTipomoneda").setConverter()
 
         // Cta Contable
         ComboBox selCtacontable = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('N', GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
 
         // Rubro inst
         ComboBox selCtaespecial = new ComboBox();
         DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial",
-                planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
+                planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
                 "Sel cta especial", "txtDescctaespecial");
         gridCaja.getColumn("codCtaespecial").setEditorField(selCtaespecial);
 
         // Responsable
         ComboBox selResponsable = new ComboBox();
-        DataFilterUtil.bindComboBox(selResponsable, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
+        DataFilterUtil.bindComboBox(selResponsable, "codDestino", destinoRepo.findByIndTipodestinoNot('3'),
                 "Responsable", "txtNombredestino");
         gridCaja.getColumn("codDestino").setEditorField(selResponsable);
 
         ComboBox selLugarGasto = new ComboBox();
         DataFilterUtil.bindComboBox(selLugarGasto, "codContraparte", contraparteRepo.findAll(),
-                "Sel Lugar de Gasto", "txt_DescContraparte");
+                "Sel Lugar de Gasto", "txtDescContraparte");
         gridCaja.getColumn("codContraparte").setEditorField(selLugarGasto);
 
         // Cod. Auxiliar
         ComboBox selAuxiliar = new ComboBox();
-        DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", destinoRepo.findByIndTipodestinoNot("3"),
+        DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", destinoRepo.findByIndTipodestinoNot('3'),
                 "Auxiliar", "txtNombredestino");
         gridCaja.getColumn("codDestinoitem").setEditorField(selAuxiliar);
 
