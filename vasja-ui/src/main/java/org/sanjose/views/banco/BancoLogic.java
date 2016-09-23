@@ -204,6 +204,10 @@ public class BancoLogic extends BancoItemLogic {
 
     @Override
     public void saveComprobante() {
+        log.info("saving Cabecera");
+
+        //
+
 /*        try {
 
             boolean isNew = getVsjCajabanco().getFecFregistro()==null;
@@ -295,5 +299,12 @@ public class BancoLogic extends BancoItemLogic {
         view.getNuevoComprobante().setEnabled(true);
         isEdited = false;
 */
+    }
+
+    VsjBancocabecera getVsjBancocabecera() throws FieldGroup.CommitException {
+        fieldGroupCabezera.commit();
+        VsjBancocabecera item = beanItem.getBean();
+        //view.setEnable(false);
+        return item;
     }
 }

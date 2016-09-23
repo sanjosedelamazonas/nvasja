@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name="vsj_bancocabecera")
 @NamedQuery(name="VsjBancocabecera.findAll", query="SELECT v FROM VsjBancocabecera v")
-public class VsjBancocabecera implements Serializable {
+public class VsjBancocabecera implements Serializable, IVsjBancoItem {
 	private static final long serialVersionUID = 1L;
 
 	@Id

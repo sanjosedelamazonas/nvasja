@@ -128,7 +128,7 @@ public class BancoOperView extends BancoOperUI implements View {
         this.planRepo = planRepo;
 
         this.em = em;
-        viewLogic = new BancoItemLogic(this);
+        viewLogic = new BancoLogic(this);
         setSizeFull();
         addStyleName("crud-view");
         ViewUtil.setDefaultsForNumberField(numIngreso);

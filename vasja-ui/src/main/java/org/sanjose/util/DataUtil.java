@@ -5,6 +5,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.Caja;
+import org.sanjose.model.IVsjItem;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.repo.ScpPlancontableRep;
@@ -108,24 +109,30 @@ public class DataUtil {
                 '0', 'N', GenUtil.getYear(ano), "106%");
     }
 
-    public static VsjCajabanco prepareToSave(VsjCajabanco item) throws FieldGroup.CommitException {
-        if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
-            throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
-
+    public static IVsjItem prepareToSaveItem(IVsjItem item) throws FieldGroup.CommitException {
         SimpleDateFormat sdf = new SimpleDateFormat("MM");
         item.setCodMes(sdf.format(item.getFecFecha()));
         sdf = new SimpleDateFormat("yyyy");
         item.setTxtAnoproceso(sdf.format(item.getFecFecha()));
+        if (item.getCodUregistro() == null) item.setCodUregistro(CurrentUser.get());
+        if (item.getFecFregistro() == null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
+        item.setCodUactualiza(CurrentUser.get());
+        item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+        return item;
+    }
+
+
+
+    public static VsjCajabanco prepareToSave(VsjCajabanco item) throws FieldGroup.CommitException {
+        if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
+            throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
+
+        item = (VsjCajabanco) prepareToSaveItem(item);
         if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
             item.setIndTipocuenta('0');
         } else {
             item.setIndTipocuenta('1');
         }
-        if (item.getCodUregistro() == null) item.setCodUregistro(CurrentUser.get());
-        if (item.getFecFregistro() == null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
-        item.setCodUactualiza(CurrentUser.get());
-        item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
-
         // Verify moneda and fields
         if (PEN.equals(item.getCodTipomoneda())) {
             if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
