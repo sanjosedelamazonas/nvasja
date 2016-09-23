@@ -321,9 +321,9 @@ class BancoItemLogic implements Serializable {
             String s = GenUtil.getSymMoneda(cuenta.getIndTipomoneda());
             view.getSaldoCuenta().setCaption(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
             log.info("In setCuentaLogic: " + saldo + "cap: " + s + " " + cuenta.getIndTipomoneda());
-            view.getSaldoCuenta().setValue("");
+            view.getSaldoCuenta().setValue(df.format(saldo));
             log.info("In setCuentaLogic: " + df.format(saldo));
-            setMonedaLogic(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+            //setMonedaLogic(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             // If still no item created
             if (item==null) {
                 log.info("In setCuentaLogic item is null");

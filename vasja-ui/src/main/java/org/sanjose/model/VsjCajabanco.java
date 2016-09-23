@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name="vsj_cajabanco")
 @NamedQuery(name="VsjCajabanco.findAll", query="SELECT v FROM VsjCajabanco v")
-public class VsjCajabanco implements Serializable {
+public class VsjCajabanco implements Serializable, IVsjItem {
 	private static final long serialVersionUID = 1L;
 
 	@Id
