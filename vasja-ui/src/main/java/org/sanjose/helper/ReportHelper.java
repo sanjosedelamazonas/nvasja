@@ -1,11 +1,14 @@
 package org.sanjose.helper;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -30,6 +33,7 @@ import net.sf.jasperreports.engine.type.WhenNoDataTypeEnum;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 import org.hibernate.Session;
+import org.sanjose.bean.Caja;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
@@ -192,7 +196,11 @@ public class ReportHelper {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
 		HashMap paramMap = new HashMap();
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
-		//paramMap.put("SALDO_INICIAL", (isPen ? operSaldoTotal.getSaldoPen() : operSaldoTotal.getSaldoUsd()));
+		List<Caja> cajas = new ArrayList<>();
+		cajas.add(new Caja("4243", "3424", new BigDecimal(334), new BigDecimal(23232)));
+		cajas.add(new Caja("43434", "3424", new BigDecimal(334), new BigDecimal(23232)));
+		paramMap.put("SALDOS_INICIAL",cajas);
+				//paramMap.put("SALDO_INICIAL", (isPen ? operSaldoTotal.getSaldoPen() : operSaldoTotal.getSaldoUsd()));
 		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
 		paramMap.put("DIARIO_FECHA_MAX", fechaMax);
 		paramMap.put("DIARIO_ISPEN", true);
