@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface VsjBancocabeceraRep extends JpaRepository<VsjBancocabecera, Long> {
 
-    List<VsjBancocabecera> findByCodDestinoOrCodDestinoitem(String s, String s2);
+    List<VsjBancocabecera> findByCodDestino(String s);
 
     VsjBancocabecera findByCodBancocabecera(Integer id);
 

@@ -6,7 +6,7 @@ import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.repo.ScpPlancontableRep;
 import org.sanjose.model.VsjCajabanco;
-import org.sanjose.views.ComprobanteView;
+import org.sanjose.views.caja.ComprobanteView;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

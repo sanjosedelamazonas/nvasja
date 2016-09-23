@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,12 +44,11 @@ import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedEvent;
 import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedListener;
 import dk.apaq.vaadin.addon.printservice.RemotePrintService;
 import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
-import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.sysviews.MainScreen;
+import org.sanjose.views.sys.MainScreen;
 
 @SuppressWarnings("serial")
 public class PrintHelper extends VerticalLayout implements View {

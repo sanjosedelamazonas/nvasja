@@ -9,7 +9,4 @@ import java.util.List;
 public interface VsjBancodetalleRep extends JpaRepository<VsjBancodetalle, Long> {
 
     List<VsjBancodetalle> findByCodDestinoOrCodDestinoitem(String s, String s2);
-
-    VsjBancodetalle findByCodBancocabecera(Integer id);
-
 }

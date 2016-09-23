@@ -13,6 +13,28 @@
     <packaging>${packaging.type}</packaging>
 
     <dependencies>
+
+        <!-- Project modules -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>vasja-widgetset</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>vasja-fonts</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>vasja-reports</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- /Project modules -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -79,18 +101,6 @@
             <version>0.7.4</version>
         </dependency>
 
-        <!-- Custom components -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>vasja-widgetset</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>vasja-fonts</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <!-- Bean validation implementation -->
         <dependency>
@@ -105,6 +115,11 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sanjosedelamazonas</groupId>
+            <artifactId>vasja-reports</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
