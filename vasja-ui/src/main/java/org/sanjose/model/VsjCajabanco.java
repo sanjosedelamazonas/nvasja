@@ -5,7 +5,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -23,7 +22,7 @@ public class VsjCajabanco implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="cod_cajabanco")
-	private int codCajabanco;
+	private Integer codCajabanco;
 
 	@Column(name="cod_comprobanteenlace")
 	private String codComprobanteenlace;
@@ -31,7 +30,7 @@ public class VsjCajabanco implements Serializable {
 	@NotBlank
 	@Column(name="cod_contracta")
 	private String codContracta;
-	// Lugar de Gasto
+
 	@Column(name="cod_contraparte")
 	private String codContraparte;
 
@@ -45,10 +44,6 @@ public class VsjCajabanco implements Serializable {
 
 	@Column(name="cod_ctaproyecto")
 	private String codCtaproyecto;
-
-	@NotNull
-	@Column(name="cod_tipomov")
-	private Integer codTipomov;
 
 	//@NotNull
 	@NotBlank
@@ -80,7 +75,14 @@ public class VsjCajabanco implements Serializable {
 
 	@NotNull
 	@Column(name="cod_tipomoneda")
-	private String codTipomoneda;
+	private Character codTipomoneda;
+
+	@NotNull
+	@Column(name="cod_tipomov")
+	private Integer codTipomov;
+
+	@Column(name="cod_transcorrelativo")
+	private String codTranscorrelativo;
 
 	@Column(name="cod_uactualiza")
 	private String codUactualiza;
@@ -101,32 +103,30 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="fec_fregistro")
 	private Timestamp fecFregistro;
 
-	private String flg_Anula;
+	private Character flg_Anula;
 
 	@Column(name="flg_enviado")
-	private String flgEnviado;
+	private Character flgEnviado;
 
-	//@NotNull
+
 	@Column(name="ind_tipocuenta")
-	private String indTipocuenta;
+	private Character indTipocuenta;
 
-	@Column(name="num_debedolar")
+	@Column(name="num_debedolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebedolar;
 
-	@Column(name="num_debesol")
+	@Column(name="num_debesol", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebesol;
 
-	@Column(name="num_haberdolar")
+	@Column(name="num_haberdolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numHaberdolar;
 
-	@Column(name="num_habersol")
+	@Column(name="num_habersol", columnDefinition="decimal(12,2)")
 	private BigDecimal numHabersol;
 
-	//@NotNull
 	@Column(name="txt_anoproceso")
 	private String txtAnoproceso;
 
-	@Size(max=20)
 	@Column(name="txt_comprobantepago")
 	private String txtComprobantepago;
 
@@ -134,25 +134,20 @@ public class VsjCajabanco implements Serializable {
 	private String txtCorrelativo;
 
 	@NotBlank
-	@Size(min=3, max=70)
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
 
-	@Size(max=5)
 	@Column(name="txt_seriecomprobantepago")
 	private String txtSeriecomprobantepago;
-
-	@Column(name="cod_transcorrelativo")
-	private String codTranscorrelativo;
 
 	public VsjCajabanco() {
 	}
 
-	public int getCodCajabanco() {
+	public Integer getCodCajabanco() {
 		return this.codCajabanco;
 	}
 
-	public void setCodCajabanco(int codCajabanco) {
+	public void setCodCajabanco(Integer codCajabanco) {
 		this.codCajabanco = codCajabanco;
 	}
 
@@ -268,12 +263,28 @@ public class VsjCajabanco implements Serializable {
 		this.codTipocomprobantepago = codTipocomprobantepago;
 	}
 
-	public String getCodTipomoneda() {
+	public Character getCodTipomoneda() {
 		return this.codTipomoneda;
 	}
 
-	public void setCodTipomoneda(String codTipomoneda) {
+	public void setCodTipomoneda(Character codTipomoneda) {
 		this.codTipomoneda = codTipomoneda;
+	}
+
+	public Integer getCodTipomov() {
+		return this.codTipomov;
+	}
+
+	public void setCodTipomov(Integer codTipomov) {
+		this.codTipomov = codTipomov;
+	}
+
+	public String getCodTranscorrelativo() {
+		return this.codTranscorrelativo;
+	}
+
+	public void setCodTranscorrelativo(String codTranscorrelativo) {
+		this.codTranscorrelativo = codTranscorrelativo;
 	}
 
 	public String getCodUactualiza() {
@@ -324,27 +335,27 @@ public class VsjCajabanco implements Serializable {
 		this.fecFregistro = fecFregistro;
 	}
 
-	public String getFlg_Anula() {
+	public Character getFlg_Anula() {
 		return this.flg_Anula;
 	}
 
-	public void setFlg_Anula(String flg_Anula) {
+	public void setFlg_Anula(Character flg_Anula) {
 		this.flg_Anula = flg_Anula;
 	}
 
-	public String getFlgEnviado() {
+	public Character getFlgEnviado() {
 		return this.flgEnviado;
 	}
 
-	public void setFlgEnviado(String flgEnviado) {
+	public void setFlgEnviado(Character flgEnviado) {
 		this.flgEnviado = flgEnviado;
 	}
 
-	public String getIndTipocuenta() {
+	public Character getIndTipocuenta() {
 		return this.indTipocuenta;
 	}
 
-	public void setIndTipocuenta(String indTipocuenta) {
+	public void setIndTipocuenta(Character indTipocuenta) {
 		this.indTipocuenta = indTipocuenta;
 	}
 
@@ -420,47 +431,53 @@ public class VsjCajabanco implements Serializable {
 		this.txtSeriecomprobantepago = txtSeriecomprobantepago;
 	}
 
-	public Integer getCodTipomov() {
-		return codTipomov;
+	public boolean isAnula() {
+		return flg_Anula!=null && flg_Anula.equals('1');
 	}
 
-	public void setCodTipomov(Integer codTipomov) {
-		this.codTipomov = codTipomov;
-	}
-
-	public String getCodTranscorrelativo() {
-		return codTranscorrelativo;
-	}
-
-	public void setCodTranscorrelativo(String codTranscorrelativo) {
-		this.codTranscorrelativo = codTranscorrelativo;
+	public boolean isEnviado() {
+		return flgEnviado!=null && flgEnviado.equals('1');
 	}
 
 	@Override
 	public String toString() {
-		return "VsjCajabanco [codCajabanco=" + codCajabanco
-				+ ", codComprobanteenlace=" + codComprobanteenlace
-				+ ", codContracta=" + codContracta + ", codContraparte="
-				+ codContraparte + ", codCtacontable=" + codCtacontable
-				+ ", codCtaespecial=" + codCtaespecial + ", codCtaproyecto="
-				+ codCtaproyecto + ", codDestino=" + codDestino
-				+ ", codDestinoitem=" + codDestinoitem + ", codFinanciera="
-				+ codFinanciera + ", codMes=" + codMes + ", codOrigenenlace="
-				+ codOrigenenlace + ", codProyecto=" + codProyecto
-				+ ", codTercero=" + codTercero + ", codTipocomprobantepago="
-				+ codTipocomprobantepago + ", codTipomoneda=" + codTipomoneda
-				+ ", codUactualiza=" + codUactualiza + ", codUregistro="
-				+ codUregistro + ", fecComprobantepago=" + fecComprobantepago
-				+ ", fecFactualiza=" + fecFactualiza + ", fecFecha=" + fecFecha
-				+ ", fecFregistro=" + fecFregistro + ", flg_Anula=" + flg_Anula
-				+ ", flgEnviado=" + flgEnviado + ", indTipocuenta="
-				+ indTipocuenta + ", numDebedolar=" + numDebedolar
-				+ ", numDebesol=" + numDebesol + ", numHaberdolar="
-				+ numHaberdolar + ", numHabersol=" + numHabersol
-				+ ", txtAnoproceso=" + txtAnoproceso + ", txtComprobantepago="
-				+ txtComprobantepago + ", txtCorrelativo=" + txtCorrelativo
-				+ ", txtGlosaitem=" + txtGlosaitem
-				+ ", txtSeriecomprobantepago=" + txtSeriecomprobantepago + "]";
+		return "VsjCajabanco{" +
+				"codCajabanco=" + codCajabanco +
+				", codComprobanteenlace='" + codComprobanteenlace + '\'' +
+				", codContracta='" + codContracta + '\'' +
+				", codContraparte='" + codContraparte + '\'' +
+				", codCtacontable='" + codCtacontable + '\'' +
+				", codCtaespecial='" + codCtaespecial + '\'' +
+				", codCtaproyecto='" + codCtaproyecto + '\'' +
+				", codDestino='" + codDestino + '\'' +
+				", codDestinoitem='" + codDestinoitem + '\'' +
+				", codFinanciera='" + codFinanciera + '\'' +
+				", codMes='" + codMes + '\'' +
+				", codOrigenenlace='" + codOrigenenlace + '\'' +
+				", codProyecto='" + codProyecto + '\'' +
+				", codTercero='" + codTercero + '\'' +
+				", codTipocomprobantepago='" + codTipocomprobantepago + '\'' +
+				", codTipomoneda=" + codTipomoneda +
+				", codTipomov=" + codTipomov +
+				", codTranscorrelativo='" + codTranscorrelativo + '\'' +
+				", codUactualiza='" + codUactualiza + '\'' +
+				", codUregistro='" + codUregistro + '\'' +
+				", fecComprobantepago=" + fecComprobantepago +
+				", fecFactualiza=" + fecFactualiza +
+				", fecFecha=" + fecFecha +
+				", fecFregistro=" + fecFregistro +
+				", flg_Anula=" + flg_Anula +
+				", flgEnviado=" + flgEnviado +
+				", indTipocuenta=" + indTipocuenta +
+				", numDebedolar=" + numDebedolar +
+				", numDebesol=" + numDebesol +
+				", numHaberdolar=" + numHaberdolar +
+				", numHabersol=" + numHabersol +
+				", txtAnoproceso='" + txtAnoproceso + '\'' +
+				", txtComprobantepago='" + txtComprobantepago + '\'' +
+				", txtCorrelativo='" + txtCorrelativo + '\'' +
+				", txtGlosaitem='" + txtGlosaitem + '\'' +
+				", txtSeriecomprobantepago='" + txtSeriecomprobantepago + '\'' +
+				'}';
 	}
-
 }

@@ -16,12 +16,12 @@ public class Scp_Contraparte implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="cod_contraparte")
 	private String codContraparte;
 
 	@Column(name="cod_categorialugargasto")
-	private String codCategorialugargasto;
+	private Character codCategorialugargasto;
 
 	@Column(name="cod_uactualiza")
 	private String codUactualiza;
@@ -36,9 +36,10 @@ public class Scp_Contraparte implements Serializable {
 	private Timestamp fecFregistro;
 
 	@Column(name="flg_im")
-	private String flgIm;
+	private Character flgIm;
 
-	private String txt_DescContraparte;
+	@Column(name="txt_desccontraparte")
+	private String txtDescContraparte;
 
 	@Column(name="txt_direccion")
 	private String txtDireccion;
@@ -60,11 +61,11 @@ public class Scp_Contraparte implements Serializable {
 		this.codContraparte = codContraparte;
 	}
 
-	public String getCodCategorialugargasto() {
+	public Character getCodCategorialugargasto() {
 		return this.codCategorialugargasto;
 	}
 
-	public void setCodCategorialugargasto(String codCategorialugargasto) {
+	public void setCodCategorialugargasto(Character codCategorialugargasto) {
 		this.codCategorialugargasto = codCategorialugargasto;
 	}
 
@@ -100,20 +101,20 @@ public class Scp_Contraparte implements Serializable {
 		this.fecFregistro = fecFregistro;
 	}
 
-	public String getFlgIm() {
+	public Character getFlgIm() {
 		return this.flgIm;
 	}
 
-	public void setFlgIm(String flgIm) {
+	public void setFlgIm(Character flgIm) {
 		this.flgIm = flgIm;
 	}
 
-	public String getTxt_DescContraparte() {
-		return this.txt_DescContraparte;
+	public String getTxtDescContraparte() {
+		return this.txtDescContraparte;
 	}
 
-	public void setTxt_DescContraparte(String txt_DescContraparte) {
-		this.txt_DescContraparte = txt_DescContraparte;
+	public void setTxtDescContraparte(String txtDescContraparte) {
+		this.txtDescContraparte = txtDescContraparte;
 	}
 
 	public String getTxtDireccion() {

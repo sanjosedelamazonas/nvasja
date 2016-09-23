@@ -1,6 +1,7 @@
 package org.sanjose.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.*;
 
 
@@ -11,13 +12,52 @@ import javax.persistence.*;
 @Entity
 @Table(name="vsj_propiedad")
 @NamedQuery(name="VsjPropiedad.findAll", query="SELECT v FROM VsjPropiedad v")
+@NamedStoredProcedureQueries(value = {
+		@NamedStoredProcedureQuery(
+				name = "getEnviarContabilidad",
+				procedureName = "usp_scp_vsj_enviarAContabilidad",
+				parameters = {
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = BigDecimal.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = BigDecimal.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class)
+				}
+		),
+		@NamedStoredProcedureQuery(
+				name = "getSaldoAlDia",
+				procedureName = "usp_scp_vsj_getSaldoAlDia",
+				parameters = {
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class),
+						@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class),
+						@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class)
+				}
+		),
+		@NamedStoredProcedureQuery(
+				name = "getSaldoAlDiaCaja",
+				procedureName = "usp_scp_vsj_GetSaldoAlDiaCaja",
+				parameters = {
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class)
+				}
+		)
+}
+)
 public class VsjPropiedad implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="cod_propiedad")
-	private int codPropiedad;
+	private Integer codPropiedad;
 
 	private String nombre;
 
@@ -26,11 +66,11 @@ public class VsjPropiedad implements Serializable {
 	public VsjPropiedad() {
 	}
 
-	public int getCodPropiedad() {
+	public Integer getCodPropiedad() {
 		return this.codPropiedad;
 	}
 
-	public void setCodPropiedad(int codPropiedad) {
+	public void setCodPropiedad(Integer codPropiedad) {
 		this.codPropiedad = codPropiedad;
 	}
 
@@ -50,17 +90,9 @@ public class VsjPropiedad implements Serializable {
 		this.valor = valor;
 	}
 
+
 	public VsjPropiedad(String nombre, String valor) {
 		this.nombre = nombre;
 		this.valor = valor;
-	}
-
-	@Override
-	public String toString() {
-		return "VsjPropiedad{" +
-				"codPropiedad=" + codPropiedad +
-				", nombre='" + nombre + '\'' +
-				", valor='" + valor + '\'' +
-				'}';
 	}
 }

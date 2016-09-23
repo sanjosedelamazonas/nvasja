@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>sqljdbc4</artifactId>
-            <version>4.0</version>
+            <version>4.2</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -115,11 +115,6 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.sanjosedelamazonas</groupId>
-            <artifactId>vasja-reports</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

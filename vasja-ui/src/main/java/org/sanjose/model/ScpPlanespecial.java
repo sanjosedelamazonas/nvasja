@@ -55,13 +55,13 @@ public class ScpPlanespecial implements Serializable {
 	private Timestamp fecFregistro;
 
 	@Column(name="flg_im")
-	private String flgIm;
+	private Character flgIm;
 
 	@Column(name="flg_movimiento")
-	private String flgMovimiento;
+	private Character flgMovimiento;
 
 	@Column(name="ind_nivel")
-	private String indNivel;
+	private Character indNivel;
 
 	@Column(name="txt_desccta1")
 	private String txtDesccta1;
@@ -197,27 +197,27 @@ public class ScpPlanespecial implements Serializable {
 		this.fecFregistro = fecFregistro;
 	}
 
-	public String getFlgIm() {
+	public Character getFlgIm() {
 		return this.flgIm;
 	}
 
-	public void setFlgIm(String flgIm) {
+	public void setFlgIm(Character flgIm) {
 		this.flgIm = flgIm;
 	}
 
-	public String getFlgMovimiento() {
+	public Character getFlgMovimiento() {
 		return this.flgMovimiento;
 	}
 
-	public void setFlgMovimiento(String flgMovimiento) {
+	public void setFlgMovimiento(Character flgMovimiento) {
 		this.flgMovimiento = flgMovimiento;
 	}
 
-	public String getIndNivel() {
+	public Character getIndNivel() {
 		return this.indNivel;
 	}
 
-	public void setIndNivel(String indNivel) {
+	public void setIndNivel(Character indNivel) {
 		this.indNivel = indNivel;
 	}
 

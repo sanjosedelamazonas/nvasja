@@ -14,13 +14,13 @@ public interface ScpPlancontableRep extends JpaRepository<ScpPlancontable, Long>
 			String activa2, String mov2, String ano2, String codcta2);
 
 	List<ScpPlancontable> findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
-			String activa, String mov, String ano, String codcta);
+			Character activa, Character mov, String ano, String codcta);
 
 	List<ScpPlancontable> findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
-			String aciva, String mov, String ano, String codcta1, String codcta2, String codcta3, String codcta4);
+			Character aciva, Character mov, String ano, String codcta1, String codcta2, String codcta3, String codcta4);
 
 	List<ScpPlancontable> findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-			String activa, String mov, String ano, String tipomoneda, String codcta);
+			Character activa, Character mov, String ano, Character tipomoneda, String codcta);
 
 	List<ScpPlancontable> findByFlgMovimientoAndId_TxtAnoproceso(String mov, String ano);
 

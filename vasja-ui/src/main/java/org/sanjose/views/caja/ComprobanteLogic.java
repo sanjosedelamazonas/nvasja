@@ -112,13 +112,13 @@ class ComprobanteLogic implements Serializable {
         view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
 
         // Tercero
-        DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getDestinoRepo().findByIndTipodestino("3"), "Sel Tercero",
+        DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
                 "txtNombredestino");
         view.getSelTercero().addValueChangeListener(this::setTerceroLogic);
 
         // Tipo Moneda
         DataFilterUtil.bindTipoMonedaOptionGroup(view.getSelMoneda(), "codTipomoneda");
-        view.getSelMoneda().addValueChangeListener(event -> setMonedaLogic(event.getProperty().getValue().toString()));
+        view.getSelMoneda().addValueChangeListener(event -> setMonedaLogic(event.getProperty().getValue().toString().charAt(0)));
 
         view.getNumIngreso().addValueChangeListener(event -> {
                     if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
@@ -138,7 +138,7 @@ class ComprobanteLogic implements Serializable {
         );
 
         // Responsable
-        DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
+        DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "Responsable", "txtNombredestino");
 
         view.getSelResponsable().addValueChangeListener(valueChangeEvent ->  {
@@ -148,10 +148,10 @@ class ComprobanteLogic implements Serializable {
 
         // Lugar de gasto
         DataFilterUtil.bindComboBox(view.getSelLugarGasto(), "codContraparte", view.getContraparteRepo().findAll(),
-                "Sel Lugar de Gasto", "txt_DescContraparte");
+                "Sel Lugar de Gasto", "txtDescContraparte");
 
         // Cod. Auxiliar
-        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
+        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "Auxiliar", "txtNombredestino");
 
         // Tipo doc
@@ -162,13 +162,13 @@ class ComprobanteLogic implements Serializable {
         // Cta Contable
         DataFilterUtil.bindComboBox(view.getSelCtaContable(), "id.codCtacontable",
                 view.getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
-                        "0", "N", GenUtil.getCurYear(), "101%", "102%", "104%", "106%"),
+                        '0', 'N', GenUtil.getCurYear(), "101%", "102%", "104%", "106%"),
                 //getPlanRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""),
                 "Sel cta contable", "txtDescctacontable");
 
         // Rubro inst
         DataFilterUtil.bindComboBox(view.getSelRubroInst(), "id.codCtaespecial",
-                view.getPlanespecialRep().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
+                view.getPlanespecialRep().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
                 "Sel cta especial", "txtDescctaespecial");
 
         // Rubro Proy
@@ -186,8 +186,11 @@ class ComprobanteLogic implements Serializable {
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
                 VsjConfiguractacajabanco config = view.getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
-                view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
-                view.getSelRubroInst().setValue(config.getCodCtaespecial());
+                if (config!=null) {
+                    view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
+                    view.getSelRubroInst().setValue(config.getCodCtaespecial());
+                }
+
             }
         });
         view.getGlosa().setMaxLength(70);
@@ -291,14 +294,14 @@ class ComprobanteLogic implements Serializable {
 
 
     private void refreshDestino() {
-        DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
+        DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
-        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot("3"),
+        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
     }
 
 
-    private void setMonedaLogic(String moneda) {
+    private void setMonedaLogic(Character moneda) {
         if (!isLoading) {
             try {
                 fieldGroup.unbind(view.getNumEgreso());
@@ -356,7 +359,7 @@ class ComprobanteLogic implements Serializable {
     private void setSaldoCaja() {
         if (view.getDataFechaComprobante().getValue()!=null && view.getSelCaja().getValue()!=null && view.getSelMoneda().getValue()!=null) {
             BigDecimal saldo = procUtil.getSaldoCaja(view.getDataFechaComprobante().getValue(),
-                    view.getSelCaja().getValue().toString(), view.getSelMoneda().getValue().toString());
+                    view.getSelCaja().getValue().toString(), view.getSelMoneda().getValue().toString().charAt(0));
             if (PEN.equals(view.getSelMoneda().getValue().toString())) {
                 view.getSaldoCajaPEN().setValue(saldo.toString());
                 view.getSaldoCajaUSD().setValue("");
@@ -369,10 +372,10 @@ class ComprobanteLogic implements Serializable {
 
 
     private void setCajaLogic() {
-        setCajaLogic(view.getSelMoneda().getValue().toString());
+        setCajaLogic(view.getSelMoneda().getValue().toString().charAt(0));
     }
 
-    private void setCajaLogic(String tipomoneda) {
+    private void setCajaLogic(Character tipomoneda) {
 
         if (isProyecto()) {
             List<VsjConfiguracioncaja> configs = view.getConfiguracioncajaRepo().findByCodProyectoAndIndTipomoneda(
@@ -553,8 +556,7 @@ class ComprobanteLogic implements Serializable {
             // EDITING
             if (!GenUtil.strNullOrEmpty(item.getTxtCorrelativo())) {
                 view.getNumVoucher().setValue(item.getTxtCorrelativo());
-            } else
-                view.getNumVoucher().setValue(Integer.toString(item.getCodCajabanco()));
+            }
             view.setEnableFields(true);
             setSaldos();
             setSaldoCaja();
@@ -617,12 +619,12 @@ class ComprobanteLogic implements Serializable {
         return item;
     }
 
-    void nuevoComprobante(String moneda) {
+    void nuevoComprobante(char moneda) {
         savedCajabanco = null;
         VsjCajabanco vcb = new VsjCajabanco();
-        vcb.setFlgEnviado("0");
-        vcb.setFlg_Anula("0");
-        vcb.setIndTipocuenta("0");
+        vcb.setFlgEnviado('0');
+        vcb.setFlg_Anula('0');
+        vcb.setIndTipocuenta('0');
         vcb.setCodTipomoneda(moneda);
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
@@ -670,7 +672,7 @@ class ComprobanteLogic implements Serializable {
 
         vcb.setTxtGlosaitem("ANULADO - " + (vcb.getTxtGlosaitem().length()>60 ?
                 vcb.getTxtGlosaitem().substring(0,60) : vcb.getTxtGlosaitem()));
-        vcb.setFlg_Anula("1");
+        vcb.setFlg_Anula('1');
         return vcb;
     }
     
@@ -681,7 +683,7 @@ class ComprobanteLogic implements Serializable {
                 log.info("no se puede eliminar si no esta ya guardado");
                 return;
             }
-            if (savedCajabanco.getFlgEnviado().equals("1")) {
+            if (savedCajabanco.isEnviado()) {
                 Notification.show("Problema al eliminar", "No se puede eliminar porque ya esta enviado a la contabilidad",
                         Notification.Type.WARNING_MESSAGE);
                 return;

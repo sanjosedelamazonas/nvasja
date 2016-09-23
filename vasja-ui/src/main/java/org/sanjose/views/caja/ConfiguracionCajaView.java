@@ -72,12 +72,12 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
 
         ComboBox selCtacontable = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
-                "0", "N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+                '0', 'N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridConfigCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
         
 
         ComboBox selDestino = new ComboBox();
-        DataFilterUtil.bindComboBox(selDestino, "codDestino", destinoRepo.findByIndTipodestino("3"), "Sel Tercero", "txtNombredestino");
+        DataFilterUtil.bindComboBox(selDestino, "codDestino", destinoRepo.findByIndTipodestino('3'), "Sel Tercero", "txtNombredestino");
         gridConfigCaja.getColumn("codDestino").setEditorField(selDestino);
 
         ComboBox selProyecto = new ComboBox();

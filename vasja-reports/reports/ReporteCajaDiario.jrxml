@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-22T21:13:53 -->
+<!-- 2016-09-23T00:16:00 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCajaDiario" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="571" leftMargin="12" rightMargin="12" topMargin="12" bottomMargin="12" uuid="cbf7024d-2a36-4fa2-8a1d-19d9bb8950a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -11,10 +11,81 @@
 	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
 	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
 	<subDataset name="SaldosInicial" uuid="0fb82207-880f-404a-902c-471638cf87f0">
 		<field name="caja" class="org.sanjose.bean.Caja">
 			<fieldDescription><![CDATA[_THIS]]></fieldDescription>
 		</field>
+		<variable name="SumPEN" class="java.math.BigDecimal" calculation="Sum">
+			<variableExpression><![CDATA[$F{caja}.getSoles()]]></variableExpression>
+		</variable>
+		<variable name="SumUSD" class="java.math.BigDecimal" calculation="Sum">
+			<variableExpression><![CDATA[$F{caja}.getDolares()]]></variableExpression>
+		</variable>
+	</subDataset>
+	<subDataset name="SaldosFinales" uuid="0fb82207-880f-404a-902c-471638cf87f1">
+		<field name="caja" class="org.sanjose.bean.Caja">
+			<fieldDescription><![CDATA[_THIS]]></fieldDescription>
+		</field>
+		<variable name="SumPEN" class="java.math.BigDecimal" calculation="Sum">
+			<variableExpression><![CDATA[$F{caja}.getSoles()]]></variableExpression>
+		</variable>
+		<variable name="SumUSD" class="java.math.BigDecimal" calculation="Sum">
+			<variableExpression><![CDATA[$F{caja}.getDolares()]]></variableExpression>
+		</variable>
 	</subDataset>
 	<parameter name="DIARIO_FECHA_MIN" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>
@@ -30,6 +101,7 @@
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
 	<parameter name="SALDOS_INICIAL" class="java.util.List" nestedType="org.sanjose.bean.Caja"/>
+	<parameter name="SALDOS_FINALES" class="java.util.List" nestedType="org.sanjose.bean.Caja"/>
 	<queryString>
 		<![CDATA[SELECT 
 		caja.[ind_tipocuenta] as tipo_cuenta
@@ -343,14 +415,15 @@
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="239" splitType="Stretch">
+		<band height="312" splitType="Stretch">
 			<textField>
 				<reportElement mode="Transparent" x="71" y="189" width="117" height="15" forecolor="#333333" backcolor="#FFFFFF" uuid="d100f7c9-0c99-4d4b-9cb6-6ef90b3292ae"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{REPORTE_PREPARADO_POR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_PREPARADO_POR}
+]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Transparent" x="367" y="189" width="121" height="15" forecolor="#333333" backcolor="#FFFFFF" uuid="21d69a24-74e4-4d41-a3ca-cfaab319a4ee"/>
@@ -389,15 +462,15 @@
 				<text><![CDATA[Revisado por]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="66" y="169" width="128" height="1" uuid="937e1001-8ee5-47fe-acd2-adface82b6a9"/>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="66" y="167" width="128" height="1" uuid="937e1001-8ee5-47fe-acd2-adface82b6a9"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineColor="#000000"/>
+					<pen lineWidth="0.5" lineColor="#000000"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="362" y="169" width="128" height="1" uuid="db4ed022-6d04-45a6-9d3e-9885ec1f1aa2"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineColor="#000000"/>
+					<pen lineWidth="0.5" lineColor="#000000"/>
 				</graphicElement>
 			</line>
 			<line>
@@ -407,44 +480,268 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="9" y="16" width="103" height="20" uuid="423a5056-ac15-4167-9781-7c9f9f50e6ae"/>
-				<text><![CDATA[Saldo final de caja al]]></text>
+				<reportElement x="290" y="15" width="103" height="12" uuid="423a5056-ac15-4167-9781-7c9f9f50e6ae"/>
+				<text><![CDATA[Saldos finales de caja al]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="112" y="16" width="76" height="19" uuid="c0cedafa-a63c-4dd0-9095-9e9c40d0f946"/>
+				<reportElement x="394" y="15" width="66" height="12" uuid="c0cedafa-a63c-4dd0-9095-9e9c40d0f946"/>
 				<textFieldExpression><![CDATA[$P{STR_FECHA_MAX}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="220" y="12" width="148" height="23" uuid="dd2565cc-55fe-41af-94c5-568d073a464a"/>
-				<text><![CDATA[Saldo inicial de caja al]]></text>
+				<reportElement x="10" y="15" width="110" height="12" uuid="dd2565cc-55fe-41af-94c5-568d073a464a"/>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[Saldos iniciales de caja al]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="392" y="12" width="59" height="23" uuid="76be602a-959a-4d14-8815-d48784785a89"/>
+				<reportElement x="120" y="15" width="52" height="12" uuid="76be602a-959a-4d14-8815-d48784785a89"/>
+				<textElement verticalAlignment="Bottom"/>
 				<textFieldExpression><![CDATA[$P{STR_FECHA_MIN}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement x="12" y="40" width="320" height="20" uuid="47321356-488b-43f3-a953-f4812ad66b6c">
-					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value=""/>
+				<reportElement x="11" y="28" width="160" height="30" uuid="94293a8a-9088-4062-977d-9ba71ef6233a">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 1_TD"/>
 				</reportElement>
-				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
-					<datasetRun subDataset="SaldosInicial" uuid="844e2248-c17e-4fa2-b39a-3ecc88c37556">
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="SaldosInicial" uuid="dd7dcb3c-004a-44b4-842b-61822253d94f">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SALDOS_INICIAL})]]></dataSourceExpression>
 					</datasetRun>
-					<jr:listContents height="20" width="320">
-						<textField>
-							<reportElement x="10" y="0" width="100" height="20" uuid="69dc61a4-e91d-4e39-8d41-4bceffb8779c"/>
-							<textFieldExpression><![CDATA[$F{caja}.getCodigo()]]></textFieldExpression>
-						</textField>
-						<textField>
-							<reportElement x="112" y="0" width="100" height="20" uuid="c9106ce8-221f-4a22-b78b-f876abf6b896"/>
-							<textFieldExpression><![CDATA[$F{caja}.getSoles()]]></textFieldExpression>
-						</textField>
-						<textField>
-							<reportElement x="220" y="0" width="100" height="20" uuid="599626bf-add0-45df-9fd3-76f1fc828f91"/>
-							<textFieldExpression><![CDATA[$F{caja}.getDolares()]]></textFieldExpression>
-						</textField>
-					</jr:listContents>
-				</jr:list>
+					<jr:column width="40" uuid="2e45c704-c2aa-44b3-8785-48f287562d58">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table 1_CH" height="10" rowSpan="1">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table 1_CH" height="10" rowSpan="1">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</jr:columnFooter>
+						<jr:detailCell style="Table 1_TD" height="10">
+							<textField>
+								<reportElement x="0" y="0" width="40" height="10" uuid="57a18df5-ed0c-4f0e-99f2-cb4df2e49605"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement>
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{caja}.getCodigo()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="60" uuid="13abeaf6-dc51-414a-94bb-91a3c7047d02">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table 1_CH" height="10" rowSpan="1">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="10" uuid="0fdef360-aec3-4586-9cd3-32c94fc9d1fb"/>
+								<box>
+									<leftPen lineWidth="1.0"/>
+									<rightPen lineWidth="1.0"/>
+								</box>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[PEN S/.]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table 1_CH" height="10" rowSpan="1">
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement x="0" y="0" width="60" height="10" uuid="9326f81f-b1ec-4102-9499-e7dbc450e749"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SumPEN}]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell style="Table 1_TD" height="10">
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement x="0" y="0" width="60" height="10" uuid="244c0376-feb5-4cd7-9f64-0d519f66ff5a"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{caja}.getSoles()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="60" uuid="36277f12-1bd4-4f80-9715-fdae0554ac90">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table 1_CH" height="10" rowSpan="1">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="10" uuid="987ff705-677d-4577-85e6-569fdc0baf47"/>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[USD $]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table 1_CH" height="10" rowSpan="1">
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement x="0" y="0" width="60" height="10" uuid="bd43fa69-68c6-4dfe-8926-c67e2ee126e0"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SumUSD}]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell style="Table 1_TD" height="10">
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement x="0" y="0" width="60" height="10" uuid="0566fa2f-3b15-42b8-8b29-5eb177a36532"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{caja}.getDolares()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<componentElement>
+				<reportElement x="291" y="28" width="170" height="30" uuid="4d890f87-76de-4392-be4b-2bc3b6dc77ee">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 2_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 2_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 2_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="SaldosFinales" uuid="dd7dcb3c-004a-44b4-842b-61822253d94f">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SALDOS_INICIAL})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="50" uuid="934c37fa-991f-4767-b31d-a6622ba304fd">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table 2_CH" height="10" rowSpan="1"/>
+						<jr:columnFooter style="Table 2_CH" height="10" rowSpan="1"/>
+						<jr:detailCell style="Table 2_TD" height="10">
+							<textField>
+								<reportElement x="0" y="0" width="50" height="10" uuid="8583d7c6-a3af-4e47-9f02-43ee66f53566"/>
+								<textElement>
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{caja}.getCodigo()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="60" uuid="205b5f10-ff68-4b77-bfa2-d66d5e04e5c7">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table 2_CH" height="10" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="10" uuid="737be63d-0624-4fa3-92ac-5392d9a3b5e7"/>
+								<box>
+									<leftPen lineWidth="1.0"/>
+									<rightPen lineWidth="1.0"/>
+								</box>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[PEN S/.]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table 2_CH" height="10" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="60" height="10" uuid="f00f7cee-cfea-440d-b27c-f94d89a24997"/>
+								<box>
+									<leftPen lineWidth="1.0"/>
+									<rightPen lineWidth="1.0"/>
+								</box>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SumPEN}]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell style="Table 2_TD" height="10">
+							<textField>
+								<reportElement x="0" y="0" width="60" height="10" uuid="f75e188b-2827-4df1-a70d-f2d19a515060"/>
+								<box>
+									<leftPen lineWidth="1.0"/>
+									<rightPen lineWidth="1.0"/>
+								</box>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{caja}.getSoles()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="60" uuid="2c7f8371-c669-478a-8e49-5988aa9e21ef">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table 2_CH" height="10" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="10" uuid="ca6d2505-8f54-49bf-b826-1cfb21a875bb"/>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[USD $]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table 2_CH" height="10" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="60" height="10" uuid="ccc1e39b-7a13-4050-847d-9527be242a95"/>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SumUSD}]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell style="Table 2_TD" height="10">
+							<textField>
+								<reportElement x="0" y="0" width="60" height="10" uuid="469342c2-90dc-46d2-b79c-671f3c183433"/>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{caja}.getDolares()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
 			</componentElement>
 		</band>
 	</summary>

@@ -138,4 +138,8 @@ public class MainUI extends UI {
     public TransferenciaView getTransferenciaView() {
         return transferenciaView;
     }
+
+    public MsgUsuarioRep getMsgUsuarioRep() {
+        return msgUsuarioRep;
+    }
 }

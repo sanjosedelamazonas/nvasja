@@ -129,10 +129,10 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         cajaSaldosLayout.removeAllComponents();
         if (dataFechaComprobante.getValue() != null && selMoneda.getValue() != null) {
             BigDecimal total = new BigDecimal(0.00);
-            for (ScpPlancontable caja : DataUtil.getCajas(getDataFechaComprobante().getValue(), planRepo, PEN.equals(selMoneda.getValue().toString()))) {
+            for (ScpPlancontable caja : DataUtil.getCajas(getDataFechaComprobante().getValue(), planRepo, PEN.equals(selMoneda.getValue().toString().charAt(0)))) {
 
                 BigDecimal saldo = new ProcUtil(em).getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
-                        , selMoneda.getValue().toString());
+                        , selMoneda.getValue().toString().charAt(0));
                 Label salLbl = new Label();
                 salLbl.setContentMode(ContentMode.HTML);
                 salLbl.setValue(
@@ -148,7 +148,7 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
     }
 
     private boolean isPEN() {
-        return PEN.equals(selMoneda.getValue().toString());
+        return PEN.equals(selMoneda.getValue().toString().charAt(0));
     }
 
     @Override

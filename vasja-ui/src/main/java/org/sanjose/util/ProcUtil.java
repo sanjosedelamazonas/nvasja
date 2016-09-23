@@ -64,7 +64,7 @@ public class ProcUtil {
     }
 
     // moneda { 0, 1 }
-    public BigDecimal getSaldoCaja(Date fecha, String codCtacaja, String moneda) {
+    public BigDecimal getSaldoCaja(Date fecha, String codCtacaja, Character moneda) {
         StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getSaldoAlDiaCaja");
         //SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
@@ -72,7 +72,7 @@ public class ProcUtil {
         //log.info("Getting saldo caja: " +codCtacaja + " " + moneda + " : " + sdf.format(fecha));
         query.setParameter(1, sdf.format(fecha));
         query.setParameter(2, codCtacaja);
-        query.setParameter(3, moneda);
+        query.setParameter(3, moneda.toString());
         query.execute();
         BigDecimal res = (BigDecimal) query.getOutputParameterValue(4);
         res = res.setScale(2,BigDecimal.ROUND_HALF_EVEN);

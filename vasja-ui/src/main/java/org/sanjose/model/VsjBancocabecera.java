@@ -20,7 +20,7 @@ public class VsjBancocabecera implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="cod_bancocabecera")
-	private int codBancocabecera;
+	private Integer codBancocabecera;
 
 	@Column(name="cod_comprobanteenlace")
 	private String codComprobanteenlace;
@@ -38,7 +38,7 @@ public class VsjBancocabecera implements Serializable {
 	private String codOrigenenlace;
 
 	@Column(name="cod_tipomoneda")
-	private String codTipomoneda;
+	private Character codTipomoneda;
 
 	@Column(name="cod_uactualiza")
 	private String codUactualiza;
@@ -56,33 +56,33 @@ public class VsjBancocabecera implements Serializable {
 	private Timestamp fecFregistro;
 
 	@Column(name="flg_enviado")
-	private String flgEnviado;
+	private Character flgEnviado;
 
 	@Column(name="flg_im")
-	private String flgIm;
+	private Character flgIm;
 
 	@Column(name="flg_saldo")
-	private String flgSaldo;
+	private Character flgSaldo;
 
 	@Column(name="ind_tipocuenta")
-	private String indTipocuenta;
+	private Character indTipocuenta;
 
-	@Column(name="num_debedolar")
+	@Column(name="num_debedolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebedolar;
 
-	@Column(name="num_debemo")
+	@Column(name="num_debemo", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebemo;
 
-	@Column(name="num_debesol")
+	@Column(name="num_debesol", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebesol;
 
-	@Column(name="num_haberdolar")
+	@Column(name="num_haberdolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numHaberdolar;
 
-	@Column(name="num_habermo")
+	@Column(name="num_habermo", columnDefinition="decimal(12,2)")
 	private BigDecimal numHabermo;
 
-	@Column(name="num_habersol")
+	@Column(name="num_habersol", columnDefinition="decimal(12,2)")
 	private BigDecimal numHabersol;
 
 	@Column(name="txt_anoproceso")
@@ -104,11 +104,11 @@ public class VsjBancocabecera implements Serializable {
 	public VsjBancocabecera() {
 	}
 
-	public int getCodBancocabecera() {
+	public Integer getCodBancocabecera() {
 		return this.codBancocabecera;
 	}
 
-	public void setCodBancocabecera(int codBancocabecera) {
+	public void setCodBancocabecera(Integer codBancocabecera) {
 		this.codBancocabecera = codBancocabecera;
 	}
 
@@ -152,11 +152,11 @@ public class VsjBancocabecera implements Serializable {
 		this.codOrigenenlace = codOrigenenlace;
 	}
 
-	public String getCodTipomoneda() {
+	public Character getCodTipomoneda() {
 		return this.codTipomoneda;
 	}
 
-	public void setCodTipomoneda(String codTipomoneda) {
+	public void setCodTipomoneda(Character codTipomoneda) {
 		this.codTipomoneda = codTipomoneda;
 	}
 
@@ -200,35 +200,35 @@ public class VsjBancocabecera implements Serializable {
 		this.fecFregistro = fecFregistro;
 	}
 
-	public String getFlgEnviado() {
+	public Character getFlgEnviado() {
 		return this.flgEnviado;
 	}
 
-	public void setFlgEnviado(String flgEnviado) {
+	public void setFlgEnviado(Character flgEnviado) {
 		this.flgEnviado = flgEnviado;
 	}
 
-	public String getFlgIm() {
+	public Character getFlgIm() {
 		return this.flgIm;
 	}
 
-	public void setFlgIm(String flgIm) {
+	public void setFlgIm(Character flgIm) {
 		this.flgIm = flgIm;
 	}
 
-	public String getFlgSaldo() {
+	public Character getFlgSaldo() {
 		return this.flgSaldo;
 	}
 
-	public void setFlgSaldo(String flgSaldo) {
+	public void setFlgSaldo(Character flgSaldo) {
 		this.flgSaldo = flgSaldo;
 	}
 
-	public String getIndTipocuenta() {
+	public Character getIndTipocuenta() {
 		return this.indTipocuenta;
 	}
 
-	public void setIndTipocuenta(String indTipocuenta) {
+	public void setIndTipocuenta(Character indTipocuenta) {
 		this.indTipocuenta = indTipocuenta;
 	}
 

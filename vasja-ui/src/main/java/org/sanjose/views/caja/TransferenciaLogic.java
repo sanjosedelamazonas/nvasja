@@ -7,10 +7,11 @@ import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.NonEditableException;
+import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.util.TransactionUtil;
-import org.sanjose.model.VsjCajabanco;
+import org.sanjose.util.ViewUtil;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     private final TransferenciaView tView;
 
-    private String moneda;
+    private Character moneda;
 
     private final TransactionUtil transactionUtil;
 
@@ -36,7 +37,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     public TransferenciaLogic(IComprobanteView comprobanteView) {
         super(comprobanteView);
         tView = (TransferenciaView) comprobanteView;
-        transactionUtil = new TransactionUtil(view.getRepo(), tView.getEm());
+        transactionUtil = new TransactionUtil(view.getRepo());
     }
 
     @Override
@@ -86,7 +87,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     @Override
     public void editarComprobante() {
         if (tView.getSelectedRow()!=null
-                && "0".equals(tView.getSelectedRow().getFlg_Anula())) {
+                && !tView.getSelectedRow().isAnula()) {
             isEdited = true;
             editarComprobante(tView.getSelectedRow());
             view.getSelMoneda().setEnabled(false);
@@ -203,7 +204,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         List<VsjCajabanco> operaciones = tView.getRepo().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());
 
         for (VsjCajabanco oper : operaciones) {
-            if ("1".equals(oper.getFlgEnviado()))
+            if (oper.isEnviado())
                 throw new NonEditableException("No se puede editar porque una de los operaciones ya esta enviada a contabilidad: " + oper.getCodCajabanco());
         }
         for (VsjCajabanco oper : operaciones) {

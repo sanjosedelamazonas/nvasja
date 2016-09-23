@@ -39,13 +39,13 @@ public class MsgUsuario implements Serializable {
 	private Timestamp fecFregistro;
 
 	@Column(name="flg_autorizado")
-	private String flgAutorizado;
+	private Character flgAutorizado;
 
 	@Column(name="flg_cambiapassword")
-	private String flgCambiapassword;
+	private Character flgCambiapassword;
 
 	@Column(name="flg_estado")
-	private String flgEstado;
+	private Character flgEstado;
 
 	@Column(name="txt_aplicacion")
 	private String txtAplicacion;
@@ -121,27 +121,27 @@ public class MsgUsuario implements Serializable {
 		this.fecFregistro = fecFregistro;
 	}
 
-	public String getFlgAutorizado() {
+	public Character getFlgAutorizado() {
 		return this.flgAutorizado;
 	}
 
-	public void setFlgAutorizado(String flgAutorizado) {
+	public void setFlgAutorizado(Character flgAutorizado) {
 		this.flgAutorizado = flgAutorizado;
 	}
 
-	public String getFlgCambiapassword() {
+	public Character getFlgCambiapassword() {
 		return this.flgCambiapassword;
 	}
 
-	public void setFlgCambiapassword(String flgCambiapassword) {
+	public void setFlgCambiapassword(Character flgCambiapassword) {
 		this.flgCambiapassword = flgCambiapassword;
 	}
 
-	public String getFlgEstado() {
+	public Character getFlgEstado() {
 		return this.flgEstado;
 	}
 
-	public void setFlgEstado(String flgEstado) {
+	public void setFlgEstado(Character flgEstado) {
 		this.flgEstado = flgEstado;
 	}
 
