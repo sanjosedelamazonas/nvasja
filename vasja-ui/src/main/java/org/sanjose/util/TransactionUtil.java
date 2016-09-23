@@ -59,8 +59,10 @@ public class TransactionUtil implements ITransactionUtil {
                 oper.setTxtCorrelativo(GenUtil.getTxtCorrelativo(oper.getCodCajabanco()));
                 // TEST transactionality - causes org.springframework.dao.DataIntegrityViolationException
                 // because codMes is NOT NULL in the database
-                if (oper.getTxtGlosaitem().equals("abc"))
-                    oper.setCodMes(null);
+                if (oper.getTxtGlosaitem().equals("abc")) {
+                    throw new RuntimeException("Test transactions");
+                }
+                    //oper.setCodMes(null);
                 oper = cajabancoRep.save(oper);
                 log.info("Saved cajabanco from transferencia: " + oper);
 //                oper = em.merge(oper);
