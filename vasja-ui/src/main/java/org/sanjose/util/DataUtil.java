@@ -46,10 +46,17 @@ public class DataUtil {
 
 
     public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
-           return getCajasList(MainUI.get().getEntityManager(), planRepo, date);
+           return getCajasList(MainUI.get().getEntityManager(), planRepo, date, true);
     }
 
+    public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date, boolean isInicial) {
+        return getCajasList(MainUI.get().getEntityManager(), planRepo, date, isInicial);
+    }
     public static List<Caja> getCajasList(EntityManager em, ScpPlancontableRep planRepo, Date date) {
+        return getCajasList(em, planRepo, date, true);
+    }
+
+    public static List<Caja> getCajasList(EntityManager em, ScpPlancontableRep planRepo, Date date, boolean isInicial) {
         List<Caja> cajas = new ArrayList<>();
         for (ScpPlancontable caja : getTodasCajas(date, planRepo)) {
             Character moneda = caja.getIndTipomoneda().equals('N') ? '0' : '1';
@@ -63,7 +70,8 @@ public class DataUtil {
 
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
                     (caja.getIndTipomoneda().equals('N') ? saldo : new BigDecimal(0.00)),
-                    (caja.getIndTipomoneda().equals('D') ? saldo : new BigDecimal(0.00))
+                    (caja.getIndTipomoneda().equals('D') ? saldo : new BigDecimal(0.00)),
+                    isInicial
             ));
         }
         return cajas;
