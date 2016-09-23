@@ -8,7 +8,7 @@
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
  </head> 
  <body> 
-  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive width-full height="619px" _id="root_layout">
+  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive width-full height="619px" _id="root_layout"> 
    <vaadin-label style-name="header-label" width="1236px" _id="operacion_header_label"></vaadin-label> 
    <vaadin-horizontal-layout height="501px"> 
     <vaadin-vertical-layout width="560px"> 
@@ -16,11 +16,11 @@
       <vaadin-horizontal-layout spacing height="43px"> 
        <vaadin-text-field description="Num de Voucher" caption="Nro" enabled="false" input-prompt="Numero " style-name="form-textfield" width="105px" _id="numVoucher" :middle :center></vaadin-text-field> 
        <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante"></vaadin-popup-date-field> 
-       <vaadin-combo-box caption="Cuenta" input-prompt="Cuenta" style-name="form-textfield" item-caption-mode="id" width="190px" _id="selCuenta"> 
+       <vaadin-combo-box caption="Cuenta" input-prompt="Cuenta" style-name="form-textfield" item-caption-mode="id" width="180px" _id="selCuenta"> 
         <option>Option 1</option> 
         <option>Option 2</option> 
        </vaadin-combo-box> 
-       <vaadin-text-field caption="S/." enabled="false" style-name="form-textfield" width="70px" _id="saldoCuenta"></vaadin-text-field> 
+       <vaadin-text-field caption="S/." enabled="false" input-prompt="Saldo" style-name="form-textfield" width="80px" value="------" _id="saldoCuenta"></vaadin-text-field> 
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout style-name="cuenta-Layout" spacing> 
        <vaadin-horizontal-layout spacing> 
@@ -139,11 +139,11 @@
      </vaadin-form-layout> 
      <vaadin-form-layout style-name="billing-formlayout" size-auto margin-top="false" margin-bottom="false" _id="billing_form6" :bottom> 
       <vaadin-horizontal-layout spacing :middle :center> 
-       <vaadin-button plain-text _id="newItemBtn">
-         Nuevo Item 
-       </vaadin-button> 
        <vaadin-button plain-text _id="guardarBtn">
          Guardar 
+       </vaadin-button> 
+       <vaadin-button plain-text _id="newItemBtn">
+         Nuevo Item 
        </vaadin-button> 
        <vaadin-button plain-text _id="modificarBtn">
          Modificar 

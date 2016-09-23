@@ -67,8 +67,8 @@ public class BancoOperUI extends CssLayout {
 	protected Grid gridBanco;
 	protected Label saldoTotal;
 	protected FormLayout billing_form6;
-	protected Button newItemBtn;
 	protected Button guardarBtn;
+	protected Button newItemBtn;
 	protected Button modificarBtn;
 	protected Button eliminarBtn;
 	protected Button newChequeBtn;
