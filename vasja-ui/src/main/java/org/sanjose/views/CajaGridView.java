@@ -14,6 +14,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.*;
+import org.sanjose.render.StringToCharacterConverter;
 import org.sanjose.render.ZeroOneTrafficLight;
 import org.sanjose.repo.*;
 import org.sanjose.util.ConfigurationUtil;
@@ -58,6 +59,7 @@ public class CajaGridView extends CajaGridUI implements View {
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
+
             "flg_Anula", "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
 
@@ -73,7 +75,7 @@ public class CajaGridView extends CajaGridUI implements View {
             4, 5, 5, 5, 4, // Fuente
             2, 2, 6, 6
     };
-    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
+    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado", "flg_Anula" };
 
     private final ScpPlanproyectoRep planproyectoRepo;
 
@@ -175,9 +177,9 @@ public class CajaGridView extends CajaGridUI implements View {
 
         // Tipo Moneda
         ComboBox selTipomoneda = new ComboBox();
-        //DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "codTipomoneda", "Moneda");
-        //gridCaja.getColumn("codTipomoneda").setEditorField(selTipomoneda);
-        //gridCaja.getColumn("codTipomoneda").setConverter()
+        DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "codTipomoneda", "Moneda");
+        gridCaja.getColumn("codTipomoneda").setEditorField(selTipomoneda);
+        gridCaja.getColumn("codTipomoneda").setConverter(new StringToCharacterConverter());
 
         // Cta Contable
         ComboBox selCtacontable = new ComboBox();
@@ -233,6 +235,11 @@ public class CajaGridView extends CajaGridUI implements View {
         ViewUtil.colorizeRows(gridCaja);
 
         gridCaja.addItemClickListener(this::setItemLogic);
+
+        for (String col : VISIBLE_COLUMN_IDS) {
+            if (gridCaja.getColumn(col).getEditorField() instanceof TextField)
+                ((TextField)gridCaja.getColumn(col).getEditorField()).setNullRepresentation("");
+        }
 
         // Fecha Desde Hasta
         ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta);

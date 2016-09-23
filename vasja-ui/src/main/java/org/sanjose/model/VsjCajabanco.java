@@ -1,7 +1,10 @@
 package org.sanjose.model;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -24,12 +27,15 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_comprobanteenlace")
 	private String codComprobanteenlace;
 
+	@NotBlank
 	@Column(name="cod_contracta")
 	private String codContracta;
 
 	@Column(name="cod_contraparte")
 	private String codContraparte;
 
+	//@NotNull
+	@NotBlank
 	@Column(name="cod_ctacontable")
 	private String codCtacontable;
 
@@ -39,9 +45,13 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_ctaproyecto")
 	private String codCtaproyecto;
 
+	//@NotNull
+	@NotBlank
 	@Column(name="cod_destino")
 	private String codDestino;
 
+	//@NotNull
+	@NotBlank
 	@Column(name="cod_destinoitem")
 	private String codDestinoitem;
 
@@ -63,11 +73,13 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="cod_tipocomprobantepago")
 	private String codTipocomprobantepago;
 
+	@NotNull
 	@Column(name="cod_tipomoneda")
 	private Character codTipomoneda;
 
+	@NotNull
 	@Column(name="cod_tipomov")
-	private int codTipomov;
+	private Integer codTipomov;
 
 	@Column(name="cod_transcorrelativo")
 	private String codTranscorrelativo;
@@ -84,6 +96,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="fec_factualiza")
 	private Timestamp fecFactualiza;
 
+	@NotNull
 	@Column(name="fec_fecha")
 	private Timestamp fecFecha;
 
@@ -120,6 +133,7 @@ public class VsjCajabanco implements Serializable {
 	@Column(name="txt_correlativo")
 	private String txtCorrelativo;
 
+	@NotBlank
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
 
@@ -257,11 +271,11 @@ public class VsjCajabanco implements Serializable {
 		this.codTipomoneda = codTipomoneda;
 	}
 
-	public int getCodTipomov() {
+	public Integer getCodTipomov() {
 		return this.codTipomov;
 	}
 
-	public void setCodTipomov(int codTipomov) {
+	public void setCodTipomov(Integer codTipomov) {
 		this.codTipomov = codTipomov;
 	}
 
@@ -425,4 +439,45 @@ public class VsjCajabanco implements Serializable {
 		return flgEnviado!=null && flgEnviado.equals('1');
 	}
 
+	@Override
+	public String toString() {
+		return "VsjCajabanco{" +
+				"codCajabanco=" + codCajabanco +
+				", codComprobanteenlace='" + codComprobanteenlace + '\'' +
+				", codContracta='" + codContracta + '\'' +
+				", codContraparte='" + codContraparte + '\'' +
+				", codCtacontable='" + codCtacontable + '\'' +
+				", codCtaespecial='" + codCtaespecial + '\'' +
+				", codCtaproyecto='" + codCtaproyecto + '\'' +
+				", codDestino='" + codDestino + '\'' +
+				", codDestinoitem='" + codDestinoitem + '\'' +
+				", codFinanciera='" + codFinanciera + '\'' +
+				", codMes='" + codMes + '\'' +
+				", codOrigenenlace='" + codOrigenenlace + '\'' +
+				", codProyecto='" + codProyecto + '\'' +
+				", codTercero='" + codTercero + '\'' +
+				", codTipocomprobantepago='" + codTipocomprobantepago + '\'' +
+				", codTipomoneda=" + codTipomoneda +
+				", codTipomov=" + codTipomov +
+				", codTranscorrelativo='" + codTranscorrelativo + '\'' +
+				", codUactualiza='" + codUactualiza + '\'' +
+				", codUregistro='" + codUregistro + '\'' +
+				", fecComprobantepago=" + fecComprobantepago +
+				", fecFactualiza=" + fecFactualiza +
+				", fecFecha=" + fecFecha +
+				", fecFregistro=" + fecFregistro +
+				", flg_Anula=" + flg_Anula +
+				", flgEnviado=" + flgEnviado +
+				", indTipocuenta=" + indTipocuenta +
+				", numDebedolar=" + numDebedolar +
+				", numDebesol=" + numDebesol +
+				", numHaberdolar=" + numHaberdolar +
+				", numHabersol=" + numHabersol +
+				", txtAnoproceso='" + txtAnoproceso + '\'' +
+				", txtComprobantepago='" + txtComprobantepago + '\'' +
+				", txtCorrelativo='" + txtCorrelativo + '\'' +
+				", txtGlosaitem='" + txtGlosaitem + '\'' +
+				", txtSeriecomprobantepago='" + txtSeriecomprobantepago + '\'' +
+				'}';
+	}
 }

@@ -2,6 +2,8 @@ package org.sanjose.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 /**
@@ -19,7 +21,8 @@ public class VsjConfiguractacajabanco implements Serializable {
 	@Column(name="cod_tipocuenta")
 	private Integer codTipocuenta;
 
-	private boolean activo;
+	@NotNull
+	private boolean activo = true;
 
 	@Column(name="cod_ctacontablecaja")
 	private String codCtacontablecaja;
@@ -42,6 +45,7 @@ public class VsjConfiguractacajabanco implements Serializable {
 	@Column(name="para_tercero")
 	private boolean paraTercero;
 
+	@Size(min=2, max=50)
 	@Column(name="txt_tipocuenta")
 	private String txtTipocuenta;
 

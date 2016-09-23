@@ -2,6 +2,7 @@ package org.sanjose.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -69,6 +70,7 @@ public class VsjBancodetalle implements Serializable {
 	@Column(name="cod_tipomoneda")
 	private Character codTipomoneda;
 
+	@NotNull
 	@Column(name="cod_tipomov")
 	private int codTipomov;
 

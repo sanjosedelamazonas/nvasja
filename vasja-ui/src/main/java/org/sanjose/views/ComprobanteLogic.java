@@ -180,6 +180,7 @@ class ComprobanteLogic implements Serializable {
                 "Sel Tipo de Movimiento", "txtTipocuenta");
         //getSelTipoMov().setEnabled(false);
         view.getSelTipoMov().addValueChangeListener(event -> {
+            log.info("selTipoMov: " + event.getProperty().getValue());
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
                 VsjConfiguractacajabanco config = view.getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
@@ -553,8 +554,7 @@ class ComprobanteLogic implements Serializable {
             // EDITING
             if (!GenUtil.strNullOrEmpty(item.getTxtCorrelativo())) {
                 view.getNumVoucher().setValue(item.getTxtCorrelativo());
-            } else
-                view.getNumVoucher().setValue(Integer.toString(item.getCodCajabanco()));
+            }
             view.setEnableFields(true);
             setSaldos();
             setSaldoCaja();
