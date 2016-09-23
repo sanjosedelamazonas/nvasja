@@ -162,8 +162,8 @@ class ComprobanteLogic implements Serializable {
 
         // Cta Contable
         DataFilterUtil.bindComboBox(view.getSelCtaContable(), "id.codCtacontable",
-                view.getPlanRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
-                        "N", GenUtil.getCurYear(), "101%", "102%", "104%", "106%"),
+                view.getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
+                        "0", "N", GenUtil.getCurYear(), "101%", "102%", "104%", "106%"),
                 //getPlanRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""),
                 "Sel cta contable", "txtDescctacontable");
 
@@ -310,14 +310,14 @@ class ComprobanteLogic implements Serializable {
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
-                DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getPlanRepo(), true), "Sel Caja", "txtDescctacontable");
+                DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getPlanRepo(), true), "Sel Caja", "txtDescctacontable");
                 setCajaLogic(PEN);
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
             } else {
                 // Dolares
                 // Cta Caja
-                DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getPlanRepo(), false), "Sel Caja", "txtDescctacontable");
+                DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getPlanRepo(), false), "Sel Caja", "txtDescctacontable");
                 setCajaLogic(USD);
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");

@@ -5,6 +5,7 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
+import org.apache.commons.lang.time.DateUtils;
 import org.sanjose.MainUI;
 import org.sanjose.bean.Caja;
 import org.sanjose.helper.DoubleDecimalFormatter;
@@ -116,7 +117,9 @@ public class CajaManejoLogic implements Serializable {
         grid.setColumnOrder("codigo", "descripcion", "soles", "dolares");
         BigDecimal totalSoles = new BigDecimal(0.00);
         BigDecimal totalUsd = new BigDecimal(0.00);
-        for (Caja caja : DataUtil.getCajasList(view.getEm(), view.planRepo, (isInicial ? view.fechaDesde.getValue() : view.fechaHasta.getValue()))) {
+        for (Caja caja : DataUtil.getCajasList(view.getEm(), view.planRepo,
+                (isInicial ? GenUtil.getBeginningOfDay(view.fechaDesde.getValue())
+                        : GenUtil.getEndOfDay(view.fechaHasta.getValue())))) {
             c.addItem(caja);
             totalSoles = totalSoles.add(caja.getSoles());
             totalUsd = totalUsd.add(caja.getDolares());
