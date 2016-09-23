@@ -7,13 +7,13 @@ import org.sanjose.model.VsjCajabanco;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 public class GenUtil {
 
-	public static boolean strNullOrEmpty(String s) {
+    private static Map<String, String> symMoneda = new HashMap<>();
+
+    public static boolean strNullOrEmpty(String s) {
         return s == null || "".equals(s) || "".equals(s.trim());
 	}
 
@@ -114,5 +114,36 @@ public class GenUtil {
 
     public static String getUuid() {
         return UUID.randomUUID().toString().replace("-","").substring(0,16);
+    }
+
+    public static String getLitMoneda(String numMoneda) {
+        switch (numMoneda) {
+            case "0" :
+                return "N";
+            case "1" :
+                return "D";
+            default:
+                return "E";
+        }
+    }
+
+    public static String getNumMoneda(String litMoneda) {
+        switch (litMoneda) {
+            case "N" :
+                return "0";
+            case "D" :
+                return "1";
+            default:
+                return "2";
+        }
+    }
+
+    public static String getSymMoneda(String litMoneda) {
+        if (symMoneda.isEmpty()) {
+            symMoneda.put("N", "S/.");
+            symMoneda.put("D", "$");
+            symMoneda.put("N", "€");
+        }
+        return symMoneda.get(litMoneda);
     }
 }
