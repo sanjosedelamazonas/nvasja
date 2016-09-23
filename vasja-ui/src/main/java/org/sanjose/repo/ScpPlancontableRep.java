@@ -12,10 +12,15 @@ public interface ScpPlancontableRep extends JpaRepository<ScpPlancontable, Long>
 	List<ScpPlancontable> findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
 			Character mov, String ano, String codcta);
 
+	List<ScpPlancontable> findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrId_CodCtacontableLike (
+			String activa, String mov, String ano, String codcta, String codcta2);
 	List<ScpPlancontable> findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
 			Character activa, Character mov, String ano, String codcta);
 	List<ScpPlancontable> findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrId_CodCtacontableLike (
 			String mov, String ano, String codcta, String codcta2);
+
+	List<ScpPlancontable> findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
+			String activa, String mov, String ano, String codcta);
 
 	List<ScpPlancontable> findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
 			String mov, String ano, String codcta1, String codcta2, String codcta3, String codcta4);
@@ -27,7 +32,6 @@ public interface ScpPlancontableRep extends JpaRepository<ScpPlancontable, Long>
 			Character activa, Character mov, String ano, Character tipomoneda, String codcta);
 
 	List<ScpPlancontable> findByFlgMovimientoAndId_TxtAnoproceso(Character mov, String ano);
-	List<ScpPlancontable> findByFlgMovimientoAndId_TxtAnoproceso(String mov, String ano);
 
-	ScpPlancontable findById_TxtAnoprocesoAndCodCtacontable(String s, String s2);
+	ScpPlancontable findById_TxtAnoprocesoAndId_CodCtacontable(String s, String s2);
 }

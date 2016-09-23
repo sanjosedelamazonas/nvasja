@@ -7,6 +7,7 @@ import org.sanjose.MainUI;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.authentication.Role;
+import org.sanjose.views.banco.BancoOperView;
 import org.sanjose.views.caja.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,7 +36,7 @@ public class MainScreen extends HorizontalLayout {
     @Autowired
     public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
                       ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView,
-                      TransferenciaView transferenciaView) {
+                      TransferenciaView transferenciaView, BancoOperView bancoOperView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -58,6 +59,13 @@ public class MainScreen extends HorizontalLayout {
                     TransferenciaView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
                     CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
+        }
+        if (ui.getAccessControl().isUserInRole(Role.BANCO) ||
+                ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
+                ui.getAccessControl().isUserInRole(Role.ADMIN)
+                ) {
+            menu.addView(bancoOperView, BancoOperView.VIEW_NAME,
+                    BancoOperView.VIEW_NAME, FontAwesome.EDIT);
         }
         if (ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
                 ui.getAccessControl().isUserInRole(Role.ADMIN)

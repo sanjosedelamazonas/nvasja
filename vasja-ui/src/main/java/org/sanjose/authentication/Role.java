@@ -11,4 +11,6 @@ public class Role {
     public final static String CONTADOR = "ROL005";
 
     public final static String CAJA = "ROL002";
+
+    public final static String BANCO = "ROL006";
 }

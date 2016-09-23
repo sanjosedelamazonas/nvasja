@@ -11,6 +11,20 @@ import java.util.*;
 
 public class GenUtil {
 
+
+    public static final String PEN="0";
+
+    public static final String USD="1";
+
+    public static final String EUR="2";
+
+    public static final String _PEN="N";
+
+    public static final String _USD="D";
+
+    public static final String _EUR="E";
+
+
     private static Map<String, String> symMoneda = new HashMap<>();
 
     public static boolean strNullOrEmpty(String s) {

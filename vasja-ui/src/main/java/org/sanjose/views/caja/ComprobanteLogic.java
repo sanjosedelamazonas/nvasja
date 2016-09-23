@@ -34,6 +34,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
+
 /**
  * This class provides an interface for the logical operations between the CRUD
  * view, its parts like the product editor form and the data source, including
@@ -61,10 +64,6 @@ class ComprobanteLogic implements Serializable {
     private boolean isLoading = true;
 
     private boolean isEdit = false;
-
-    static final Character PEN='0';
-
-    private static final Character USD='1';
 
     private ProcUtil procUtil;
 

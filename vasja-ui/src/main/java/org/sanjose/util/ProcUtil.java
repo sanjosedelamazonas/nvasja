@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.sanjose.util.GenUtil.PEN;
+
 /**
  * VASJA class
  * User: prubach

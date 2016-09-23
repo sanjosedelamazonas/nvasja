@@ -21,6 +21,8 @@ import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import static org.sanjose.util.GenUtil.PEN;
+
 /**
  * A view for performing create-read-update-delete operations on products.
  *
@@ -34,10 +36,6 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
 	private static final Logger log = LoggerFactory.getLogger(TransferenciaView.class);
 
     public static final String VIEW_NAME = "Transferencia";
-
-    public static final String PEN="0";
-
-    public static final String USD="1";
 
     TransferenciaLogic viewLogic = null;
 

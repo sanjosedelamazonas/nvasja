@@ -15,6 +15,8 @@ import org.sanjose.util.ViewUtil;
 
 import java.util.List;
 
+import static org.sanjose.util.GenUtil.PEN;
+
 /**
  * VASJA class
  * User: prubach
