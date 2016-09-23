@@ -13,11 +13,6 @@ import java.util.UUID;
 
 public class GenUtil {
 
-	public static String getCurYear() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-		return sdf.format(new Date());
-	}
-
 	public static boolean strNullOrEmpty(String s) {
         return s == null || "".equals(s) || "".equals(s.trim());
 	}
@@ -45,7 +40,18 @@ public class GenUtil {
     }
 
 	/* Date and time utils */
-	
+
+    public static String getCurYear() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        return sdf.format(new Date());
+    }
+
+    public static String getYear(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        return sdf.format(date);
+    }
+
+
     public static Date getBeginningOfMonth(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMM-ddHH:mm:ss");
         try {
