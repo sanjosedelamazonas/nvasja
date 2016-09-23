@@ -4,6 +4,7 @@ import org.sanjose.authentication.AccessControl;
 import org.sanjose.authentication.LoginScreen;
 import org.sanjose.authentication.LoginScreen.LoginListener;
 import org.sanjose.authentication.MsgAccessControl;
+import org.sanjose.views.banco.BancoOperView;
 import org.sanjose.views.sys.MainScreen;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
@@ -57,6 +58,8 @@ public class MainUI extends UI {
 
     private final TransferenciaView transferenciaView;
 
+    private final BancoOperView bancoOperView;
+
     private final MsgUsuarioRep msgUsuarioRep;
 
     @PersistenceContext
@@ -67,7 +70,7 @@ public class MainUI extends UI {
     @Autowired
     private MainUI(VsjPropiedadRep propRepo, PropiedadView propiedadView, CajaGridView cajaGridView,
                    ConfiguracionCajaView configuracionCajaView, ConfiguracionCtaCajaBancoView confView,
-                   ComprobanteView comprobanteView, TransferenciaView transferenciaView,
+                   ComprobanteView comprobanteView, TransferenciaView transferenciaView, BancoOperView bancoOperView,
                    CajaManejoView cajaManejoView, MsgUsuarioRep msgUsuarioRep,
                    EntityManager em) {
     	this.confView = confView;
@@ -79,6 +82,7 @@ public class MainUI extends UI {
         this.configuracionCajaView = configuracionCajaView;
         this.cajaManejoView = cajaManejoView;
         this.msgUsuarioRep = msgUsuarioRep;
+        this.bancoOperView = bancoOperView;
         this.em = em;
     }
     
@@ -99,7 +103,7 @@ public class MainUI extends UI {
 
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
-        mainScreen = new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView, propiedadView, comprobanteView, transferenciaView);
+        mainScreen = new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView, propiedadView, comprobanteView, transferenciaView, bancoOperView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);

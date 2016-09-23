@@ -38,10 +38,6 @@ public class BancoOperView extends BancoOperUI implements View {
 
     public static final String VIEW_NAME = "Cheques";
 
-    public static final String PEN="0";
-
-    public static final String USD="1";
-
     BancoItemLogic viewLogic = null;
 
     private final VsjBancodetalleRep repo;

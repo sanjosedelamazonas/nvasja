@@ -21,6 +21,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 
+import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
+
 /**
  * A view for performing create-read-update-delete operations on products.
  *
@@ -34,10 +37,6 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
 	private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);
 	
     public static final String VIEW_NAME = "Caja";
-
-    public static final String PEN="0";
-
-    public static final String USD="1";
 
     final ComprobanteLogic viewLogic = new ComprobanteLogic(this);
 

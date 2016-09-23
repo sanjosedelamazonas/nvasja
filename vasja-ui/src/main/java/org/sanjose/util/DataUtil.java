@@ -6,6 +6,7 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.Caja;
 import org.sanjose.model.ScpPlancontable;
+import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.repo.ScpPlancontableRep;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.views.caja.ComprobanteView;
@@ -17,6 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
 
 /**
  * VASJA class
@@ -78,7 +82,7 @@ public class DataUtil {
         item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
 
         // Verify moneda and fields
-        if (ComprobanteView.PEN.equals(item.getCodTipomoneda())) {
+        if (PEN.equals(item.getCodTipomoneda())) {
             if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
                 throw new FieldGroup.CommitException("Selected SOL but values are zeros or nulls");
             if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
@@ -92,6 +96,62 @@ public class DataUtil {
                 throw new FieldGroup.CommitException("Selected USD but values for SOL are not zeros or nulls");
             item.setNumHabersol(new BigDecimal(0.00));
             item.setNumDebesol(new BigDecimal(0.00));
+        }
+        return item;
+    }
+
+    public static VsjBancodetalle prepareToSave(VsjBancodetalle item) throws FieldGroup.CommitException {
+        if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
+            throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM");
+        item.setCodMes(sdf.format(item.getFecFecha()));
+        sdf = new SimpleDateFormat("yyyy");
+        item.setTxtAnoproceso(sdf.format(item.getFecFecha()));
+        if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
+            item.setIndTipocuenta("0");
+        } else {
+            item.setIndTipocuenta("1");
+        }
+        if (item.getCodUregistro() == null) item.setCodUregistro(CurrentUser.get());
+        if (item.getFecFregistro() == null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
+        item.setCodUactualiza(CurrentUser.get());
+        item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+
+        // Verify moneda and fields
+        if (PEN.equals(item.getCodTipomoneda())) {
+            if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
+                throw new FieldGroup.CommitException("Selected SOL but values are zeros or nulls");
+            if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
+                throw new FieldGroup.CommitException("Selected SOL but values for Dolar are not zeros or nulls");
+            if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
+                throw new FieldGroup.CommitException("Selected SOL but values for EUR are not zeros or nulls");
+            item.setNumHaberdolar(new BigDecimal(0.00));
+            item.setNumDebedolar(new BigDecimal(0.00));
+            item.setNumHabermo(new BigDecimal(0.00));
+            item.setNumDebemo(new BigDecimal(0.00));
+        } else if (USD.equals(item.getCodTipomoneda())) {
+            if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
+                throw new FieldGroup.CommitException("Selected USD but values are zeros or nulls");
+            if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
+                throw new FieldGroup.CommitException("Selected USD but values for SOL are not zeros or nulls");
+            if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
+                throw new FieldGroup.CommitException("Selected USD but values for EUR are not zeros or nulls");
+            item.setNumHabersol(new BigDecimal(0.00));
+            item.setNumDebesol(new BigDecimal(0.00));
+            item.setNumHabermo(new BigDecimal(0.00));
+            item.setNumDebemo(new BigDecimal(0.00));
+        } else {
+            if (GenUtil.isNullOrZero(item.getNumHabermo()) && GenUtil.isNullOrZero(item.getNumDebemo()))
+                throw new FieldGroup.CommitException("Selected EUR but values are zeros or nulls");
+            if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
+                throw new FieldGroup.CommitException("Selected EUR but values for SOL are not zeros or nulls");
+            if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
+                throw new FieldGroup.CommitException("Selected EUR but values for Dolar are not zeros or nulls");
+            item.setNumHabersol(new BigDecimal(0.00));
+            item.setNumDebesol(new BigDecimal(0.00));
+            item.setNumHaberdolar(new BigDecimal(0.00));
+            item.setNumDebedolar(new BigDecimal(0.00));
         }
         return item;
     }

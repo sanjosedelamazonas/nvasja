@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.sanjose.util.GenUtil.PEN;
+
 /**
  * VASJA class
  * User: prubach
@@ -84,7 +86,7 @@ public class ProcUtil {
         query.setParameter(2, CurrentUser.get());
         query.setParameter(3, sdf.format(vcb.getFecFecha()));
         query.setParameter(4, vcb.getCodTipomoneda());
-        if (ComprobanteView.PEN.equals(vcb.getCodTipomoneda())) {
+        if (PEN.equals(vcb.getCodTipomoneda())) {
             query.setParameter(5, vcb.getNumDebesol());
             query.setParameter(6, vcb.getNumHabersol());
         } else {

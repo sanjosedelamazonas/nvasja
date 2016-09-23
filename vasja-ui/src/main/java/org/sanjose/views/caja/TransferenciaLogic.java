@@ -14,6 +14,8 @@ import org.sanjose.model.VsjCajabanco;
 
 import java.util.List;
 
+import static org.sanjose.util.GenUtil.PEN;
+
 /**
  * VASJA class
  * User: prubach
