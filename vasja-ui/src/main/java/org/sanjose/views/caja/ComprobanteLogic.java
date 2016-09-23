@@ -162,8 +162,8 @@ class ComprobanteLogic implements Serializable {
 
         // Cta Contable
         DataFilterUtil.bindComboBox(view.getSelCtaContable(), "id.codCtacontable",
-                view.getPlanRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
-                        "N", GenUtil.getCurYear(), "101%", "102%", "104%", "106%"),
+                view.getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
+                        "0", "N", GenUtil.getCurYear(), "101%", "102%", "104%", "106%"),
                 //getPlanRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""),
                 "Sel cta contable", "txtDescctacontable");
 

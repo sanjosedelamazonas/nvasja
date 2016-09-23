@@ -171,7 +171,7 @@ public class CajaGridView extends CajaGridUI implements View, INavigatorView {
 
         // Cta Caja
         ComboBox selCtacontablecaja = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("0", "N", GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codContracta").setEditorField(selCtacontablecaja);
 
         // Tipo Moneda
@@ -181,7 +181,7 @@ public class CajaGridView extends CajaGridUI implements View, INavigatorView {
 
         // Cta Contable
         ComboBox selCtacontable = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("0", "N", GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
 
         // Rubro inst

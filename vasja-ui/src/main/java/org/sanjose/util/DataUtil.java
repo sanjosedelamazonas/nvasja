@@ -28,14 +28,14 @@ public class DataUtil {
 
     public static List<ScpPlancontable> getCajas(ScpPlancontableRep planRepo, boolean isPEN) {
         return planRepo.
-                findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                        "N", GenUtil.getCurYear(), (isPEN ? "N" : "D") , "101");
+                findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
+                        "0", "N", GenUtil.getCurYear(), (isPEN ? "N" : "D") , "101");
     }
 
     public static List<ScpPlancontable> getCajas(ScpPlancontableRep planRepo) {
         return planRepo.
-                findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
-                        "N", GenUtil.getCurYear(), "101");
+                findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
+                        "0", "N", GenUtil.getCurYear(), "101");
     }
 
     public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
