@@ -55,7 +55,8 @@ public class InfrastructureConfig  implements TransactionManagementConfigurer {
     private String url = "jdbc:sqlserver://virtualxp:1433;databaseName=SCP";
 
     @NotNull
-    private String driverclass = "com.microsoft.sqlserver.jdbc.SQLServerConnection";
+    private String driverclass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+
  
     public void setUsername(String username) {
         this.username = username;
