@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-22T23:24:26 -->
+<!-- 2016-09-23T00:16:00 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCajaDiario" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="571" leftMargin="12" rightMargin="12" topMargin="12" bottomMargin="12" uuid="cbf7024d-2a36-4fa2-8a1d-19d9bb8950a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -480,25 +480,25 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="290" y="10" width="103" height="18" uuid="423a5056-ac15-4167-9781-7c9f9f50e6ae"/>
+				<reportElement x="290" y="15" width="103" height="12" uuid="423a5056-ac15-4167-9781-7c9f9f50e6ae"/>
 				<text><![CDATA[Saldos finales de caja al]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="394" y="10" width="66" height="19" uuid="c0cedafa-a63c-4dd0-9095-9e9c40d0f946"/>
+				<reportElement x="394" y="15" width="66" height="12" uuid="c0cedafa-a63c-4dd0-9095-9e9c40d0f946"/>
 				<textFieldExpression><![CDATA[$P{STR_FECHA_MAX}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="10" y="12" width="110" height="16" uuid="dd2565cc-55fe-41af-94c5-568d073a464a"/>
+				<reportElement x="10" y="15" width="110" height="12" uuid="dd2565cc-55fe-41af-94c5-568d073a464a"/>
 				<textElement verticalAlignment="Bottom"/>
 				<text><![CDATA[Saldos iniciales de caja al]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="120" y="10" width="52" height="18" uuid="76be602a-959a-4d14-8815-d48784785a89"/>
+				<reportElement x="120" y="15" width="52" height="12" uuid="76be602a-959a-4d14-8815-d48784785a89"/>
 				<textElement verticalAlignment="Bottom"/>
 				<textFieldExpression><![CDATA[$P{STR_FECHA_MIN}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement x="11" y="29" width="160" height="30" uuid="94293a8a-9088-4062-977d-9ba71ef6233a">
+				<reportElement x="11" y="28" width="160" height="30" uuid="94293a8a-9088-4062-977d-9ba71ef6233a">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
@@ -645,7 +645,7 @@
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement x="291" y="29" width="170" height="30" uuid="4d890f87-76de-4392-be4b-2bc3b6dc77ee">
+				<reportElement x="291" y="28" width="170" height="30" uuid="4d890f87-76de-4392-be4b-2bc3b6dc77ee">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 2_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 2_CH"/>
