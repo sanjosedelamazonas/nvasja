@@ -91,8 +91,8 @@ public class MainScreen extends HorizontalLayout {
     public void printerLoaded(List<String> imprimeras, String defaultPrinter) {
         log.info("Loaded " + imprimeras.size() + " printers");
 
-        ImprimerasView imprimerasView = new ImprimerasView(imprimeras, defaultPrinter);
-        menu.addView(imprimerasView, ImprimerasView.VIEW_NAME, ImprimerasView.VIEW_NAME,
+        ImpresorasView impresorasView = new ImpresorasView(imprimeras, defaultPrinter);
+        menu.addView(impresorasView, ImpresorasView.VIEW_NAME, ImpresorasView.VIEW_NAME,
                 FontAwesome.PRINT);
     }
 

@@ -26,17 +26,18 @@ import java.util.List;
 public class DataUtil {
 
 
-    public static List<ScpPlancontable> getCajas(ScpPlancontableRep planRepo, boolean isPEN) {
+    public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo, boolean isPEN) {
         return planRepo.
-                findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                        "N", GenUtil.getCurYear(), (isPEN ? "N" : "D") , "101");
+                findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
+                        "0", "N", GenUtil.getYear(ano), (isPEN ? "N" : "D") , "101");
     }
 
-    public static List<ScpPlancontable> getCajas(ScpPlancontableRep planRepo) {
+    public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo) {
         return planRepo.
-                findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
-                        "N", GenUtil.getCurYear(), "101");
+                findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
+                        "0", "N", GenUtil.getYear(ano), "101");
     }
+
 
     public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
            return getCajasList(MainUI.get().getEntityManager(), planRepo, date);
@@ -44,7 +45,7 @@ public class DataUtil {
 
     public static List<Caja> getCajasList(EntityManager em, ScpPlancontableRep planRepo, Date date) {
         List<Caja> cajas = new ArrayList<>();
-        for (ScpPlancontable caja : getCajas(planRepo)) {
+        for (ScpPlancontable caja : getCajas(date, planRepo)) {
             String moneda = "N".equals(caja.getIndTipomoneda()) ? "0" : "1";
             BigDecimal saldo = new ProcUtil(em).getSaldoCaja(
                     date,

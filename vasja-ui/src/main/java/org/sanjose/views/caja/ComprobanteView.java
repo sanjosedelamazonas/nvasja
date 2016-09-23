@@ -130,7 +130,7 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         cajaSaldosLayout.removeAllComponents();
         if (dataFechaComprobante.getValue() != null && selMoneda.getValue() != null) {
             BigDecimal total = new BigDecimal(0.00);
-            for (ScpPlancontable caja : DataUtil.getCajas(planRepo, PEN.equals(selMoneda.getValue().toString()))) {
+            for (ScpPlancontable caja : DataUtil.getCajas(getDataFechaComprobante().getValue(), planRepo, PEN.equals(selMoneda.getValue().toString()))) {
 
                 BigDecimal saldo = new ProcUtil(em).getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
                         , selMoneda.getValue().toString());

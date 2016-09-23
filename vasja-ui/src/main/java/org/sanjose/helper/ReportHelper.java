@@ -34,6 +34,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 import org.hibernate.Session;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.Caja;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.ConfigurationUtil;
@@ -189,12 +190,11 @@ public class ReportHelper {
 			ConfigurationUtil.getBeginningOfDay(fechaMin),
 				ConfigurationUtil.getEndOfDay(fechaMax),
 				format,
-				ConfigurationUtil.get("REPORTE_CAJA_PREPARADO_POR"),
 				ConfigurationUtil.get("REPORTE_CAJA_REVISADOR_POR"));
 	}
 
 	public static void generateDiario(String reportName, final Date fechaMin, final Date fechaMax,
-			String format, String preparado, String revisado) {
+			String format, String revisado) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
 		HashMap paramMap = new HashMap();
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
@@ -209,7 +209,7 @@ public class ReportHelper {
 		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
 		logger.info("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
 		logger.info("STR_FECHA_MAX=" + paramMap.get("STR_FECHA_MAX"));
-		paramMap.put("REPORTE_PREPARADO_POR", preparado);
+		paramMap.put("REPORTE_PREPARADO_POR", CurrentUser.get());
 		paramMap.put("REPORTE_REVISADOR_POR", revisado);
 		logger.info("ParamMap: " + paramMap.toString());
 		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);

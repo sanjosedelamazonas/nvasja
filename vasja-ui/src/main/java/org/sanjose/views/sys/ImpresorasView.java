@@ -11,15 +11,15 @@ import com.vaadin.ui.VerticalLayout;
 
 import java.util.List;
 
-public class ImprimerasView extends VerticalLayout implements View {
+public class ImpresorasView extends VerticalLayout implements View {
 
-    public static final String VIEW_NAME = "Imprimeras";
+    public static final String VIEW_NAME = "Impresoras";
 
     private final Label label;
 
     private final CustomLayout aboutContent;
 
-    public ImprimerasView(List<String> imprimeras, String defPrinter) {
+    public ImpresorasView(List<String> imprimeras, String defPrinter) {
         aboutContent = new CustomLayout("aboutview");
         aboutContent.setStyleName("about-content");
 
