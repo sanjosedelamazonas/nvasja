@@ -1,4 +1,4 @@
-package org.sanjose.views;
+package org.sanjose.views.caja;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -22,6 +22,7 @@ import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.validator.TwoCombosValidator;
+import org.sanjose.views.sys.INavigatorView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -45,7 +46,7 @@ import javax.persistence.PersistenceContext;
  */
 @SpringComponent
 @UIScope
-public class CajaGridView extends CajaGridUI implements View {
+public class CajaGridView extends CajaGridUI implements View, INavigatorView {
 
 	private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
 	
@@ -172,7 +173,7 @@ public class CajaGridView extends CajaGridUI implements View {
 
         // Cta Caja
         ComboBox selCtacontablecaja = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codContracta").setEditorField(selCtacontablecaja);
 
         // Tipo Moneda
@@ -183,7 +184,7 @@ public class CajaGridView extends CajaGridUI implements View {
 
         // Cta Contable
         ComboBox selCtacontable = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('N', GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
 
         // Rubro inst
@@ -365,5 +366,10 @@ public class CajaGridView extends CajaGridUI implements View {
 
     public VsjCajabanco getItemSeleccionado() {
         return itemSeleccionado;
+    }
+
+    @Override
+    public String getNavigatorViewName() {
+        return VIEW_NAME;
     }
 }

@@ -74,13 +74,13 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         ComboBox selCtacontablecaja = new ComboBox();  
         DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.
                 findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
-                        "0",'N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+                        '0','N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridConfigCtaCajaBanco.getColumn("codCtacontablecaja").setEditorField(selCtacontablecaja);
         
         ComboBox selCtacontablegasto = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable",
                 planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
-                        "0", 'N', GenUtil.getCurYear(), "101%", "102%", "104%", "106%")
+                        '0', 'N', GenUtil.getCurYear(), "101%", "102%", "104%", "106%")
                 , "Sel cta contable", "txtDescctacontable");
         gridConfigCtaCajaBanco.getColumn("codCtacontablegasto").setEditorField(selCtacontablegasto);
         

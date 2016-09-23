@@ -436,4 +436,8 @@ public class ScpPlancontable implements Serializable {
 		this.txtDescctacontable = txtDescctacontable;
 	}
 
+	public boolean isNotClosedCuenta() {
+		return (flgEstadocuenta==null || flgEstadocuenta.equals('0'));
+	}
+
 }

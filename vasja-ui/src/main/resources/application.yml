@@ -6,15 +6,18 @@ sqlserver:
   url: jdbc:sqlserver://virtualxp:1433;databaseName=SCP
   username: vasja
   password: vasja123
-  driverclass: com.microsoft.sqlserver.jdbc.SQLServerConnection
+  driverclass: com.microsoft.sqlserver.jdbc.SQLServerDriver
 spring:
   datasource:
     url: jdbc:sqlserver://virtualxp:1433;databaseName=SCP
     username: vasja
     password: vasja123
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerConnection
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     show_sql: false
+    database-platform: org.hibernate.dialect.SQLServerDialect
+#    hibernate:
+#      ddl-auto: validate
 logging:
   level:
     org:
