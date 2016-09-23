@@ -1,19 +1,24 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.NonEditableException;
+import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
-import org.sanjose.util.TransactionUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.caja.TransferenciaView;
 
-import java.util.List;
+import java.sql.Timestamp;
+
+import static org.sanjose.util.GenUtil.*;
 
 /**
  * VASJA class
@@ -27,6 +32,11 @@ public class BancoLogic extends BancoItemLogic {
     //private final BancoOperView view;
 
     private String moneda;
+
+    private FieldGroup fieldGroupCabezera;
+
+
+    private BeanItem<VsjBancocabecera> beanItem;
 
     //private final TransactionUtil transactionUtil;
 
@@ -64,7 +74,16 @@ public class BancoLogic extends BancoItemLogic {
         view.getContainer().removeAllItems();
         moneda = null;
         view.setSaldoTrans();
-        nuevoComprobante();
+        view.setEnableCabezeraFields(true);
+        VsjBancocabecera vcb = new VsjBancocabecera();
+        vcb.setIndTipocuenta("0");
+        vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
+        bindForm(vcb);
+        //view.getGuardarBtn().setEnabled(true);
+        view.getModificarBtn().setEnabled(false);
+        view.getEliminarBtn().setEnabled(false);
+        view.getImprimirTotalBtn().setEnabled(false);
+        bindForm(vcb);
     }
 
     @Override
@@ -126,6 +145,60 @@ public class BancoLogic extends BancoItemLogic {
         else
             MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
+
+    private void bindForm(VsjBancocabecera item) {
+        isLoading = true;
+
+        isEdit = !GenUtil.strNullOrEmpty(item.getCodUregistro());
+        clearSaldos();
+        //getSelMoneda().setValue(null);
+        beanItem = new BeanItem<VsjBancocabecera>(item);
+        fieldGroupCabezera = new FieldGroup(beanItem);
+        fieldGroupCabezera.setItemDataSource(beanItem);
+        fieldGroupCabezera.bind(view.getNumVoucher(), "codBancocabecera");
+        fieldGroupCabezera.bind(view.getDataFechaComprobante(), "fecFecha");
+        fieldGroupCabezera.bind(view.getSelCuenta(), "codCtacontable");
+        /*
+        if (isEdit && _PEN.equals(item.getCodTipomoneda())) {
+            fieldGroupCabezera.bind(view.getNumEgreso(), "numHabersol");
+            fieldGroupCabezera.bind(view.getNumIngreso(), "numDebesol");
+        } else if (isEdit && _USD.equals(item.getCodTipomoneda())) {
+            fieldGroupCabezera.bind(view.getNumEgreso(), "numHaberdolar");
+            fieldGroupCabezera.bind(view.getNumIngreso(), "numDebedolar");
+        } else if (isEdit && _EUR.equals(item.getCodTipomoneda())) {
+
+        }
+*/
+        fieldGroupCabezera.bind(view.getSelCodAuxCabeza(), "codDestino");
+        fieldGroupCabezera.bind(view.getGlosaCabeza(), "txtGlosa");
+        fieldGroupCabezera.bind(view.getCheque(), "txtCheque");
+
+        for (Field f: fieldGroupCabezera.getFields()) {
+            if (f instanceof TextField)
+                ((TextField)f).setNullRepresentation("");
+            if (f instanceof ComboBox)
+                ((ComboBox)f).setPageLength(20);
+        }
+        view.setEnableDetalleFields(true);
+        view.getSelProyecto().setEnabled(true);
+        view.getSelTercero().setEnabled(true);
+
+        isLoading = false;
+        if (isEdit) {
+            // EDITING
+            if (!GenUtil.strNullOrEmpty(item.getTxtCorrelativo())) {
+                view.getNumVoucher().setValue(item.getTxtCorrelativo());
+            }
+            view.setEnableDetalleFields(true);
+            view.setSaldoTrans();
+            setCuentaLogic();
+        } else {
+            //setCuentaLogic();
+            view.getNumVoucher().setValue("");
+        }
+        isEdit = false;
+    }
+
 
     @Override
     public void saveComprobante() {

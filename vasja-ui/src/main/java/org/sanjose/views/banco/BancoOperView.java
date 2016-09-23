@@ -72,10 +72,13 @@ public class BancoOperView extends BancoOperUI implements View {
 
     private final BeanItemContainer<VsjBancodetalle> container;
 
-    private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero,
+    private final Field[] allFields = new Field[] { fechaDoc, selProyecto, selTercero,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
-            selRubroInst, selRubroProy, selFuente, selTipoMov, glosaCabeza, glosaDetalle, serieDoc, numDoc,
-            selCodAuxCabeza, cheque };
+            selRubroInst, selRubroProy, selFuente, selTipoMov, glosaDetalle, serieDoc, numDoc,
+            };
+
+    private final Field[] cabezeraFields = new Field[] { dataFechaComprobante, selCuenta, selCodAuxCabeza,
+            glosaCabeza, cheque };
 
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol"
@@ -164,13 +167,19 @@ public class BancoOperView extends BancoOperUI implements View {
         return (VsjBancodetalle) gridBanco.getSelectedRow();
     }
 
-    public void setEnableFields(boolean enabled) {
+    public void setEnableDetalleFields(boolean enabled) {
         for (Field f : allFields) {
             //if (f!=selMoneda || !enabled)
             f.setEnabled(enabled);
         }
         btnResponsable.setEnabled(enabled);
         btnDestino.setEnabled(enabled);
+    }
+
+    public void setEnableCabezeraFields(boolean enabled) {
+        for (Field f : cabezeraFields) {
+            f.setEnabled(enabled);
+        }
     }
 
     public BeanItemContainer<VsjBancodetalle> getContainer() {
@@ -209,9 +218,6 @@ public class BancoOperView extends BancoOperUI implements View {
 
     public void refreshData() {
         MainUI.get().getCajaManejoView().refreshData();
-    }
-
-    public void setSaldoDeCajas() {
     }
 
     private boolean isPEN() {
@@ -360,7 +366,9 @@ public class BancoOperView extends BancoOperUI implements View {
         return selCodAuxCabeza;
     }
 
-
+    public TextField getCheque() {
+        return cheque;
+    }
 
     @Override
     public void enter(ViewChangeEvent event) {

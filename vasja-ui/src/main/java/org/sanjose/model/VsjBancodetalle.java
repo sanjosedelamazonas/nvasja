@@ -157,6 +157,10 @@ public class VsjBancodetalle implements Serializable {
 	@Column(name="txt_seriecomprobantepago")
 	private String txtSeriecomprobantepago;
 
+	@NotNull
+	@Column(name="cod_tipomov")
+	private Integer codTipomov;
+
 	//bi-directional many-to-one association to VsjBancocabecera
 	@ManyToOne
 	@JoinColumn(name="cod_bancocabecera")
@@ -531,6 +535,14 @@ public class VsjBancodetalle implements Serializable {
 
 	public void setTxtSeriecomprobantepago(String txtSeriecomprobantepago) {
 		this.txtSeriecomprobantepago = txtSeriecomprobantepago;
+	}
+
+	public Integer getCodTipomov() {
+		return codTipomov;
+	}
+
+	public void setCodTipomov(Integer codTipomov) {
+		this.codTipomov = codTipomov;
 	}
 
 	public VsjBancocabecera getVsjBancocabecera() {

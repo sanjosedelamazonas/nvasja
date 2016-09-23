@@ -102,6 +102,12 @@ public class DataUtil {
         return cajas;
     }
 
+    public static List<ScpPlancontable> getBancoCuentas(Date ano, ScpPlancontableRep planRepo) {
+        return planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike (
+                "0", "N", GenUtil.getYear(ano), "104%",
+                "0", "N", GenUtil.getYear(ano), "106%");
+    }
+
     public static VsjCajabanco prepareToSave(VsjCajabanco item) throws FieldGroup.CommitException {
         if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
             throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
