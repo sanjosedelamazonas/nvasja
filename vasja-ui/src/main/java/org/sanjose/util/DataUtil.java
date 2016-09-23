@@ -29,7 +29,7 @@ public class DataUtil {
     public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo, boolean isPEN) {
         return planRepo.
                 findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                        '0', 'N', GenUtil.getYear(ano), (isPEN ? "N" : "D") , "101");
+                        '0', 'N', GenUtil.getYear(ano), (isPEN ? 'N' : 'D') , "101");
     }
 
     public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo) {
@@ -62,8 +62,8 @@ public class DataUtil {
                 continue;
 
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
-                    ("N".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0.00)),
-                    ("D".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0.00))
+                    (caja.getIndTipomoneda().equals('N') ? saldo : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals('D') ? saldo : new BigDecimal(0.00))
             ));
         }
         return cajas;

@@ -19,7 +19,7 @@ public interface ScpPlancontableRep extends JpaRepository<ScpPlancontable, Long>
 			Character aciva, Character mov, String ano, String codcta1, String codcta2, String codcta3, String codcta4);
 
 	List<ScpPlancontable> findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-			Character activa, Character mov, String ano, String tipomoneda, String codcta);
+			Character activa, Character mov, String ano, Character tipomoneda, String codcta);
 
 	List<ScpPlancontable> findByFlgMovimientoAndId_TxtAnoproceso(Character mov, String ano);
 }
