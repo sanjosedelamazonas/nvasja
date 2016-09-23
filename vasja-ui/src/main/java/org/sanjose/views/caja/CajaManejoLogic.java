@@ -107,6 +107,8 @@ public class CajaManejoLogic implements Serializable {
     }
 
 
+
+
     public void setSaldos(Grid grid, boolean isInicial) {
         grid.getContainerDataSource().removeAllItems();
         BeanItemContainer<Caja> c = new BeanItemContainer<>(Caja.class);
@@ -114,19 +116,10 @@ public class CajaManejoLogic implements Serializable {
         grid.setColumnOrder("codigo", "descripcion", "soles", "dolares");
         BigDecimal totalSoles = new BigDecimal(0.00);
         BigDecimal totalUsd = new BigDecimal(0.00);
-        for (ScpPlancontable caja : DataUtil.getCajas(view.planRepo)) {
-            String moneda = "N".equals(caja.getIndTipomoneda()) ? "0" : "1";
-            BigDecimal saldo = new ProcUtil(view.getEm()).getSaldoCaja(
-                    (isInicial ? view.fechaDesde.getValue() : view.fechaHasta.getValue()),
-                    caja.getId().getCodCtacontable()
-                    , moneda);
-            Caja cajaItem = new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
-                    ("N".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0.00)),
-                    ("D".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0.00))
-            );
-            c.addItem(cajaItem);
-            totalSoles = totalSoles.add("N".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0));
-            totalUsd = totalUsd.add("D".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0));
+        for (Caja caja : DataUtil.getCajasList(view.getEm(), view.planRepo, (isInicial ? view.fechaDesde.getValue() : view.fechaHasta.getValue()))) {
+            c.addItem(caja);
+            totalSoles = totalSoles.add(caja.getSoles());
+            totalUsd = totalUsd.add(caja.getDolares());
         }
         grid.getColumn("soles").setRenderer(new EmptyZeroNumberRendrer(
                 "%02.2f", ConfigurationUtil.getLocale()));

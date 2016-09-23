@@ -2,15 +2,20 @@ package org.sanjose.util;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
+import org.sanjose.bean.Caja;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.repo.ScpPlancontableRep;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.views.caja.ComprobanteView;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,6 +38,25 @@ public class DataUtil {
                         "N", GenUtil.getCurYear(), "101");
     }
 
+    public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
+           return getCajasList(MainUI.get().getEntityManager(), planRepo, date);
+    }
+
+    public static List<Caja> getCajasList(EntityManager em, ScpPlancontableRep planRepo, Date date) {
+        List<Caja> cajas = new ArrayList<>();
+        for (ScpPlancontable caja : getCajas(planRepo)) {
+            String moneda = "N".equals(caja.getIndTipomoneda()) ? "0" : "1";
+            BigDecimal saldo = new ProcUtil(em).getSaldoCaja(
+                    date,
+                    caja.getId().getCodCtacontable()
+                    , moneda);
+            cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
+                    ("N".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0.00)),
+                    ("D".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0.00))
+            ));
+        }
+        return cajas;
+    }
 
     public static VsjCajabanco prepareToSave(VsjCajabanco item) throws FieldGroup.CommitException {
         if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
