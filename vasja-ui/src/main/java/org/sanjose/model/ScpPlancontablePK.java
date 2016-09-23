@@ -29,7 +29,6 @@ public class ScpPlancontablePK implements Serializable {
 	public String getCodCtacontable() {
 		return this.codCtacontable;
 	}
-	
 	public void setCodCtacontable(String codCtacontable) {
 		this.codCtacontable = codCtacontable;
 	}
@@ -55,11 +54,4 @@ public class ScpPlancontablePK implements Serializable {
 		
 		return hash;
 	}
-	@Override
-	public String toString() {
-		return "ScpPlancontablePK [txtAnoproceso=" + txtAnoproceso
-				+ ", codCtacontable=" + codCtacontable + "]";
-	}
-	
-	
 }

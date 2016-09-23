@@ -116,11 +116,6 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.sanjosedelamazonas</groupId>
-            <artifactId>vasja-reports</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <profiles>

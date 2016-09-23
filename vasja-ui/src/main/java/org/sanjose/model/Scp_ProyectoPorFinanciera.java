@@ -11,8 +11,8 @@ import java.sql.Timestamp;
  * 
  */
 @Entity
-@Table(name="scp_ProyectoPorFinanciera")
-@NamedQuery(name="Scp_ProyectoPorFinanciera.findAll", query="SELECT s FROM Scp_ProyectoPorFinanciera s")
+@Table(name="scp_proyectoporfinanciera")
+@NamedQuery(name="scp_proyectoporfinanciera.findAll", query="SELECT s FROM Scp_ProyectoPorFinanciera s")
 public class Scp_ProyectoPorFinanciera implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,7 @@ public class Scp_ProyectoPorFinanciera implements Serializable {
 	private Timestamp fecFregistro;
 
 	@Column(name="flg_im")
-	private String flgIm;
+	private Character flgIm;
 
 	@Column(name="num_orden")
 	private BigDecimal numOrden;
@@ -80,11 +80,11 @@ public class Scp_ProyectoPorFinanciera implements Serializable {
 		this.fecFregistro = fecFregistro;
 	}
 
-	public String getFlgIm() {
+	public Character getFlgIm() {
 		return this.flgIm;
 	}
 
-	public void setFlgIm(String flgIm) {
+	public void setFlgIm(Character flgIm) {
 		this.flgIm = flgIm;
 	}
 

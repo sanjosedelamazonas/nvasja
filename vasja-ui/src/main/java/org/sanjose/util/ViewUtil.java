@@ -215,10 +215,10 @@ public class ViewUtil {
 
     public static void colorizeRows(Grid grid) {
         grid.setRowStyleGenerator(rowReference -> {
-            if ("1".equals(((VsjCajabanco) rowReference.getItemId()).getFlgEnviado())) {
+            if (((VsjCajabanco)rowReference.getItemId()).isEnviado()) {
                 return "enviado";
             }
-            if ("1".equals(((VsjCajabanco) rowReference.getItemId()).getFlg_Anula()))
+            if (((VsjCajabanco) rowReference.getItemId()).isAnula())
                 return "anulado";
             return "";
         });
