@@ -18,6 +18,7 @@ public class ConfigurationUtil {
 
 	public final static Locale LOCALE = new Locale("es", "PE");
 	public final static String CSS_RED = "red";
+	private static String OS = null;
 
 	private static void init() {
 		defaultParamMap.put("LOCALE", "es_PE");
@@ -35,8 +36,9 @@ public class ConfigurationUtil {
 		
 		/* Reports */
 		defaultParamMap.put("REPORTS_SOURCE_URL", "reports/");
-//		defaultParamMap.put("REPORTS_SOURCE_FOLDER", "/d/java/workspaces/workspace_vasja/VasjaEXT/Reports/");
-		defaultParamMap.put("REPORTS_SOURCE_FOLDER", "C:\\Users\\ab\\workspace\\VasjaEXT\\Reports\\");
+		defaultParamMap.put("REPORTS_SOURCE_FOLDER","");
+		defaultParamMap.put("REPORTS_SOURCE_FOLDER_UNIX", "/pol/dev/nvasja/vasja-reports/reports");
+		defaultParamMap.put("REPORTS_SOURCE_FOLDER_WIN", "C:\\vasja_caja2\\vasja-reports\\reports\\");
 		defaultParamMap.put("REPORTS_IMAGE_SERVLET",
 				"../../servlets/image?image=");
 		defaultParamMap.put("REPORTS_DIARIO_CAJA_TYPE", "PDF");
@@ -90,6 +92,23 @@ public class ConfigurationUtil {
 			String param = (prop != null ? prop : getDefaultValue(name));
 			paramMap.put(name, param);
 			return param;
+		}
+	}
+
+	public static String getOsName() {
+		if(OS == null) { OS = System.getProperty("os.name"); }
+		return OS;
+	}
+
+	public static String getReportsSourceFolder() {
+
+		if (!GenUtil.strNullOrEmpty(get("REPORTS_SOURCE_FOLDER"))) {
+			return get("REPORTS_SOURCE_FOLDER");
+		}
+		if (getOsName().startsWith("Win")) {
+			return get("REPORTS_SOURCE_FOLDER_WIN");
+		} else {
+			return get("REPORTS_SOURCE_FOLDER_UNIX");
 		}
 	}
 

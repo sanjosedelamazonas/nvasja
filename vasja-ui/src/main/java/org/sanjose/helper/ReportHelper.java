@@ -204,7 +204,7 @@ public class ReportHelper {
 		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
 		paramMap.put("DIARIO_FECHA_MAX", fechaMax);
 		paramMap.put("DIARIO_ISPEN", true);
-		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.get("REPORTS_SOURCE_FOLDER"));
+		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
 		paramMap.put("STR_FECHA_MIN", sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)));
 		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
 		logger.info("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
@@ -330,7 +330,7 @@ public class ReportHelper {
 		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
 		paramMap.put("DIARIO_FECHA_MAX", fechaMax);
 		paramMap.put("DIARIO_ISPEN", isPen);
-		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.get("REPORTS_SOURCE_FOLDER"));
+		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
 		paramMap.put("STR_FECHA_MIN", sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)));
 		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
 		paramMap.put("REPORTE_PREPARADO_POR", preparado);
@@ -350,7 +350,7 @@ public class ReportHelper {
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
 		paramMap.put("in_isPen", isPen);
 		paramMap.put("str_fecha_min", sdf.format(ConfigurationUtil.getBeginningOfDay(minfecha)));
-		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.get("REPORTS_SOURCE_FOLDER"));
+		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
 		if (maxfecha!=null) paramMap.put("str_fecha_max", sdf.format(ConfigurationUtil.getEndOfDay(maxfecha)));
 		if (grouping==null || grouping.equals("NO GROUPING")) 	reportName="ReporteCentroDeCostosNoGrouping";						
 		else if (grouping.equals("POR CATEGORIA")) reportName="ReporteCentroDeCostosPorCategoria";
@@ -368,7 +368,7 @@ public class ReportHelper {
 		HashMap paramMap = new HashMap();
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
 		paramMap.put("str_fecha_min", sdf.format(ConfigurationUtil.getBeginningOfDay(minfecha)));
-		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.get("REPORTS_SOURCE_FOLDER"));
+		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
 		if (maxfecha!=null) 
 			paramMap.put("str_fecha_max", sdf.format(ConfigurationUtil.getEndOfDay(maxfecha)));
 		else 
@@ -472,9 +472,9 @@ public class ReportHelper {
 		if (rep == null) {
 			logger.info("Loading report " + reportName + " from file");
 			try {
-				logger.info("Reports folder: " + ConfigurationUtil.get("REPORTS_SOURCE_FOLDER").trim());
+				logger.info("Reports folder: " + ConfigurationUtil.getReportsSourceFolder().trim());
 				rep = new FileInputStream(
-						ConfigurationUtil.get("REPORTS_SOURCE_FOLDER") + File.separator
+						ConfigurationUtil.getReportsSourceFolder() + File.separator
 								+ reportName + ".jasper");
 			} catch (FileNotFoundException e) {
 				Notification.show("Report file not found!");
@@ -488,7 +488,7 @@ public class ReportHelper {
 			HashMap paramMap) throws JRException {
 		@SuppressWarnings("unchecked")
 		JasperPrint jasperPrint = JasperFillManager.fillReport(
-				ConfigurationUtil.get("REPORTS_SOURCE_FOLDER") + reportName
+				ConfigurationUtil.getReportsSourceFolder() + reportName
 						+ ".jasper", paramMap, get().getSqlConnection());
 		JRHtmlExporter htmlExporter = new JRHtmlExporter();
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
@@ -509,7 +509,7 @@ public class ReportHelper {
 			HashMap paramMap) throws JRException {
 		@SuppressWarnings("unchecked")
 		JasperPrint jasperPrint = JasperFillManager.fillReport(
-				ConfigurationUtil.get("REPORTS_SOURCE_FOLDER") + reportName
+				ConfigurationUtil.getReportsSourceFolder() + reportName
 						+ ".jasper", paramMap, get().getSqlConnection());
 		JRXlsExporter xlsExporter = new JRXlsExporter();
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
@@ -531,7 +531,7 @@ public class ReportHelper {
 			HashMap paramMap) throws JRException {
 		@SuppressWarnings("unchecked")
 		JasperPrint jasperPrint = JasperFillManager.fillReport(
-				ConfigurationUtil.get("REPORTS_SOURCE_FOLDER") + reportName
+				ConfigurationUtil.getReportsSourceFolder() + reportName
 						+ ".jasper", paramMap, get().getSqlConnection());
 		JRTextExporter txtExporter = new JRTextExporter();
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
@@ -550,7 +550,7 @@ public class ReportHelper {
 	private static JasperPrint prepareToPrint(String reportName,
 			HashMap paramMap) throws JRException {
 		return JasperFillManager.fillReport(
-				ConfigurationUtil.get("REPORTS_SOURCE_FOLDER") + reportName
+				ConfigurationUtil.getReportsSourceFolder() + reportName
 						+ ".jasper", paramMap, get().getSqlConnection());
 	}
 
