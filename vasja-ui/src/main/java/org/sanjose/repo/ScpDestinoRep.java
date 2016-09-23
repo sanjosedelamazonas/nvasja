@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
 
-	List<ScpDestino> findByIndTipodestino(String s);
+	List<ScpDestino> findByIndTipodestino(Character s);
 
-	List<ScpDestino> findByIndTipodestinoNot(String s);
+	List<ScpDestino> findByIndTipodestinoNot(Character s);
 
 	ScpDestino findByCodDestino(String s);
 

@@ -43,21 +43,21 @@ public class ScpDestino implements Serializable {
 	private Timestamp fecFregistro;
 
 	@Column(name="flg_im")
-	private String flgIm;
+	private Character flgIm;
 
 	@Column(name="ind_sexo")
-	private String indSexo;
+	private Character indSexo;
 
 	@Column(name="ind_tipodctoidentidad")
 	private String indTipodctoidentidad;
 
 	@NotNull
 	@Column(name="ind_tipodestino")
-	private String indTipodestino;
+	private Character indTipodestino;
 
 	@NotNull
 	@Column(name="ind_tipopersona")
-	private String indTipopersona;
+	private Character indTipopersona;
 
 	@Column(name="txt_apellidomaterno")
 	private String txtApellidomaterno;
@@ -146,19 +146,19 @@ public class ScpDestino implements Serializable {
 		this.fecFregistro = fecFregistro;
 	}
 
-	public String getFlgIm() {
+	public Character getFlgIm() {
 		return this.flgIm;
 	}
 
-	public void setFlgIm(String flgIm) {
+	public void setFlgIm(Character flgIm) {
 		this.flgIm = flgIm;
 	}
 
-	public String getIndSexo() {
+	public Character getIndSexo() {
 		return this.indSexo;
 	}
 
-	public void setIndSexo(String indSexo) {
+	public void setIndSexo(Character indSexo) {
 		this.indSexo = indSexo;
 	}
 
@@ -170,19 +170,19 @@ public class ScpDestino implements Serializable {
 		this.indTipodctoidentidad = indTipodctoidentidad;
 	}
 
-	public String getIndTipodestino() {
+	public Character getIndTipodestino() {
 		return this.indTipodestino;
 	}
 
-	public void setIndTipodestino(String indTipodestino) {
+	public void setIndTipodestino(Character indTipodestino) {
 		this.indTipodestino = indTipodestino;
 	}
 
-	public String getIndTipopersona() {
+	public Character getIndTipopersona() {
 		return this.indTipopersona;
 	}
 
-	public void setIndTipopersona(String indTipopersona) {
+	public void setIndTipopersona(Character indTipopersona) {
 		this.indTipopersona = indTipopersona;
 	}
 
@@ -258,30 +258,4 @@ public class ScpDestino implements Serializable {
 		this.txtTelefono2 = txtTelefono2;
 	}
 
-	@Override
-	public String toString() {
-		return "ScpDestino{" +
-				"codDestino='" + codDestino + '\'' +
-				", codCargo='" + codCargo + '\'' +
-				", codFilial='" + codFilial + '\'' +
-				", codUactualiza='" + codUactualiza + '\'' +
-				", codUregistro='" + codUregistro + '\'' +
-				", fecFactualiza=" + fecFactualiza +
-				", fecFregistro=" + fecFregistro +
-				", flgIm='" + flgIm + '\'' +
-				", indSexo='" + indSexo + '\'' +
-				", indTipodctoidentidad='" + indTipodctoidentidad + '\'' +
-				", indTipodestino='" + indTipodestino + '\'' +
-				", indTipopersona='" + indTipopersona + '\'' +
-				", txtApellidomaterno='" + txtApellidomaterno + '\'' +
-				", txtApellidopaterno='" + txtApellidopaterno + '\'' +
-				", txtDireccion='" + txtDireccion + '\'' +
-				", txtNombre='" + txtNombre + '\'' +
-				", txtNombredestino='" + txtNombredestino + '\'' +
-				", txtNumerodctoidentidad='" + txtNumerodctoidentidad + '\'' +
-				", txtRuc='" + txtRuc + '\'' +
-				", txtTelefono1='" + txtTelefono1 + '\'' +
-				", txtTelefono2='" + txtTelefono2 + '\'' +
-				'}';
-	}
 }

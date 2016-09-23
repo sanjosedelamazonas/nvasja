@@ -127,14 +127,16 @@ public class DataFilterUtil {
 	@SuppressWarnings("unchecked")
 	public static void bindTipoMonedaOptionGroup(final OptionGroup combo, String column) {
 
-		Map<String, String> valMap = new TreeMap<>();
-		valMap.put("0","Soles");
-		valMap.put("1","Dolares");
+		Map<Character, String> valMap = new HashMap<>();
+		valMap.put('0', "Soles");
+		valMap.put('1',"Dolares");
 		IndexedContainer c = new IndexedContainer();
 		c.addContainerProperty(column, String.class, "");
 
 		int i = 0;
-		for (String value : new String[] { "0", "1" }) {
+		Character[] keys = valMap.keySet().toArray(new Character[0]);
+		Arrays.sort(valMap.keySet().toArray());
+		for (Character value : keys) {
 			Item item = c.addItem(value);
 			item.getItemProperty(column)
 					.setValue(valMap.get(value));
@@ -150,17 +152,19 @@ public class DataFilterUtil {
 	public static void bindTipoMonedaComboBox(final ComboBox combo, String column,
 											  final String prompt) {
 
-		Map<String, String> valMap = new TreeMap<>();
-		valMap.put("0","S/");
-		valMap.put("1","$");
-		valMap.put("2","€");
+		Map<Character, String> valMap = new HashMap<>();
+		valMap.put('0',"S/");
+		valMap.put('1',"$");
+		valMap.put('2',"€");
 
 		// propietarios.setWidth(ConfigurationUtil.get("COMMON_FIELD_WIDTH"));
 		IndexedContainer c = new IndexedContainer();
 		c.addContainerProperty(column, String.class, "");
 
 		int i = 0;
-		for (String value : new String[] { "0", "1", "2"}) {
+		Character[] keys = valMap.keySet().toArray(new Character[0]);
+		Arrays.sort(valMap.keySet().toArray());
+		for (Character value : keys) {
 			Item item = c.addItem(value);
 			item.getItemProperty(column)
 					.setValue(value + " " + valMap.get(value));
@@ -176,40 +180,42 @@ public class DataFilterUtil {
 
 	public static void bindGeneroComboBox(final ComboBox combo, String column,
 										  final String prompt) {
-		Map<String, String> valMap = new TreeMap<>();
-		valMap.put("F", "Femenino");
-		valMap.put("M", "Masculino");
-		bindFixedValComboBox(combo, column, prompt, new String[]{"F", "M"}, valMap);
+		Map<Character, String> valMap = new TreeMap<>();
+		valMap.put('F', "Femenino");
+		valMap.put('M', "Masculino");
+		bindFixedValComboBox(combo, column, prompt, valMap);
 	}
 
 
 	public static void bindTipoPersonaComboBox(final ComboBox combo, String column,
 											  final String prompt) {
-		Map<String, String> valMap = new TreeMap<>();
-		valMap.put("N","Natural");
-		valMap.put("J","Juridico");
-		bindFixedValComboBox(combo, column, prompt, new String[]{"N", "J"}, valMap);
+		Map<Character, String> valMap = new TreeMap<>();
+		valMap.put('N',"Natural");
+		valMap.put('J',"Juridico");
+		bindFixedValComboBox(combo, column, prompt, valMap);
 	}
 
 	public static void bindTipoDestinoComboBox(final ComboBox combo, String column,
 											   final String prompt) {
-		Map<String, String> valMap = new TreeMap<>();
-		valMap.put("0","Proveedor");
-		valMap.put("1","Empleado");
-		valMap.put("2","Cliente");
-		valMap.put("3","Tercero");
-		bindFixedValComboBox(combo, column, prompt, new String[]{"0", "1", "2", "3"}, valMap);
+		Map<Character, String> valMap = new TreeMap<>();
+		valMap.put('0',"Proveedor");
+		valMap.put('1',"Empleado");
+		valMap.put('2',"Cliente");
+		valMap.put('3',"Tercero");
+		bindFixedValComboBox(combo, column, prompt, valMap);
 	}
 
 	@SuppressWarnings("unchecked")
 	private static void bindFixedValComboBox(final ComboBox combo, String column,
-											 final String prompt, String[] keys, Map valMap) {
+											 final String prompt, Map<Character, String> valMap) {
 
 		IndexedContainer c = new IndexedContainer();
 		c.addContainerProperty(column, String.class, "");
 
 		int i = 0;
-		for (String value : keys) {
+		Character[] keys = valMap.keySet().toArray(new Character[0]);
+		Arrays.sort(valMap.keySet().toArray());
+		for (Character value : keys) {
 			Item item = c.addItem(value);
 			item.getItemProperty(column)
 					.setValue(valMap.get(value));

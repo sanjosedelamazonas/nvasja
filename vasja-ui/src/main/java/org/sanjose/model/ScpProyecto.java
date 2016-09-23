@@ -58,12 +58,12 @@ public class ScpProyecto implements Serializable {
 	private Timestamp fecInicio;
 
 	@Column(name="flg_conversion")
-	private String flgConversion;
+	private Character flgConversion;
 
 	@Column(name="flg_im")
-	private String flgIm;
+	private Character flgIm;
 
-	private String flg_TCReferencia;
+	private Character flg_TCReferencia;
 
 	@Column(name="num_presupuesto")
 	private BigDecimal numPresupuesto;
@@ -184,27 +184,27 @@ public class ScpProyecto implements Serializable {
 		this.fecInicio = fecInicio;
 	}
 
-	public String getFlgConversion() {
+	public Character getFlgConversion() {
 		return this.flgConversion;
 	}
 
-	public void setFlgConversion(String flgConversion) {
+	public void setFlgConversion(Character flgConversion) {
 		this.flgConversion = flgConversion;
 	}
 
-	public String getFlgIm() {
+	public Character getFlgIm() {
 		return this.flgIm;
 	}
 
-	public void setFlgIm(String flgIm) {
+	public void setFlgIm(Character flgIm) {
 		this.flgIm = flgIm;
 	}
 
-	public String getFlg_TCReferencia() {
+	public Character getFlg_TCReferencia() {
 		return this.flg_TCReferencia;
 	}
 
-	public void setFlg_TCReferencia(String flg_TCReferencia) {
+	public void setFlg_TCReferencia(Character flg_TCReferencia) {
 		this.flg_TCReferencia = flg_TCReferencia;
 	}
 

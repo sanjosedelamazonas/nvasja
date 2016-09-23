@@ -71,8 +71,7 @@ public class CajaManejoLogic implements Serializable {
     }
 
     public void editarComprobante(VsjCajabanco vcb) {
-        if (!"1".equals(vcb.getFlgEnviado()) && !"1".equals(vcb.getFlg_Anula())) {
-
+        if (!vcb.isEnviado() && !vcb.isAnula()) {
             // Transferencia
             if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
                 try {
@@ -106,8 +105,6 @@ public class CajaManejoLogic implements Serializable {
             ViewUtil.printComprobante(vcb);
         }
     }
-
-
 
 
     public void setSaldos(Grid grid, boolean isInicial) {
