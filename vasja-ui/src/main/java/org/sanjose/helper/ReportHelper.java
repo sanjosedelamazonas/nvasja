@@ -201,6 +201,9 @@ public class ReportHelper {
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
 		paramMap.put("SALDOS_INICIAL", DataUtil.getCajasList(MainUI.get().getComprobanteView().getPlanRepo(), fechaMin));
 		paramMap.put("SALDOS_FINAL", DataUtil.getCajasList(MainUI.get().getComprobanteView().getPlanRepo(), fechaMax));
+
+		logger.info("sendin to diario INICIAL: " + paramMap.get("SALDOS_INICIAL").toString());
+		logger.info("sendin to diario FINAL: " + paramMap.get("SALDOS_FINAL").toString());
 				//paramMap.put("SALDO_INICIAL", (isPen ? operSaldoTotal.getSaldoPen() : operSaldoTotal.getSaldoUsd()));
 		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
 		paramMap.put("DIARIO_FECHA_MAX", fechaMax);
