@@ -36,6 +36,7 @@ import org.hibernate.Session;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.Caja;
+import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
@@ -209,7 +210,8 @@ public class ReportHelper {
 		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
 		logger.info("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
 		logger.info("STR_FECHA_MAX=" + paramMap.get("STR_FECHA_MAX"));
-		paramMap.put("REPORTE_PREPARADO_POR", CurrentUser.get());
+		MsgUsuario usuario = MainUI.get().getMsgUsuarioRep().findByTxtUsuario(CurrentUser.get());
+		paramMap.put("REPORTE_PREPARADO_POR", usuario.getTxtNombre());
 		paramMap.put("REPORTE_REVISADOR_POR", revisado);
 		logger.info("ParamMap: " + paramMap.toString());
 		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);

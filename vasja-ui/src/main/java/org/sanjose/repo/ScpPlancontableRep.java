@@ -9,6 +9,9 @@ public interface ScpPlancontableRep extends JpaRepository<ScpPlancontable, Long>
 
 	List<ScpPlancontable> findByFlgMovimiento(String s);
 
+	List<ScpPlancontable> findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
+			String mov, String ano, String codcta);
+
 	List<ScpPlancontable> findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
 			String activa, String mov, String ano, String codcta);
 

@@ -38,6 +38,12 @@ public class DataUtil {
                         "0", "N", GenUtil.getYear(ano), "101");
     }
 
+    public static List<ScpPlancontable> getTodasCajas(Date ano, ScpPlancontableRep planRepo) {
+        return planRepo.
+                findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
+                        "N", GenUtil.getYear(ano), "101");
+    }
+
 
     public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
            return getCajasList(MainUI.get().getEntityManager(), planRepo, date);
@@ -45,12 +51,16 @@ public class DataUtil {
 
     public static List<Caja> getCajasList(EntityManager em, ScpPlancontableRep planRepo, Date date) {
         List<Caja> cajas = new ArrayList<>();
-        for (ScpPlancontable caja : getCajas(date, planRepo)) {
+        for (ScpPlancontable caja : getTodasCajas(date, planRepo)) {
             String moneda = "N".equals(caja.getIndTipomoneda()) ? "0" : "1";
             BigDecimal saldo = new ProcUtil(em).getSaldoCaja(
                     date,
                     caja.getId().getCodCtacontable()
                     , moneda);
+            // If is closed and has a saldo of "0.00" we can omit it
+            if ("1".equals(caja.getFlgEstadocuenta()) && saldo.compareTo(new BigDecimal(0))==0)
+                continue;
+
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
                     ("N".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0.00)),
                     ("D".equals(caja.getIndTipomoneda()) ? saldo : new BigDecimal(0.00))
