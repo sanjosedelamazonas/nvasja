@@ -213,6 +213,10 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 		return vsjBancodetalle;
 	}
 
+	public boolean isEnviado() {
+		return flgEnviado!=null && flgEnviado.equals('1');
+	}
+
 	@Override
 	public String toString() {
 		return "VsjBancocabecera{" + super.toString() + " " +

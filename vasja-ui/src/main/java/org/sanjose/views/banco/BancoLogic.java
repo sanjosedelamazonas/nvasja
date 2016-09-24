@@ -79,17 +79,17 @@ public class BancoLogic extends BancoItemLogic {
         view.getContainer().removeAllItems();
         moneda = null;
         view.setSaldoTrans();
-        view.setEnableCabezeraFields(true);
         VsjBancocabecera vcb = new VsjBancocabecera();
         vcb.setIndTipocuenta('0');
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         bindForm(vcb);
         view.setEnableCabezeraFields(true);
+        view.setEnableDetalleFields(false);
         //view.getGuardarBtn().setEnabled(true);
         view.getModificarBtn().setEnabled(false);
         view.getEliminarBtn().setEnabled(false);
         view.getImprimirTotalBtn().setEnabled(false);
-        bindForm(vcb);
+        //bindForm(vcb);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class BancoLogic extends BancoItemLogic {
     @Override
     public void editarComprobante() {
         if (view.getSelectedRow()!=null
-                && "0".equals(view.getSelectedRow().getFlg_Anula())) {
+                && !view.getSelectedRow().isAnula()) {
             isEdited = true;
             editarComprobante(view.getSelectedRow());
             //view.getSelMoneda().setEnabled(false);

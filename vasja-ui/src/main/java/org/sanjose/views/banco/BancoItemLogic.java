@@ -317,11 +317,10 @@ class BancoItemLogic implements Serializable {
             view.getSaldoCuenta().setValue(df.format(saldo));
             log.info("In setCuentaLogic: " + df.format(saldo));
             moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
-            //setMonedaLogic(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             // If still no item created
             if (item==null) {
-                log.info("In setCuentaLogic item is null");
                 nuevoComprobante(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+                setMonedaLogic(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             } else {
                 item.setCodTipomoneda(cuenta.getIndTipomoneda());
             }
@@ -331,32 +330,31 @@ class BancoItemLogic implements Serializable {
 
 
     private void setMonedaLogic(Character moneda) {
+        log.info("in moneda logic: " +isLoading + " " + moneda);
         if (!isLoading) {
             try {
                 fieldGroup.unbind(view.getNumEgreso());
                 fieldGroup.unbind(view.getNumIngreso());
             } catch (FieldGroup.BindException be) {
             }
+
             //view.getSelCaja().removeAllValidators();
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
-                //DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getPlanRepo(), true), "Sel Caja", "txtDescctacontable");
-                //setCajaLogic(PEN);
+                log.info("in moneda logic set PEN");
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
             } else if (moneda.equals(USD)) {
                 // Dolares
                 // Cta Caja
-                //DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getPlanRepo(), false), "Sel Caja", "txtDescctacontable");
-                //setCajaLogic(USD);
+                log.info("in moneda logic set USD");
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
             } else {
                 // Euros
                 // Cta Caja
-                //DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getPlanRepo(), false), "Sel Caja", "txtDescctacontable");
-                //setCajaLogic(EUR);
+                log.info("in moneda logic set EUR");
                 fieldGroup.bind(view.getNumEgreso(), "numHabermo");
                 fieldGroup.bind(view.getNumIngreso(), "numDebemo");
 
@@ -533,13 +531,17 @@ class BancoItemLogic implements Serializable {
         //fieldGroup.bind(view.getSelCaja(), "codCtacontable");
         //fieldGroup.bind(view.getDataFechaComprobante(), "fecFecha");
 
-        if (isEdit && PEN.equals(item.getCodTipomoneda())) {
+        if (PEN.equals(item.getCodTipomoneda())) {
             fieldGroup.bind(view.getNumEgreso(), "numHabersol");
             fieldGroup.bind(view.getNumIngreso(), "numDebesol");
-        } else if (isEdit && USD.equals(item.getCodTipomoneda())) {
+        } else if (USD.equals(item.getCodTipomoneda())) {
             fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
             fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
+        } else {
+            fieldGroup.bind(view.getNumEgreso(), "numHabermo");
+            fieldGroup.bind(view.getNumIngreso(), "numDebemo");
         }
+
         ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
         ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
         fieldGroup.bind(view.getGlosaDetalle(), "txtGlosaitem");
@@ -583,7 +585,7 @@ class BancoItemLogic implements Serializable {
                 setEditorTerceroLogic(item.getCodTercero());
             }
         } else {
-            setMonedaLogic(item.getCodTipomoneda());
+            //setMonedaLogic(item.getCodTipomoneda());
             view.getNumVoucher().setValue("");
         }
         isEdit = false;
@@ -640,6 +642,7 @@ class BancoItemLogic implements Serializable {
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
         bindForm(vcb);
         item = vcb;
+        view.setEnableDetalleFields(true);
         view.getGuardarBtn().setEnabled(true);
         view.getModificarBtn().setEnabled(false);
         view.getEliminarBtn().setEnabled(false);
@@ -739,8 +742,10 @@ class BancoItemLogic implements Serializable {
     }
 
     VsjBancodetalle getVsjBancodetalle() throws CommitException {
+        //fieldGroup.get
         fieldGroup.commit();
         VsjBancodetalle item = beanItem.getBean();
+        log.info("got from getDetalle "+ item);
         view.setEnableDetalleFields(false);
         return item;
     }
