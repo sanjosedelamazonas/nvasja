@@ -614,7 +614,7 @@ class ComprobanteLogic implements Serializable {
 
     VsjCajabanco prepareToSave() throws CommitException {
         VsjCajabanco item = getVsjCajabanco();
-        item = DataUtil.prepareToSave(item);
+        item = item.prepareToSave();
         log.info("Ready to save: " + item);
         return item;
     }

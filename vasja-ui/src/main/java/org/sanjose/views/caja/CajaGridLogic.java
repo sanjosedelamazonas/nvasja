@@ -69,7 +69,7 @@ public class CajaGridLogic implements Serializable {
                 Object item = view.gridCaja.getContainerDataSource().getItem(view.gridCaja.getEditedItemId());
                 if (item!=null) {
                     VsjCajabanco vcb = (VsjCajabanco) ((BeanItem) item).getBean();
-                    final VsjCajabanco vcbToSave = DataUtil.prepareToSave(vcb);
+                    final VsjCajabanco vcbToSave = vcb.prepareToSave();
                     if (vcb.isEnviado()) {
                         MessageBox
                                 .createQuestion()

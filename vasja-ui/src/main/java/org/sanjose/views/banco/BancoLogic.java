@@ -287,7 +287,7 @@ public class BancoLogic extends BancoItemLogic {
 
         for (VsjCajabanco oper : operaciones) {
             if ("1".equals(oper.getFlgEnviado()))
-                throw new NonEditableException("No se puede editar porque una de los operaciones ya esta enviada a contabilidad: " + oper.getCodCajabanco());
+                throw new NonEditableException("No se puede editar porque una de los operaciones ya esta enviada a contabilidad: " + oper.getId());
         }
         for (VsjCajabanco oper : operaciones) {
             view.getContainer().addBean(oper);
