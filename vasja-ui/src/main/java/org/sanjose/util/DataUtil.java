@@ -44,19 +44,11 @@ public class DataUtil {
                         'N', GenUtil.getYear(ano), "101");
     }
 
-
     public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
-           return getCajasList(MainUI.get().getEntityManager(), planRepo, date, true);
+        return getCajasList(MainUI.get().getEntityManager(), planRepo, date);
     }
 
-    public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date, boolean isInicial) {
-        return getCajasList(MainUI.get().getEntityManager(), planRepo, date, isInicial);
-    }
     public static List<Caja> getCajasList(EntityManager em, ScpPlancontableRep planRepo, Date date) {
-        return getCajasList(em, planRepo, date, true);
-    }
-
-    public static List<Caja> getCajasList(EntityManager em, ScpPlancontableRep planRepo, Date date, boolean isInicial) {
         List<Caja> cajas = new ArrayList<>();
         for (ScpPlancontable caja : getTodasCajas(date, planRepo)) {
             Character moneda = caja.getIndTipomoneda().equals('N') ? '0' : '1';
@@ -70,8 +62,37 @@ public class DataUtil {
 
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
                     (caja.getIndTipomoneda().equals('N') ? saldo : new BigDecimal(0.00)),
-                    (caja.getIndTipomoneda().equals('D') ? saldo : new BigDecimal(0.00)),
-                    isInicial
+                    (caja.getIndTipomoneda().equals('D') ? saldo : new BigDecimal(0.00))
+            ));
+        }
+        return cajas;
+    }
+
+    public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date dateInicial, Date datefinal) {
+        List<Caja> cajas = new ArrayList<>();
+        List<ScpPlancontable> cajasInicial = getTodasCajas(dateInicial, planRepo);
+        List<ScpPlancontable> cajasFinal = getTodasCajas(datefinal, planRepo);
+        cajasInicial.addAll(cajasFinal);
+        for (ScpPlancontable caja : cajasInicial) {
+            Character moneda = caja.getIndTipomoneda().equals('N') ? '0' : '1';
+            BigDecimal saldoInicial = new ProcUtil(MainUI.get().getEntityManager()).getSaldoCaja(
+                    GenUtil.getBeginningOfDay(dateInicial),
+                    caja.getId().getCodCtacontable()
+                    , moneda);
+            BigDecimal saldoFinal = new ProcUtil(MainUI.get().getEntityManager()).getSaldoCaja(
+                    GenUtil.getEndOfDay(datefinal),
+                    caja.getId().getCodCtacontable()
+                    , moneda);
+            // If is closed and has a saldo of "0.00" we can omit it
+            if (!caja.isNotClosedCuenta() && saldoInicial.compareTo(new BigDecimal(0))==0 &&
+                    saldoFinal.compareTo(new BigDecimal(0))==0)
+                continue;
+
+            cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
+                    (caja.getIndTipomoneda().equals('N') ? saldoInicial : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals('D') ? saldoInicial : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals('N') ? saldoFinal : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals('D') ? saldoFinal : new BigDecimal(0.00))
             ));
         }
         return cajas;

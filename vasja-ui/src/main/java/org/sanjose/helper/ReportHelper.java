@@ -199,12 +199,9 @@ public class ReportHelper {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
 		HashMap paramMap = new HashMap();
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
-		List<Caja> cajas = DataUtil.getCajasList(MainUI.get().getComprobanteView().getPlanRepo(), fechaMin, true);
-		cajas.addAll(DataUtil.getCajasList(MainUI.get().getComprobanteView().getPlanRepo(), fechaMax, false));
+		List<Caja> cajas = DataUtil.getCajasList(MainUI.get().getComprobanteView().getPlanRepo(), fechaMin, fechaMax);
 		paramMap.put("SALDOS_INICIAL", cajas);
 		logger.info("sendin to diario INICIAL: " + cajas);
-		//logger.info("sendin to diario FINAL: " + paramMap.get("SALDOS_FINAL").toString());
-				//paramMap.put("SALDO_INICIAL", (isPen ? operSaldoTotal.getSaldoPen() : operSaldoTotal.getSaldoUsd()));
 		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
 		paramMap.put("DIARIO_FECHA_MAX", fechaMax);
 		paramMap.put("DIARIO_ISPEN", true);
@@ -216,7 +213,7 @@ public class ReportHelper {
 		MsgUsuario usuario = MainUI.get().getMsgUsuarioRep().findByTxtUsuario(CurrentUser.get());
 		paramMap.put("REPORTE_PREPARADO_POR", usuario.getTxtNombre());
 		paramMap.put("REPORTE_REVISADOR_POR", revisado);
-		logger.info("ParamMap: " + paramMap.toString());
+		//logger.info("ParamMap: " + paramMap.toString());
 		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
 	}
 
