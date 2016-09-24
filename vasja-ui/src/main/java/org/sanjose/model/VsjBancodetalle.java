@@ -443,6 +443,11 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 		this.vsjBancocabecera = vsjBancocabecera;
 	}
 
+
+	public boolean isAnula() {
+		return flg_Anula!=null && flg_Anula.equals('1');
+	}
+
 	@Override
 	public String toString() {
 		return "VsjBancodetalle{" + super.toString() + " " +
