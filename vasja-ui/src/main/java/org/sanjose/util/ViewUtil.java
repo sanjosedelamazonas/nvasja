@@ -16,6 +16,8 @@ import org.sanjose.converter.BigDecimalConverter;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.helper.ReportHelper;
+import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 
@@ -211,6 +213,17 @@ public class ViewUtil {
                     new Between(propertyId,
                             from, to));
         }
+    }
+
+    public static void colorizeRows(Grid grid, Class clas) {
+        grid.setRowStyleGenerator(rowReference -> {
+            if (clas.equals(VsjBancocabecera.class) && ((VsjBancocabecera)rowReference.getItemId()).isEnviado()) {
+                return "enviado";
+            }
+            if (clas.equals(VsjBancodetalle.class) && ((VsjBancodetalle) rowReference.getItemId()).isAnula())
+                return "anulado";
+            return "";
+        });
     }
 
     public static void colorizeRows(Grid grid) {

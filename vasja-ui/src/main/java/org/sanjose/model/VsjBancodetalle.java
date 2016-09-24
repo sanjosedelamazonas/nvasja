@@ -2,6 +2,8 @@ package org.sanjose.model;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.util.GenUtil;
 
@@ -29,15 +31,17 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 	@Override
 	public VsjBancodetalle prepareToSave() throws FieldGroup.CommitException {
 		VsjBancodetalle item = (VsjBancodetalle)super.prepareToSave();
+		Logger logger = LoggerFactory.getLogger(VsjBancodetalle.class);
 		if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
 			throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
-
+		/*
 		if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
 			item.setIndTipocuenta('0');
 		} else {
 			item.setIndTipocuenta('1');
 		}
-	/*	// Verify moneda and fields
+*/
+		logger.info("Preparing " + item);
 		if (PEN.equals(item.getCodTipomoneda())) {
 			if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
 				throw new FieldGroup.CommitException("Selected SOL but values are zeros or nulls");
@@ -71,15 +75,12 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 			item.setNumDebesol(new BigDecimal(0.00));
 			item.setNumHaberdolar(new BigDecimal(0.00));
 			item.setNumDebedolar(new BigDecimal(0.00));
-		}*/
+		}
 		return item;
 	}
 
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="cod_bancodetalle")
-	private Integer codBancodetalle;
+	@EmbeddedId
+	private VsjBancodetallePK id;
 
 	@Column(name="cod_contracta")
 	private String codContracta;
@@ -135,19 +136,19 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 	private Character flgSaldo;
 
 	@Column(name="num_saldodolar", columnDefinition="decimal(12,2)")
-	private BigDecimal numSaldodolar;
+	private BigDecimal numSaldodolar = new BigDecimal(0);
 
 	@Column(name="num_saldomo", columnDefinition="decimal(12,2)")
-	private BigDecimal numSaldomo;
+	private BigDecimal numSaldomo = new BigDecimal(0);
 
 	@Column(name="num_saldosol", columnDefinition="decimal(12,2)")
-	private BigDecimal numSaldosol;
+	private BigDecimal numSaldosol = new BigDecimal(0);
 
 	@Column(name="num_tcmo")
 	private double numTcmo;
 
 	@Column(name="num_tcvdolar", columnDefinition="decimal(12,2)")
-	private BigDecimal numTcvdolar;
+	private BigDecimal numTcvdolar = new BigDecimal(0);
 
 	@Column(name="txt_cheque")
 	private String txtCheque;
@@ -173,18 +174,28 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 
 	//bi-directional many-to-one association to VsjBancocabecera
 	@ManyToOne
-	@JoinColumn(name="cod_bancocabecera")
+	@JoinColumn(name="cod_bancocabecera", insertable=false, updatable=false)
+	//@Column(name="cod_bancocabecera", insertable=false, updatable=false)
 	private VsjBancocabecera vsjBancocabecera;
 
 	public VsjBancodetalle() {
+		setFecFecha(new Timestamp(System.currentTimeMillis()));
+		setFlgIm('1');
+		setFlgSaldo('0');
+		setIndTipocuenta('2');
+		setFlg_Anula('0');
+		setNumTcmo(0);
+		setNumSaldodolar(new BigDecimal(0));
+		setNumSaldosol(new BigDecimal(0));
+		setNumSaldomo(new BigDecimal(0));
 	}
 
-	public Integer getCodBancodetalle() {
-		return this.codBancodetalle;
+	public VsjBancodetallePK getId() {
+		return id;
 	}
 
-	public void setCodBancodetalle(Integer codBancodetalle) {
-		this.codBancodetalle = codBancodetalle;
+	public void setId(VsjBancodetallePK id) {
+		this.id = id;
 	}
 
 	public String getCodContracta() {
@@ -451,7 +462,7 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 	@Override
 	public String toString() {
 		return "VsjBancodetalle{" + super.toString() + " " +
-				"codBancodetalle=" + codBancodetalle +
+				"codBancodetalle=" + id +
 				", codContracta='" + codContracta + '\'' +
 				", codContraparte='" + codContraparte + '\'' +
 				", codCtacontable='" + codCtacontable + '\'' +
