@@ -2,13 +2,18 @@ package org.sanjose.model;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.sanjose.util.GenUtil;
 
 import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.sanjose.util.GenUtil.PEN;
 
 
 /**
@@ -21,56 +26,36 @@ import java.util.List;
 public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-
 	@Override
 	public VsjBancocabecera prepareToSave() throws FieldGroup.CommitException {
 		VsjBancocabecera item = (VsjBancocabecera)super.prepareToSave();
-/*
-		if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
-			item.setIndTipocuenta('0');
-		} else {
-			item.setIndTipocuenta('1');
+		Logger logger = LoggerFactory.getLogger(VsjBancocabecera.class);
+		item.setIndTipocuenta('2');
+
+		BigDecimal saldoHabersol = new BigDecimal(0);
+		BigDecimal saldoHaberdolar = new BigDecimal(0);
+		BigDecimal saldoHabermo = new BigDecimal(0);
+		BigDecimal saldoDebesol = new BigDecimal(0);
+		BigDecimal saldoDebedolar = new BigDecimal(0);
+		BigDecimal saldoDebemo = new BigDecimal(0);
+		if (getVsjBancodetalles()!=null) {
+			for (VsjBancodetalle it : getVsjBancodetalles()) {
+				saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
+				saldoDebemo = saldoDebemo.add(it.getNumDebemo());
+				saldoDebesol = saldoDebesol.add(it.getNumDebesol());
+				saldoHaberdolar = saldoHaberdolar.add(it.getNumHaberdolar());
+				saldoHabermo = saldoHabermo.add(it.getNumHabermo());
+				saldoHabersol = saldoHabersol.add(it.getNumHabersol());
+			}
 		}
-*/
-	/*	// Verify moneda and fields
-		if (PEN.equals(item.getCodTipomoneda())) {
-			if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
-				throw new FieldGroup.CommitException("Selected SOL but values are zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
-				throw new FieldGroup.CommitException("Selected SOL but values for Dolar are not zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
-				throw new FieldGroup.CommitException("Selected SOL but values for EUR are not zeros or nulls");
-			item.setNumHaberdolar(new BigDecimal(0.00));
-			item.setNumDebedolar(new BigDecimal(0.00));
-			item.setNumHabermo(new BigDecimal(0.00));
-			item.setNumDebemo(new BigDecimal(0.00));
-		} else if (USD.equals(item.getCodTipomoneda())) {
-			if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
-				throw new FieldGroup.CommitException("Selected USD but values are zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
-				throw new FieldGroup.CommitException("Selected USD but values for SOL are not zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
-				throw new FieldGroup.CommitException("Selected USD but values for EUR are not zeros or nulls");
-			item.setNumHabersol(new BigDecimal(0.00));
-			item.setNumDebesol(new BigDecimal(0.00));
-			item.setNumHabermo(new BigDecimal(0.00));
-			item.setNumDebemo(new BigDecimal(0.00));
-		} else {
-			if (GenUtil.isNullOrZero(item.getNumHabermo()) && GenUtil.isNullOrZero(item.getNumDebemo()))
-				throw new FieldGroup.CommitException("Selected EUR but values are zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
-				throw new FieldGroup.CommitException("Selected EUR but values for SOL are not zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
-				throw new FieldGroup.CommitException("Selected EUR but values for Dolar are not zeros or nulls");
-			item.setNumHabersol(new BigDecimal(0.00));
-			item.setNumDebesol(new BigDecimal(0.00));
-			item.setNumHaberdolar(new BigDecimal(0.00));
-			item.setNumDebedolar(new BigDecimal(0.00));
-		}*/
+		item.setNumDebesol(saldoDebesol);
+		item.setNumHabersol(saldoHabersol);
+		item.setNumDebedolar(saldoDebedolar);
+		item.setNumHaberdolar(saldoHaberdolar);
+		item.setNumDebemo(saldoDebemo);
+		item.setNumDebemo(saldoHabermo);
 		return item;
 	}
-
-
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -109,6 +94,10 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 	private List<VsjBancodetalle> vsjBancodetalles;
 
 	public VsjBancocabecera() {
+		setFecFecha(new Timestamp(System.currentTimeMillis()));
+		setFlgEnviado('0');
+		setFlgIm('1');
+		setFlgSaldo('0');
 	}
 
 	public Integer getCodBancocabecera() {

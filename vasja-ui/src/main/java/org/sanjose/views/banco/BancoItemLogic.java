@@ -96,6 +96,8 @@ class BancoItemLogic implements Serializable {
         //--------- CABEZA
 
         // Cuenta
+        view.numVoucher.setEnabled(false);
+
         DataFilterUtil.bindComboBox(view.getSelCuenta(), "id.codCtacontable",
                 DataUtil.getBancoCuentas(view.getDataFechaComprobante().getValue(), view.getPlanRepo()),
                 "txtDescctacontable");
@@ -110,9 +112,13 @@ class BancoItemLogic implements Serializable {
         DataFilterUtil.bindComboBox(view.getSelCodAuxCabeza(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
 
+        view.getSelCodAuxCabeza().addValueChangeListener(valueChangeEvent -> {
+            if (valueChangeEvent.getProperty().getValue()!=null)
+                view.getSelResponsable().setValue(valueChangeEvent.getProperty().getValue());
+        });
+
 
         // ------------ DETALLE
-
 
         // Proyecto
         DataFilterUtil.bindComboBox(view.getSelProyecto(), "codProyecto", view.getProyectoRepo().findByFecFinalGreaterThan(new Date()),
@@ -313,18 +319,17 @@ class BancoItemLogic implements Serializable {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             String s = GenUtil.getSymMoneda(cuenta.getIndTipomoneda());
             view.getSaldoCuenta().setCaption(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
-            log.info("In setCuentaLogic: " + saldo + "cap: " + s + " " + cuenta.getIndTipomoneda());
+            log.info("In setCuentaLogic: " + saldo + " cap: " + s + " " + cuenta.getIndTipomoneda());
             view.getSaldoCuenta().setValue(df.format(saldo));
             log.info("In setCuentaLogic: " + df.format(saldo));
             moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
             // If still no item created
             if (item==null) {
                 nuevoComprobante(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
-                setMonedaLogic(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             } else {
                 item.setCodTipomoneda(cuenta.getIndTipomoneda());
             }
-
+            setMonedaLogic(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
         }
     }
 
@@ -573,9 +578,9 @@ class BancoItemLogic implements Serializable {
         if (isEdit) {
             // EDITING
             if (!GenUtil.strNullOrEmpty(item.getTxtCorrelativo())) {
-                view.getNumVoucher().setValue(item.getTxtCorrelativo());
-            } else
-                view.getNumVoucher().setValue(Integer.toString(item.getCodBancodetalle()));
+                view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo()+ "-" + item.getId().getNumItem());
+            } //else
+              //  view.getNumVoucher().setValue(Integer.toString(item.getId().getCodBancocabecera()) + "-");
             view.setEnableDetalleFields(true);
             setSaldos();
             setCuentaLogic();
@@ -601,47 +606,49 @@ class BancoItemLogic implements Serializable {
     }
 
     VsjBancodetalle saveItem(VsjBancocabecera cabecera) throws CommitException {
-            VsjBancodetalle item = prepareToSave();
-            log.info("Saving: " + item);
-        //savedBancodetalle = view.getBancodetalleRep().save(item);
-/*
-
-            if (GenUtil.strNullOrEmpty(savedBancodetalle.getTxtCorrelativo())) {
-                savedBancodetalle.setTxtCorrelativo(GenUtil.getTxtCorrelativo(savedBancodetalle.getCodBancodetalle()));
-                savedBancodetalle = view.getBancodetalleRep().save(savedBancodetalle);
-            }
-            view.getNumVoucher().setValue(savedBancodetalle.getTxtCorrelativo());
-*/
-        //view.getGuardarBtn().setEnabled(false);
-            view.getModificarBtn().setEnabled(true);
-            view.getNewItemBtn().setEnabled(true);
-            view.refreshData();
-            view.getImprimirTotalBtn().setEnabled(true);
-            if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
-                //ViewUtil.printComprobante(savedBancodetalle);
-            }
-        return item;
-    }
-
-    VsjBancodetalle prepareToSave() throws CommitException {
         VsjBancodetalle item = getVsjBancodetalle();
         item.setCodTipomoneda(moneda);
         item = item.prepareToSave();
-        log.info("Ready to save: " + item);
+        item.setTxtCheque(cabecera.getTxtCheque());
+        item.setVsjBancocabecera(cabecera);
+        VsjBancodetallePK id = new VsjBancodetallePK();
+        id.setCodBancocabecera(cabecera.getCodBancocabecera());
+        if (cabecera.getVsjBancodetalles()==null)
+            id.setNumItem(1);
+        else
+            id.setNumItem(cabecera.getVsjBancodetalles().size()+1);
+        item.setId(id);
+        //item.getId().setNumItem();
+        //log.info("Saving item: " + item);
+    //savedBancodetalle = view.getBancodetalleRep().save(item);
+/*
+
+        if (GenUtil.strNullOrEmpty(savedBancodetalle.getTxtCorrelativo())) {
+            savedBancodetalle.setTxtCorrelativo(GenUtil.getTxtCorrelativo(savedBancodetalle.getCodBancodetalle()));
+            savedBancodetalle = view.getBancodetalleRep().save(savedBancodetalle);
+        }
+        view.getNumVoucher().setValue(savedBancodetalle.getTxtCorrelativo());
+*/
+    //view.getGuardarBtn().setEnabled(false);
+        view.getModificarBtn().setEnabled(true);
+        view.getNewItemBtn().setEnabled(true);
+        view.refreshData();
+        view.getImprimirTotalBtn().setEnabled(true);
+        if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
+            //ViewUtil.printComprobante(savedBancodetalle);
+        }
         return item;
     }
 
     void nuevoComprobante(Character moneda) {
         savedBancodetalle = null;
         VsjBancodetalle vcb = new VsjBancodetalle();
-        //vcb.setFlgEnviado("0");
-        vcb.setFlg_Anula('0');
-        vcb.setIndTipocuenta('0');
         vcb.setCodTipomoneda(moneda);
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
         bindForm(vcb);
         item = vcb;
+        view.setEnableCabezeraFields(true);
         view.setEnableDetalleFields(true);
         view.getGuardarBtn().setEnabled(true);
         view.getModificarBtn().setEnabled(false);
@@ -711,7 +718,7 @@ class BancoItemLogic implements Serializable {
             view.getGlosaDetalle().setValue(item.getTxtGlosaitem());
             log.info("Ready to ANULAR: " + item);
             savedBancodetalle = view.getBancodetalleRep().save(item);
-            view.getNumVoucher().setValue(Integer.toString(savedBancodetalle.getCodBancodetalle()));
+            view.getNumVoucher().setValue(Integer.toString(savedBancodetalle.getVsjBancocabecera().getCodBancocabecera()) + "-" + savedBancodetalle.getId().getNumItem());
             savedBancodetalle = null;
             view.getGuardarBtn().setEnabled(false);
             view.getModificarBtn().setEnabled(false);
@@ -742,7 +749,6 @@ class BancoItemLogic implements Serializable {
     }
 
     VsjBancodetalle getVsjBancodetalle() throws CommitException {
-        //fieldGroup.get
         fieldGroup.commit();
         VsjBancodetalle item = beanItem.getBean();
         log.info("got from getDetalle "+ item);

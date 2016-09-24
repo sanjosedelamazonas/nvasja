@@ -13,6 +13,7 @@ import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.repo.*;
+import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ import tm.kod.widgets.numberfield.NumberField;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+
+import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -130,11 +134,11 @@ public class BancoOperView extends BancoOperUI implements View {
 
         ViewUtil.alignMontosInGrid(gridBanco);
 
-        ViewUtil.colorizeRows(gridBanco);
+        ViewUtil.colorizeRows(gridBanco, VsjBancodetalle.class);
 
         gridBanco.setSelectionMode(Grid.SelectionMode.SINGLE);
 
-        setSaldoTrans();
+        setTotal();
         setEnableCabezeraFields(false);
         viewLogic.init();
     }
@@ -162,43 +166,37 @@ public class BancoOperView extends BancoOperUI implements View {
         return container;
     }
 
-    private BigDecimal calcDifference() {
+    private BigDecimal calcTotal() {
         BigDecimal total = new BigDecimal(0.00);
-
         for (VsjBancodetalle cajabanco : container.getItemIds()) {
-            if (isPEN())
+            if (viewLogic.moneda.equals(PEN)) {
                 total = total.add(cajabanco.getNumDebesol()).subtract(cajabanco.getNumHabersol());
-            else
+            }
+            else if (viewLogic.moneda.equals(USD))
                 total = total.add(cajabanco.getNumDebedolar()).subtract(cajabanco.getNumHaberdolar());
+            else
+                total = total.add(cajabanco.getNumDebemo()).subtract(cajabanco.getNumHabermo());
         }
         return total;
     }
 
-    public void setSaldoTrans() {
-        if (isPEN()) {
+    public void setTotal() {
+        if (viewLogic.moneda==null) return;
+        if (viewLogic.moneda.equals(PEN))
             order_summary_layout.removeStyleName("order-summary-layout-usd");
-        } else  {
+        else if (viewLogic.moneda.equals(USD))
             order_summary_layout.addStyleName("order-summary-layout-usd");
-        }
+        else
+            order_summary_layout.addStyleName("order-summary-layout-usd");
 
         saldoTotal.setContentMode(ContentMode.HTML);
         saldoTotal.setValue("Total:" +
-                "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : "$ ") + calcDifference().toString() + "</span>");
-
-        /*if (!container.getItemIds().isEmpty() && calcDifference().compareTo(new BigDecimal(0.00))==0)
-            finalizarTransBtn.setEnabled(true);
-        else
-            finalizarTransBtn.setEnabled(false);*/
+                "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(viewLogic.moneda)) + calcTotal().toString() + "</span>");
     }
 
 
     public void refreshData() {
         MainUI.get().getCajaManejoView().refreshData();
-    }
-
-    private boolean isPEN() {
-//        return selMoneda.getValue() == null || PEN.equals(selMoneda.getValue().toString());
-        return true;
     }
 
     public ComboBox getSelProyecto() {

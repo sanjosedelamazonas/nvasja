@@ -28,60 +28,26 @@ public abstract class VsjBancoItem extends VsjItem {
      public VsjBancoItem  prepareToSave() throws FieldGroup.CommitException {
           VsjBancoItem item = (VsjBancoItem) super.prepareToSave();
           // Verify moneda and fields
-          if (PEN.equals(item.getCodTipomoneda())) {
-               if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
-                    throw new FieldGroup.CommitException("Selected SOL but values are zeros or nulls");
-               if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
-                    throw new FieldGroup.CommitException("Selected SOL but values for Dolar are not zeros or nulls");
-               if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
-                    throw new FieldGroup.CommitException("Selected SOL but values for EUR are not zeros or nulls");
-               item.setNumHaberdolar(new BigDecimal(0.00));
-               item.setNumDebedolar(new BigDecimal(0.00));
-               item.setNumHabermo(new BigDecimal(0.00));
-               item.setNumDebemo(new BigDecimal(0.00));
-          } else if (USD.equals(item.getCodTipomoneda())) {
-               if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
-                    throw new FieldGroup.CommitException("Selected USD but values are zeros or nulls");
-               if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
-                    throw new FieldGroup.CommitException("Selected USD but values for SOL are not zeros or nulls");
-               if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
-                    throw new FieldGroup.CommitException("Selected USD but values for EUR are not zeros or nulls");
-               item.setNumHabersol(new BigDecimal(0.00));
-               item.setNumDebesol(new BigDecimal(0.00));
-               item.setNumHabermo(new BigDecimal(0.00));
-               item.setNumDebemo(new BigDecimal(0.00));
-          } else {
-               if (GenUtil.isNullOrZero(item.getNumHabermo()) && GenUtil.isNullOrZero(item.getNumDebemo()))
-                    throw new FieldGroup.CommitException("Selected EUR but values are zeros or nulls");
-               if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
-                    throw new FieldGroup.CommitException("Selected EUR but values for SOL are not zeros or nulls");
-               if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
-                    throw new FieldGroup.CommitException("Selected EUR but values for Dolar are not zeros or nulls");
-               item.setNumHabersol(new BigDecimal(0.00));
-               item.setNumDebesol(new BigDecimal(0.00));
-               item.setNumHaberdolar(new BigDecimal(0.00));
-               item.setNumDebedolar(new BigDecimal(0.00));
-          }
           return item;
      }
 
      @Column(name="num_debedolar", columnDefinition="decimal(12,2)")
-     private BigDecimal numDebedolar;
+     private BigDecimal numDebedolar = new BigDecimal(0);
 
      @Column(name="num_debemo", columnDefinition="decimal(12,2)")
-     private BigDecimal numDebemo;
+     private BigDecimal numDebemo = new BigDecimal(0);
 
      @Column(name="num_debesol", columnDefinition="decimal(12,2)")
-     private BigDecimal numDebesol;
+     private BigDecimal numDebesol = new BigDecimal(0);
 
      @Column(name="num_haberdolar", columnDefinition="decimal(12,2)")
-     private BigDecimal numHaberdolar;
+     private BigDecimal numHaberdolar = new BigDecimal(0);
 
      @Column(name="num_habermo", columnDefinition="decimal(12,2)")
-     private BigDecimal numHabermo;
+     private BigDecimal numHabermo = new BigDecimal(0);
 
      @Column(name="num_habersol", columnDefinition="decimal(12,2)")
-     private BigDecimal numHabersol;
+     private BigDecimal numHabersol = new BigDecimal(0);
 
 
      public BigDecimal getNumDebedolar() {
