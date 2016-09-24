@@ -11,7 +11,6 @@ import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.util.TransactionUtil;
-import org.sanjose.util.ViewUtil;
 
 import java.util.List;
 

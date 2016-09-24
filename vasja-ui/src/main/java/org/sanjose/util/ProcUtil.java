@@ -4,7 +4,6 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.VsjCajabanco;
-import org.sanjose.views.caja.ComprobanteView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;

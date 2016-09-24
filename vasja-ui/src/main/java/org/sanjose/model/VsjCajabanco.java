@@ -1,12 +1,17 @@
 package org.sanjose.model;
 
+import com.vaadin.data.Validator;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import org.hibernate.validator.constraints.NotBlank;
+import org.sanjose.util.GenUtil;
 
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import static org.sanjose.util.GenUtil.PEN;
 
 
 /**
@@ -16,8 +21,39 @@ import java.sql.Timestamp;
 @Entity
 @Table(name="vsj_cajabanco")
 @NamedQuery(name="VsjCajabanco.findAll", query="SELECT v FROM VsjCajabanco v")
-public class VsjCajabanco implements Serializable, IVsjItem {
+public class VsjCajabanco extends VsjItem implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+
+	@Override
+	public VsjCajabanco prepareToSave() throws FieldGroup.CommitException {
+		VsjCajabanco item = (VsjCajabanco)super.prepareToSave();
+		if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
+			throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
+		if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
+			item.setIndTipocuenta('0');
+		} else {
+			item.setIndTipocuenta('1');
+		}
+		// Verify moneda and fields
+		if (PEN.equals(item.getCodTipomoneda())) {
+			if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
+				throw new FieldGroup.CommitException("Selected SOL but values are zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
+				throw new FieldGroup.CommitException("Selected SOL but values for Dolar are not zeros or nulls");
+			item.setNumHaberdolar(new BigDecimal(0.00));
+			item.setNumDebedolar(new BigDecimal(0.00));
+		} else {
+			if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
+				throw new FieldGroup.CommitException("Selected USD but values are zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
+				throw new FieldGroup.CommitException("Selected USD but values for SOL are not zeros or nulls");
+			item.setNumHabersol(new BigDecimal(0.00));
+			item.setNumDebesol(new BigDecimal(0.00));
+		}
+		return item;
+	}
+
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -58,9 +94,6 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 	@Column(name="cod_financiera")
 	private String codFinanciera;
 
-	@Column(name="cod_mes")
-	private String codMes;
-
 	@Column(name="cod_origenenlace")
 	private String codOrigenenlace;
 
@@ -74,43 +107,19 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 	private String codTipocomprobantepago;
 
 	@NotNull
-	@Column(name="cod_tipomoneda")
-	private Character codTipomoneda;
-
-	@NotNull
 	@Column(name="cod_tipomov")
 	private Integer codTipomov;
 
 	@Column(name="cod_transcorrelativo")
 	private String codTranscorrelativo;
 
-	@Column(name="cod_uactualiza")
-	private String codUactualiza;
-
-	@Column(name="cod_uregistro")
-	private String codUregistro;
-
 	@Column(name="fec_comprobantepago")
 	private Timestamp fecComprobantepago;
-
-	@Column(name="fec_factualiza")
-	private Timestamp fecFactualiza;
-
-	@NotNull
-	@Column(name="fec_fecha")
-	private Timestamp fecFecha;
-
-	@Column(name="fec_fregistro")
-	private Timestamp fecFregistro;
 
 	private Character flg_Anula;
 
 	@Column(name="flg_enviado")
 	private Character flgEnviado;
-
-
-	@Column(name="ind_tipocuenta")
-	private Character indTipocuenta;
 
 	@Column(name="num_debedolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebedolar;
@@ -123,15 +132,14 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 
 	@Column(name="num_habersol", columnDefinition="decimal(12,2)")
 	private BigDecimal numHabersol;
+/*
 
 	@Column(name="txt_anoproceso")
 	private String txtAnoproceso;
+*/
 
 	@Column(name="txt_comprobantepago")
 	private String txtComprobantepago;
-
-	@Column(name="txt_correlativo")
-	private String txtCorrelativo;
 
 	@NotBlank
 	@Column(name="txt_glosaitem")
@@ -223,6 +231,7 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 		this.codFinanciera = codFinanciera;
 	}
 
+/*
 	public String getCodMes() {
 		return this.codMes;
 	}
@@ -230,6 +239,7 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 	public void setCodMes(String codMes) {
 		this.codMes = codMes;
 	}
+*/
 
 	public String getCodOrigenenlace() {
 		return this.codOrigenenlace;
@@ -263,14 +273,6 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 		this.codTipocomprobantepago = codTipocomprobantepago;
 	}
 
-	public Character getCodTipomoneda() {
-		return this.codTipomoneda;
-	}
-
-	public void setCodTipomoneda(Character codTipomoneda) {
-		this.codTipomoneda = codTipomoneda;
-	}
-
 	public Integer getCodTipomov() {
 		return this.codTipomov;
 	}
@@ -287,22 +289,6 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 		this.codTranscorrelativo = codTranscorrelativo;
 	}
 
-	public String getCodUactualiza() {
-		return this.codUactualiza;
-	}
-
-	public void setCodUactualiza(String codUactualiza) {
-		this.codUactualiza = codUactualiza;
-	}
-
-	public String getCodUregistro() {
-		return this.codUregistro;
-	}
-
-	public void setCodUregistro(String codUregistro) {
-		this.codUregistro = codUregistro;
-	}
-
 	public Timestamp getFecComprobantepago() {
 		return this.fecComprobantepago;
 	}
@@ -311,29 +297,6 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 		this.fecComprobantepago = fecComprobantepago;
 	}
 
-	public Timestamp getFecFactualiza() {
-		return this.fecFactualiza;
-	}
-
-	public void setFecFactualiza(Timestamp fecFactualiza) {
-		this.fecFactualiza = fecFactualiza;
-	}
-
-	public Timestamp getFecFecha() {
-		return this.fecFecha;
-	}
-
-	public void setFecFecha(Timestamp fecFecha) {
-		this.fecFecha = fecFecha;
-	}
-
-	public Timestamp getFecFregistro() {
-		return this.fecFregistro;
-	}
-
-	public void setFecFregistro(Timestamp fecFregistro) {
-		this.fecFregistro = fecFregistro;
-	}
 
 	public Character getFlg_Anula() {
 		return this.flg_Anula;
@@ -349,14 +312,6 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 
 	public void setFlgEnviado(Character flgEnviado) {
 		this.flgEnviado = flgEnviado;
-	}
-
-	public Character getIndTipocuenta() {
-		return this.indTipocuenta;
-	}
-
-	public void setIndTipocuenta(Character indTipocuenta) {
-		this.indTipocuenta = indTipocuenta;
 	}
 
 	public BigDecimal getNumDebedolar() {
@@ -390,14 +345,14 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 	public void setNumHabersol(BigDecimal numHabersol) {
 		this.numHabersol = numHabersol;
 	}
-
+/*
 	public String getTxtAnoproceso() {
 		return this.txtAnoproceso;
 	}
 
 	public void setTxtAnoproceso(String txtAnoproceso) {
 		this.txtAnoproceso = txtAnoproceso;
-	}
+	}*/
 
 	public String getTxtComprobantepago() {
 		return this.txtComprobantepago;
@@ -405,14 +360,6 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 
 	public void setTxtComprobantepago(String txtComprobantepago) {
 		this.txtComprobantepago = txtComprobantepago;
-	}
-
-	public String getTxtCorrelativo() {
-		return this.txtCorrelativo;
-	}
-
-	public void setTxtCorrelativo(String txtCorrelativo) {
-		this.txtCorrelativo = txtCorrelativo;
 	}
 
 	public String getTxtGlosaitem() {
@@ -452,30 +399,20 @@ public class VsjCajabanco implements Serializable, IVsjItem {
 				", codDestino='" + codDestino + '\'' +
 				", codDestinoitem='" + codDestinoitem + '\'' +
 				", codFinanciera='" + codFinanciera + '\'' +
-				", codMes='" + codMes + '\'' +
 				", codOrigenenlace='" + codOrigenenlace + '\'' +
 				", codProyecto='" + codProyecto + '\'' +
 				", codTercero='" + codTercero + '\'' +
 				", codTipocomprobantepago='" + codTipocomprobantepago + '\'' +
-				", codTipomoneda=" + codTipomoneda +
 				", codTipomov=" + codTipomov +
 				", codTranscorrelativo='" + codTranscorrelativo + '\'' +
-				", codUactualiza='" + codUactualiza + '\'' +
-				", codUregistro='" + codUregistro + '\'' +
 				", fecComprobantepago=" + fecComprobantepago +
-				", fecFactualiza=" + fecFactualiza +
-				", fecFecha=" + fecFecha +
-				", fecFregistro=" + fecFregistro +
 				", flg_Anula=" + flg_Anula +
 				", flgEnviado=" + flgEnviado +
-				", indTipocuenta=" + indTipocuenta +
 				", numDebedolar=" + numDebedolar +
 				", numDebesol=" + numDebesol +
 				", numHaberdolar=" + numHaberdolar +
 				", numHabersol=" + numHabersol +
-				", txtAnoproceso='" + txtAnoproceso + '\'' +
 				", txtComprobantepago='" + txtComprobantepago + '\'' +
-				", txtCorrelativo='" + txtCorrelativo + '\'' +
 				", txtGlosaitem='" + txtGlosaitem + '\'' +
 				", txtSeriecomprobantepago='" + txtSeriecomprobantepago + '\'' +
 				'}';

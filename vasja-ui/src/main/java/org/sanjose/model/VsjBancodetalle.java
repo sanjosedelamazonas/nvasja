@@ -1,10 +1,19 @@
 package org.sanjose.model;
 
+import com.vaadin.data.Validator;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import org.sanjose.authentication.CurrentUser;
+import org.sanjose.util.GenUtil;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
+import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
 
 
 /**
@@ -14,8 +23,58 @@ import java.sql.Timestamp;
 @Entity
 @Table(name="vsj_bancodetalle")
 @NamedQuery(name="VsjBancodetalle.findAll", query="SELECT v FROM VsjBancodetalle v")
-public class VsjBancodetalle implements Serializable, IVsjBancoItem {
+public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 	private static final long serialVersionUID = 1L;
+
+	@Override
+	public VsjBancodetalle prepareToSave() throws FieldGroup.CommitException {
+		VsjBancodetalle item = (VsjBancodetalle)super.prepareToSave();
+		if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
+			throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
+
+		if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
+			item.setIndTipocuenta('0');
+		} else {
+			item.setIndTipocuenta('1');
+		}
+	/*	// Verify moneda and fields
+		if (PEN.equals(item.getCodTipomoneda())) {
+			if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
+				throw new FieldGroup.CommitException("Selected SOL but values are zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
+				throw new FieldGroup.CommitException("Selected SOL but values for Dolar are not zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
+				throw new FieldGroup.CommitException("Selected SOL but values for EUR are not zeros or nulls");
+			item.setNumHaberdolar(new BigDecimal(0.00));
+			item.setNumDebedolar(new BigDecimal(0.00));
+			item.setNumHabermo(new BigDecimal(0.00));
+			item.setNumDebemo(new BigDecimal(0.00));
+		} else if (USD.equals(item.getCodTipomoneda())) {
+			if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
+				throw new FieldGroup.CommitException("Selected USD but values are zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
+				throw new FieldGroup.CommitException("Selected USD but values for SOL are not zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
+				throw new FieldGroup.CommitException("Selected USD but values for EUR are not zeros or nulls");
+			item.setNumHabersol(new BigDecimal(0.00));
+			item.setNumDebesol(new BigDecimal(0.00));
+			item.setNumHabermo(new BigDecimal(0.00));
+			item.setNumDebemo(new BigDecimal(0.00));
+		} else {
+			if (GenUtil.isNullOrZero(item.getNumHabermo()) && GenUtil.isNullOrZero(item.getNumDebemo()))
+				throw new FieldGroup.CommitException("Selected EUR but values are zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
+				throw new FieldGroup.CommitException("Selected EUR but values for SOL are not zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
+				throw new FieldGroup.CommitException("Selected EUR but values for Dolar are not zeros or nulls");
+			item.setNumHabersol(new BigDecimal(0.00));
+			item.setNumDebesol(new BigDecimal(0.00));
+			item.setNumHaberdolar(new BigDecimal(0.00));
+			item.setNumDebedolar(new BigDecimal(0.00));
+		}*/
+		return item;
+	}
+
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -49,9 +108,6 @@ public class VsjBancodetalle implements Serializable, IVsjBancoItem {
 	@Column(name="cod_formapago")
 	private String codFormapago;
 
-	@Column(name="cod_mes")
-	private String codMes;
-
 	@Column(name="cod_proyecto")
 	private String codProyecto;
 
@@ -67,26 +123,8 @@ public class VsjBancodetalle implements Serializable, IVsjBancoItem {
 	@Column(name="cod_tipoingreso")
 	private String codTipoingreso;
 
-	@Column(name="cod_tipomoneda")
-	private Character codTipomoneda;
-
-	@Column(name="cod_uactualiza")
-	private String codUactualiza;
-
-	@Column(name="cod_uregistro")
-	private String codUregistro;
-
 	@Column(name="fec_comprobantepago")
 	private Timestamp fecComprobantepago;
-
-	@Column(name="fec_factualiza")
-	private Timestamp fecFactualiza;
-
-	@Column(name="fec_fecha")
-	private Timestamp fecFecha;
-
-	@Column(name="fec_fregistro")
-	private Timestamp fecFregistro;
 
 	private Character flg_Anula;
 
@@ -95,27 +133,6 @@ public class VsjBancodetalle implements Serializable, IVsjBancoItem {
 
 	@Column(name="flg_saldo")
 	private Character flgSaldo;
-
-	@Column(name="ind_tipocuenta")
-	private Character indTipocuenta;
-
-	@Column(name="num_debedolar", columnDefinition="decimal(12,2)")
-	private BigDecimal numDebedolar;
-
-	@Column(name="num_debemo", columnDefinition="decimal(12,2)")
-	private BigDecimal numDebemo;
-
-	@Column(name="num_debesol", columnDefinition="decimal(12,2)")
-	private BigDecimal numDebesol;
-
-	@Column(name="num_haberdolar", columnDefinition="decimal(12,2)")
-	private BigDecimal numHaberdolar;
-
-	@Column(name="num_habermo", columnDefinition="decimal(12,2)")
-	private BigDecimal numHabermo;
-
-	@Column(name="num_habersol", columnDefinition="decimal(12,2)")
-	private BigDecimal numHabersol;
 
 	@Column(name="num_saldodolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numSaldodolar;
@@ -131,9 +148,6 @@ public class VsjBancodetalle implements Serializable, IVsjBancoItem {
 
 	@Column(name="num_tcvdolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numTcvdolar;
-
-	@Column(name="txt_anoproceso")
-	private String txtAnoproceso;
 
 	@Column(name="txt_cheque")
 	private String txtCheque;
@@ -244,14 +258,14 @@ public class VsjBancodetalle implements Serializable, IVsjBancoItem {
 	public void setCodFormapago(String codFormapago) {
 		this.codFormapago = codFormapago;
 	}
-
+/*
 	public String getCodMes() {
 		return this.codMes;
 	}
 
 	public void setCodMes(String codMes) {
 		this.codMes = codMes;
-	}
+	}*/
 
 	public String getCodProyecto() {
 		return this.codProyecto;
@@ -293,60 +307,12 @@ public class VsjBancodetalle implements Serializable, IVsjBancoItem {
 		this.codTipoingreso = codTipoingreso;
 	}
 
-	public Character getCodTipomoneda() {
-		return this.codTipomoneda;
-	}
-
-	public void setCodTipomoneda(Character codTipomoneda) {
-		this.codTipomoneda = codTipomoneda;
-	}
-
-	public String getCodUactualiza() {
-		return this.codUactualiza;
-	}
-
-	public void setCodUactualiza(String codUactualiza) {
-		this.codUactualiza = codUactualiza;
-	}
-
-	public String getCodUregistro() {
-		return this.codUregistro;
-	}
-
-	public void setCodUregistro(String codUregistro) {
-		this.codUregistro = codUregistro;
-	}
-
 	public Timestamp getFecComprobantepago() {
 		return this.fecComprobantepago;
 	}
 
 	public void setFecComprobantepago(Timestamp fecComprobantepago) {
 		this.fecComprobantepago = fecComprobantepago;
-	}
-
-	public Timestamp getFecFactualiza() {
-		return this.fecFactualiza;
-	}
-
-	public void setFecFactualiza(Timestamp fecFactualiza) {
-		this.fecFactualiza = fecFactualiza;
-	}
-
-	public Timestamp getFecFecha() {
-		return this.fecFecha;
-	}
-
-	public void setFecFecha(Timestamp fecFecha) {
-		this.fecFecha = fecFecha;
-	}
-
-	public Timestamp getFecFregistro() {
-		return this.fecFregistro;
-	}
-
-	public void setFecFregistro(Timestamp fecFregistro) {
-		this.fecFregistro = fecFregistro;
 	}
 
 	public Character getFlg_Anula() {
@@ -371,62 +337,6 @@ public class VsjBancodetalle implements Serializable, IVsjBancoItem {
 
 	public void setFlgSaldo(Character flgSaldo) {
 		this.flgSaldo = flgSaldo;
-	}
-
-	public Character getIndTipocuenta() {
-		return this.indTipocuenta;
-	}
-
-	public void setIndTipocuenta(Character indTipocuenta) {
-		this.indTipocuenta = indTipocuenta;
-	}
-
-	public BigDecimal getNumDebedolar() {
-		return this.numDebedolar;
-	}
-
-	public void setNumDebedolar(BigDecimal numDebedolar) {
-		this.numDebedolar = numDebedolar;
-	}
-
-	public BigDecimal getNumDebemo() {
-		return this.numDebemo;
-	}
-
-	public void setNumDebemo(BigDecimal numDebemo) {
-		this.numDebemo = numDebemo;
-	}
-
-	public BigDecimal getNumDebesol() {
-		return this.numDebesol;
-	}
-
-	public void setNumDebesol(BigDecimal numDebesol) {
-		this.numDebesol = numDebesol;
-	}
-
-	public BigDecimal getNumHaberdolar() {
-		return this.numHaberdolar;
-	}
-
-	public void setNumHaberdolar(BigDecimal numHaberdolar) {
-		this.numHaberdolar = numHaberdolar;
-	}
-
-	public BigDecimal getNumHabermo() {
-		return this.numHabermo;
-	}
-
-	public void setNumHabermo(BigDecimal numHabermo) {
-		this.numHabermo = numHabermo;
-	}
-
-	public BigDecimal getNumHabersol() {
-		return this.numHabersol;
-	}
-
-	public void setNumHabersol(BigDecimal numHabersol) {
-		this.numHabersol = numHabersol;
 	}
 
 	public BigDecimal getNumSaldodolar() {
@@ -467,14 +377,6 @@ public class VsjBancodetalle implements Serializable, IVsjBancoItem {
 
 	public void setNumTcvdolar(BigDecimal numTcvdolar) {
 		this.numTcvdolar = numTcvdolar;
-	}
-
-	public String getTxtAnoproceso() {
-		return this.txtAnoproceso;
-	}
-
-	public void setTxtAnoproceso(String txtAnoproceso) {
-		this.txtAnoproceso = txtAnoproceso;
 	}
 
 	public String getTxtCheque() {
@@ -541,4 +443,41 @@ public class VsjBancodetalle implements Serializable, IVsjBancoItem {
 		this.vsjBancocabecera = vsjBancocabecera;
 	}
 
+	@Override
+	public String toString() {
+		return "VsjBancodetalle{" + super.toString() + " " +
+				"codBancodetalle=" + codBancodetalle +
+				", codContracta='" + codContracta + '\'' +
+				", codContraparte='" + codContraparte + '\'' +
+				", codCtacontable='" + codCtacontable + '\'' +
+				", codCtaespecial='" + codCtaespecial + '\'' +
+				", codCtaproyecto='" + codCtaproyecto + '\'' +
+				", codDestino='" + codDestino + '\'' +
+				", codDestinoitem='" + codDestinoitem + '\'' +
+				", codFinanciera='" + codFinanciera + '\'' +
+				", codFormapago='" + codFormapago + '\'' +
+				", codProyecto='" + codProyecto + '\'' +
+				", codTercero='" + codTercero + '\'' +
+				", codTipocomprobantepago='" + codTipocomprobantepago + '\'' +
+				", codTipogasto='" + codTipogasto + '\'' +
+				", codTipoingreso='" + codTipoingreso + '\'' +
+				", fecComprobantepago=" + fecComprobantepago +
+				", flg_Anula=" + flg_Anula +
+				", flgIm=" + flgIm +
+				", flgSaldo=" + flgSaldo +
+				", numSaldodolar=" + numSaldodolar +
+				", numSaldomo=" + numSaldomo +
+				", numSaldosol=" + numSaldosol +
+				", numTcmo=" + numTcmo +
+				", numTcvdolar=" + numTcvdolar +
+				", txtCheque='" + txtCheque + '\'' +
+				", txtComprobantepago='" + txtComprobantepago + '\'' +
+				", txtCorrelativo='" + txtCorrelativo + '\'' +
+				", txtDetallepago='" + txtDetallepago + '\'' +
+				", txtGlosaitem='" + txtGlosaitem + '\'' +
+				", txtSeriecomprobantepago='" + txtSeriecomprobantepago + '\'' +
+				", codTipomov=" + codTipomov +
+				", vsjBancocabecera=" + vsjBancocabecera +
+				'}';
+	}
 }

@@ -608,13 +608,16 @@ class BancoItemLogic implements Serializable {
     void saveComprobante() {
         try {
             VsjBancodetalle item = prepareToSave();
-            savedBancodetalle = view.getRepo().save(item);
+            log.info("Saving: " + item);
+            //savedBancodetalle = view.getRepo().save(item);
+/*
 
             if (GenUtil.strNullOrEmpty(savedBancodetalle.getTxtCorrelativo())) {
                 savedBancodetalle.setTxtCorrelativo(GenUtil.getTxtCorrelativo(savedBancodetalle.getCodBancodetalle()));
                 savedBancodetalle = view.getRepo().save(savedBancodetalle);
             }
             view.getNumVoucher().setValue(savedBancodetalle.getTxtCorrelativo());
+*/
             view.getGuardarBtn().setEnabled(false);
             view.getModificarBtn().setEnabled(true);
             view.getNewItemBtn().setEnabled(true);
@@ -636,7 +639,7 @@ class BancoItemLogic implements Serializable {
 
     VsjBancodetalle prepareToSave() throws CommitException {
         VsjBancodetalle item = getVsjBancodetalle();
-        item = DataUtil.prepareToSave(item);
+        item = item.prepareToSave();
         log.info("Ready to save: " + item);
         return item;
     }
