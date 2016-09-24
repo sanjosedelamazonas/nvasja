@@ -6,12 +6,12 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
@@ -52,6 +52,7 @@ public class BancoLogic extends BancoItemLogic {
     public void init() {
         super.init();
         view.newChequeBtn.addClickListener(ev -> nuevaTrans());
+        view.getGuardarBtn().addClickListener(event -> saveCabecera());
         //view.gu.addClickListener(ev -> saveTransferencia());
         //view.finalizarTransBtn.setEnabled(false);
         view.imprimirTotalBtn.setEnabled(false);
@@ -202,45 +203,44 @@ public class BancoLogic extends BancoItemLogic {
     }
 
 
-    @Override
-    public void saveComprobante() {
+    public void saveCabecera() {
         log.info("saving Cabecera");
 
-        //
-
-/*        try {
-
-            boolean isNew = getVsjCajabanco().getFecFregistro()==null;
-            VsjCajabanco item = prepareToSave();
+        try {
+            VsjBancocabecera cabecera = getVsjBancocabecera();
+            boolean isNew = cabecera.getFecFregistro()==null;
+            cabecera = cabecera.prepareToSave();
+            saveItem(cabecera);
             moneda = item.getCodTipomoneda();
             if (isNew) {
-                view.getContainer().addBean(item);
+                //view.getContainer().addBean(item);
                 if (PEN.equals(moneda))
-                    ViewUtil.setColumnNames(view.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_PEN,
-                        TransferenciaView.VISIBLE_COLUMN_IDS_PEN, TransferenciaView.NONEDITABLE_COLUMN_IDS);
+                    ViewUtil.setColumnNames(view.gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_PEN,
+                        BancoOperView.VISIBLE_COLUMN_IDS_PEN, BancoOperView.NONEDITABLE_COLUMN_IDS);
+                else if (USD.equals(moneda))
+                    ViewUtil.setColumnNames(view.gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_USD,
+                            BancoOperView.VISIBLE_COLUMN_IDS_USD, BancoOperView.NONEDITABLE_COLUMN_IDS);
                 else
-                    ViewUtil.setColumnNames(view.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_USD,
-                            TransferenciaView.VISIBLE_COLUMN_IDS_USD, TransferenciaView.NONEDITABLE_COLUMN_IDS);
-            }
-            else {
-                VsjCajabanco vcbOld = null;
+                    ViewUtil.setColumnNames(view.gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_EUR,
+                            BancoOperView.VISIBLE_COLUMN_IDS_EUR, BancoOperView.NONEDITABLE_COLUMN_IDS);
+            } else {
+                /*VsjCajabanco vcbOld = null;
                 for (VsjCajabanco vcb : view.getContainer().getItemIds()) {
                     if (item.getFecFregistro().equals(vcb.getFecFregistro())) {
                         vcbOld = item;
                         break;
                     }
-                }
-                view.getContainer().removeItem(vcbOld);
+                }*/
+                //view.getContainer().removeItem(vcbOld);
                 view.getContainer().addBean(item);
             }
             view.setSaldoTrans();
             view.getGuardarBtn().setEnabled(false);
-            view.getNuevoComprobante().setEnabled(true);
+            view.getNewItemBtn().setEnabled(true);
         } catch (FieldGroup.CommitException ce) {
             Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             log.info("Got Commit Exception: " + ce.getMessage());
         }
-*/
     }
 
     private void saveTransferencia() {

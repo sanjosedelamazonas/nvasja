@@ -12,9 +12,9 @@ import java.util.*;
 public class GenUtil {
 
 
-    public static final Character PEN='0';
+    public final static Character PEN='0';
 
-    public static final Character USD='1';
+    public final static Character USD='1';
 
     public static final Character EUR='2';
 

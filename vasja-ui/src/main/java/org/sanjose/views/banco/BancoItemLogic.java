@@ -75,7 +75,6 @@ class BancoItemLogic implements Serializable {
     }
 
     public void init() {
-        view.getGuardarBtn().addClickListener(event -> saveComprobante());
         view.getNewItemBtn().addClickListener(event -> nuevoComprobante());
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
         view.getImprimirTotalBtn().addClickListener(event -> {
@@ -605,10 +604,11 @@ class BancoItemLogic implements Serializable {
     }
 
     @Transactional
-    void saveComprobante() {
+    void saveItem(VsjBancocabecera cabecera) {
         try {
             VsjBancodetalle item = prepareToSave();
             log.info("Saving: " + item);
+            item.setVsjBancocabecera(cabecera);
             //savedBancodetalle = view.getRepo().save(item);
 /*
 
