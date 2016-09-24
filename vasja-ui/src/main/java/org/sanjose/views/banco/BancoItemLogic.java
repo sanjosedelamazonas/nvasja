@@ -24,14 +24,16 @@ import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.INavigatorView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.sanjose.util.GenUtil.PEN;
@@ -50,24 +52,16 @@ class BancoItemLogic implements Serializable {
 
 
 	private static final Logger log = LoggerFactory.getLogger(BancoItemLogic.class);
-
-    BancoOperView view;
-
-    private VsjBancodetalle savedBancodetalle;
-
     protected VsjBancodetalle item;
-
-    private BeanItem<VsjBancodetalle> beanItem;
-
-    private FieldGroup fieldGroup;
-
     protected boolean isLoading = true;
-
     protected boolean isEdit = false;
-
-    private ProcUtil procUtil;
-
     protected INavigatorView navigatorView;
+    protected Character moneda;
+    BancoOperView view;
+    private VsjBancodetalle savedBancodetalle;
+    private BeanItem<VsjBancodetalle> beanItem;
+    private FieldGroup fieldGroup;
+    private ProcUtil procUtil;
 
     @Autowired
     public BancoItemLogic(BancoOperView comprobanteView) {
@@ -272,7 +266,7 @@ class BancoItemLogic implements Serializable {
                         .withYesButton(() -> {
                             log.debug("To delete: " + item);
 
-                            List<VsjBancodetalle> comprobantes = view.getRepo().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
+                            List<VsjBancodetalle> comprobantes = view.getBancodetalleRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
                             if (comprobantes.isEmpty()) {
                                 destinoView.destinoRepo.delete(item);
                                 refreshDestino();
@@ -322,6 +316,7 @@ class BancoItemLogic implements Serializable {
             log.info("In setCuentaLogic: " + saldo + "cap: " + s + " " + cuenta.getIndTipomoneda());
             view.getSaldoCuenta().setValue(df.format(saldo));
             log.info("In setCuentaLogic: " + df.format(saldo));
+            moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
             //setMonedaLogic(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             // If still no item created
             if (item==null) {
@@ -603,22 +598,19 @@ class BancoItemLogic implements Serializable {
         MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
 
-    @Transactional
-    void saveItem(VsjBancocabecera cabecera) {
-        try {
+    VsjBancodetalle saveItem(VsjBancocabecera cabecera) throws CommitException {
             VsjBancodetalle item = prepareToSave();
             log.info("Saving: " + item);
-            item.setVsjBancocabecera(cabecera);
-            //savedBancodetalle = view.getRepo().save(item);
+        //savedBancodetalle = view.getBancodetalleRep().save(item);
 /*
 
             if (GenUtil.strNullOrEmpty(savedBancodetalle.getTxtCorrelativo())) {
                 savedBancodetalle.setTxtCorrelativo(GenUtil.getTxtCorrelativo(savedBancodetalle.getCodBancodetalle()));
-                savedBancodetalle = view.getRepo().save(savedBancodetalle);
+                savedBancodetalle = view.getBancodetalleRep().save(savedBancodetalle);
             }
             view.getNumVoucher().setValue(savedBancodetalle.getTxtCorrelativo());
 */
-            view.getGuardarBtn().setEnabled(false);
+        //view.getGuardarBtn().setEnabled(false);
             view.getModificarBtn().setEnabled(true);
             view.getNewItemBtn().setEnabled(true);
             view.refreshData();
@@ -626,19 +618,12 @@ class BancoItemLogic implements Serializable {
             if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
                 //ViewUtil.printComprobante(savedBancodetalle);
             }
-        } catch (CommitException ce) {
-            StringBuilder sb = new StringBuilder();
-            Map<Field<?>, Validator.InvalidValueException> fieldMap = ce.getInvalidFields();
-            for (Field f : fieldMap.keySet()) {
-                sb.append(f.getConnectorId()).append(" ").append(fieldMap.get(f).getHtmlMessage()).append("\n");
-            }
-            Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage() + "\n" + sb.toString(), Notification.Type.ERROR_MESSAGE);
-            log.warn("Got Commit Exception: " + ce.getMessage() + "\n" + sb.toString());
-        }
+        return item;
     }
 
     VsjBancodetalle prepareToSave() throws CommitException {
         VsjBancodetalle item = getVsjBancodetalle();
+        item.setCodTipomoneda(moneda);
         item = item.prepareToSave();
         log.info("Ready to save: " + item);
         return item;
@@ -722,7 +707,7 @@ class BancoItemLogic implements Serializable {
 
             view.getGlosaDetalle().setValue(item.getTxtGlosaitem());
             log.info("Ready to ANULAR: " + item);
-            savedBancodetalle = view.getRepo().save(item);
+            savedBancodetalle = view.getBancodetalleRep().save(item);
             view.getNumVoucher().setValue(Integer.toString(savedBancodetalle.getCodBancodetalle()));
             savedBancodetalle = null;
             view.getGuardarBtn().setEnabled(false);

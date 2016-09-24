@@ -1,5 +1,6 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
@@ -12,13 +13,17 @@ import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
-import static org.sanjose.util.GenUtil.*;
+import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
 
 /**
  * VASJA class
@@ -30,8 +35,6 @@ public class BancoLogic extends BancoItemLogic {
     private static final Logger log = LoggerFactory.getLogger(BancoLogic.class);
 
     //private final BancoOperView view;
-
-    private Character moneda;
 
     private FieldGroup fieldGroupCabezera;
 
@@ -45,7 +48,7 @@ public class BancoLogic extends BancoItemLogic {
     public BancoLogic(BancoOperView comprobanteView) {
         super(comprobanteView);
         view = comprobanteView;
-        //transactionUtil = new TransactionUtil(view.getRepo(), view.getEm());
+        //transactionUtil = new TransactionUtil(view.getBancodetalleRep(), view.getEm());
     }
 
     @Override
@@ -202,18 +205,35 @@ public class BancoLogic extends BancoItemLogic {
         isEdit = false;
     }
 
-
+    @Transactional(readOnly = false)
     public void saveCabecera() {
         log.info("saving Cabecera");
 
         try {
             VsjBancocabecera cabecera = getVsjBancocabecera();
             boolean isNew = cabecera.getFecFregistro()==null;
+            cabecera.setCodTipomoneda(moneda);
             cabecera = cabecera.prepareToSave();
-            saveItem(cabecera);
+            VsjBancodetalle bancoItem = saveItem(cabecera);
+            //
+            log.info("cabezera ready: " + cabecera);
+            log.info("detalle ready: " + bancoItem);
+
+            /*cabecera.getVsjBancodetalles().add(bancoItem);
+            cabecera = view.getBancocabeceraRep().save(cabecera);
+            if (GenUtil.strNullOrEmpty(cabecera.getTxtCorrelativo())) {
+                cabecera.setTxtCorrelativo(GenUtil.getTxtCorrelativo(cabecera.getCodBancocabecera()));
+                cabecera = view.getBancocabeceraRep().save(cabecera);
+            }
+            bancoItem.setVsjBancocabecera(cabecera);
+            bancoItem = view.getBancodetalleRep().save(bancoItem);
+            if (GenUtil.strNullOrEmpty(bancoItem.getTxtCorrelativo())) {
+                bancoItem.setTxtCorrelativo(GenUtil.getTxtCorrelativo(bancoItem.getCodBancodetalle()));
+                bancoItem = view.getBancodetalleRep().save(bancoItem);
+            }*/
             moneda = item.getCodTipomoneda();
             if (isNew) {
-                //view.getContainer().addBean(item);
+                view.getContainer().addBean(bancoItem);
                 if (PEN.equals(moneda))
                     ViewUtil.setColumnNames(view.gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_PEN,
                         BancoOperView.VISIBLE_COLUMN_IDS_PEN, BancoOperView.NONEDITABLE_COLUMN_IDS);
@@ -232,14 +252,19 @@ public class BancoLogic extends BancoItemLogic {
                     }
                 }*/
                 //view.getContainer().removeItem(vcbOld);
-                view.getContainer().addBean(item);
+                view.getContainer().addBean(bancoItem);
             }
             view.setSaldoTrans();
             view.getGuardarBtn().setEnabled(false);
             view.getNewItemBtn().setEnabled(true);
         } catch (FieldGroup.CommitException ce) {
-            Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
-            log.info("Got Commit Exception: " + ce.getMessage());
+            StringBuilder sb = new StringBuilder();
+            Map<Field<?>, Validator.InvalidValueException> fieldMap = ce.getInvalidFields();
+            for (Field f : fieldMap.keySet()) {
+                sb.append(f.getConnectorId()).append(" ").append(fieldMap.get(f).getHtmlMessage()).append("\n");
+            }
+            Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage() + "\n" + sb.toString(), Notification.Type.ERROR_MESSAGE);
+            log.warn("Got Commit Exception: " + ce.getMessage() + "\n" + sb.toString());
         }
     }
 
@@ -283,7 +308,7 @@ public class BancoLogic extends BancoItemLogic {
             ViewUtil.setColumnNames(view.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_USD,
                     TransferenciaView.VISIBLE_COLUMN_IDS_USD, TransferenciaView.NONEDITABLE_COLUMN_IDS);
 
-        List<VsjCajabanco> operaciones = view.getRepo().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());
+        List<VsjCajabanco> operaciones = view.getBancodetalleRep().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());
 
         for (VsjCajabanco oper : operaciones) {
             if ("1".equals(oper.getFlgEnviado()))

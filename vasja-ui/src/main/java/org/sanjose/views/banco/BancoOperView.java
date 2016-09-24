@@ -15,8 +15,6 @@ import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.repo.*;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
-import org.sanjose.views.caja.TransferenciaLogic;
-import org.sanjose.views.caja.TransferenciaUI;
 import org.springframework.beans.factory.annotation.Autowired;
 import tm.kod.widgets.numberfield.NumberField;
 
@@ -34,85 +32,61 @@ import java.util.ArrayList;
 @UIScope
 public class BancoOperView extends BancoOperUI implements View {
 
-	private static final Logger log = LoggerFactory.getLogger(BancoOperView.class);
-
     public static final String VIEW_NAME = "Cheques";
-
-    BancoItemLogic viewLogic = null;
-
-    private final VsjBancodetalleRep repo;
-
-    private final ScpPlanproyectoRep planproyectoRepo;
-
-    private final ScpFinancieraRep financieraRepo;
-
-    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-
-    private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
-
-    private final VsjConfiguracioncajaRep configuracioncajaRepo;
-
-    private final ScpProyectoRep proyectoRepo;
-
-    private final ScpDestinoRep destinoRepo;
-
-    private final ScpPlanespecialRep planespecialRep;
-
-    private final ScpCargocuartaRep cargocuartaRepo;
-
-    private final ScpTipodocumentoRep tipodocumentoRepo;
-
-    private final ScpPlancontableRep planRepo;
-
-    private final Scp_ContraparteRep contraparteRepo;
-
-    private final ScpComprobantepagoRep comprobantepagoRepo;
-
-    private final EntityManager em;
-
-    private final BeanItemContainer<VsjBancodetalle> container;
-
-    private final Field[] allFields = new Field[] { fechaDoc, selProyecto, selTercero,
-            numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
-            selRubroInst, selRubroProy, selFuente, selTipoMov, glosaDetalle, serieDoc, numDoc,
-            };
-
-    private final Field[] cabezeraFields = new Field[] { dataFechaComprobante, selCuenta, selCodAuxCabeza,
-            glosaCabeza, cheque };
-
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol"
     };
     static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/."
     };
-
     static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
     };
-
     static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing $", "Egr $"
     };
-
     static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebemo", "numHabermo"
     };
-
     static final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{"Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing €", "Egr €"
     };
-
-    static final String[] NONEDITABLE_COLUMN_IDS = new String[]{  };
+    static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
+    private static final Logger log = LoggerFactory.getLogger(BancoOperView.class);
+    private final VsjBancodetalleRep bancodetalleRep;
+    private final VsjBancocabeceraRep bancocabeceraRep;
+    private final ScpPlanproyectoRep planproyectoRepo;
+    private final ScpFinancieraRep financieraRepo;
+    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
+    private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
+    private final VsjConfiguracioncajaRep configuracioncajaRepo;
+    private final ScpProyectoRep proyectoRepo;
+    private final ScpDestinoRep destinoRepo;
+    private final ScpPlanespecialRep planespecialRep;
+    private final ScpCargocuartaRep cargocuartaRepo;
+    private final ScpTipodocumentoRep tipodocumentoRepo;
+    private final ScpPlancontableRep planRepo;
+    private final Scp_ContraparteRep contraparteRepo;
+    private final ScpComprobantepagoRep comprobantepagoRepo;
+    private final EntityManager em;
+    private final BeanItemContainer<VsjBancodetalle> container;
+    private final Field[] allFields = new Field[] { fechaDoc, selProyecto, selTercero,
+            numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
+            selRubroInst, selRubroProy, selFuente, selTipoMov, glosaDetalle, serieDoc, numDoc,
+            };
+    private final Field[] cabezeraFields = new Field[] { dataFechaComprobante, selCuenta, selCodAuxCabeza,
+            glosaCabeza, cheque };
+    BancoItemLogic viewLogic = null;
 
     @Autowired
-    private BancoOperView(VsjBancodetalleRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
+    private BancoOperView(VsjBancodetalleRep bancodetalleRep, VsjBancocabeceraRep bancocabeceraRep, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
                           ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                           ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                           ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                           Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
                           ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
-    	this.repo = repo;
+        this.bancodetalleRep = bancodetalleRep;
+        this.bancocabeceraRep = bancocabeceraRep;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
         this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
@@ -126,6 +100,7 @@ public class BancoOperView extends BancoOperUI implements View {
         this.contraparteRepo = contraparteRepo;
         this.comprobantepagoRepo = comprobantepagoRepo;
         this.planRepo = planRepo;
+
 
         this.em = em;
         viewLogic = new BancoLogic(this);
@@ -380,8 +355,8 @@ public class BancoOperView extends BancoOperUI implements View {
         return em;
     }
 
-    public VsjBancodetalleRep getRepo() {
-        return repo;
+    public VsjBancodetalleRep getBancodetalleRep() {
+        return bancodetalleRep;
     }
 
     public ScpPlanproyectoRep getPlanproyectoRepo() {
@@ -436,5 +411,7 @@ public class BancoOperView extends BancoOperUI implements View {
         return comprobantepagoRepo;
     }
 
-
+    public VsjBancocabeceraRep getBancocabeceraRep() {
+        return bancocabeceraRep;
+    }
 }
