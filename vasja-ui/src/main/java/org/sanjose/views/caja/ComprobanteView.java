@@ -38,11 +38,7 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
 	
     public static final String VIEW_NAME = "Caja";
 
-    public static final String PEN="0";
-
-    public static final String USD="1";
-
-    final ComprobanteLogic viewLogic = new ComprobanteLogic(this);
+    ComprobanteLogic viewLogic;
 
     private final VsjCajabancoRep repo;
 
@@ -85,7 +81,8 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
                             ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                             ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                             Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                            ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
+                            ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em,
+                            ComprobanteLogic comprobanteLogic) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -100,6 +97,7 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         this.contraparteRepo = contraparteRepo;
         this.comprobantepagoRepo = comprobantepagoRepo;
         this.planRepo = planRepo;
+        this.viewLogic = comprobanteLogic;
 
         this.em = em;
         setSizeFull();

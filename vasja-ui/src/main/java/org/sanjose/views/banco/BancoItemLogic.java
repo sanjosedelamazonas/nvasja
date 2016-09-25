@@ -64,12 +64,13 @@ class BancoItemLogic implements Serializable {
     private ProcUtil procUtil;
     protected VsjBancocabecera bancocabecera;
 
-    @Autowired
-    public BancoItemLogic(BancoOperView comprobanteView) {
-        view = comprobanteView;
+    //@Autowired
+    public BancoItemLogic() {
+
     }
 
-    public void init() {
+    public void init(BancoOperView view) {
+        this.view = view;
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
         view.getImprimirTotalBtn().addClickListener(event -> {
           //  if (savedBancodetalle!=null) ViewUtil.printComprobante(savedBancodetalle);

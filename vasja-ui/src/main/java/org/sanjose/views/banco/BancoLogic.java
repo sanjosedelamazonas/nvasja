@@ -5,6 +5,8 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
@@ -17,6 +19,8 @@ import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -31,6 +35,10 @@ import static org.sanjose.util.GenUtil.USD;
  * User: prubach
  * Date: 20.09.16
  */
+@SpringComponent
+@UIScope
+@Service
+@Transactional
 public class BancoLogic extends BancoItemLogic {
 
     private static final Logger log = LoggerFactory.getLogger(BancoLogic.class);
@@ -46,15 +54,13 @@ public class BancoLogic extends BancoItemLogic {
 
     private boolean isEdited = false;
 
-    public BancoLogic(BancoOperView comprobanteView) {
-        super(comprobanteView);
-        view = comprobanteView;
-        //transactionUtil = new TransactionUtil(view.getBancodetalleRep(), view.getEm());
+    //@Autowired
+    public BancoLogic() {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void init(BancoOperView view) {
+        super.init(view);
         view.newChequeBtn.addClickListener(ev -> nuevaTrans());
         view.getGuardarBtn().addClickListener(event -> saveCabecera());
         view.getNewItemBtn().addClickListener(event -> nuevoComprobante());

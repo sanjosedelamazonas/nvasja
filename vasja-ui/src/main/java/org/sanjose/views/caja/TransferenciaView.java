@@ -12,6 +12,7 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.repo.*;
+import org.sanjose.util.TransactionUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,7 +98,8 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
                               ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                               ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                               Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                              ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
+                              ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em,
+                              TransferenciaLogic transLogic) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -114,7 +116,8 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
         this.planRepo = planRepo;
 
         this.em = em;
-        viewLogic = new TransferenciaLogic(this);
+        viewLogic = transLogic;
+        viewLogic.init(this);
         setSizeFull();
         addStyleName("crud-view");
         ViewUtil.setDefaultsForNumberField(numIngreso);
@@ -146,7 +149,6 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
         gridTrans.setSelectionMode(Grid.SelectionMode.SINGLE);
 
         setSaldoTrans();
-        viewLogic.init();
     }
 
     public VsjCajabanco getSelectedRow() {
@@ -431,5 +433,4 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
     public EntityManager getEm() {
         return em;
     }
-
 }

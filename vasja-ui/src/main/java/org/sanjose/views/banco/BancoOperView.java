@@ -88,7 +88,7 @@ public class BancoOperView extends BancoOperUI implements View {
                           ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                           ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                           Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                          ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
+                          ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em, BancoLogic bancoLogic) {
         this.bancodetalleRep = bancodetalleRep;
         this.bancocabeceraRep = bancocabeceraRep;
         this.planproyectoRepo = planproyectoRepo;
@@ -107,7 +107,8 @@ public class BancoOperView extends BancoOperUI implements View {
 
 
         this.em = em;
-        viewLogic = new BancoLogic(this);
+        viewLogic = bancoLogic;
+        viewLogic.init(this);
         setSizeFull();
         addStyleName("crud-view");
         ViewUtil.setDefaultsForNumberField(numIngreso);
@@ -118,6 +119,7 @@ public class BancoOperView extends BancoOperUI implements View {
         eliminarBtn.setEnabled(false);
         imprimirTotalBtn.setEnabled(false);
         newItemBtn.setEnabled(false);
+
 
         viewLogic.setupEditComprobanteView();
 
@@ -137,9 +139,8 @@ public class BancoOperView extends BancoOperUI implements View {
         ViewUtil.colorizeRows(gridBanco, VsjBancodetalle.class);
 
         gridBanco.setSelectionMode(Grid.SelectionMode.SINGLE);
-
         setTotal();
-        viewLogic.init();
+
     }
 
     public VsjBancodetalle getSelectedRow() {
