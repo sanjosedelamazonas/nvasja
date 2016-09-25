@@ -17,12 +17,32 @@ public class Caja {
 
     private BigDecimal dolares;
 
+    private BigDecimal solesFinal;
+
+    private BigDecimal dolaresFinal;
 
     public Caja(String codigo, String descripcion, BigDecimal soles, BigDecimal dolares) {
         this.codigo = codigo;
         this.descripcion = descripcion;
         this.soles = soles;
         this.dolares = dolares;
+    }
+
+
+    public BigDecimal getSolesFinal() {
+        return solesFinal;
+    }
+
+    public void setSolesFinal(BigDecimal solesFinal) {
+        this.solesFinal = solesFinal;
+    }
+
+    public BigDecimal getDolaresFinal() {
+        return dolaresFinal;
+    }
+
+    public void setDolaresFinal(BigDecimal dolaresFinal) {
+        this.dolaresFinal = dolaresFinal;
     }
 
     public String getCodigo() {
@@ -57,6 +77,15 @@ public class Caja {
         this.dolares = dolares;
     }
 
+    public Caja(String codigo, String descripcion, BigDecimal soles, BigDecimal dolares, BigDecimal solesFinal, BigDecimal dolaresFinal) {
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+        this.soles = soles;
+        this.dolares = dolares;
+        this.solesFinal = solesFinal;
+        this.dolaresFinal = dolaresFinal;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,7 +97,10 @@ public class Caja {
         if (getDescripcion() != null ? !getDescripcion().equals(caja.getDescripcion()) : caja.getDescripcion() != null)
             return false;
         if (getSoles() != null ? !getSoles().equals(caja.getSoles()) : caja.getSoles() != null) return false;
-        return getDolares() != null ? getDolares().equals(caja.getDolares()) : caja.getDolares() == null;
+        if (getDolares() != null ? !getDolares().equals(caja.getDolares()) : caja.getDolares() != null) return false;
+        if (getSolesFinal() != null ? !getSolesFinal().equals(caja.getSolesFinal()) : caja.getSolesFinal() != null)
+            return false;
+        return getDolaresFinal() != null ? getDolaresFinal().equals(caja.getDolaresFinal()) : caja.getDolaresFinal() == null;
 
     }
 
@@ -78,16 +110,20 @@ public class Caja {
         result = 31 * result + (getDescripcion() != null ? getDescripcion().hashCode() : 0);
         result = 31 * result + (getSoles() != null ? getSoles().hashCode() : 0);
         result = 31 * result + (getDolares() != null ? getDolares().hashCode() : 0);
+        result = 31 * result + (getSolesFinal() != null ? getSolesFinal().hashCode() : 0);
+        result = 31 * result + (getDolaresFinal() != null ? getDolaresFinal().hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "org.sanjose.bean.Caja{" +
+        return "Caja{" +
                 "codigo='" + codigo + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 ", soles=" + soles +
                 ", dolares=" + dolares +
+                ", solesFinal=" + solesFinal +
+                ", dolaresFinal=" + dolaresFinal +
                 '}';
     }
 }
