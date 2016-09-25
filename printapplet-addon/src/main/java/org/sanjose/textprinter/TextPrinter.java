@@ -59,12 +59,33 @@ public abstract class TextPrinter
         map.put("/i", TextPrinter.CMD_ITALIC_OFF);
         map.put("/W", TextPrinter.CMD_DOUBLEWIDE_ON);
         map.put("/w", TextPrinter.CMD_DOUBLEWIDE_OFF);
-/*
         map.put("/U", TextPrinter.CMD_UNDERLINED_ON);
         map.put("/u", TextPrinter.CMD_UNDERLINED_OFF);
         map.put("/C", TextPrinter.CMD_CONDENSED_ON);
         map.put("/c", TextPrinter.CMD_CONDENSED_OFF);
+        map.put("/P", TextPrinter.CMD_PROPORTIONAL_ON);
+        map.put("/p", TextPrinter.CMD_PROPORTIONAL_OFF);
+
+        //map.put("/Fr", TextPrinter.CMD_SELECT_FONT);
+        /*fontsMap = new HashMap<>();
+        fontsMap.put("r", "Roman");
+        fontsMap.put("s", "SansSerif");
+        fontsMap.put("c", "Courier");
+        fontsMap.put("p", "Prestige");
+        fontsMap.put("t", "Script");
+        fontsMap.put("o", "Orator");
 */
+  /*      for (String key : fontsMap.keySet()) {
+            map.put("/F" + key, TextPrinter.CMD_SELECT_FONT);
+        }
+  */
+        pitchMap = new HashMap<>();
+        pitchMap.put("0", "10");
+        pitchMap.put("2", "12");
+        pitchMap.put("5", "15");
+        for (String key : pitchMap.keySet()) {
+            map.put("/F" + key, TextPrinter.CMD_PITCH);
+        }
 
     }
 
@@ -156,8 +177,13 @@ public abstract class TextPrinter
         }
         if (keyFound!=null) {
             addToBuffer(s.substring(0,pos));
-            executeCommand(map.get(keyFound));
-            //s.replace(keyFound, "");
+            if (keyFound.startsWith("/F")) {
+                //executeCommandInternal(map.get(keyFound), fontsMap.get(new Character(keyFound.charAt(2)).toString()));
+                processCommandsForPitch(currentPitch, pitchMap.get(new Character(keyFound.charAt(2)).toString()));
+                //processCommandsForFont(currentFont, fontsMap.get(new Character(keyFound.charAt(2)).toString()));
+            } else {
+                executeCommand(map.get(keyFound));
+            }
         }
         if (pos<s.length()-1) {
             return new Result(s.substring(pos+keyFound.length()), false);
@@ -417,6 +443,8 @@ public abstract class TextPrinter
     char emptyCharater;
     String javaEncoding;
     public Map<String, String> map;
+    public Map<String, String> fontsMap;
+    public Map<String, String> pitchMap;
 
 
     public class Result {
