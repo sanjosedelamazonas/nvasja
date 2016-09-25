@@ -13,6 +13,7 @@ import org.sanjose.model.*;
 import org.sanjose.repo.*;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.ProcUtil;
+import org.sanjose.util.TransactionUtil;
 import org.sanjose.util.ViewUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import tm.kod.widgets.numberfield.NumberField;
@@ -38,7 +39,7 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
 	
     public static final String VIEW_NAME = "Caja";
 
-    final ComprobanteLogic viewLogic = new ComprobanteLogic(this);
+    ComprobanteLogic viewLogic;
 
     private final VsjCajabancoRep repo;
 
@@ -81,7 +82,8 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
                             ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                             ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                             Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                            ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
+                            ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em,
+                            ComprobanteLogic comprobanteLogic) {
     	this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -96,6 +98,7 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         this.contraparteRepo = contraparteRepo;
         this.comprobantepagoRepo = comprobantepagoRepo;
         this.planRepo = planRepo;
+        this.viewLogic = comprobanteLogic;
 
         this.em = em;
         setSizeFull();
@@ -108,8 +111,8 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         eliminarBtn.setEnabled(false);
         imprimirBtn.setEnabled(false);
 
+        viewLogic.init(this);
         viewLogic.setupEditComprobanteView();
-        viewLogic.init();
     }
 
     public void setEnableFields(boolean enabled) {
@@ -366,4 +369,5 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
     public ScpComprobantepagoRep getComprobantepagoRepo() {
         return comprobantepagoRepo;
     }
+
 }

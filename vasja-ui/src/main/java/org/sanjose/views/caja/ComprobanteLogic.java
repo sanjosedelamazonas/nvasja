@@ -12,6 +12,8 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
+import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
@@ -24,7 +26,9 @@ import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.INavigatorView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -46,12 +50,16 @@ import static org.sanjose.util.GenUtil.USD;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
+@SpringComponent
+@UIScope
+@Service
+@Transactional
 class ComprobanteLogic implements Serializable {
 
 	
 	private static final Logger log = LoggerFactory.getLogger(ComprobanteLogic.class);
 
-    final IComprobanteView view;
+    protected IComprobanteView view;
 
     private VsjCajabanco savedCajabanco;
 
@@ -69,12 +77,8 @@ class ComprobanteLogic implements Serializable {
 
     protected INavigatorView navigatorView;
 
-    @Autowired
-    public ComprobanteLogic(IComprobanteView  comprobanteView) {
+    public void init(IComprobanteView  comprobanteView) {
         view = comprobanteView;
-    }
-
-    public void init() {
         view.getGuardarBtn().addClickListener(event -> saveComprobante());
         view.getNuevoComprobante().addClickListener(event -> nuevoComprobante());
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());

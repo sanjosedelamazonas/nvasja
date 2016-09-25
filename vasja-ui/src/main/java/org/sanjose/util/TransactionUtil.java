@@ -2,6 +2,8 @@ package org.sanjose.util;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.UIScope;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.repo.VsjCajabancoRep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,9 @@ import java.util.List;
  * User: prubach
  * Date: 20.09.16
  */
-@Service
 @Transactional
+@SpringComponent
+@UIScope
 public class TransactionUtil implements ITransactionUtil {
 
     private static final Logger log = LoggerFactory.getLogger(TransactionUtil.class);

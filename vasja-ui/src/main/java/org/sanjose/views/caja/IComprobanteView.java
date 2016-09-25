@@ -2,6 +2,7 @@ package org.sanjose.views.caja;
 
 import com.vaadin.ui.*;
 import org.sanjose.repo.*;
+import org.sanjose.util.TransactionUtil;
 import tm.kod.widgets.numberfield.NumberField;
 
 import javax.persistence.EntityManager;
