@@ -20,7 +20,7 @@ CREATE TABLE [dbo].[vsj_bancodetalle](
 	[txt_correlativo] [varchar](8) NULL,
 	[cod_mes] [varchar](2) NULL,
 	[fec_fecha] [datetime] NULL,
-	[cod_proyecto] [varchar](6) NOT NULL,
+	[cod_proyecto] [varchar](6) NULL,
 	[cod_tercero] [varchar](11) NULL,
 	[txt_glosaitem] [varchar](70) NULL,
 	[cod_destino] [varchar](11) NULL,

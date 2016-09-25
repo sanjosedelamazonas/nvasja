@@ -18,7 +18,7 @@ spring:
     database-platform: org.hibernate.dialect.SQLServerDialect
     hibernate:
       #ddl-auto: create
-      ddl: create
+      #ddl: create
 logging:
   level:
     org:

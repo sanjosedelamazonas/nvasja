@@ -4,12 +4,14 @@ import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import org.hibernate.validator.constraints.NotBlank;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.util.GenUtil;
 
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -162,6 +164,8 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 	@Column(name="txt_detallepago")
 	private String txtDetallepago;
 
+	@NotBlank
+	@Size(min=2, max=70)
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
 
@@ -457,6 +461,22 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 
 	public boolean isAnula() {
 		return flg_Anula!=null && flg_Anula.equals('1');
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		VsjBancodetalle that = (VsjBancodetalle) o;
+
+		return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		return getId() != null ? getId().hashCode() : 0;
 	}
 
 	@Override

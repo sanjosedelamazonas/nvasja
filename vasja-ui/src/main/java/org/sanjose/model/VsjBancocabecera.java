@@ -207,6 +207,22 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		VsjBancocabecera that = (VsjBancocabecera) o;
+
+		return getCodBancocabecera() != null ? getCodBancocabecera().equals(that.getCodBancocabecera()) : that.getCodBancocabecera() == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		return getCodBancocabecera() != null ? getCodBancocabecera().hashCode() : 0;
+	}
+
+	@Override
 	public String toString() {
 		return "VsjBancocabecera{" + super.toString() + " " +
 				"codBancocabecera=" + codBancocabecera +
