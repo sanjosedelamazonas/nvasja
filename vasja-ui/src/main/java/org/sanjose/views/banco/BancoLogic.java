@@ -41,6 +41,8 @@ public class BancoLogic extends BancoItemLogic {
 
     private BeanItem<VsjBancocabecera> beanItem;
 
+    private VsjBancocabecera bancocabecera;
+
     //private final TransactionUtil transactionUtil;
 
     private boolean isEdited = false;
@@ -219,6 +221,7 @@ public class BancoLogic extends BancoItemLogic {
                 cabecera.setTxtCorrelativo(GenUtil.getTxtCorrelativo(cabecera.getCodBancocabecera()));
                 cabecera = view.getBancocabeceraRep().save(cabecera);
             }
+            //
             VsjBancodetalle bancoItem = saveItem(cabecera);
             log.info("detalle ready: " + bancoItem);
             bancoItem.setVsjBancocabecera(cabecera);
@@ -233,6 +236,7 @@ public class BancoLogic extends BancoItemLogic {
                 cabecera.addVsjBancodetalle(bancoItem);
                 cabecera = view.getBancocabeceraRep().save(cabecera);
             }
+            log.info("cabecera after save: " + cabecera);
 
             //
             moneda = item.getCodTipomoneda();
