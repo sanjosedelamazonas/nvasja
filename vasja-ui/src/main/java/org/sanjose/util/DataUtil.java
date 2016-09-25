@@ -103,7 +103,7 @@ public class DataUtil {
     }
 
     public static List<ScpPlancontable> getBancoCuentas(Date ano, ScpPlancontableRep planRepo) {
-        return planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike (
+        return planRepo.findByFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike (
                 '0', 'N', GenUtil.getYear(ano), "104%",
                 '0', 'N', GenUtil.getYear(ano), "106%");
     }
