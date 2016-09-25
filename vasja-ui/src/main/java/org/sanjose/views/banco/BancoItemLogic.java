@@ -62,6 +62,7 @@ class BancoItemLogic implements Serializable {
     private BeanItem<VsjBancodetalle> beanItem;
     private FieldGroup fieldGroup;
     private ProcUtil procUtil;
+    protected VsjBancocabecera bancocabecera;
 
     @Autowired
     public BancoItemLogic(BancoOperView comprobanteView) {
@@ -69,7 +70,6 @@ class BancoItemLogic implements Serializable {
     }
 
     public void init() {
-        view.getNewItemBtn().addClickListener(event -> nuevoComprobante());
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
         view.getImprimirTotalBtn().addClickListener(event -> {
           //  if (savedBancodetalle!=null) ViewUtil.printComprobante(savedBancodetalle);
@@ -96,7 +96,7 @@ class BancoItemLogic implements Serializable {
         //--------- CABEZA
 
         // Cuenta
-        view.numVoucher.setEnabled(false);
+        view.getNumVoucher().setEnabled(false);
 
         DataFilterUtil.bindComboBox(view.getSelCuenta(), "id.codCtacontable",
                 DataUtil.getBancoCuentas(view.getDataFechaComprobante().getValue(), view.getPlanRepo()),
@@ -117,6 +117,12 @@ class BancoItemLogic implements Serializable {
                 view.getSelResponsable().setValue(valueChangeEvent.getProperty().getValue());
         });
 
+        view.getGlosaCabeza().addTextChangeListener(event -> {
+            log.info("Text in cabeza: " + event.getText());
+            if (event.getText()!=null && GenUtil.strNullOrEmpty(view.getGlosaDetalle().getValue())) {
+                view.getGlosaDetalle().setValue(event.getText());
+            }
+        });
 
         // ------------ DETALLE
 
@@ -224,6 +230,7 @@ class BancoItemLogic implements Serializable {
         view.getBtnResponsable().addClickListener(event->editDestino(view.getSelResponsable()));
 
         view.setEnableDetalleFields(false);
+        view.setEnableCabezeraFields(false);
     }
 
     private void editDestino(ComboBox comboBox) {
@@ -526,16 +533,11 @@ class BancoItemLogic implements Serializable {
 
         isEdit = !GenUtil.strNullOrEmpty(item.getCodUregistro());
         clearSaldos();
-        //getSelMoneda().setValue(null);
         beanItem = new BeanItem<>(item);
         fieldGroup = new FieldGroup(beanItem);
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.bind(view.getSelProyecto(), "codProyecto");
         fieldGroup.bind(view.getSelTercero(), "codTercero");
-        //fieldGroup.bind(view.getSelMoneda(), "codTipomoneda");
-        //fieldGroup.bind(view.getSelCaja(), "codCtacontable");
-        //fieldGroup.bind(view.getDataFechaComprobante(), "fecFecha");
-
         if (PEN.equals(item.getCodTipomoneda())) {
             fieldGroup.bind(view.getNumEgreso(), "numHabersol");
             fieldGroup.bind(view.getNumIngreso(), "numDebesol");
@@ -546,7 +548,6 @@ class BancoItemLogic implements Serializable {
             fieldGroup.bind(view.getNumEgreso(), "numHabermo");
             fieldGroup.bind(view.getNumIngreso(), "numDebemo");
         }
-
         ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
         ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
         fieldGroup.bind(view.getGlosaDetalle(), "txtGlosaitem");
@@ -577,10 +578,10 @@ class BancoItemLogic implements Serializable {
         isLoading = false;
         if (isEdit) {
             // EDITING
-            if (!GenUtil.strNullOrEmpty(item.getTxtCorrelativo())) {
+            if (item.getVsjBancocabecera()!=null && !GenUtil.strNullOrEmpty(item.getVsjBancocabecera().getTxtCorrelativo())) {
                 view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo()+ "-" + item.getId().getNumItem());
-            } //else
-              //  view.getNumVoucher().setValue(Integer.toString(item.getId().getCodBancocabecera()) + "-");
+            }
+            view.getNumVoucher().setEnabled(false);
             view.setEnableDetalleFields(true);
             setSaldos();
             setCuentaLogic();
@@ -589,9 +590,10 @@ class BancoItemLogic implements Serializable {
             } else {
                 setEditorTerceroLogic(item.getCodTercero());
             }
-        } else {
-            //setMonedaLogic(item.getCodTipomoneda());
-            view.getNumVoucher().setValue("");
+        } else if (item.getVsjBancocabecera()!=null) {
+            if (item.getId()==null) {
+                view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo()+ "-" + view.getContainer().size()+1);
+            }
         }
         isEdit = false;
     }
@@ -613,10 +615,8 @@ class BancoItemLogic implements Serializable {
         item.setVsjBancocabecera(cabecera);
         VsjBancodetallePK id = new VsjBancodetallePK();
         id.setCodBancocabecera(cabecera.getCodBancocabecera());
-        if (cabecera.getVsjBancodetalles()==null)
-            id.setNumItem(1);
-        else
-            id.setNumItem(cabecera.getVsjBancodetalles().size()+1);
+        id.setNumItem(view.getBancodetalleRep().findById_CodBancocabecera(cabecera.getCodBancocabecera()).size()+1);
+            //id.setNumItem(cabecera.getVsjBancodetalles().size() + 1);
         item.setId(id);
         //item.getId().setNumItem();
         //log.info("Saving item: " + item);
@@ -643,6 +643,8 @@ class BancoItemLogic implements Serializable {
     void nuevoComprobante(Character moneda) {
         savedBancodetalle = null;
         VsjBancodetalle vcb = new VsjBancodetalle();
+        if (bancocabecera!=null)
+            vcb.setVsjBancocabecera(bancocabecera);
         vcb.setCodTipomoneda(moneda);
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
@@ -721,11 +723,11 @@ class BancoItemLogic implements Serializable {
             view.getNumVoucher().setValue(Integer.toString(savedBancodetalle.getVsjBancocabecera().getCodBancocabecera()) + "-" + savedBancodetalle.getId().getNumItem());
             savedBancodetalle = null;
             view.getGuardarBtn().setEnabled(false);
-            view.getModificarBtn().setEnabled(false);
+            //view.getModificarBtn().setEnabled(false);
             view.getNewItemBtn().setEnabled(true);
             view.refreshData();
             view.getImprimirTotalBtn().setEnabled(false);
-            view.getEliminarBtn().setEnabled(    false);
+            view.getEliminarBtn().setEnabled(true);
         } catch (CommitException ce) {
             Notification.show("Error al anular el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             log.info("Got Commit Exception: " + ce.getMessage());

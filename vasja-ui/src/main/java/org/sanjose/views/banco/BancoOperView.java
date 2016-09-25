@@ -139,7 +139,6 @@ public class BancoOperView extends BancoOperUI implements View {
         gridBanco.setSelectionMode(Grid.SelectionMode.SINGLE);
 
         setTotal();
-        setEnableCabezeraFields(false);
         viewLogic.init();
     }
 
@@ -196,7 +195,7 @@ public class BancoOperView extends BancoOperUI implements View {
 
 
     public void refreshData() {
-        MainUI.get().getCajaManejoView().refreshData();
+        //MainUI.get().getCajaManejoView().refreshData();
     }
 
     public ComboBox getSelProyecto() {

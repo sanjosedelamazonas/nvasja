@@ -16,9 +16,10 @@ spring:
   jpa:
     show_sql: false
     database-platform: org.hibernate.dialect.SQLServerDialect
+    #hibernate:
   #  hibernate:
       #ddl-auto: create
-      #ddl: create
+     # ddl: create
 logging:
   level:
     org:

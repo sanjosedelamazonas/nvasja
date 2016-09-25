@@ -31,7 +31,7 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 		VsjBancocabecera item = (VsjBancocabecera)super.prepareToSave();
 		Logger logger = LoggerFactory.getLogger(VsjBancocabecera.class);
 		item.setIndTipocuenta('2');
-
+/*
 		BigDecimal saldoHabersol = new BigDecimal(0);
 		BigDecimal saldoHaberdolar = new BigDecimal(0);
 		BigDecimal saldoHabermo = new BigDecimal(0);
@@ -53,7 +53,7 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 		item.setNumDebedolar(saldoDebedolar);
 		item.setNumHaberdolar(saldoHaberdolar);
 		item.setNumDebemo(saldoDebemo);
-		item.setNumDebemo(saldoHabermo);
+		item.setNumDebemo(saldoHabermo);*/
 		return item;
 	}
 
@@ -224,7 +224,7 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 
 	@Override
 	public String toString() {
-		return "VsjBancocabecera{" + super.toString() + " " +
+		return "VsjBancocabecera{" + //super.toString() + " " +
 				"codBancocabecera=" + codBancocabecera +
 				", codComprobanteenlace='" + codComprobanteenlace + '\'' +
 				", codCtacontable='" + codCtacontable + '\'' +
@@ -235,7 +235,7 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 				", flgSaldo=" + flgSaldo +
 				", txtCheque='" + txtCheque + '\'' +
 				", txtGlosa='" + txtGlosa + '\'' +
-				", vsjBancodetalles=" + vsjBancodetalles +
+				//", vsjBancodetalles=" + vsjBancodetalles +
 				'}';
 	}
 }
