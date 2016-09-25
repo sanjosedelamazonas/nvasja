@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import org.hibernate.Session;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
+import org.sanjose.bean.Caja;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.ConfigurationUtil;
