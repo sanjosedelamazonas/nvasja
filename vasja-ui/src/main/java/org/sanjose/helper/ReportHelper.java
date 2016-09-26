@@ -469,16 +469,28 @@ public class ReportHelper {
         logger.info("Trying to load report " + reportName);
 		rep = (UI.getCurrent().getClass()).getResourceAsStream(ConfigurationUtil
 					.get("REPORTS_SOURCE_URL").trim() + "/" + reportName + ".jasper");
-		if (rep == null) {
-			logger.info("Loading report " + reportName + " from file");
+		if (rep!=null) return rep;
+
+		if (System.getenv("VASJA_HOME")!=null) {
 			try {
-				logger.info("Reports folder: " + ConfigurationUtil.getReportsSourceFolder().trim());
+				logger.info("Trying to load from VASJA_HOME/reports");
 				rep = new FileInputStream(
-						ConfigurationUtil.getReportsSourceFolder() + File.separator
+						System.getenv("VASJA_HOME") + File.separator + "reports" + File.separator
 								+ reportName + ".jasper");
 			} catch (FileNotFoundException e) {
-				Notification.show("Report file not found!");
+				Notification.show("Report file not found under: " + System.getenv("VASJA_HOME") + File.separator + "reports" + File.separator
+						+ reportName + ".jasper");
 			}
+		}
+
+		try {
+			logger.info("Reports folder: " + ConfigurationUtil.getReportsSourceFolder().trim());
+
+			rep = new FileInputStream(
+					ConfigurationUtil.getReportsSourceFolder() + File.separator
+							+ reportName + ".jasper");
+		} catch (FileNotFoundException e) {
+			Notification.show("Report file not found!");
 		}
 		return rep;
 	}
