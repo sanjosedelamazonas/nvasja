@@ -129,7 +129,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Black" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Vicariato Apostólico de San José del Amazonas]]></text>
+				<text><![CDATA[/F0/BVicariato Apostólico de San José del Amazonas/b]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="" x="2" y="195" width="108" height="14" uuid="bf74c5cd-0db8-46b6-897a-6bc4a0ad29ba"/>
