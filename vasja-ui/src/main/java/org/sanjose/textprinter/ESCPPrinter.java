@@ -6,6 +6,10 @@
 package org.sanjose.textprinter;
 
 
+import javax.xml.soap.Text;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ESCPPrinter extends TextPrinter
 {
 
