@@ -45,11 +45,24 @@ public abstract class TextPrinter
         linesCharSet = null;
         performCharSetConversion = true;
         defaultCharSet = "";
-        debug = false;
+        debug = true;
         calculatePitchAndHMI = false;
         calculateLineSpacing = false;
         emptyCharater = '\0';
         javaEncoding = System.getProperty("file.encoding");
+        map = new HashMap<>();
+        map.put("/B", TextPrinter.CMD_BOLD_ON);
+        map.put("/b", TextPrinter.CMD_BOLD_OFF);
+        map.put("/I", TextPrinter.CMD_ITALIC_ON);
+        map.put("/i", TextPrinter.CMD_ITALIC_OFF);
+        map.put("/W", TextPrinter.CMD_DOUBLEWIDE_ON);
+        map.put("/w", TextPrinter.CMD_DOUBLEWIDE_OFF);
+/*
+        map.put("/U", TextPrinter.CMD_UNDERLINED_ON);
+        map.put("/u", TextPrinter.CMD_UNDERLINED_OFF);
+        map.put("/C", TextPrinter.CMD_CONDENSED_ON);
+        map.put("/c", TextPrinter.CMD_CONDENSED_OFF);
+*/
 
     }
 
@@ -128,6 +141,46 @@ public abstract class TextPrinter
             //executeDependencies(name);
         }
     }
+
+
+    protected Result convertPart(String s) throws TextPrinterException {
+        int pos=s.length()-1;
+        String keyFound = null;
+        for (String key : map.keySet()) {
+            if (s.indexOf(key)>=0 && s.indexOf(key)<pos) {
+                pos = s.indexOf(key);
+                keyFound = key;
+            }
+        }
+        if (keyFound!=null) {
+            addToBuffer(s.substring(0,pos));
+            executeCommand(map.get(keyFound));
+            //s.replace(keyFound, "");
+        }
+        if (pos<s.length()-1) {
+            return new Result(s.substring(pos+keyFound.length()), false);
+        }
+        else
+            return new Result(s, true);
+    }
+
+    public String convert(String conv) throws TextPrinterException {
+        buffer = new byte[conv.length()+20];
+        Result result;
+        String str = conv;
+        boolean notFound = false;
+        do {
+            result = convertPart(str);
+            str = result.getResStr();
+            notFound = result.isNotFound();
+        }
+        while (!notFound);
+        addToBuffer(result.getResStr());
+        String resStr = new String(buffer).substring(0,bufferPointer);
+        flushBuffer();
+        return resStr;
+    }
+
 
     protected void addToBuffer(String s)
             throws TextPrinterException
@@ -294,4 +347,33 @@ public abstract class TextPrinter
     public boolean calculateLineSpacing;
     char emptyCharater;
     String javaEncoding;
+    public Map<String, String> map;
+
+
+    public class Result {
+
+        String resStr;
+        boolean notFound;
+
+        public Result(String resStr, boolean notFound) {
+            this.resStr = resStr;
+            this.notFound = notFound;
+        }
+
+        public String getResStr() {
+            return resStr;
+        }
+
+        public void setResStr(String resStr) {
+            this.resStr = resStr;
+        }
+
+        public boolean isNotFound() {
+            return notFound;
+        }
+
+        public void setNotFound(boolean notFound) {
+            this.notFound = notFound;
+        }
+    }
 }
