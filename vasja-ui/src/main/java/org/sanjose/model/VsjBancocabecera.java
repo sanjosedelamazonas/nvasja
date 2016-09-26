@@ -1,5 +1,6 @@
 package org.sanjose.model;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.external.org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 		VsjBancocabecera item = (VsjBancocabecera)super.prepareToSave();
 		Logger logger = LoggerFactory.getLogger(VsjBancocabecera.class);
 		item.setIndTipocuenta('2');
+		item.setFlgCobrado(false);
 /*
 		BigDecimal saldoHabersol = new BigDecimal(0);
 		BigDecimal saldoHaberdolar = new BigDecimal(0);
@@ -88,6 +90,13 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 
 	@Column(name="txt_glosa")
 	private String txtGlosa;
+
+	@Column(name="ind_cobrado")
+	private Boolean flgCobrado;
+
+	@Column(name="cod_mescobrado")
+	private String codMescobrado;
+
 
 	//bi-directional many-to-one association to VsjBancodetalle
 	@OneToMany(mappedBy="vsjBancocabecera")
@@ -180,6 +189,22 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 		this.txtGlosa = txtGlosa;
 	}
 
+	public Boolean getFlgCobrado() {
+		return flgCobrado;
+	}
+
+	public void setFlgCobrado(Boolean flgCobrado) {
+		this.flgCobrado = flgCobrado;
+	}
+
+	public String getCodMescobrado() {
+		return codMescobrado;
+	}
+
+	public void setCodMescobrado(String codMescobrado) {
+		this.codMescobrado = codMescobrado;
+	}
+
 	public List<VsjBancodetalle> getVsjBancodetalles() {
 		return this.vsjBancodetalles;
 	}
@@ -224,7 +249,7 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 
 	@Override
 	public String toString() {
-		return "VsjBancocabecera{" + //super.toString() + " " +
+		return "VsjBancocabecera{" +
 				"codBancocabecera=" + codBancocabecera +
 				", codComprobanteenlace='" + codComprobanteenlace + '\'' +
 				", codCtacontable='" + codCtacontable + '\'' +
@@ -235,7 +260,8 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 				", flgSaldo=" + flgSaldo +
 				", txtCheque='" + txtCheque + '\'' +
 				", txtGlosa='" + txtGlosa + '\'' +
-				//", vsjBancodetalles=" + vsjBancodetalles +
+				", flgCobrado=" + flgCobrado +
+				", codMescobrado='" + codMescobrado + '\'' +
 				'}';
 	}
 }

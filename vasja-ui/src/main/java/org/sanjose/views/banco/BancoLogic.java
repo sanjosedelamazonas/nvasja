@@ -278,14 +278,14 @@ public class BancoLogic extends BancoItemLogic {
                     ViewUtil.setColumnNames(view.gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_EUR,
                             BancoOperView.VISIBLE_COLUMN_IDS_EUR, BancoOperView.NONEDITABLE_COLUMN_IDS);
             } else {
-                /*VsjCajabanco vcbOld = null;
-                for (VsjCajabanco vcb : view.getContainer().getItemIds()) {
+                VsjBancodetalle vcbOld = null;
+                for (VsjBancodetalle vcb : view.getContainer().getItemIds()) {
                     if (item.getFecFregistro().equals(vcb.getFecFregistro())) {
                         vcbOld = item;
                         break;
                     }
-                }*/
-                //view.getContainer().removeItem(vcbOld);
+                }
+                view.getContainer().removeItem(vcbOld);
                 view.getContainer().addBean(bancoItem);
             }
             view.setTotal();

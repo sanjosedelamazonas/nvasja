@@ -2,11 +2,6 @@ server:
   port: 8000
   compression:
     enabled: true
-sqlserver:
-  url: jdbc:sqlserver://virtualxp:1433;databaseName=SCP
-  username: vasja
-  password: vasja123
-  driverclass: com.microsoft.sqlserver.jdbc.SQLServerDriver
 spring:
   datasource:
     url: jdbc:sqlserver://virtualxp:1433;databaseName=SCP
@@ -29,14 +24,14 @@ logging:
       hibernate: INFO
 vaadin:
   servlet:
-    productionMode: false
+    productionMode: true
     heartbeatInterval: 60
 ---
 
 spring:
   profiles: production
 server:
-  port: 8080
+  port: 8000
 logging:
   level:
     org:

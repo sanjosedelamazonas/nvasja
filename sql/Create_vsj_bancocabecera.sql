@@ -1,7 +1,7 @@
 USE [SCP]
 GO
 
-/****** Object:  Table [dbo].[scp_bancocabecera]    Script Date: 09/24/2016 13:25:50 ******/
+/****** Object:  Table [dbo].[vsj_bancocabecera]    Script Date: 09/26/2016 02:30:46 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -12,7 +12,7 @@ SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[vsj_bancocabecera](
-	[cod_bancocabecera] int IDENTITY(1,1),
+	[cod_bancocabecera] [int] IDENTITY(1,1) NOT NULL,
 	[txt_anoproceso] [varchar](4) NOT NULL,
 	[ind_tipocuenta] [char](1) NOT NULL,
 	[flg_saldo] [char](1) NOT NULL,
@@ -38,11 +38,15 @@ CREATE TABLE [dbo].[vsj_bancocabecera](
 	[cod_uregistro] [varchar](15) NULL,
 	[fec_factualiza] [datetime] NULL,
 	[cod_uactualiza] [varchar](15) NULL,
- CONSTRAINT [PK_vsj_bancocabecera] PRIMARY KEY CLUSTERED 
-(
-	[cod_bancocabecera]
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+	[ind_cobrado] [bit] NULL
 ) ON [PRIMARY]
+SET ANSI_PADDING ON
+ALTER TABLE [dbo].[vsj_bancocabecera] ADD [cod_mescobrado] [varchar](2) NULL
+/****** Object:  Index [PK_vsj_bancocabecera]    Script Date: 09/26/2016 02:30:46 ******/
+ALTER TABLE [dbo].[vsj_bancocabecera] ADD  CONSTRAINT [PK_vsj_bancocabecera] PRIMARY KEY CLUSTERED 
+(
+	[cod_bancocabecera] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 
 GO
 
