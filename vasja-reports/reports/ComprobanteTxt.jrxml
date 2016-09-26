@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-25T10:47:34 -->
+<!-- 2016-09-26T01:57:02 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Comprobante" pageWidth="408" pageHeight="420" columnWidth="392" leftMargin="8" rightMargin="8" topMargin="8" bottomMargin="8" uuid="e6e4b764-eb4a-44ec-8aa8-52e244f987a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.export.text.character.width" value="7.238"/>
+	<property name="net.sf.jasperreports.export.text.character.height" value="13.948"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="192.168.1.50"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<style name="Title" fontName="DejaVu Sans" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
-	<style name="SubTitle" forecolor="#666666" fontName="DejaVu Sans" fontSize="18"/>
-	<style name="Column header" forecolor="#666666" fontName="DejaVu Sans" fontSize="12" isBold="true"/>
-	<style name="Detail" fontName="DejaVu Sans" fontSize="12"/>
+	<style name="SubTitle" forecolor="#666666" fontName="DejaVu Sans Mono" fontSize="10"/>
+	<style name="Column header" forecolor="#666666" fontName="DejaVu Sans Mono" fontSize="10" isBold="true"/>
+	<style name="Detail" fontName="DejaVu Sans Mono" fontSize="10"/>
 	<parameter name="OP_ID" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[201]]></defaultValueExpression>
 	</parameter>
@@ -280,10 +282,10 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{CUENTA_NUMERO}+" "+$F{CUENTA_NOMBRE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["/B" + $F{CUENTA_NUMERO}+" "+$F{CUENTA_NOMBRE} + "/b"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="2" y="59" width="38" height="13" uuid="a3b2a87d-f24e-4eab-bd46-51fb325dafb0"/>
+				<reportElement x="2" y="59" width="49" height="13" uuid="a3b2a87d-f24e-4eab-bd46-51fb325dafb0"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10"/>
 				</textElement>
@@ -328,7 +330,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Black" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Vicariato Apostólico de San José del Amazonas]]></text>
+				<text><![CDATA[/i/BVicariato Apostólico de San José del Amazonas/b]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="" x="2" y="23" width="108" height="14" uuid="a0a3eb01-8a08-4974-93af-7156f76c9373"/>
@@ -422,14 +424,14 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? "S/.:" : "U$D:")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["/B" +($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? "S/.:" : "U$D:")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="266" y="39" width="127" height="15" uuid="297103ad-89bc-4422-9da4-6958f5a4616b"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? ($F{OPERACION_PEN_haber}.compareTo(new BigDecimal(0))>0 ? ($F{OPERACION_PEN_haber}) : $F{OPERACION_PEN_debe}) : ( $F{OPERACION_USD_haber}.compareTo(new BigDecimal(0))>0 ? $F{OPERACION_USD_haber} : $F{OPERACION_USD_debe}))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? ($F{OPERACION_PEN_haber}.compareTo(new BigDecimal(0))>0 ? ($F{OPERACION_PEN_haber}) : $F{OPERACION_PEN_debe}) : ( $F{OPERACION_USD_haber}.compareTo(new BigDecimal(0))>0 ? $F{OPERACION_USD_haber} : $F{OPERACION_USD_debe})) + "/b"]]></textFieldExpression>
 				<patternExpression><![CDATA["#,##0.00"]]></patternExpression>
 			</textField>
 			<textField pattern="yyyy.MM.dd" isBlankWhenNull="true">
