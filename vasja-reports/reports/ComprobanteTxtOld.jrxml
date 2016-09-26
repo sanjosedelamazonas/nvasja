@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Comprobante" language="groovy" pageWidth="421" pageHeight="218" orientation="Landscape" columnWidth="381" leftMargin="20" rightMargin="20" topMargin="6" bottomMargin="14">
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-09-26T10:45:08 -->
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="Comprobante" language="groovy" pageWidth="421" pageHeight="218" orientation="Landscape"
+              columnWidth="381" leftMargin="20" rightMargin="20" topMargin="6" bottomMargin="14"
+              uuid="6d59edfb-3476-4942-a2ef-168e6da30878">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -114,52 +121,55 @@ WHERE OPERACION.ID = $P{OP_ID})]]>
 	<detail>
 		<band height="198" splitType="Stretch">
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="226" y="172" width="121" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="226" y="172" width="121" height="12"
+                               uuid="83facd6c-14bb-4d1a-a7b1-720b16f8042f"/>
 				<textFieldExpression><![CDATA[$F{OPERACION_DNI}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="176" y="156" width="205" height="12"/>
+                <reportElement style="FixSizeFontStyle" x="176" y="156" width="205" height="12"
+                               uuid="4534ee8a-8205-49cf-b8f1-96f404293f37"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{OPERACION_FIRMA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="48" y="99" width="108" height="14"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="48" y="99" width="108" height="14"
+                               uuid="2a743266-8455-4c07-85c9-ded30d294b09"/>
 				<textFieldExpression><![CDATA[$F{OPERACION_TIPO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="35" y="57" width="56" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="35" y="57" width="56" height="12"
+                               uuid="b4e35682-cc03-4f42-ae43-7fd076f05e8a"/>
 				<textFieldExpression><![CDATA[$F{CUENTA_NUMERO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="91" y="57" width="290" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="91" y="57" width="290" height="12"
+                               uuid="2259dcd6-df70-47d3-89e3-49486818a449"/>
 				<textFieldExpression><![CDATA[$F{CUENTA_NOMBRE}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="0" y="57" width="35" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="0" y="57" width="35" height="12"
+                               uuid="c3fba46a-38c1-4e10-8a2a-98dc9fabd147"/>
 				<text><![CDATA[CTA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="0" y="72" width="58" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="0" y="72" width="58" height="12"
+                               uuid="bd340137-9137-4d8d-84db-23a27b7399aa"/>
 				<text><![CDATA[DETALLE]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="196" y="172" width="30" height="12"/>
+                <reportElement style="FixSizeFontStyle" x="196" y="172" width="30" height="12"
+                               uuid="e82097fa-d24e-492b-802c-f110be529edd"/>
 				<textElement markup="none"/>
 				<textFieldExpression><![CDATA[($F{OPERACION_DNI}!=null && (!$F{OPERACION_DNI}.equals("")) ? "DNI" : "")]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="0" y="99" width="48" height="14"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="0" y="99" width="48" height="14"
+                               uuid="e9ad35a5-77b6-4628-8718-4d396c57e289"/>
 				<text><![CDATA[TIPO:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement style="FixSizeFontStyle" mode="Transparent" x="157" y="99" width="96" height="14" forecolor="#666666" backcolor="#FFFFFF"/>
+                <reportElement style="FixSizeFontStyle" mode="Transparent" x="157" y="99" width="96" height="14"
+                               forecolor="#666666" backcolor="#FFFFFF" uuid="4930c9b1-b703-4064-8121-268cd1aa5370"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="DejaVu Sans Mono" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -167,7 +177,8 @@ WHERE OPERACION.ID = $P{OP_ID})]]>
 				<textFieldExpression><![CDATA[($F{OPERACION_TIPO}.toString().equals("CHEQUE") ? "NUMERO" : ($F{OPERACION_TIPO}.toString().equals("TRANSFERENCIA") ? "NUMERO" : ""))]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement style="FixSizeFontStyle" mode="Transparent" x="253" y="99" width="128" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+                <reportElement style="FixSizeFontStyle" mode="Transparent" x="253" y="99" width="128" height="14"
+                               forecolor="#000000" backcolor="#FFFFFF" uuid="2c5bc344-9893-4a38-9966-87814225be03"/>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="DejaVu Sans Mono" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -175,27 +186,27 @@ WHERE OPERACION.ID = $P{OP_ID})]]>
 				<textFieldExpression><![CDATA[$F{OPERACION_CHEQUE_NUMERO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="137" y="144" width="39" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="137" y="144" width="39" height="12"
+                               uuid="36ec03ba-fef6-4b93-98bb-2c64798ca256"/>
 				<text><![CDATA[FIRMA]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="0" y="116" width="58" height="12"/>
+                <reportElement style="FixSizeFontStyle" x="0" y="116" width="58" height="12"
+                               uuid="dc9bd35d-99b5-4f87-9e2f-0290453b2d54"/>
 				<textElement markup="none"/>
 				<textFieldExpression><![CDATA[($F{OPERACION_TIPO}.toString().equals("TRANSFERENCIA") ? "BANCO" : "")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="58" y="116" width="323" height="12"/>
-				<textElement/>
+                <reportElement x="58" y="116" width="323" height="12" uuid="514852e7-acff-49d7-bdb2-177217de1bac"/>
 				<textFieldExpression><![CDATA[($F{OPERACION_TIPO}.toString().equals("TRANSFERENCIA") ? $F{BANCO_NOMBRE} : "")]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="176" y="144" width="205" height="12"/>
-				<textElement/>
+                <reportElement x="176" y="144" width="205" height="12" uuid="19b10cf8-0f50-43e0-9881-a60f26bc5135"/>
 				<text><![CDATA[________________________________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="3" y="0" width="186" height="24"/>
+                <reportElement style="FixSizeFontStyle" x="3" y="0" width="186" height="24"
+                               uuid="5ebf972f-b084-49cd-99d8-643f383129e6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
@@ -203,12 +214,14 @@ WHERE OPERACION.ID = $P{OP_ID})]]>
 De San Jose Del Amazonas]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="0" y="24" width="156" height="12"/>
+                <reportElement style="FixSizeFontStyle" x="0" y="24" width="156" height="12"
+                               uuid="3c56b789-a643-49fb-922d-7dc005327733"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Comprobante Numero:]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="FixSizeFontStyle" mode="Transparent" x="157" y="24" width="69" height="12" forecolor="#666666" backcolor="#FFFFFF"/>
+                <reportElement style="FixSizeFontStyle" mode="Transparent" x="157" y="24" width="69" height="12"
+                               forecolor="#666666" backcolor="#FFFFFF" uuid="fc07efe5-cafa-4650-ba17-b8ca59f8e6cd"/>
 				<textElement verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -216,32 +229,34 @@ De San Jose Del Amazonas]]></text>
 				<textFieldExpression><![CDATA[$P{OP_ID}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="243" y="0" width="131" height="14"/>
+                <reportElement style="FixSizeFontStyle" x="243" y="0" width="131" height="14"
+                               uuid="7c9f66bb-bbd1-43da-a6cd-ee88b311e6e8"/>
 				<textElement textAlignment="Center" markup="none">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{CUENTA_ISCAJA} ? ($F{OPERACION_ISCARGO} ? "EGRESO" : "INGRESO") : ($F{OPERACION_ISCARGO} ? "CARGO" : "ABONO"))]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="226" y="16" width="56" height="13"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="226" y="16" width="56" height="13"
+                               uuid="94ccc473-635c-4da4-8f63-6b78080a434f"/>
 				<text><![CDATA[FECHA]]></text>
 			</staticText>
 			<textField pattern="yyyy.MM.dd" isBlankWhenNull="true">
-				<reportElement style="FixSizeFontStyle" x="282" y="16" width="99" height="13"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="282" y="16" width="99" height="13"
+                               uuid="e07d8cdd-1ea2-4be4-9063-cc100f4c6ad0"/>
 				<textFieldExpression><![CDATA[$F{OPERACION_FECHA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="226" y="29" width="44" height="12"/>
+                <reportElement style="FixSizeFontStyle" x="226" y="29" width="44" height="12"
+                               uuid="a08bff7f-5ccf-4ed1-b513-066b475242e3"/>
 				<textElement markup="none">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA["MONTO"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="282" y="29" width="99" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="282" y="29" width="99" height="12"
+                               uuid="19ef5623-ea1b-435c-97e3-f2bbcc828042"/>
 				<textFieldExpression><![CDATA[($F{OPERACION_ISPEN} ? ("S./ " +
     ($F{OPERACION_ISCARGO} ?
         ($F{OPERACION_PEN}.multiply(new BigDecimal(-1))) : $F{OPERACION_PEN}
@@ -254,45 +269,45 @@ De San Jose Del Amazonas]]></text>
 )]]></textFieldExpression>
 			</textField>
 			<textField pattern="yyyy.MM.dd HH:mm" isBlankWhenNull="false">
-				<reportElement style="FixSizeFontStyle" x="68" y="184" width="175" height="12"/>
+                <reportElement style="FixSizeFontStyle" x="68" y="184" width="175" height="12"
+                               uuid="7d3b50c7-db73-4484-a233-2d4c5903ad4c"/>
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="FixSizeFontStyle" x="37" y="156" width="99" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="37" y="156" width="99" height="12"
+                               uuid="b3f93db7-6be4-4106-b695-2cfbeb77d66b"/>
 				<textFieldExpression><![CDATA[$F{OPERACION_SALDOPEN}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="0" y="144" width="101" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="0" y="144" width="101" height="12"
+                               uuid="6c82a30f-4d64-4aaa-9191-9d631871187f"/>
 				<text><![CDATA[Saldo despues:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="0" y="171" width="37" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="0" y="171" width="37" height="12"
+                               uuid="b0c682d2-cc0a-4103-a6f7-7339c542f903"/>
 				<text><![CDATA[USD:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement style="FixSizeFontStyle" x="37" y="171" width="99" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="37" y="171" width="99" height="12"
+                               uuid="0ad63bc5-f990-41ea-8c0a-85209d47ac1f"/>
 				<textFieldExpression><![CDATA[$F{OPERACION_SALDOUSD}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="0" y="156" width="37" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="0" y="156" width="37" height="12"
+                               uuid="2da439fb-0e47-4632-b773-fd0bb10d4210"/>
 				<text><![CDATA[PEN:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="FixSizeFontStyle" x="0" y="184" width="68" height="12"/>
-				<textElement/>
+                <reportElement style="FixSizeFontStyle" x="0" y="184" width="68" height="12"
+                               uuid="97ac53a1-315d-442b-b7dd-20b1227e76de"/>
 				<text><![CDATA[Impreso:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="58" y="72" width="323" height="27"/>
-				<textElement/>
+                <reportElement x="58" y="72" width="323" height="27" uuid="95d4e1d3-532b-442e-977d-095953ba37a5"/>
 				<textFieldExpression><![CDATA[$F{OPERACION_DESCRIPCION}]]></textFieldExpression>
 			</textField>
 		</band>

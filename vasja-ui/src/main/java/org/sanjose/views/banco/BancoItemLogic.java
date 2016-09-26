@@ -23,7 +23,6 @@ import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.INavigatorView;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -57,12 +56,12 @@ class BancoItemLogic implements Serializable {
     protected boolean isEdit = false;
     protected INavigatorView navigatorView;
     protected Character moneda;
+    protected VsjBancocabecera bancocabecera;
     BancoOperView view;
     private VsjBancodetalle savedBancodetalle;
     private BeanItem<VsjBancodetalle> beanItem;
     private FieldGroup fieldGroup;
     private ProcUtil procUtil;
-    protected VsjBancocabecera bancocabecera;
 
     //@Autowired
     public BancoItemLogic() {
@@ -76,7 +75,6 @@ class BancoItemLogic implements Serializable {
           //  if (savedBancodetalle!=null) ViewUtil.printComprobante(savedBancodetalle);
         });
         view.getModificarBtn().addClickListener(event -> editarComprobante());
-        view.getEliminarBtn().addClickListener(event -> eliminarComprobante());
         procUtil = new ProcUtil(view.getEm());
     }
 
@@ -614,23 +612,14 @@ class BancoItemLogic implements Serializable {
         item = item.prepareToSave();
         item.setTxtCheque(cabecera.getTxtCheque());
         item.setVsjBancocabecera(cabecera);
-        VsjBancodetallePK id = new VsjBancodetallePK();
-        id.setCodBancocabecera(cabecera.getCodBancocabecera());
-        id.setNumItem(view.getBancodetalleRep().findById_CodBancocabecera(cabecera.getCodBancocabecera()).size()+1);
-            //id.setNumItem(cabecera.getVsjBancodetalles().size() + 1);
-        item.setId(id);
+        if (item.getId() == null) {
+            VsjBancodetallePK id = new VsjBancodetallePK();
+            id.setCodBancocabecera(cabecera.getCodBancocabecera());
+            id.setNumItem(view.getBancodetalleRep().findById_CodBancocabecera(cabecera.getCodBancocabecera()).size() + 1);
+            item.setId(id);
+        }
         //item.getId().setNumItem();
         //log.info("Saving item: " + item);
-    //savedBancodetalle = view.getBancodetalleRep().save(item);
-/*
-
-        if (GenUtil.strNullOrEmpty(savedBancodetalle.getTxtCorrelativo())) {
-            savedBancodetalle.setTxtCorrelativo(GenUtil.getTxtCorrelativo(savedBancodetalle.getCodBancodetalle()));
-            savedBancodetalle = view.getBancodetalleRep().save(savedBancodetalle);
-        }
-        view.getNumVoucher().setValue(savedBancodetalle.getTxtCorrelativo());
-*/
-    //view.getGuardarBtn().setEnabled(false);
         view.getModificarBtn().setEnabled(true);
         view.getNewItemBtn().setEnabled(true);
         view.refreshData();
@@ -695,44 +684,13 @@ class BancoItemLogic implements Serializable {
         vcb.setNumDebedolar(new BigDecimal(0.00));
         vcb.setNumHabermo(new BigDecimal(0.00));
         vcb.setNumDebemo(new BigDecimal(0.00));
+        view.getNumEgreso().setValue(new BigDecimal(0.00).toString());
+        view.getNumIngreso().setValue(new BigDecimal(0.00).toString());
 
         vcb.setTxtGlosaitem("ANULADO - " + (vcb.getTxtGlosaitem().length()>60 ?
                 vcb.getTxtGlosaitem().substring(0,60) : vcb.getTxtGlosaitem()));
         vcb.setFlg_Anula('1');
         return vcb;
-    }
-
-
-    void eliminarComprobante() {
-        try {
-            if (savedBancodetalle==null) {
-                log.info("no se puede eliminar si no esta ya guardado");
-                return;
-            }
-            if (savedBancodetalle.getVsjBancocabecera().getFlgEnviado().equals("1")) {
-                Notification.show("Problema al eliminar", "No se puede eliminar porque ya esta enviado a la contabilidad",
-                        Notification.Type.WARNING_MESSAGE);
-                return;
-            }
-            VsjBancodetalle item = getVsjBancodetalle();
-
-            item = prepareToEliminar(item);
-
-            view.getGlosaDetalle().setValue(item.getTxtGlosaitem());
-            log.info("Ready to ANULAR: " + item);
-            savedBancodetalle = view.getBancodetalleRep().save(item);
-            view.getNumVoucher().setValue(Integer.toString(savedBancodetalle.getVsjBancocabecera().getCodBancocabecera()) + "-" + savedBancodetalle.getId().getNumItem());
-            savedBancodetalle = null;
-            view.getGuardarBtn().setEnabled(false);
-            //view.getModificarBtn().setEnabled(false);
-            view.getNewItemBtn().setEnabled(true);
-            view.refreshData();
-            view.getImprimirTotalBtn().setEnabled(false);
-            view.getEliminarBtn().setEnabled(true);
-        } catch (CommitException ce) {
-            Notification.show("Error al anular el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
-            log.info("Got Commit Exception: " + ce.getMessage());
-        }
     }
 
     // Helpers
