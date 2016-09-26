@@ -12,7 +12,6 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.repo.*;
-import org.sanjose.util.TransactionUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.model.*;
 import org.springframework.beans.factory.annotation.Autowired;

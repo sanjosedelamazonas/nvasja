@@ -1,0 +1,9 @@
+<service>
+    <id>vasjacaja</id>
+    <name>Vasja Caja</name>
+    <description>Cashflow Management system for Vicariato San Jose del Amazonas (2016)</description>
+    <env name="VASJA_HOME" value="%BASE%"/>
+    <executable>java</executable>
+    <arguments>-Xmx1024M -Xss1024k -jar "%BASE%\vasja-ui-1.0-SNAPSHOT.jar" --server.port=8000</arguments>
+    <logmode>rotate</logmode>
+</service>

@@ -13,7 +13,6 @@ import org.sanjose.model.VsjCajabanco;
 import org.sanjose.repo.VsjCajabancoRep;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.util.TransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
