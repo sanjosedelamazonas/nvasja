@@ -11,7 +11,7 @@ md %JAR_LOC%
 
 cd target\classes\
 
-jar cf %FIN_JAR_LOC% org/vaadin/applet/* org/vaadin/applet/client/ui/* dk/apaq/vaadin/addon/printapplet/* org/vaadin/applet/sample/* org/json/*
+jar cf %FIN_JAR_LOC% org/vaadin/applet/* org/vaadin/applet/client/ui/* dk/apaq/vaadin/addon/printapplet/* org/vaadin/applet/sample/* org/json/* org/sanjose/textprinter/*
 jar ufm %FIN_JAR_LOC% ..\..\APP_MANIFEST.MF
 cd ..\..\
 jarsigner -keystore .keystore %JAR_LOC%%JAR_NAME% Pol
