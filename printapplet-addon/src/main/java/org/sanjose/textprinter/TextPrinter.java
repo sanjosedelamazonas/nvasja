@@ -49,6 +49,8 @@ public abstract class TextPrinter
         calculatePitchAndHMI = false;
         calculateLineSpacing = false;
         emptyCharater = '\0';
+        currentFont = "Courier";
+        currentPitch ="12";
         javaEncoding = System.getProperty("file.encoding");
         map = new HashMap<>();
         map.put("/B", TextPrinter.CMD_BOLD_ON);
@@ -267,6 +269,71 @@ public abstract class TextPrinter
         executeCommandInternal(name, null);
     }
 
+    protected String mapTableLookup(Hashtable table, String value)
+    {
+        if(table == null)
+            return null;
+        for(Enumeration e = table.elements(); e.hasMoreElements();)
+        {
+            CommandParamValue p = (CommandParamValue)e.nextElement();
+            if(p.name.equals(value))
+                return p.value;
+            if(p.name.equals("*"))
+                return p.value;
+        }
+
+        return null;
+    }
+
+    protected void processCommandsForFont(String currentFont, String newFont)
+            throws TextPrinterException
+    {
+        if(!currentFont.equals(newFont) && !newFont.equals(""))
+        {
+            String mappedFont = mapTableLookup(fontValues, newFont);
+            if(mappedFont != null)
+                executeCommandInternal(CMD_SELECT_FONT, mappedFont);
+        }
+    }
+
+    protected void processCommandsForPitch(String currentPitch, String newPitch)
+            throws TextPrinterException
+    {
+        if(!currentPitch.equals(newPitch) && !newPitch.equals(""))
+        {
+            String mappedPitch = getBestPitchCommand(newPitch);
+            if(mappedPitch == null)
+                return;
+            mappedPitch = replaceParameter(mappedPitch, newPitch);
+            executeCommandInternal(CMD_PITCH, mappedPitch);
+        }
+    }
+
+    protected String getBestPitchCommand(String pitch)
+    {
+        int bestPitch = 0;
+        String bestPitchCommand = null;
+        double iPitch = Double.parseDouble(pitch);
+        Enumeration e = pitchValues.elements();
+        do
+        {
+            if(!e.hasMoreElements())
+                break;
+            CommandParamValue p = (CommandParamValue)e.nextElement();
+            if(p.name.equals("*"))
+                return p.value;
+            if(Double.parseDouble(p.name) == iPitch)
+                return p.value;
+            if(Double.parseDouble(p.name) > iPitch && Double.parseDouble(p.name) < (double)bestPitch)
+            {
+                bestPitch = Integer.parseInt(p.name);
+                bestPitchCommand = p.value;
+            }
+        } while(true);
+        return bestPitchCommand;
+    }
+
+
     protected final char ESC = '\033';
     protected final char LF = '\n';
     protected final char CR = '\r';
@@ -345,6 +412,8 @@ public abstract class TextPrinter
     public boolean debug;
     public boolean calculatePitchAndHMI;
     public boolean calculateLineSpacing;
+    public String currentFont;
+    public String currentPitch;
     char emptyCharater;
     String javaEncoding;
     public Map<String, String> map;

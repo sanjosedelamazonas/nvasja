@@ -1,6 +1,9 @@
 /*    */ package dk.apaq.vaadin.addon.printapplet;
 /*    */ 
-/*    */ import java.awt.Dimension;
+/*    */ import org.sanjose.textprinter.ESCPPrinter;
+import org.sanjose.textprinter.TextPrinter;
+
+import java.awt.Dimension;
 import java.awt.geom.Arc2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
@@ -25,6 +28,7 @@ import javax.print.PrintService;
 /*    */   implements Printer
 /*    */ {
 /*    */   private PrintService ps;
+	private static TextPrinter textPrinter = new ESCPPrinter();
 /*    */ 
 /*    */   public BundlePrinter(PrintService ps)
 /*    */   {
@@ -96,7 +100,7 @@ import javax.print.PrintService;
 						DataInputStream dIn = new DataInputStream(in);
 						BufferedReader br = new BufferedReader(new InputStreamReader(dIn, "UTF-8"));
 						while ((strLine = br.readLine()) != null) {
-							strLine1 = strLine1 + strLine + "\r\n";
+							strLine1 = strLine1 + textPrinter.convert(strLine) + "\r\n";
 						}
 						
 						byte[] b = strLine1.getBytes("ISO-8859-1");
