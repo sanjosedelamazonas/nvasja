@@ -1,0 +1,7 @@
+Destino:
+-> clasificacion 'Tercero' no disponible
+-> sprawdzenie czy istnieje juz taki przy zapisywaniu
+-> codigo jak nie wpisany to generuje
+
+Banco - vsj_bancodetalle:
+- dodac  flg_chequecobrado y cod_mescobr y edycje tego dla Ninfa (considerar pedir a Edward que cuando modifica cheque cobrado en contabilidad tambien se modifica vsj_bancodetalle
