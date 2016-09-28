@@ -1,7 +1,6 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.data.Property;
-import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
@@ -15,7 +14,6 @@ import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.*;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
-import org.sanjose.authentication.CurrentUser;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
@@ -35,8 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.sanjose.util.GenUtil.PEN;
-import static org.sanjose.util.GenUtil.USD;
+import static org.sanjose.util.GenUtil.*;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -209,6 +206,16 @@ class BancoItemLogic implements Serializable {
         view.getGlosaCabeza().setMaxLength(70);
         view.getGlosaDetalle().setMaxLength(70);
 
+        addValidators();
+        // Editing Destino
+        view.getBtnDestino().addClickListener(event->editDestino(view.getSelCodAuxiliar()));
+        view.getBtnResponsable().addClickListener(event->editDestino(view.getSelResponsable()));
+
+        view.setEnableDetalleFields(false);
+        view.setEnableCabezeraFields(false);
+    }
+
+    public void addValidators() {
         // Validators
         view.getDataFechaComprobante().addValidator(new BeanValidator(VsjBancodetalle.class, "fecFecha"));
         view.getFechaDoc().addValidator(new BeanValidator(VsjBancodetalle.class, "fecComprobantepago"));
@@ -224,12 +231,6 @@ class BancoItemLogic implements Serializable {
         view.getNumDoc().addValidator(new BeanValidator(VsjBancodetalle.class, "txtComprobantepago"));
         view.getSelCtaContable().addValidator(new BeanValidator(VsjBancodetalle.class, "codContracta"));
         view.getSelTipoMov().addValidator(new BeanValidator(VsjBancodetalle.class, "codTipomov"));
-        // Editing Destino
-        view.getBtnDestino().addClickListener(event->editDestino(view.getSelCodAuxiliar()));
-        view.getBtnResponsable().addClickListener(event->editDestino(view.getSelResponsable()));
-
-        view.setEnableDetalleFields(false);
-        view.setEnableCabezeraFields(false);
     }
 
     private void editDestino(ComboBox comboBox) {
@@ -327,15 +328,16 @@ class BancoItemLogic implements Serializable {
             view.getSaldoCuenta().setCaption(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
             log.info("In setCuentaLogic: " + saldo + " cap: " + s + " " + cuenta.getIndTipomoneda());
             view.getSaldoCuenta().setValue(df.format(saldo));
+            view.getSaldoCuenta().setNullRepresentation("0.00");
             log.info("In setCuentaLogic: " + df.format(saldo));
             moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
             // If still no item created
             if (item==null) {
-                nuevoComprobante(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+                nuevoComprobante(moneda);
             } else {
-                item.setCodTipomoneda(cuenta.getIndTipomoneda());
+                item.setCodTipomoneda(moneda);
             }
-            setMonedaLogic(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+            setMonedaLogic(moneda);
         }
     }
 
@@ -400,42 +402,6 @@ class BancoItemLogic implements Serializable {
             }
         }
     }
-
-/*
-    private void setCajaLogic() {
-        setCajaLogic(view.getSelMoneda().getValue().toString());
-    }
-
-    private void setCajaLogic(String tipomoneda) {
-
-        if (isProyecto()) {
-            List<VsjConfiguracioncaja> configs = view.getConfiguracioncajaRepo().findByCodProyectoAndIndTipomoneda(
-                    view.getSelProyecto().getValue().toString(), tipomoneda);
-            if (!configs.isEmpty()) {
-                VsjConfiguracioncaja config = configs.get(0);
-                view.getSelCaja().setValue(config.getCodCtacontable());
-            } else {
-                String catProy = view.getProyectoRepo().findByCodProyecto(view.getSelProyecto().getValue().toString())
-                        .getCodCategoriaproyecto();
-                configs = view.getConfiguracioncajaRepo().findByCodCategoriaproyectoAndIndTipomoneda(
-                        catProy, tipomoneda);
-                if (!configs.isEmpty()) {
-                    VsjConfiguracioncaja config = configs.get(0);
-                    view.getSelCaja().setValue(config.getCodCtacontable());
-                }
-            }
-        } else if (isTercero()) {
-            List<VsjConfiguracioncaja> configs = view.getConfiguracioncajaRepo().findByCodDestinoAndIndTipomoneda(
-                    view.getSelTercero().getValue().toString(), tipomoneda);
-            if (!configs.isEmpty()) {
-                VsjConfiguracioncaja config = configs.get(0);
-                view.getSelCaja().setValue(config.getCodCtacontable());
-            }
-        }
-        setSaldoCuenta();
-    }
-*/
-
 
     private void setProyectoLogic(Property.ValueChangeEvent event) {
         if (isLoading) return;
@@ -530,7 +496,7 @@ class BancoItemLogic implements Serializable {
     private void bindForm(VsjBancodetalle item) {
         isLoading = true;
 
-        isEdit = !GenUtil.strNullOrEmpty(item.getCodUregistro());
+        isEdit = !GenUtil.objNullOrEmpty(item.getId());
         clearSaldos();
         beanItem = new BeanItem<>(item);
         fieldGroup = new FieldGroup(beanItem);
@@ -543,9 +509,12 @@ class BancoItemLogic implements Serializable {
         } else if (USD.equals(item.getCodTipomoneda())) {
             fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
             fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
-        } else {
+        } else if (EUR.equals(item.getCodTipomoneda())) {
             fieldGroup.bind(view.getNumEgreso(), "numHabermo");
             fieldGroup.bind(view.getNumIngreso(), "numDebemo");
+        } else {
+            Notification.show("Moneda sellecionada no existe, esto nunca deberia pasar", Notification.Type.ERROR_MESSAGE);
+            //throw new MonedaException("Moneda sellecionada no existe, esto nunca deberia pasar");
         }
         ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
         ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
@@ -577,12 +546,13 @@ class BancoItemLogic implements Serializable {
         isLoading = false;
         if (isEdit) {
             // EDITING
+            log.info("is Edit in bindForm");
             if (item.getVsjBancocabecera()!=null && !GenUtil.strNullOrEmpty(item.getVsjBancocabecera().getTxtCorrelativo())) {
+                log.info("setting numVoucher: " + item.getVsjBancocabecera().getTxtCorrelativo() + "-" + item.getId().getNumItem());
                 view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo()+ "-" + item.getId().getNumItem());
             }
             view.getNumVoucher().setEnabled(false);
             view.setEnableDetalleFields(true);
-            setSaldos();
             setCuentaLogic();
             if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {
                 setEditorLogic(item.getCodProyecto());
@@ -591,12 +561,14 @@ class BancoItemLogic implements Serializable {
             }
         } else if (item.getVsjBancocabecera()!=null) {
             if (item.getId()==null) {
-                view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo()+ "-" + view.getContainer().size()+1);
+                log.info("is NOT Edit in bindForm but ID is null");
+                view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo() + "-" + String.valueOf(view.getContainer().size() + 1));
             }
         }
+
+        setSaldos();
         isEdit = false;
     }
-
 
     // Buttons
 
@@ -608,6 +580,8 @@ class BancoItemLogic implements Serializable {
 
     VsjBancodetalle saveItem(VsjBancocabecera cabecera) throws CommitException {
         VsjBancodetalle item = getVsjBancodetalle();
+        if (!verifyNumMoneda(moneda))
+            throw new CommitException("Moneda no esta de tipo numeral");
         item.setCodTipomoneda(moneda);
         item = item.prepareToSave();
         item.setTxtCheque(cabecera.getTxtCheque());
@@ -668,29 +642,6 @@ class BancoItemLogic implements Serializable {
         view.getEliminarBtn().setEnabled(true);
         view.getModificarBtn().setEnabled(false);
         view.getImprimirTotalBtn().setEnabled(true);
-    }
-
-    VsjBancodetalle prepareToEliminar(VsjBancodetalle vcb) {
-        if (GenUtil.strNullOrEmpty(vcb.getCodProyecto()) && GenUtil.strNullOrEmpty(vcb.getCodTercero()))
-            throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
-
-        vcb.setCodUactualiza(CurrentUser.get());
-        vcb.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
-
-        // Verify moneda and fields
-        vcb.setNumHabersol(new BigDecimal(0.00));
-        vcb.setNumDebesol(new BigDecimal(0.00));
-        vcb.setNumHaberdolar(new BigDecimal(0.00));
-        vcb.setNumDebedolar(new BigDecimal(0.00));
-        vcb.setNumHabermo(new BigDecimal(0.00));
-        vcb.setNumDebemo(new BigDecimal(0.00));
-        view.getNumEgreso().setValue(new BigDecimal(0.00).toString());
-        view.getNumIngreso().setValue(new BigDecimal(0.00).toString());
-
-        vcb.setTxtGlosaitem("ANULADO - " + (vcb.getTxtGlosaitem().length()>60 ?
-                vcb.getTxtGlosaitem().substring(0,60) : vcb.getTxtGlosaitem()));
-        vcb.setFlg_Anula('1');
-        return vcb;
     }
 
     // Helpers

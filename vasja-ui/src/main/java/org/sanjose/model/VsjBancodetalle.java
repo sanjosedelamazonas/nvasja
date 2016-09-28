@@ -5,16 +5,14 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.hibernate.validator.constraints.NotBlank;
-import org.sanjose.authentication.CurrentUser;
 import org.sanjose.util.GenUtil;
 
-import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.USD;
@@ -29,153 +27,70 @@ import static org.sanjose.util.GenUtil.USD;
 @NamedQuery(name="VsjBancodetalle.findAll", query="SELECT v FROM VsjBancodetalle v")
 public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 	private static final long serialVersionUID = 1L;
-
-	@Override
-	public VsjBancodetalle prepareToSave() throws FieldGroup.CommitException {
-		VsjBancodetalle item = (VsjBancodetalle)super.prepareToSave();
-		Logger logger = LoggerFactory.getLogger(VsjBancodetalle.class);
-		if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
-			throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
-		/*
-		if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
-			item.setIndTipocuenta('0');
-		} else {
-			item.setIndTipocuenta('1');
-		}
-*/
-		logger.info("Preparing " + item);
-		if (PEN.equals(item.getCodTipomoneda())) {
-			if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
-				throw new FieldGroup.CommitException("Selected SOL but values are zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
-				throw new FieldGroup.CommitException("Selected SOL but values for Dolar are not zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
-				throw new FieldGroup.CommitException("Selected SOL but values for EUR are not zeros or nulls");
-			item.setNumHaberdolar(new BigDecimal(0.00));
-			item.setNumDebedolar(new BigDecimal(0.00));
-			item.setNumHabermo(new BigDecimal(0.00));
-			item.setNumDebemo(new BigDecimal(0.00));
-		} else if (USD.equals(item.getCodTipomoneda())) {
-			if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
-				throw new FieldGroup.CommitException("Selected USD but values are zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
-				throw new FieldGroup.CommitException("Selected USD but values for SOL are not zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
-				throw new FieldGroup.CommitException("Selected USD but values for EUR are not zeros or nulls");
-			item.setNumHabersol(new BigDecimal(0.00));
-			item.setNumDebesol(new BigDecimal(0.00));
-			item.setNumHabermo(new BigDecimal(0.00));
-			item.setNumDebemo(new BigDecimal(0.00));
-		} else {
-			if (GenUtil.isNullOrZero(item.getNumHabermo()) && GenUtil.isNullOrZero(item.getNumDebemo()))
-				throw new FieldGroup.CommitException("Selected EUR but values are zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
-				throw new FieldGroup.CommitException("Selected EUR but values for SOL are not zeros or nulls");
-			if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
-				throw new FieldGroup.CommitException("Selected EUR but values for Dolar are not zeros or nulls");
-			item.setNumHabersol(new BigDecimal(0.00));
-			item.setNumDebesol(new BigDecimal(0.00));
-			item.setNumHaberdolar(new BigDecimal(0.00));
-			item.setNumDebedolar(new BigDecimal(0.00));
-		}
-		return item;
-	}
-
 	@EmbeddedId
 	private VsjBancodetallePK id;
-
 	@Column(name="cod_contracta")
 	private String codContracta;
-
 	@Column(name="cod_contraparte")
 	private String codContraparte;
-
 	@Column(name="cod_ctacontable")
 	private String codCtacontable;
-
 	@Column(name="cod_ctaespecial")
 	private String codCtaespecial;
-
 	@Column(name="cod_ctaproyecto")
 	private String codCtaproyecto;
-
 	@Column(name="cod_destino")
 	private String codDestino;
-
 	@Column(name="cod_destinoitem")
 	private String codDestinoitem;
-
 	@Column(name="cod_financiera")
 	private String codFinanciera;
-
 	@Column(name="cod_formapago")
 	private String codFormapago;
-
 	@Column(name="cod_proyecto")
 	private String codProyecto;
-
 	@Column(name="cod_tercero")
 	private String codTercero;
-
 	@Column(name="cod_tipocomprobantepago")
 	private String codTipocomprobantepago;
-
 	@Column(name="cod_tipogasto")
 	private String codTipogasto;
-
 	@Column(name="cod_tipoingreso")
 	private String codTipoingreso;
-
 	@Column(name="fec_comprobantepago")
 	private Timestamp fecComprobantepago;
-
 	private Character flg_Anula;
-
 	@Column(name="flg_im")
 	private Character flgIm;
-
 	@Column(name="flg_saldo")
 	private Character flgSaldo;
-
 	@Column(name="num_saldodolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numSaldodolar = new BigDecimal(0);
-
 	@Column(name="num_saldomo", columnDefinition="decimal(12,2)")
 	private BigDecimal numSaldomo = new BigDecimal(0);
-
 	@Column(name="num_saldosol", columnDefinition="decimal(12,2)")
 	private BigDecimal numSaldosol = new BigDecimal(0);
-
 	@Column(name="num_tcmo")
 	private double numTcmo;
-
 	@Column(name="num_tcvdolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numTcvdolar = new BigDecimal(0);
-
 	@Column(name="txt_cheque")
 	private String txtCheque;
-
 	@Column(name="txt_comprobantepago")
 	private String txtComprobantepago;
-
 	@Column(name="txt_correlativo")
 	private String txtCorrelativo;
-
 	@Column(name="txt_detallepago")
 	private String txtDetallepago;
-
 	@NotBlank
 	@Size(min=2, max=70)
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
-
 	@Column(name="txt_seriecomprobantepago")
 	private String txtSeriecomprobantepago;
-
 	@NotNull
 	@Column(name="cod_tipomov")
 	private Integer codTipomov;
-
 	//bi-directional many-to-one association to VsjBancocabecera
 	@ManyToOne
 	@JoinColumn(name="cod_bancocabecera", insertable=false, updatable=false)
@@ -192,7 +107,64 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 		setNumSaldodolar(new BigDecimal(0));
 		setNumSaldosol(new BigDecimal(0));
 		setNumSaldomo(new BigDecimal(0));
-	}
+    }
+
+    @Override
+    public VsjBancodetalle prepareToSave() throws FieldGroup.CommitException {
+        VsjBancodetalle item = (VsjBancodetalle) super.prepareToSave();
+        Logger logger = LoggerFactory.getLogger(VsjBancodetalle.class);
+        if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
+            throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
+
+        logger.info("Preparing " + item);
+        if (!item.isAnula()) {
+            if (PEN.equals(item.getCodTipomoneda())) {
+                if (GenUtil.isNullOrZero(item.getNumHabersol()) && GenUtil.isNullOrZero(item.getNumDebesol()))
+                    throw new FieldGroup.CommitException("Selected SOL but values are zeros or nulls");
+                if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
+                    throw new FieldGroup.CommitException("Selected SOL but values for Dolar are not zeros or nulls");
+                if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
+                    throw new FieldGroup.CommitException("Selected SOL but values for EUR are not zeros or nulls");
+                item.setNumHaberdolar(new BigDecimal(0.00));
+                item.setNumDebedolar(new BigDecimal(0.00));
+                item.setNumHabermo(new BigDecimal(0.00));
+                item.setNumDebemo(new BigDecimal(0.00));
+            } else if (USD.equals(item.getCodTipomoneda())) {
+                if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
+                    throw new FieldGroup.CommitException("Selected USD but values are zeros or nulls");
+                if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
+                    throw new FieldGroup.CommitException("Selected USD but values for SOL are not zeros or nulls");
+                if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
+                    throw new FieldGroup.CommitException("Selected USD but values for EUR are not zeros or nulls");
+                item.setNumHabersol(new BigDecimal(0.00));
+                item.setNumDebesol(new BigDecimal(0.00));
+                item.setNumHabermo(new BigDecimal(0.00));
+                item.setNumDebemo(new BigDecimal(0.00));
+            } else {
+                if (GenUtil.isNullOrZero(item.getNumHabermo()) && GenUtil.isNullOrZero(item.getNumDebemo()))
+                    throw new FieldGroup.CommitException("Selected EUR but values are zeros or nulls");
+                if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
+                    throw new FieldGroup.CommitException("Selected EUR but values for SOL are not zeros or nulls");
+                if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
+                    throw new FieldGroup.CommitException("Selected EUR but values for Dolar are not zeros or nulls");
+                item.setNumHabersol(new BigDecimal(0.00));
+                item.setNumDebesol(new BigDecimal(0.00));
+                item.setNumHaberdolar(new BigDecimal(0.00));
+                item.setNumDebedolar(new BigDecimal(0.00));
+            }
+        } else {
+            item.setTxtGlosaitem("ANULADO - " + (item.getTxtGlosaitem().length() > 60 ?
+                    item.getTxtGlosaitem().substring(0, 60) : item.getTxtGlosaitem()));
+            // Verify moneda and fields
+            item.setNumHabersol(new BigDecimal(0.00));
+            item.setNumDebesol(new BigDecimal(0.00));
+            item.setNumHaberdolar(new BigDecimal(0.00));
+            item.setNumDebedolar(new BigDecimal(0.00));
+            item.setNumHabermo(new BigDecimal(0.00));
+            item.setNumDebemo(new BigDecimal(0.00));
+        }
+        return item;
+    }
 
 	public VsjBancodetallePK getId() {
 		return id;

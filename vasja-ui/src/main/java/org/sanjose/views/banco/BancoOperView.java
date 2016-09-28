@@ -10,7 +10,6 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
-import org.sanjose.MainUI;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.repo.*;
 import org.sanjose.util.GenUtil;
@@ -139,7 +138,7 @@ public class BancoOperView extends BancoOperUI implements View {
         ViewUtil.colorizeRows(gridBanco, VsjBancodetalle.class);
 
         gridBanco.setSelectionMode(Grid.SelectionMode.SINGLE);
-        setTotal();
+        setTotal(null);
 
     }
 
@@ -156,6 +155,16 @@ public class BancoOperView extends BancoOperUI implements View {
         btnDestino.setEnabled(enabled);
     }
 
+    public void resetDetalleFields() {
+        for (Field f : allFields) {
+            //if (f!=selMoneda || !enabled)
+            f.removeAllValidators();
+            f.setValue(null);
+        }
+        viewLogic.addValidators();
+    }
+
+
     public void setEnableCabezeraFields(boolean enabled) {
         for (Field f : cabezeraFields) {
             f.setEnabled(enabled);
@@ -166,13 +175,13 @@ public class BancoOperView extends BancoOperUI implements View {
         return container;
     }
 
-    private BigDecimal calcTotal() {
+    private BigDecimal calcTotal(Character locMoneda) {
         BigDecimal total = new BigDecimal(0.00);
         for (VsjBancodetalle cajabanco : container.getItemIds()) {
-            if (viewLogic.moneda.equals(PEN)) {
+            log.info("calcTotal: " + cajabanco);
+            if (locMoneda.equals(PEN)) {
                 total = total.add(cajabanco.getNumDebesol()).subtract(cajabanco.getNumHabersol());
-            }
-            else if (viewLogic.moneda.equals(USD))
+            } else if (locMoneda.equals(USD))
                 total = total.add(cajabanco.getNumDebedolar()).subtract(cajabanco.getNumHaberdolar());
             else
                 total = total.add(cajabanco.getNumDebemo()).subtract(cajabanco.getNumHabermo());
@@ -180,18 +189,24 @@ public class BancoOperView extends BancoOperUI implements View {
         return total;
     }
 
-    public void setTotal() {
-        if (viewLogic.moneda==null) return;
-        if (viewLogic.moneda.equals(PEN))
+    public void setTotal(Character locMoneda) {
+        if (locMoneda == null) {
+            //viewLogic.item.getCodTipomoneda()
+            log.info("in setSaldo - moneda = NULL");
+            saldoTotal.setValue("Total:" +
+                    "<span class=\"order-sum\"> S./ 0.00</span>");
+            return;
+        }
+        if (locMoneda.equals(PEN))
             order_summary_layout.removeStyleName("order-summary-layout-usd");
-        else if (viewLogic.moneda.equals(USD))
+        else if (locMoneda.equals(USD))
             order_summary_layout.addStyleName("order-summary-layout-usd");
         else
             order_summary_layout.addStyleName("order-summary-layout-usd");
 
         saldoTotal.setContentMode(ContentMode.HTML);
         saldoTotal.setValue("Total:" +
-                "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(viewLogic.moneda)) + calcTotal().toString() + "</span>");
+                "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)) + calcTotal(locMoneda).toString() + "</span>");
     }
 
 

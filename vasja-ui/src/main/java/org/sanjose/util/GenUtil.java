@@ -2,6 +2,7 @@ package org.sanjose.util;
 
 //import org.vaadin.ui.NumberField;
 
+import com.vaadin.ui.Notification;
 import org.sanjose.model.VsjCajabanco;
 
 import java.math.BigDecimal;
@@ -136,8 +137,11 @@ public class GenUtil {
                 return 'N';
             case '1' :
                 return 'D';
-            default:
+            case '2':
                 return 'E';
+            default:
+                Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
+                return 'U';
         }
     }
 
@@ -147,8 +151,11 @@ public class GenUtil {
                 return '0';
             case 'D' :
                 return '1';
-            default:
+            case 'E':
                 return '2';
+            default:
+                Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
+                return '9';
         }
     }
 
@@ -160,4 +167,13 @@ public class GenUtil {
         }
         return symMoneda.get(litMoneda);
     }
+
+    public static boolean verifyLitMoneda(Character moneda) {
+        return !getNumMoneda(moneda).equals('9');
+    }
+
+    public static boolean verifyNumMoneda(Character moneda) {
+        return !getLitMoneda(moneda).equals('U');
+    }
+
 }
