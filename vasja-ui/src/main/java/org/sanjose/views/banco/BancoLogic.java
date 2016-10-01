@@ -16,15 +16,14 @@ import org.sanjose.MainUI;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.util.GenUtil;
-import org.sanjose.util.ViewUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-
-import static org.sanjose.util.GenUtil.PEN;
-import static org.sanjose.util.GenUtil.USD;
 
 /**
  * VASJA class
@@ -76,6 +75,19 @@ public class BancoLogic extends BancoItemLogic {
     private void resetCheque() {
         log.info("new cheque");
         view.getContainer().removeAllItems();
+        if (fieldGroupCabezera != null) {
+            Collection<Field<?>> cabeceraFields = fieldGroupCabezera.getFields();
+            List<Field> cabeceraList = new ArrayList<>(cabeceraFields);
+            for (Field f : cabeceraList) {
+                fieldGroupCabezera.unbind(f);
+            }
+        }
+        if (fieldGroup != null) {
+            Collection<Field<?>> detalleFields = fieldGroup.getFields();
+            for (Field f : new ArrayList<>(detalleFields)) {
+                fieldGroup.unbind(f);
+            }
+        }
         moneda = null;
         view.setTotal(null);
         item = null;
@@ -246,16 +258,6 @@ public class BancoLogic extends BancoItemLogic {
             log.info("Moneda set in saveCabecera: " + moneda);
             if (isNew) {
                 view.getContainer().addBean(bancoItem);
-                if (PEN.equals(moneda))
-                    ViewUtil.setColumnNames(view.gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_PEN,
-                        BancoOperView.VISIBLE_COLUMN_IDS_PEN, BancoOperView.NONEDITABLE_COLUMN_IDS);
-                else if (USD.equals(moneda))
-                    ViewUtil.setColumnNames(view.gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_USD,
-                            BancoOperView.VISIBLE_COLUMN_IDS_USD, BancoOperView.NONEDITABLE_COLUMN_IDS);
-                else
-                    ViewUtil.setColumnNames(view.gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_EUR,
-                            BancoOperView.VISIBLE_COLUMN_IDS_EUR, BancoOperView.NONEDITABLE_COLUMN_IDS);
-                view.getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
             } else {
                 VsjBancodetalle vcbOld = null;
                 for (VsjBancodetalle vcb : view.getContainer().getItemIds()) {
@@ -271,6 +273,11 @@ public class BancoLogic extends BancoItemLogic {
             view.setTotal(moneda);
             view.getGuardarBtn().setEnabled(false);
             view.getNewItemBtn().setEnabled(true);
+        } catch (Validator.InvalidValueException e) {
+            Notification.show("Error al guardar: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            view.setEnableCabezeraFields(true);
+            view.setEnableDetalleFields(true);
+
         } catch (FieldGroup.CommitException ce) {
             StringBuilder sb = new StringBuilder();
             Map<Field<?>, Validator.InvalidValueException> fieldMap = ce.getInvalidFields();

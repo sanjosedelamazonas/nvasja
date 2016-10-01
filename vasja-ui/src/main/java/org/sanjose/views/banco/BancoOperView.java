@@ -147,6 +147,7 @@ public class BancoOperView extends BancoOperUI implements View {
     }
 
     public void setEnableDetalleFields(boolean enabled) {
+        log.info("enabling detalle fields");
         for (Field f : allFields) {
             //if (f!=selMoneda || !enabled)
             f.setEnabled(enabled);
@@ -197,12 +198,24 @@ public class BancoOperView extends BancoOperUI implements View {
                     "<span class=\"order-sum\"> S./ 0.00</span>");
             return;
         }
-        if (locMoneda.equals(PEN))
+        if (locMoneda.equals(PEN)) {
             order_summary_layout.removeStyleName("order-summary-layout-usd");
-        else if (locMoneda.equals(USD))
+            order_summary_layout.removeStyleName("order-summary-layout-eur");
+            ViewUtil.setColumnNames(gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_PEN,
+                    BancoOperView.VISIBLE_COLUMN_IDS_PEN, BancoOperView.NONEDITABLE_COLUMN_IDS);
+        } else if (locMoneda.equals(USD)) {
+            order_summary_layout.removeStyleName("order-summary-layout-eur");
             order_summary_layout.addStyleName("order-summary-layout-usd");
-        else
-            order_summary_layout.addStyleName("order-summary-layout-usd");
+            ViewUtil.setColumnNames(gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_USD,
+                    BancoOperView.VISIBLE_COLUMN_IDS_USD, BancoOperView.NONEDITABLE_COLUMN_IDS);
+        } else {
+            order_summary_layout.removeStyleName("order-summary-layout-usd");
+            order_summary_layout.addStyleName("order-summary-layout-eur");
+            ViewUtil.setColumnNames(gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_EUR,
+                    BancoOperView.VISIBLE_COLUMN_IDS_EUR, BancoOperView.NONEDITABLE_COLUMN_IDS);
+        }
+        ViewUtil.alignMontosInGrid(gridBanco);
+        getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
 
         saldoTotal.setContentMode(ContentMode.HTML);
         saldoTotal.setValue("Total:" +
