@@ -1,5 +1,5 @@
 Destino:
--> clasificacion 'Tercero' no disponible
+-> clasificacion 'Tercero' no disponible - ma być czy nie?
 -> sprawdzenie czy istnieje juz taki przy zapisywaniu
 -> codigo jak nie wpisany to generuje
 

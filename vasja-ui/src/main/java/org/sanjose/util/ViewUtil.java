@@ -112,11 +112,19 @@ public class ViewUtil {
         if (grid.getColumn("numDebesol")!=null)
             grid.getColumn("numDebesol").setRenderer(new EmptyZeroNumberRendrer(
                 "%02.2f", ConfigurationUtil.getLocale()));
+        if (grid.getColumn("numHabermo") != null)
+            grid.getColumn("numHabermo").setRenderer(new EmptyZeroNumberRendrer(
+                    "%02.2f", ConfigurationUtil.getLocale()));
+        if (grid.getColumn("numDebemo") != null)
+            grid.getColumn("numDebemo").setRenderer(new EmptyZeroNumberRendrer(
+                    "%02.2f", ConfigurationUtil.getLocale()));
 
         grid.setCellStyleGenerator(( Grid.CellReference cellReference ) -> {
             if ( "numHabersol".equals( cellReference.getPropertyId() ) ||
                     "numHaberdolar".equals( cellReference.getPropertyId() ) ||
                     "numDebedolar".equals( cellReference.getPropertyId() ) ||
+                    "numDebemo".equals(cellReference.getPropertyId()) ||
+                    "numHabermo".equals(cellReference.getPropertyId()) ||
                     "numDebesol".equals( cellReference.getPropertyId() )) {
                 return "v-align-right";
             } else {

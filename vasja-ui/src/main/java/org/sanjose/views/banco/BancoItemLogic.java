@@ -54,16 +54,11 @@ class BancoItemLogic implements Serializable {
     protected INavigatorView navigatorView;
     protected Character moneda;
     protected VsjBancocabecera bancocabecera;
+    protected FieldGroup fieldGroup;
     BancoOperView view;
     private VsjBancodetalle savedBancodetalle;
     private BeanItem<VsjBancodetalle> beanItem;
-    private FieldGroup fieldGroup;
     private ProcUtil procUtil;
-
-    //@Autowired
-    public BancoItemLogic() {
-
-    }
 
     public void init(BancoOperView view) {
         this.view = view;
@@ -86,7 +81,6 @@ class BancoItemLogic implements Serializable {
         view.getDataFechaComprobante().addValueChangeListener(event -> {
             setCuentaLogic();
             setSaldos();
-            //view.setSaldoDeCajas();
         });
 
         //--------- CABEZA
@@ -327,8 +321,8 @@ class BancoItemLogic implements Serializable {
             String s = GenUtil.getSymMoneda(cuenta.getIndTipomoneda());
             view.getSaldoCuenta().setCaption(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
             log.info("In setCuentaLogic: " + saldo + " cap: " + s + " " + cuenta.getIndTipomoneda());
-            view.getSaldoCuenta().setValue(df.format(saldo));
             view.getSaldoCuenta().setNullRepresentation("0.00");
+            view.getSaldoCuenta().setValue(df.format(saldo));
             log.info("In setCuentaLogic: " + df.format(saldo));
             moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
             // If still no item created
