@@ -8,15 +8,9 @@ import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.model.VsjCajabanco;
-import org.sanjose.repo.VsjCajabancoRep;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.sanjose.util.GenUtil.PEN;
@@ -26,21 +20,12 @@ import static org.sanjose.util.GenUtil.PEN;
  * User: prubach
  * Date: 20.09.16
  */
-// @UIScope
-@Service
-@Transactional
 public class TransferenciaLogic extends ComprobanteLogic {
 
     private static final Logger log = LoggerFactory.getLogger(TransferenciaLogic.class);
-    VsjCajabancoRep cajabancoRep;
     private TransferenciaView tView;
     private Character moneda;
     private boolean isEdited = false;
-
-    @Autowired
-    public TransferenciaLogic(VsjCajabancoRep cajabancoRep) {
-        this.cajabancoRep = cajabancoRep;
-    }
 
     @Override
     public void init(IComprobanteView  comprobanteView) {
@@ -63,47 +48,6 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 .open();
         else
             resetTrans();
-    }
-
-    @Transactional(readOnly = false)
-    public List<VsjCajabanco> saveVsjCajabancos(List<VsjCajabanco> cajabancos) {
-        assert TransactionSynchronizationManager.isActualTransactionActive();
-        List<VsjCajabanco> savedOperaciones = new ArrayList<>();
-
-        String transCorrelativo = null;
-        // Find at least one operation with transCorrelativo set
-        for (VsjCajabanco oper : cajabancos) {
-            if (!GenUtil.strNullOrEmpty(oper.getCodTranscorrelativo())) {
-                transCorrelativo = oper.getCodTranscorrelativo();
-                break;
-            }
-        }
-        if (transCorrelativo==null) transCorrelativo = GenUtil.getUuid();
-        for (VsjCajabanco oper : cajabancos) {
-            if (GenUtil.strNullOrEmpty(oper.getCodTranscorrelativo()))
-                oper.setCodTranscorrelativo(transCorrelativo);
-        }
-        for (VsjCajabanco oper : cajabancoRep.save(cajabancos)) {
-            // Tested saving each element using entityManager directly but then an Exception is raised:
-            // javax.persistence.TransactionRequiredException: No EntityManager with actual transaction available for
-            // current thread - cannot reliably process 'merge' call
-            //
-//            VsjCajabanco savedCajabanco = em.merge(oper);
-            if (GenUtil.strNullOrEmpty(oper.getTxtCorrelativo())) {
-                oper.setTxtCorrelativo(GenUtil.getTxtCorrelativo(oper.getCodCajabanco()));
-                // TEST transactionality - causes org.springframework.dao.DataIntegrityViolationException
-                // because codMes is NOT NULL in the database
-                if (oper.getTxtGlosaitem().equals("abc")) {
-                    throw new RuntimeException("Test transactions");
-                }
-                //oper.setCodMes(null);
-                oper = cajabancoRep.save(oper);
-                log.info("Saved cajabanco from transferencia: " + oper);
-//                oper = em.merge(oper);
-            }
-            savedOperaciones.add(oper);
-        }
-        return savedOperaciones;
     }
 
     private void resetTrans() {
@@ -166,7 +110,10 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 .withCaption("Quitar la transferencia")
                 .withMessage("?Esta seguro que quiere eliminar todos operaciones de esta transferencia \n" +
                         "y regresar al Manejo de Caja?\n")
-                .withYesButton(() -> MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName()))
+                    .withYesButton(() -> {
+                        if (navigatorView == null) navigatorView = MainUI.get().getCajaManejoView();
+                        MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
+                    })
                 .withNoButton()
                 .open();
         else
@@ -220,7 +167,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     }
 
     private void executeSaveTransferencia() {
-        List<VsjCajabanco> savedOperaciones = saveVsjCajabancos(tView.getContainer().getItemIds());
+        List<VsjCajabanco> savedOperaciones = view.getService().saveVsjCajabancos(tView.getContainer().getItemIds());
 
         tView.getContainer().removeAllItems();
         tView.getContainer().addAll(savedOperaciones);
@@ -245,7 +192,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
             ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_USD,
                     TransferenciaView.VISIBLE_COLUMN_IDS_USD, TransferenciaView.NONEDITABLE_COLUMN_IDS);
 
-        List<VsjCajabanco> operaciones = tView.getRepo().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());
+        List<VsjCajabanco> operaciones = tView.getService().getCajabancoRep().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());
 
         for (VsjCajabanco oper : operaciones) {
             if (oper.isEnviado())

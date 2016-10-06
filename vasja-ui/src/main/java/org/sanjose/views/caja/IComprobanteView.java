@@ -1,10 +1,7 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.ui.*;
-import org.sanjose.repo.*;
 import tm.kod.widgets.numberfield.NumberField;
-
-import javax.persistence.EntityManager;
 
 /**
  * VASJA
@@ -91,34 +88,5 @@ interface IComprobanteView {
 
     // Repos
 
-
-    VsjCajabancoRep getRepo();
-
-    ScpPlanproyectoRep getPlanproyectoRepo();
-
-    ScpFinancieraRep getFinancieraRepo();
-
-    Scp_ProyectoPorFinancieraRep getProyectoPorFinancieraRepo();
-
-    VsjConfiguractacajabancoRep getConfiguractacajabancoRepo();
-
-    VsjConfiguracioncajaRep getConfiguracioncajaRepo();
-
-    ScpProyectoRep getProyectoRepo();
-
-    ScpDestinoRep getDestinoRepo();
-
-    ScpPlanespecialRep getPlanespecialRep();
-
-    ScpCargocuartaRep getCargocuartaRepo();
-
-    ScpTipodocumentoRep getTipodocumentoRepo();
-
-    ScpPlancontableRep getPlanRepo();
-
-    Scp_ContraparteRep getContraparteRepo();
-
-    ScpComprobantepagoRep getComprobantepagoRepo();
-
-    EntityManager getEm();
+    ComprobanteService getService();
 }

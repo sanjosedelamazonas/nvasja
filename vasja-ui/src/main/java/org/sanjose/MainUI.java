@@ -54,11 +54,11 @@ public class MainUI extends UI {
     private MainScreen mainScreen;
 
     @Autowired
-    private MainUI(PropiedadService propiedadService, MsgUsuarioRep msgUsuarioRep,
+    private MainUI(PropiedadService propiedadService, ComprobanteService comprobanteService, MsgUsuarioRep msgUsuarioRep,
                    EntityManager em,
                    CajaGridView cajaGridView,
                    ConfiguracionCajaView configuracionCajaView, ConfiguracionCtaCajaBancoView confView,
-                   ComprobanteView comprobanteView, TransferenciaView transferenciaView, BancoOperView bancoOperView,
+                   BancoOperView bancoOperView,
                    CajaManejoView cajaManejoView
     ) {
         this.propiedadView = new PropiedadView(propiedadService);
@@ -66,8 +66,8 @@ public class MainUI extends UI {
         this.em = em;
         this.confView = confView;
         this.cajaGridView = cajaGridView;
-        this.comprobanteView = comprobanteView;
-        this.transferenciaView = transferenciaView;
+        this.comprobanteView = new ComprobanteView(comprobanteService);
+        this.transferenciaView = new TransferenciaView(comprobanteService);
         this.configuracionCajaView = configuracionCajaView;
         this.cajaManejoView = cajaManejoView;
         this.bancoOperView = bancoOperView;

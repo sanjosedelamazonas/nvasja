@@ -23,7 +23,6 @@ import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.INavigatorView;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -69,7 +68,7 @@ class ComprobanteLogic implements Serializable {
         });
         view.getModificarBtn().addClickListener(event -> editarComprobante());
         view.getEliminarBtn().addClickListener(event -> eliminarComprobante());
-        procUtil = new ProcUtil(view.getEm());
+        procUtil = new ProcUtil(view.getService().getEm());
     }
 
 
@@ -93,12 +92,12 @@ class ComprobanteLogic implements Serializable {
         view.getFechaDoc().setResolution(Resolution.DAY);
 
         // Proyecto
-        DataFilterUtil.bindComboBox(view.getSelProyecto(), "codProyecto", view.getProyectoRepo().findByFecFinalGreaterThan(new Date()),
+        DataFilterUtil.bindComboBox(view.getSelProyecto(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThan(new Date()),
                 "Sel Proyecto", "txtDescproyecto");
         view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
 
         // Tercero
-        DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
+        DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
                 "txtNombredestino");
         view.getSelTercero().addValueChangeListener(this::setTerceroLogic);
 
@@ -124,7 +123,7 @@ class ComprobanteLogic implements Serializable {
         );
 
         // Responsable
-        DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
+        DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
                 "Responsable", "txtNombredestino");
 
         view.getSelResponsable().addValueChangeListener(valueChangeEvent ->  {
@@ -133,46 +132,46 @@ class ComprobanteLogic implements Serializable {
         });
 
         // Lugar de gasto
-        DataFilterUtil.bindComboBox(view.getSelLugarGasto(), "codContraparte", view.getContraparteRepo().findAll(),
+        DataFilterUtil.bindComboBox(view.getSelLugarGasto(), "codContraparte", view.getService().getContraparteRepo().findAll(),
                 "Sel Lugar de Gasto", "txtDescContraparte");
 
         // Cod. Auxiliar
-        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
+        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
                 "Auxiliar", "txtNombredestino");
 
         // Tipo doc
-        DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getComprobantepagoRepo().findAll(),
+        DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getService().getComprobantepagoRepo().findAll(),
                 "Sel Tipo", "txtDescripcion");
 
 
         // Cta Contable
         DataFilterUtil.bindComboBox(view.getSelCtaContable(), "id.codCtacontable",
-                view.getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
+                view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
                         '0', 'N', GenUtil.getCurYear(), "101%", "102%", "104%", "106%"),
                 //getPlanRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""),
                 "Sel cta contable", "txtDescctacontable");
 
         // Rubro inst
         DataFilterUtil.bindComboBox(view.getSelRubroInst(), "id.codCtaespecial",
-                view.getPlanespecialRep().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
+                view.getService().getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
                 "Sel cta especial", "txtDescctaespecial");
 
         // Rubro Proy
         DataFilterUtil.bindComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
-                view.getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
+                view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel Rubro proy", "txtDescctaproyecto");
         // Fuente
-        DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", view.getFinancieraRepo().findAll(),
+        DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", view.getService().getFinancieraRepo().findAll(),
                 "Sel Fuente", "txtDescfinanciera");
 
-        DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta", view.getConfiguractacajabancoRepo().findByActivoAndParaCaja(true, true),
+        DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta", view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCaja(true, true),
                 "Sel Tipo de Movimiento", "txtTipocuenta");
         //getSelTipoMov().setEnabled(false);
         view.getSelTipoMov().addValueChangeListener(event -> {
             log.info("selTipoMov: " + event.getProperty().getValue());
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
-                VsjConfiguractacajabanco config = view.getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
+                VsjConfiguractacajabanco config = view.getService().getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
                 if (config!=null) {
                     view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
                     view.getSelRubroInst().setValue(config.getCodCtaespecial());
@@ -216,11 +215,11 @@ class ComprobanteLogic implements Serializable {
         destinoWindow.setModal(true);
         destinoWindow.setClosable(false);
 
-        DestinoView destinoView = new DestinoView(view.getDestinoRepo(), view.getCargocuartaRepo(), view.getTipodocumentoRepo());
+        DestinoView destinoView = new DestinoView(view.getService().getDestinoRepo(), view.getService().getCargocuartaRepo(), view.getService().getTipodocumentoRepo());
         if (comboBox.getValue()==null)
             destinoView.viewLogic.nuevoDestino();
         else {
-            ScpDestino destino = view.getDestinoRepo().findByCodDestino(comboBox.getValue().toString());
+            ScpDestino destino = view.getService().getDestinoRepo().findByCodDestino(comboBox.getValue().toString());
             if (destino!=null)
                 destinoView.viewLogic.editarDestino(destino);
         }
@@ -251,7 +250,7 @@ class ComprobanteLogic implements Serializable {
                         .withYesButton(() -> {
                             log.debug("To delete: " + item);
 
-                            List<VsjCajabanco> comprobantes = view.getRepo().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
+                            List<VsjCajabanco> comprobantes = view.getService().getCajabancoRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
                             if (comprobantes.isEmpty()) {
                                 destinoView.destinoRepo.delete(item);
                                 refreshDestino();
@@ -281,9 +280,9 @@ class ComprobanteLogic implements Serializable {
 
 
     private void refreshDestino() {
-        DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
+        DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
-        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getDestinoRepo().findByIndTipodestinoNot('3'),
+        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
     }
 
@@ -299,14 +298,14 @@ class ComprobanteLogic implements Serializable {
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
-                DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getPlanRepo(), true), "Sel Caja", "txtDescctacontable");
+                DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), true), "Sel Caja", "txtDescctacontable");
                 setCajaLogic(PEN);
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
             } else {
                 // Dolares
                 // Cta Caja
-                DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getPlanRepo(), false), "Sel Caja", "txtDescctacontable");
+                DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), false), "Sel Caja", "txtDescctacontable");
                 setCajaLogic(USD);
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
@@ -365,15 +364,15 @@ class ComprobanteLogic implements Serializable {
     private void setCajaLogic(Character tipomoneda) {
 
         if (isProyecto()) {
-            List<VsjConfiguracioncaja> configs = view.getConfiguracioncajaRepo().findByCodProyectoAndIndTipomoneda(
+            List<VsjConfiguracioncaja> configs = view.getService().getConfiguracioncajaRepo().findByCodProyectoAndIndTipomoneda(
                     view.getSelProyecto().getValue().toString(), tipomoneda);
             if (!configs.isEmpty()) {
                 VsjConfiguracioncaja config = configs.get(0);
                 view.getSelCaja().setValue(config.getCodCtacontable());
             } else {
-                String catProy = view.getProyectoRepo().findByCodProyecto(view.getSelProyecto().getValue().toString())
+                String catProy = view.getService().getProyectoRepo().findByCodProyecto(view.getSelProyecto().getValue().toString())
                         .getCodCategoriaproyecto();
-                configs = view.getConfiguracioncajaRepo().findByCodCategoriaproyectoAndIndTipomoneda(
+                configs = view.getService().getConfiguracioncajaRepo().findByCodCategoriaproyectoAndIndTipomoneda(
                         catProy, tipomoneda);
                 if (!configs.isEmpty()) {
                     VsjConfiguracioncaja config = configs.get(0);
@@ -381,7 +380,7 @@ class ComprobanteLogic implements Serializable {
                 }
             }
         } else if (isTercero()) {
-            List<VsjConfiguracioncaja> configs = view.getConfiguracioncajaRepo().findByCodDestinoAndIndTipomoneda(
+            List<VsjConfiguracioncaja> configs = view.getService().getConfiguracioncajaRepo().findByCodDestinoAndIndTipomoneda(
                     view.getSelTercero().getValue().toString(), tipomoneda);
             if (!configs.isEmpty()) {
                 VsjConfiguracioncaja config = configs.get(0);
@@ -414,7 +413,7 @@ class ComprobanteLogic implements Serializable {
                 view.getNumEgreso().setEnabled(false);
             }
             DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta",
-                    view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaTercero(true, true, true),
+                    view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaTercero(true, true, true),
                     "txtTipocuenta");
             view.getSelFuente().setValue("");
             view.getSelFuente().setEnabled(false);
@@ -438,14 +437,14 @@ class ComprobanteLogic implements Serializable {
                 view.getNumEgreso().setEnabled(false);
             }
             DataFilterUtil.bindComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
-                    view.getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
+                    view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
                             "N", GenUtil.getCurYear(), codProyecto),
                     "Sel Rubro proy", "txtDescctaproyecto");
             List<Scp_ProyectoPorFinanciera>
-                    proyectoPorFinancieraList = view.getProyectoPorFinancieraRepo().findById_CodProyecto(codProyecto);
+                    proyectoPorFinancieraList = view.getService().getProyectoPorFinancieraRepo().findById_CodProyecto(codProyecto);
 
             // Filter financiera if exists in Proyecto Por Financiera
-            List<ScpFinanciera> financieraList = view.getFinancieraRepo().findAll();
+            List<ScpFinanciera> financieraList = view.getService().getFinancieraRepo().findAll();
             List<ScpFinanciera> financieraEfectList = new ArrayList<>();
             if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
                 List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
@@ -459,7 +458,7 @@ class ComprobanteLogic implements Serializable {
 
                 // Sel Tipo Movimiento
                 DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta",
-                        view.getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true),
+                        view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true),
                         "txtTipocuenta");
                 // Reset those fields
                 if (!isEdit) {
@@ -569,16 +568,12 @@ class ComprobanteLogic implements Serializable {
         MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
 
-    @Transactional
     void saveComprobante() {
         try {
             VsjCajabanco item = prepareToSave();
-            savedCajabanco = view.getRepo().save(item);
 
-            if (GenUtil.strNullOrEmpty(savedCajabanco.getTxtCorrelativo())) {
-                savedCajabanco.setTxtCorrelativo(GenUtil.getTxtCorrelativo(savedCajabanco.getCodCajabanco()));
-                savedCajabanco = view.getRepo().save(savedCajabanco);
-            }
+            savedCajabanco = view.getService().save(item);
+
             view.getNumVoucher().setValue(savedCajabanco.getTxtCorrelativo());
             view.getGuardarBtn().setEnabled(false);
             view.getModificarBtn().setEnabled(true);
@@ -681,7 +676,7 @@ class ComprobanteLogic implements Serializable {
 
             view.getGlosa().setValue(item.getTxtGlosaitem());
             log.info("Ready to ANULAR: " + item);
-            savedCajabanco = view.getRepo().save(item);
+            savedCajabanco = view.getService().getCajabancoRep().save(item);
             view.getNumVoucher().setValue(Integer.toString(savedCajabanco.getCodCajabanco()));
             savedCajabanco = null;
             view.getGuardarBtn().setEnabled(false);

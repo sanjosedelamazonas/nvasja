@@ -1,13 +1,5 @@
 package org.sanjose.helper;
 
-import java.io.*;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Sizeable;
@@ -15,21 +7,10 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.*;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperRunManager;
-import net.sf.jasperreports.engine.export.JRHtmlExporter;
-import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
-import net.sf.jasperreports.engine.export.JRTextExporter;
-import net.sf.jasperreports.engine.export.JRTextExporterParameter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.export.*;
 import net.sf.jasperreports.engine.type.WhenNoDataTypeEnum;
 import net.sf.jasperreports.engine.util.JRLoader;
-
 import org.hibernate.Session;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
@@ -45,36 +26,33 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 @SpringComponent
 @EnableTransactionManagement
 public class ReportHelper {
 
-    @PersistenceContext
-    private EntityManager em;
-
-    private Connection sqlConnection = null;
-
 	private static final Logger logger = LoggerFactory.getLogger(ReportHelper.class.getName());
-
-    private static ReportHelper instance;
+	private static ReportHelper instance;
+	@PersistenceContext
+    private EntityManager em;
+    private Connection sqlConnection = null;
 
     private ReportHelper() {
           instance = this;
     }
-
-    @Autowired
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
-    }
-
 
     public static ReportHelper get() {
         if (instance==null)
             instance = new ReportHelper();
         return instance;
     }
-
 
 	@SuppressWarnings({"serial", "unchecked"})
 	public static void generateComprobante(final VsjCajabanco op) {
@@ -155,8 +133,6 @@ public class ReportHelper {
 
 	}
 
-
-
 	@SuppressWarnings({ "serial", "unchecked" })
 	public static JasperPrint printComprobante(final VsjCajabanco op) {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
@@ -182,7 +158,6 @@ public class ReportHelper {
 			return null;
 	}
 
-
 	public static void generateDiarioCaja(Date fechaMin, Date fechaMax, String format) {
 		if (fechaMax==null) fechaMax = fechaMin;
 		generateDiario("ReporteCajaDiario",
@@ -197,7 +172,7 @@ public class ReportHelper {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
 		HashMap paramMap = new HashMap();
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
-		List<Caja> cajas = DataUtil.getCajasList(MainUI.get().getComprobanteView().getPlanRepo(), fechaMin, fechaMax);
+		List<Caja> cajas = DataUtil.getCajasList(MainUI.get().getComprobanteView().getService().getPlanRepo(), fechaMin, fechaMax);
 		paramMap.put("SALDOS_INICIAL", cajas);
 		logger.info("sendin to diario INICIAL: " + cajas);
 		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
@@ -213,6 +188,38 @@ public class ReportHelper {
 		paramMap.put("REPORTE_REVISADOR_POR", revisado);
 		//logger.info("ParamMap: " + paramMap.toString());
 		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
+	}
+
+	public static void generateLugarGasto(final Date fechaMin, final Date fechaMax,
+										  Window window, String format, String type) {
+
+		String reportName = "ReporteLugarYFuenteDeFinancDetallado";
+
+		switch (type) {
+			case "Detallado":
+				reportName = "ReporteLugarYFuenteDeFinancDetallado";
+				break;
+			case "Sin lugar":
+				reportName = "ReporteLugarYFuenteDeFinancNoTienen";
+				break;
+			case "Informe":
+				reportName = "ReporteLugarYFuenteDeFinancInforme";
+				break;
+			case "DetalladoCuentaContable":
+				reportName = "ReporteDetalladoCuentaContable";
+				break;
+			case "Detallado por rubro institucional":
+				reportName = "ReporteDetalladoRubroInstitucional";
+				break;
+			case "Informe resumido por cuenta contable":
+				reportName = "ReporteResumidoCuentaContable";
+				break;
+			case "Informe resumido por rubro institucional":
+				reportName = "ReporteResumidoRubroInstitucional";
+				break;
+		}
+
+		generateLG(fechaMin, fechaMax, window, format, reportName);
 	}
 
 
@@ -257,37 +264,23 @@ public class ReportHelper {
 	}
 */
 
-	
-	public static void generateLugarGasto(final Date fechaMin, final Date fechaMax,
-			 Window window, String format, String type) {
-		
-		String reportName="ReporteLugarYFuenteDeFinancDetallado";
-
-		switch (type) {
-			case "Detallado":
-				reportName = "ReporteLugarYFuenteDeFinancDetallado";
-				break;
-			case "Sin lugar":
-				reportName = "ReporteLugarYFuenteDeFinancNoTienen";
-				break;
-			case "Informe":
-				reportName = "ReporteLugarYFuenteDeFinancInforme";
-				break;
-			case "DetalladoCuentaContable":
-				reportName = "ReporteDetalladoCuentaContable";
-				break;
-			case "Detallado por rubro institucional":
-				reportName = "ReporteDetalladoRubroInstitucional";
-				break;
-			case "Informe resumido por cuenta contable":
-				reportName = "ReporteResumidoCuentaContable";
-				break;
-			case "Informe resumido por rubro institucional":
-				reportName = "ReporteResumidoRubroInstitucional";
-				break;
-		}
-		
-		generateLG(fechaMin, fechaMax, window,format, reportName);
+	@SuppressWarnings("unchecked")
+	public static void generateCC(final Date minfecha, final Date maxfecha, boolean isPen, Window window, String format, String grouping) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+		logger.info("jestem w generateRep. params: " + minfecha + " maxfecha " + maxfecha + " isPen " + isPen);
+		String reportName;
+		HashMap paramMap = new HashMap();
+		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
+		paramMap.put("in_isPen", isPen);
+		paramMap.put("str_fecha_min", sdf.format(ConfigurationUtil.getBeginningOfDay(minfecha)));
+		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
+		if (maxfecha != null) paramMap.put("str_fecha_max", sdf.format(ConfigurationUtil.getEndOfDay(maxfecha)));
+		if (grouping == null || grouping.equals("NO GROUPING")) reportName = "ReporteCentroDeCostosNoGrouping";
+		else if (grouping.equals("POR CATEGORIA")) reportName = "ReporteCentroDeCostosPorCategoria";
+		else reportName = "ReporteCentroDeCostosPorCuenta";
+		logger.info("ParamMap: " + paramMap.toString());
+		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
+//		generateReport("ReporteCentroDeCostosStructure", "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
 	}
 	
 /*
@@ -342,26 +335,6 @@ public class ReportHelper {
 */
 
 	@SuppressWarnings("unchecked")
-	public static void generateCC(final Date minfecha, final Date maxfecha, boolean isPen, Window window, String format, String grouping) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-		logger.info("jestem w generateRep. params: "+minfecha+" maxfecha "+maxfecha+" isPen "+isPen);
-		String reportName;
-		HashMap paramMap = new HashMap();
-		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
-		paramMap.put("in_isPen", isPen);
-		paramMap.put("str_fecha_min", sdf.format(ConfigurationUtil.getBeginningOfDay(minfecha)));
-		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
-		if (maxfecha!=null) paramMap.put("str_fecha_max", sdf.format(ConfigurationUtil.getEndOfDay(maxfecha)));
-		if (grouping==null || grouping.equals("NO GROUPING")) 	reportName="ReporteCentroDeCostosNoGrouping";						
-		else if (grouping.equals("POR CATEGORIA")) reportName="ReporteCentroDeCostosPorCategoria";
-				else reportName="ReporteCentroDeCostosPorCuenta";
-		logger.info("ParamMap: " + paramMap.toString());
-		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
-//		generateReport("ReporteCentroDeCostosStructure", "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
-	}
-
-
-	@SuppressWarnings("unchecked")
 	private static void generateLG(final Date minfecha, final Date maxfecha, Window window, String format, String reportName) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 		logger.info("jestem w generateLG. params: "+minfecha+" maxfecha "+maxfecha);
@@ -369,9 +342,9 @@ public class ReportHelper {
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
 		paramMap.put("str_fecha_min", sdf.format(ConfigurationUtil.getBeginningOfDay(minfecha)));
 		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
-		if (maxfecha!=null) 
+		if (maxfecha != null)
 			paramMap.put("str_fecha_max", sdf.format(ConfigurationUtil.getEndOfDay(maxfecha)));
-		else 
+		else
 			paramMap.put("str_fecha_max", sdf.format(ConfigurationUtil.getEndOfDay(minfecha)));
 		logger.info("ParamMap: " + paramMap.toString());
 		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
@@ -404,7 +377,6 @@ public class ReportHelper {
 				}
 			return null;
 	}
-
 
 	@SuppressWarnings("unchecked")
 	private static void generateReport(final String reportName, String typeParamName,
@@ -444,7 +416,7 @@ public class ReportHelper {
 			resource.setMIMEType("application/pdf");
 		else if (format.equalsIgnoreCase("XLS"))
 			resource.setMIMEType("application/xls");
-		else 
+		else
 			resource.setMIMEType("text/html");
 
 		Embedded emb = new Embedded();
@@ -462,8 +434,7 @@ public class ReportHelper {
         repWindow.setContent(emb);
 		UI.getCurrent().addWindow(repWindow);
 	}
-	
-	
+
 	private static InputStream loadReport(String reportName) {
 		InputStream rep = null;
         logger.info("Trying to load report " + reportName);
@@ -527,17 +498,17 @@ public class ReportHelper {
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 
 		xlsExporter.setParameter(JRExporterParameter.OUTPUT_STREAM, oStream);
-		xlsExporter.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint); 
-		xlsExporter.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, oStream); 
-		xlsExporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.TRUE); 
-		xlsExporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE); 
-		xlsExporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE); 
-		xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE); 
+		xlsExporter.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+		xlsExporter.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, oStream);
+		xlsExporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.TRUE);
+		xlsExporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+		xlsExporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+		xlsExporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
 		xlsExporter.exportReport();
 
 		return new ByteArrayInputStream(oStream.toByteArray());
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	private static ByteArrayInputStream exportToTxt(String reportName,
 			HashMap paramMap) throws JRException {
@@ -564,6 +535,11 @@ public class ReportHelper {
 		return JasperFillManager.fillReport(
 				ConfigurationUtil.getReportsSourceFolder() + reportName
 						+ ".jasper", paramMap, get().getSqlConnection());
+	}
+
+	@Autowired
+	public void setEntityManager(EntityManager em) {
+		this.em = em;
 	}
 
     @Transactional
