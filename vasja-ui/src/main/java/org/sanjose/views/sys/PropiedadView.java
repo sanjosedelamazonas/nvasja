@@ -5,17 +5,15 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification;
-import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.model.VsjPropiedad;
 import org.sanjose.repo.VsjPropiedadRep;
+import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,22 +26,19 @@ import java.util.Collection;
  * operations and controlling the view based on events from outside.
  */
 @SpringComponent
-@UIScope
-public class PropiedadView extends PropiedadUI implements View {
+// @UIScope
+public class PropiedadView extends PropiedadUI implements VsjView {
 
-	private static final Logger log = LoggerFactory.getLogger(PropiedadView.class);
-	
     public static final String VIEW_NAME = "Config del Sistema";
-
-    private final PropiedadLogic viewLogic = new PropiedadLogic(this);
-    
+    private static final Logger log = LoggerFactory.getLogger(PropiedadView.class);
     public final VsjPropiedadRep repo;
+    private final PropiedadLogic viewLogic = new PropiedadLogic(this);
     
     @Autowired
     public PropiedadView(VsjPropiedadRep repo) {
-    	this.repo = repo;
+        this.repo = repo;
         ConfigurationUtil.setPropiedadRepo(repo);
-        if (ConfigurationUtil.getProperty("LOCALE")==null) {
+        if (ConfigurationUtil.getProperty("LOCALE") == null) {
             Notification.show("Initializing Configuracion del Sistema", Notification.Type.ERROR_MESSAGE);
             ConfigurationUtil.storeDefaultProperties();
         }
@@ -51,6 +46,11 @@ public class PropiedadView extends PropiedadUI implements View {
         setSizeFull();
         addStyleName("crud-view");
 
+
+    }
+
+    @Override
+    public void init() {
         @SuppressWarnings("unchecked") BeanItemContainer<VsjPropiedad> container = new BeanItemContainer(VsjPropiedad.class, repo.findAll());
 
         gridPropiedad.setSelectionMode(SelectionMode.MULTI);

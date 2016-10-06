@@ -13,7 +13,6 @@ import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
@@ -25,10 +24,8 @@ import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.INavigatorView;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -51,7 +48,7 @@ import static org.sanjose.util.GenUtil.USD;
  * data.
  */
 @SpringComponent
-@UIScope
+// @UIScope
 @Service
 @Transactional
 class ComprobanteLogic implements Serializable {
@@ -60,22 +57,14 @@ class ComprobanteLogic implements Serializable {
 	private static final Logger log = LoggerFactory.getLogger(ComprobanteLogic.class);
 
     protected IComprobanteView view;
-
-    private VsjCajabanco savedCajabanco;
-
     protected VsjCajabanco item;
-
-    private BeanItem<VsjCajabanco> beanItem;
-
-    private FieldGroup fieldGroup;
-
-    private boolean isLoading = true;
-
-    private boolean isEdit = false;
-
-    private ProcUtil procUtil;
-
     protected INavigatorView navigatorView;
+    private VsjCajabanco savedCajabanco;
+    private BeanItem<VsjCajabanco> beanItem;
+    private FieldGroup fieldGroup;
+    private boolean isLoading = true;
+    private boolean isEdit = false;
+    private ProcUtil procUtil;
 
     public void init(IComprobanteView  comprobanteView) {
         view = comprobanteView;

@@ -1,6 +1,5 @@
 package org.sanjose.views.sys;
 
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.Version;
@@ -10,20 +9,16 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-public class AboutView extends VerticalLayout implements View {
+public class AboutView extends VerticalLayout implements VsjView {
 
     public static final String VIEW_NAME = "About";
-
-    private Label label;
-
     private final CustomLayout aboutContent;
+    private Label label;
 
     public AboutView() {
         aboutContent = new CustomLayout("aboutview");
         aboutContent.setStyleName("about-content");
 
-        // you can add Vaadin components in predefined slots in the custom
-        // layout
         aboutContent.addComponent(
                 new Label(FontAwesome.INFO_CIRCLE.getHtml()
                         + " This application is using Vaadin "
@@ -32,6 +27,10 @@ public class AboutView extends VerticalLayout implements View {
         setStyleName("about-view");
         addComponent(aboutContent);
         setComponentAlignment(aboutContent, Alignment.MIDDLE_CENTER);
+    }
+
+    @Override
+    public void init() {
     }
 
     public CustomLayout getAboutContent() {

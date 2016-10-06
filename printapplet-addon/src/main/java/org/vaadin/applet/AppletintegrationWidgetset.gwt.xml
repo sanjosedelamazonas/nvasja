@@ -21,4 +21,8 @@
     <!-- <set-property name="user.agent" value="gecko"/> -->
 
     <inherits name="dk.apaq.vaadin.addon.printservice.gwt.WidgetSet" />
+
+    <inherits name="org.vaadin.applet.org.vaadin.applet.AppletintegrationWidgetset"/>
+
+    <inherits name="dk.apaq.vaadin.addon.printservice.gwt.dk.apaq.vaadin.addon.printservice.gwt.WidgetSet"/>
 </module>
