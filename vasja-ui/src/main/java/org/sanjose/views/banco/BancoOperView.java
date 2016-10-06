@@ -3,18 +3,17 @@ package org.sanjose.views.banco;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.repo.*;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
+import org.sanjose.views.sys.VsjView;
 import org.springframework.beans.factory.annotation.Autowired;
 import tm.kod.widgets.numberfield.NumberField;
 
@@ -32,8 +31,8 @@ import static org.sanjose.util.GenUtil.USD;
  * operations and controlling the view based on events from outside.
  */
 @SpringComponent
-@UIScope
-public class BancoOperView extends BancoOperUI implements View {
+// @UIScope
+public class BancoOperView extends BancoOperUI implements VsjView {
 
     public static final String VIEW_NAME = "Cheques";
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
@@ -72,7 +71,6 @@ public class BancoOperView extends BancoOperUI implements View {
     private final Scp_ContraparteRep contraparteRepo;
     private final ScpComprobantepagoRep comprobantepagoRepo;
     private final EntityManager em;
-    private final BeanItemContainer<VsjBancodetalle> container;
     private final Field[] allFields = new Field[] { fechaDoc, selProyecto, selTercero,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosaDetalle, serieDoc, numDoc,
@@ -80,6 +78,8 @@ public class BancoOperView extends BancoOperUI implements View {
     private final Field[] cabezeraFields = new Field[] { dataFechaComprobante, selCuenta, selCodAuxCabeza,
             glosaCabeza, cheque };
     BancoItemLogic viewLogic = null;
+    private BancoLogic bancoLogic;
+    private BeanItemContainer<VsjBancodetalle> container;
 
     @Autowired
     private BancoOperView(VsjBancodetalleRep bancodetalleRep, VsjBancocabeceraRep bancocabeceraRep, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
@@ -103,9 +103,12 @@ public class BancoOperView extends BancoOperUI implements View {
         this.contraparteRepo = contraparteRepo;
         this.comprobantepagoRepo = comprobantepagoRepo;
         this.planRepo = planRepo;
-
-
         this.em = em;
+        this.bancoLogic = bancoLogic;
+    }
+
+    @Override
+    public void init() {
         viewLogic = bancoLogic;
         viewLogic.init(this);
         setSizeFull();

@@ -3,17 +3,16 @@ package org.sanjose.views.caja;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
+import org.sanjose.model.VsjCajabanco;
 import org.sanjose.repo.*;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.model.*;
+import org.sanjose.views.sys.VsjView;
 import org.springframework.beans.factory.annotation.Autowired;
 import tm.kod.widgets.numberfield.NumberField;
 
@@ -30,66 +29,45 @@ import static org.sanjose.util.GenUtil.PEN;
  * operations and controlling the view based on events from outside.
  */
 @SpringComponent
-@UIScope
-public class TransferenciaView extends TransferenciaUI implements View, IComprobanteView {
-
-	private static final Logger log = LoggerFactory.getLogger(TransferenciaView.class);
+// @UIScope
+public class TransferenciaView extends TransferenciaUI implements IComprobanteView, VsjView {
 
     public static final String VIEW_NAME = "Transferencia";
-
-    TransferenciaLogic viewLogic = null;
-
-    private final VsjCajabancoRep repo;
-
-    private final ScpPlanproyectoRep planproyectoRepo;
-
-    private final ScpFinancieraRep financieraRepo;
-
-    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-
-    private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
-
-    private final VsjConfiguracioncajaRep configuracioncajaRepo;
-
-    private final ScpProyectoRep proyectoRepo;
-
-    private final ScpDestinoRep destinoRepo;
-
-    private final ScpPlanespecialRep planespecialRep;
-
-    private final ScpCargocuartaRep cargocuartaRepo;
-
-    private final ScpTipodocumentoRep tipodocumentoRepo;
-
-    private final ScpPlancontableRep planRepo;
-
-    private final Scp_ContraparteRep contraparteRepo;
-
-    private final ScpComprobantepagoRep comprobantepagoRepo;
-
-    private final EntityManager em;
-
-    private final BeanItemContainer<VsjCajabanco> container;
-
-    private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
-            numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
-            selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
-
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol"
     };
     static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/."
     };
-
     static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
     };
     static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing $", "Egr $"
     };
-
-    static final String[] NONEDITABLE_COLUMN_IDS = new String[]{  };
+    static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
+    private static final Logger log = LoggerFactory.getLogger(TransferenciaView.class);
+    private final VsjCajabancoRep repo;
+    private final ScpPlanproyectoRep planproyectoRepo;
+    private final ScpFinancieraRep financieraRepo;
+    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
+    private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
+    private final VsjConfiguracioncajaRep configuracioncajaRepo;
+    private final ScpProyectoRep proyectoRepo;
+    private final ScpDestinoRep destinoRepo;
+    private final ScpPlanespecialRep planespecialRep;
+    private final ScpCargocuartaRep cargocuartaRepo;
+    private final ScpTipodocumentoRep tipodocumentoRepo;
+    private final ScpPlancontableRep planRepo;
+    private final Scp_ContraparteRep contraparteRepo;
+    private final ScpComprobantepagoRep comprobantepagoRepo;
+    private final EntityManager em;
+    private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
+            numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
+            selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
+    TransferenciaLogic viewLogic = null;
+    private TransferenciaLogic transLogic;
+    private BeanItemContainer<VsjCajabanco> container;
 
     @Autowired
     private TransferenciaView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
@@ -99,7 +77,7 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
                               Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
                               ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em,
                               TransferenciaLogic transLogic) {
-    	this.repo = repo;
+        this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
         this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
@@ -115,6 +93,11 @@ public class TransferenciaView extends TransferenciaUI implements View, IComprob
         this.planRepo = planRepo;
 
         this.em = em;
+        this.transLogic = transLogic;
+    }
+
+    @Override
+    public void init() {
         viewLogic = transLogic;
         viewLogic.init(this);
         setSizeFull();

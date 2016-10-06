@@ -1,7 +1,29 @@
 package org.sanjose.helper;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import com.vaadin.data.util.BeanContainer;
+import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.*;
+import com.vaadin.ui.TextArea;
+import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedEvent;
+import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedListener;
+import dk.apaq.vaadin.addon.printservice.RemotePrintService;
+import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRTextExporter;
+import net.sf.jasperreports.engine.export.JRTextExporterParameter;
+import org.sanjose.authentication.CurrentUser;
+import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.views.sys.MainScreen;
+import org.sanjose.views.sys.VsjView;
+
+import javax.imageio.ImageIO;
+import javax.print.*;
+import javax.print.attribute.*;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
@@ -18,60 +40,28 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintException;
-import javax.print.PrintService;
-import javax.print.SimpleDoc;
-import javax.print.attribute.Attribute;
-import javax.print.attribute.DocAttributeSet;
-import javax.print.attribute.HashDocAttributeSet;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-
-import com.vaadin.data.util.BeanContainer;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-
-import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedEvent;
-import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedListener;
-import dk.apaq.vaadin.addon.printservice.RemotePrintService;
-import dk.apaq.vaadin.addon.printservice.RemotePrintServiceManager;
-import net.sf.jasperreports.engine.export.JRTextExporter;
-import net.sf.jasperreports.engine.export.JRTextExporterParameter;
-import org.sanjose.authentication.CurrentUser;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.views.sys.MainScreen;
-
 @SuppressWarnings("serial")
-public class PrintHelper extends VerticalLayout implements View {
+public class PrintHelper extends VerticalLayout implements VsjView {
 	
-    private final Table table = new Table();
-    private RemotePrintServiceManager printServiceManager;
-
     public static final String VIEW_NAME = "Imprimir service";
-
     private static final Logger logger = Logger
 			.getLogger(PrintHelper.class.getName());
-    
-    private Graphics2D g2d;
-    
-    private PrintService printService = null;
-    
-    private final TextArea printOptions = new TextArea();
-	
-    @SuppressWarnings("unchecked")
+	private final Table table = new Table();
+	private final TextArea printOptions = new TextArea();
+	@SuppressWarnings("unchecked")
 	private final
 	BeanContainer c = new BeanContainer(RemotePrintService.class);
-    
+	private RemotePrintServiceManager printServiceManager;
+	private Graphics2D g2d;
+	private PrintService printService = null;
+	private MainScreen mainScreen;
+
 	public PrintHelper(MainScreen mainScreen) {
+		this.mainScreen = mainScreen;
+	}
+
+	@Override
+	public void init() {
 		if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
             addComponent(new Label("Imprimir Service"));
 			printServiceManager = RemotePrintServiceManager.getInstance(mainScreen);

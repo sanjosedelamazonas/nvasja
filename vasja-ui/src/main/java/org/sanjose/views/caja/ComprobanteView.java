@@ -2,18 +2,17 @@ package org.sanjose.views.caja;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
-import org.sanjose.model.*;
+import org.sanjose.model.ScpPlancontable;
 import org.sanjose.repo.*;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.ProcUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.VsjView;
 import org.springframework.beans.factory.annotation.Autowired;
 import tm.kod.widgets.numberfield.NumberField;
 
@@ -22,7 +21,6 @@ import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 
 import static org.sanjose.util.GenUtil.PEN;
-import static org.sanjose.util.GenUtil.USD;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -31,49 +29,31 @@ import static org.sanjose.util.GenUtil.USD;
  * operations and controlling the view based on events from outside.
  */
 @SpringComponent
-@UIScope
-public class ComprobanteView extends ComprobanteUI implements View, IComprobanteView {
+// @UIScope
+public class ComprobanteView extends ComprobanteUI implements IComprobanteView, VsjView {
 
-	private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);
-	
     public static final String VIEW_NAME = "Caja";
-
-    ComprobanteLogic viewLogic;
-
+    private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);
     private final VsjCajabancoRep repo;
-
     private final ScpPlanproyectoRep planproyectoRepo;
-
     private final ScpFinancieraRep financieraRepo;
-
     private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-
     private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
-
     private final VsjConfiguracioncajaRep configuracioncajaRepo;
-
     private final ScpProyectoRep proyectoRepo;
-
     private final ScpDestinoRep destinoRepo;
-
     private final ScpPlanespecialRep planespecialRep;
-
     private final ScpCargocuartaRep cargocuartaRepo;
-
     private final ScpTipodocumentoRep tipodocumentoRepo;
-
     private final ScpPlancontableRep planRepo;
-
     private final Scp_ContraparteRep contraparteRepo;
-
     private final ScpComprobantepagoRep comprobantepagoRepo;
-
     @PersistenceContext
     private final EntityManager em;
-
     private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
+    ComprobanteLogic viewLogic;
 
     @Autowired
     private ComprobanteView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
@@ -83,7 +63,7 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
                             Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
                             ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em,
                             ComprobanteLogic comprobanteLogic) {
-    	this.repo = repo;
+        this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
         this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
@@ -98,8 +78,13 @@ public class ComprobanteView extends ComprobanteUI implements View, IComprobante
         this.comprobantepagoRepo = comprobantepagoRepo;
         this.planRepo = planRepo;
         this.viewLogic = comprobanteLogic;
-
         this.em = em;
+
+
+    }
+
+    @Override
+    public void init() {
         setSizeFull();
         addStyleName("crud-view");
         ViewUtil.setDefaultsForNumberField(numIngreso);

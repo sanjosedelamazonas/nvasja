@@ -6,7 +6,6 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
@@ -31,7 +30,7 @@ import java.util.Map;
  * Date: 20.09.16
  */
 @SpringComponent
-@UIScope
+// @UIScope
 @Service
 @Transactional
 public class BancoLogic extends BancoItemLogic {

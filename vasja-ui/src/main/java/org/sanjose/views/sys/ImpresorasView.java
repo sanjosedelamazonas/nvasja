@@ -1,6 +1,5 @@
 package org.sanjose.views.sys;
 
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -11,7 +10,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import java.util.List;
 
-public class ImpresorasView extends VerticalLayout implements View {
+public class ImpresorasView extends VerticalLayout implements VsjView {
 
     public static final String VIEW_NAME = "Impresoras";
 
@@ -41,6 +40,10 @@ public class ImpresorasView extends VerticalLayout implements View {
         setStyleName("about-view");
         addComponent(aboutContent);
         setComponentAlignment(aboutContent, Alignment.MIDDLE_CENTER);
+    }
+
+    @Override
+    public void init() {
     }
 
     public Label getLabel() {

@@ -8,10 +8,9 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
-import org.sanjose.model.*;
+import org.sanjose.model.ScpDestino;
 import org.sanjose.repo.ScpCargocuartaRep;
 import org.sanjose.repo.ScpDestinoRep;
 import org.sanjose.repo.ScpTipodocumentoRep;
@@ -27,21 +26,15 @@ import org.springframework.beans.factory.annotation.Autowired;
  * operations and controlling the view based on events from outside.
  */
 @SpringComponent
-@UIScope
+// @UIScope
 public class DestinoView extends DestinoUI implements View {
 
-	private static final Logger log = LoggerFactory.getLogger(DestinoView.class);
-	
     public static final String VIEW_NAME = "Destino";
-
+    private static final Logger log = LoggerFactory.getLogger(DestinoView.class);
     public final DestinoLogic viewLogic = new DestinoLogic(this);
-
-    public ScpDestino item;
-
-    private BeanItem<ScpDestino> beanItem;
-
     public final ScpDestinoRep destinoRepo;
-
+    public ScpDestino item;
+    private BeanItem<ScpDestino> beanItem;
     private FieldGroup fieldGroup;
 
     private boolean isLoading = true;

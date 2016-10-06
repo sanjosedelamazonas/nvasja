@@ -1,28 +1,26 @@
 package org.sanjose.views.caja;
 
-import java.util.Collection;
-import java.util.Date;
-
-import org.sanjose.repo.*;
-import org.sanjose.util.DataFilterUtil;
-import org.sanjose.util.GenUtil;
-import org.sanjose.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid.HeaderCell;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.TextField;
+import org.sanjose.model.VsjConfiguracioncaja;
+import org.sanjose.repo.*;
+import org.sanjose.util.DataFilterUtil;
+import org.sanjose.util.GenUtil;
+import org.sanjose.views.sys.VsjView;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collection;
+import java.util.Date;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -31,23 +29,31 @@ import com.vaadin.ui.TextField;
  * operations and controlling the view based on events from outside.
  */
 @SpringComponent
-@UIScope
-public class ConfiguracionCajaView extends ConfiguracionCajaUI implements View {
+// @UIScope
+public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjView {
 
-	private static final Logger log = LoggerFactory.getLogger(ConfiguracionCajaView.class);
-	
     public static final String VIEW_NAME = "Configuracion de Caja";
-
-    private final ConfiguracionCajaLogic viewLogic = new ConfiguracionCajaLogic(this);
-    
+    private static final Logger log = LoggerFactory.getLogger(ConfiguracionCajaView.class);
     public final VsjConfiguracioncajaRep repo;
-    
+    private final ConfiguracionCajaLogic viewLogic = new ConfiguracionCajaLogic(this);
+    private ScpPlancontableRep planRepo;
+    private ScpDestinoRep destinoRepo;
+    private ScpProyectoRep proyectoRepo;
+    private ScpCategoriaproyectoRep categoriaproyectoRepo;
+
     @Autowired
     public ConfiguracionCajaView(VsjConfiguracioncajaRep repo, ScpPlancontableRep planRepo,
                                  ScpDestinoRep destinoRepo, ScpProyectoRep proyectoRepo, ScpCategoriaproyectoRep categoriaproyectoRepo) {
-    	this.repo = repo;
+        this.repo = repo;
+        this.planRepo = planRepo;
+        this.destinoRepo = destinoRepo;
+        this.proyectoRepo = proyectoRepo;
+        this.categoriaproyectoRepo = categoriaproyectoRepo;
         setSizeFull();
+    }
 
+    @Override
+    public void init() {
         @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguracioncaja> container = new BeanItemContainer(VsjConfiguracioncaja.class, repo.findAll());
         gridConfigCaja
         	.setContainerDataSource(container);

@@ -7,4 +7,6 @@
     <inherits name="org.vaadin.applet.AppletintegrationWidgetset" />
 
     <stylesheet src="resetbuttonfortextfield/styles.css"/>
+
+    <inherits name="org.sanjose.org.sanjose.MyAppWidgetset"/>
 </module>

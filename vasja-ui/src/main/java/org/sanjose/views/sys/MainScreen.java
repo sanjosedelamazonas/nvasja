@@ -2,20 +2,18 @@ package org.sanjose.views.sys;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.*;
-import org.sanjose.MainUI;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.helper.PrintHelper;
-import org.sanjose.authentication.Role;
-import org.sanjose.views.banco.BancoOperView;
-import org.sanjose.views.caja.*;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.JavaScript;
+import org.sanjose.MainUI;
+import org.sanjose.authentication.Role;
+import org.sanjose.helper.PrintHelper;
+import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.views.banco.BancoOperView;
+import org.sanjose.views.caja.*;
 
 import java.util.List;
 
@@ -24,16 +22,30 @@ import java.util.List;
  * 
  * 
  */
-@SpringComponent
-@UIScope
+//@SpringComponent
+// @UIScope
 public class MainScreen extends HorizontalLayout {
+    private static final Logger log = LoggerFactory.getLogger(MainScreen.class);
     private final Menu menu;
+    // notify the view menu about view changes so that it can display which view
+    // is currently active
+    private final ViewChangeListener viewChangeListener = new ViewChangeListener() {
 
+        @Override
+        public boolean beforeViewChange(ViewChangeEvent event) {
+            return true;
+        }
+
+        @Override
+        public void afterViewChange(ViewChangeEvent event) {
+            menu.setActiveView(event.getViewName());
+            //JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
+        }
+
+    };
     private PrintHelper printHelper = null;
 
-    private static final Logger log = LoggerFactory.getLogger(MainScreen.class);
-
-    @Autowired
+    //    @Autowired
     public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
                       ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView,
                       TransferenciaView transferenciaView, BancoOperView bancoOperView) {
@@ -90,6 +102,10 @@ public class MainScreen extends HorizontalLayout {
         if (ConfigurationUtil.is("PRINTER_LIST_SHOW"))
             menu.addView(printHelper, PrintHelper.VIEW_NAME, PrintHelper.VIEW_NAME, FontAwesome.PRINT);
 
+        for (VsjView view : menu.getViews()) {
+            view.init();
+        }
+
         addComponent(menu);
         addComponent(viewContainer);
         setExpandRatio(viewContainer, 1);
@@ -103,23 +119,6 @@ public class MainScreen extends HorizontalLayout {
         menu.addView(impresorasView, ImpresorasView.VIEW_NAME, ImpresorasView.VIEW_NAME,
                 FontAwesome.PRINT);
     }
-
-    // notify the view menu about view changes so that it can display which view
-    // is currently active
-    private final ViewChangeListener viewChangeListener = new ViewChangeListener() {
-
-        @Override
-        public boolean beforeViewChange(ViewChangeEvent event) {
-            return true;
-        }
-
-        @Override
-        public void afterViewChange(ViewChangeEvent event) {
-            menu.setActiveView(event.getViewName());
-            //JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
-        }
-
-    };
 
     public PrintHelper getPrintHelper() {
         return printHelper;

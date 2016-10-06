@@ -1,19 +1,27 @@
 package org.sanjose.views.caja;
 
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.vaadin.data.Property;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.ui.*;
+import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.PopupDateField;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.DateToTimestampConverter;
-import org.sanjose.model.*;
+import org.sanjose.model.ScpFinanciera;
+import org.sanjose.model.ScpPlanproyecto;
+import org.sanjose.model.Scp_ProyectoPorFinanciera;
+import org.sanjose.model.VsjCajabanco;
 import org.sanjose.render.StringToCharacterConverter;
 import org.sanjose.render.ZeroOneTrafficLight;
 import org.sanjose.repo.*;
@@ -23,20 +31,17 @@ import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.views.sys.INavigatorView;
+import org.sanjose.views.sys.VsjView;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.external.org.slf4j.Logger;
-import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.Grid.SelectionMode;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -45,17 +50,13 @@ import javax.persistence.PersistenceContext;
  * operations and controlling the view based on events from outside.
  */
 @SpringComponent
-@UIScope
-public class CajaGridView extends CajaGridUI implements View, INavigatorView {
+// @UIScope
+public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView {
 
-	private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
-	
     public static final String VIEW_NAME = "Operaciones de Caja";
-
-    private final CajaGridLogic viewLogic = new CajaGridLogic(this);
-
+    private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
     public final VsjCajabancoRep repo;
-
+    private final CajaGridLogic viewLogic = new CajaGridLogic(this);
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
@@ -77,25 +78,21 @@ public class CajaGridView extends CajaGridUI implements View, INavigatorView {
             2, 2, 6, 6
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado", "flg_Anula" };
-
     private final ScpPlanproyectoRep planproyectoRepo;
-
     private final ScpFinancieraRep financieraRepo;
-
     private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-
     private final ScpCargocuartaRep cargocuartaRepo;
-
     private final ScpDestinoRep destinoRepo;
-
     private final ScpTipodocumentoRep tipodocumentoRepo;
-
     private final ScpTipocambioRep tipocambioRepo;
-
     @PersistenceContext
     private final EntityManager em;
-
-    private final BeanItemContainer<VsjCajabanco> container;
+    private ScpPlancontableRep planRepo;
+    private ScpPlanespecialRep planEspRepo;
+    private ScpProyectoRep proyectoRepo;
+    private ScpComprobantepagoRep comprobantepagoRepo;
+    private Scp_ContraparteRep contraparteRepo;
+    private BeanItemContainer<VsjCajabanco> container;
 
     private VsjCajabanco itemSeleccionado;
 
@@ -106,18 +103,26 @@ public class CajaGridView extends CajaGridUI implements View, INavigatorView {
                          ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                          Scp_ContraparteRep contraparteRepo, ScpCargocuartaRep cargocuartaRepo,
                          ScpTipodocumentoRep tipodocumentoRepo, ScpTipocambioRep tipocambioRepo, EntityManager em) {
-    	this.repo = repo;
+        this.repo = repo;
+        this.planRepo = planRepo;
+        this.planEspRepo = planEspRepo;
+        this.proyectoRepo = proyectoRepo;
+        this.comprobantepagoRepo = comprobantepagoRepo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
         this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
         this.destinoRepo = destinoRepo;
+        this.contraparteRepo = contraparteRepo;
         this.tipodocumentoRepo = tipodocumentoRepo;
         this.cargocuartaRepo = cargocuartaRepo;
         this.tipocambioRepo = tipocambioRepo;
         this.em = em;
+    }
+
+    @Override
+    public void init() {
         setSizeFull();
         addStyleName("crud-view");
-
         //noinspection unchecked
         container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
         

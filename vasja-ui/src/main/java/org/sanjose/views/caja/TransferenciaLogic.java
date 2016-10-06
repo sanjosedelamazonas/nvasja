@@ -3,8 +3,6 @@ package org.sanjose.views.caja;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,20 +26,16 @@ import static org.sanjose.util.GenUtil.PEN;
  * User: prubach
  * Date: 20.09.16
  */
-@UIScope
+// @UIScope
 @Service
 @Transactional
 public class TransferenciaLogic extends ComprobanteLogic {
 
     private static final Logger log = LoggerFactory.getLogger(TransferenciaLogic.class);
-
-    private TransferenciaView tView;
-
-    private Character moneda;
-
-    private boolean isEdited = false;
-
     VsjCajabancoRep cajabancoRep;
+    private TransferenciaView tView;
+    private Character moneda;
+    private boolean isEdited = false;
 
     @Autowired
     public TransferenciaLogic(VsjCajabancoRep cajabancoRep) {
