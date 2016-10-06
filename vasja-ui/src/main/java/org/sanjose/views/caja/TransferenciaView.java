@@ -6,17 +6,13 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.model.VsjCajabanco;
-import org.sanjose.repo.*;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
-import org.springframework.beans.factory.annotation.Autowired;
 import tm.kod.widgets.numberfield.NumberField;
 
-import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -28,8 +24,6 @@ import static org.sanjose.util.GenUtil.PEN;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-@SpringComponent
-// @UIScope
 public class TransferenciaView extends TransferenciaUI implements IComprobanteView, VsjView {
 
     public static final String VIEW_NAME = "Transferencia";
@@ -47,58 +41,22 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
     };
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
     private static final Logger log = LoggerFactory.getLogger(TransferenciaView.class);
-    private final VsjCajabancoRep repo;
-    private final ScpPlanproyectoRep planproyectoRepo;
-    private final ScpFinancieraRep financieraRepo;
-    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-    private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
-    private final VsjConfiguracioncajaRep configuracioncajaRepo;
-    private final ScpProyectoRep proyectoRepo;
-    private final ScpDestinoRep destinoRepo;
-    private final ScpPlanespecialRep planespecialRep;
-    private final ScpCargocuartaRep cargocuartaRepo;
-    private final ScpTipodocumentoRep tipodocumentoRepo;
-    private final ScpPlancontableRep planRepo;
-    private final Scp_ContraparteRep contraparteRepo;
-    private final ScpComprobantepagoRep comprobantepagoRepo;
-    private final EntityManager em;
+
     private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
     TransferenciaLogic viewLogic = null;
     private TransferenciaLogic transLogic;
     private BeanItemContainer<VsjCajabanco> container;
+    private ComprobanteService comprobanteService;
 
-    @Autowired
-    private TransferenciaView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
-                              ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
-                              ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                              ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                              Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                              ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em,
-                              TransferenciaLogic transLogic) {
-        this.repo = repo;
-        this.planproyectoRepo = planproyectoRepo;
-        this.financieraRepo = financieraRepo;
-        this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
-        this.configuractacajabancoRepo = configuractacajabancoRepo;
-        this.configuracioncajaRepo = configuracioncajaRepo;
-        this.proyectoRepo = proyectoRepo;
-        this.destinoRepo = destinoRepo;
-        this.cargocuartaRepo = cargocuartaRepo;
-        this.tipodocumentoRepo = tipodocumentoRepo;
-        this.planespecialRep = planEspRepo;
-        this.contraparteRepo = contraparteRepo;
-        this.comprobantepagoRepo = comprobantepagoRepo;
-        this.planRepo = planRepo;
-
-        this.em = em;
-        this.transLogic = transLogic;
+    public TransferenciaView(ComprobanteService comprobanteService) {
+        this.comprobanteService = comprobanteService;
     }
 
     @Override
     public void init() {
-        viewLogic = transLogic;
+        viewLogic = new TransferenciaLogic();
         viewLogic.init(this);
         setSizeFull();
         addStyleName("crud-view");
@@ -336,83 +294,12 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
         return dataFechaComprobante;
     }
 
-    //
     @Override
-    public VsjCajabancoRep getRepo() {
-        return repo;
-    }
-
-    @Override
-    public ScpPlanproyectoRep getPlanproyectoRepo() {
-        return planproyectoRepo;
-    }
-
-    @Override
-    public ScpFinancieraRep getFinancieraRepo() {
-        return financieraRepo;
-    }
-
-    @Override
-    public Scp_ProyectoPorFinancieraRep getProyectoPorFinancieraRepo() {
-        return proyectoPorFinancieraRepo;
-    }
-
-    @Override
-    public VsjConfiguractacajabancoRep getConfiguractacajabancoRepo() {
-        return configuractacajabancoRepo;
-    }
-
-    @Override
-    public VsjConfiguracioncajaRep getConfiguracioncajaRepo() {
-        return configuracioncajaRepo;
-    }
-
-    @Override
-    public ScpProyectoRep getProyectoRepo() {
-        return proyectoRepo;
-    }
-
-    @Override
-    public ScpDestinoRep getDestinoRepo() {
-        return destinoRepo;
-    }
-
-    @Override
-    public ScpPlanespecialRep getPlanespecialRep() {
-        return planespecialRep;
-    }
-
-    @Override
-    public ScpCargocuartaRep getCargocuartaRepo() {
-        return cargocuartaRepo;
-    }
-
-    @Override
-    public ScpTipodocumentoRep getTipodocumentoRepo() {
-        return tipodocumentoRepo;
-    }
-
-    @Override
-    public ScpPlancontableRep getPlanRepo() {
-        return planRepo;
-    }
-
-    @Override
-    public Scp_ContraparteRep getContraparteRepo() {
-        return contraparteRepo;
-    }
-
-    @Override
-    public ScpComprobantepagoRep getComprobantepagoRepo() {
-        return comprobantepagoRepo;
+    public ComprobanteService getService() {
+        return comprobanteService;
     }
 
     @Override
     public void enter(ViewChangeEvent event) {
-    }
-
-
-    public EntityManager getEm() {
-        return em;
     }
 }

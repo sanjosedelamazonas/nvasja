@@ -22,8 +22,6 @@ import java.util.List;
  * 
  * 
  */
-//@SpringComponent
-// @UIScope
 public class MainScreen extends HorizontalLayout {
     private static final Logger log = LoggerFactory.getLogger(MainScreen.class);
     private final Menu menu;
@@ -45,7 +43,6 @@ public class MainScreen extends HorizontalLayout {
     };
     private PrintHelper printHelper = null;
 
-    //    @Autowired
     public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
                       ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView,
                       TransferenciaView transferenciaView, BancoOperView bancoOperView) {

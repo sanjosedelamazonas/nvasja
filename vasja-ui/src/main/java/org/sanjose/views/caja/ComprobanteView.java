@@ -4,20 +4,15 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.model.ScpPlancontable;
-import org.sanjose.repo.*;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.ProcUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
-import org.springframework.beans.factory.annotation.Autowired;
 import tm.kod.widgets.numberfield.NumberField;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 
 import static org.sanjose.util.GenUtil.PEN;
@@ -28,55 +23,19 @@ import static org.sanjose.util.GenUtil.PEN;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-@SpringComponent
-// @UIScope
 public class ComprobanteView extends ComprobanteUI implements IComprobanteView, VsjView {
 
     public static final String VIEW_NAME = "Caja";
     private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);
-    private final VsjCajabancoRep repo;
-    private final ScpPlanproyectoRep planproyectoRepo;
-    private final ScpFinancieraRep financieraRepo;
-    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-    private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
-    private final VsjConfiguracioncajaRep configuracioncajaRepo;
-    private final ScpProyectoRep proyectoRepo;
-    private final ScpDestinoRep destinoRepo;
-    private final ScpPlanespecialRep planespecialRep;
-    private final ScpCargocuartaRep cargocuartaRepo;
-    private final ScpTipodocumentoRep tipodocumentoRepo;
-    private final ScpPlancontableRep planRepo;
-    private final Scp_ContraparteRep contraparteRepo;
-    private final ScpComprobantepagoRep comprobantepagoRepo;
-    @PersistenceContext
-    private final EntityManager em;
+
     private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
     ComprobanteLogic viewLogic;
+    private ComprobanteService comprobanteService;
 
-    @Autowired
-    private ComprobanteView(VsjCajabancoRep repo, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
-                            ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
-                            ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                            ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                            Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                            ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
-        this.repo = repo;
-        this.planproyectoRepo = planproyectoRepo;
-        this.financieraRepo = financieraRepo;
-        this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
-        this.configuractacajabancoRepo = configuractacajabancoRepo;
-        this.configuracioncajaRepo = configuracioncajaRepo;
-        this.proyectoRepo = proyectoRepo;
-        this.destinoRepo = destinoRepo;
-        this.cargocuartaRepo = cargocuartaRepo;
-        this.tipodocumentoRepo = tipodocumentoRepo;
-        this.planespecialRep = planEspRepo;
-        this.contraparteRepo = contraparteRepo;
-        this.comprobantepagoRepo = comprobantepagoRepo;
-        this.planRepo = planRepo;
-        this.em = em;
+    public ComprobanteView(ComprobanteService comprobanteService) {
+        this.comprobanteService = comprobanteService;
     }
 
     @Override
@@ -113,9 +72,9 @@ public class ComprobanteView extends ComprobanteUI implements IComprobanteView, 
         cajaSaldosLayout.removeAllComponents();
         if (dataFechaComprobante.getValue() != null && selMoneda.getValue() != null) {
             BigDecimal total = new BigDecimal(0.00);
-            for (ScpPlancontable caja : DataUtil.getCajas(getDataFechaComprobante().getValue(), planRepo, PEN.equals(selMoneda.getValue().toString().charAt(0)))) {
+            for (ScpPlancontable caja : DataUtil.getCajas(getDataFechaComprobante().getValue(), getService().getPlanRepo(), PEN.equals(selMoneda.getValue().toString().charAt(0)))) {
 
-                BigDecimal saldo = new ProcUtil(em).getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
+                BigDecimal saldo = new ProcUtil(getService().getEm()).getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
                         , selMoneda.getValue().toString().charAt(0));
                 Label salLbl = new Label();
                 salLbl.setContentMode(ContentMode.HTML);
@@ -142,11 +101,6 @@ public class ComprobanteView extends ComprobanteUI implements IComprobanteView, 
 
     @Override
     public void enter(ViewChangeEvent event) {
-    }
-
-
-    public EntityManager getEm() {
-        return em;
     }
 
     @Override
@@ -295,60 +249,7 @@ public class ComprobanteView extends ComprobanteUI implements IComprobanteView, 
     }
 
 
-    public VsjCajabancoRep getRepo() {
-        return repo;
+    public ComprobanteService getService() {
+        return comprobanteService;
     }
-
-    public ScpPlanproyectoRep getPlanproyectoRepo() {
-        return planproyectoRepo;
-    }
-
-    public ScpFinancieraRep getFinancieraRepo() {
-        return financieraRepo;
-    }
-
-    public Scp_ProyectoPorFinancieraRep getProyectoPorFinancieraRepo() {
-        return proyectoPorFinancieraRepo;
-    }
-
-    public VsjConfiguractacajabancoRep getConfiguractacajabancoRepo() {
-        return configuractacajabancoRepo;
-    }
-
-    public VsjConfiguracioncajaRep getConfiguracioncajaRepo() {
-        return configuracioncajaRepo;
-    }
-
-    public ScpProyectoRep getProyectoRepo() {
-        return proyectoRepo;
-    }
-
-    public ScpDestinoRep getDestinoRepo() {
-        return destinoRepo;
-    }
-
-    public ScpPlanespecialRep getPlanespecialRep() {
-        return planespecialRep;
-    }
-
-    public ScpCargocuartaRep getCargocuartaRepo() {
-        return cargocuartaRepo;
-    }
-
-    public ScpTipodocumentoRep getTipodocumentoRepo() {
-        return tipodocumentoRepo;
-    }
-
-    public ScpPlancontableRep getPlanRepo() {
-        return planRepo;
-    }
-
-    public Scp_ContraparteRep getContraparteRepo() {
-        return contraparteRepo;
-    }
-
-    public ScpComprobantepagoRep getComprobantepagoRepo() {
-        return comprobantepagoRepo;
-    }
-
 }
