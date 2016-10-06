@@ -61,8 +61,7 @@ public class ComprobanteView extends ComprobanteUI implements IComprobanteView, 
                             ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                             ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                             Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                            ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em,
-                            ComprobanteLogic comprobanteLogic) {
+                            ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
         this.repo = repo;
         this.planproyectoRepo = planproyectoRepo;
         this.financieraRepo = financieraRepo;
@@ -77,10 +76,7 @@ public class ComprobanteView extends ComprobanteUI implements IComprobanteView, 
         this.contraparteRepo = contraparteRepo;
         this.comprobantepagoRepo = comprobantepagoRepo;
         this.planRepo = planRepo;
-        this.viewLogic = comprobanteLogic;
         this.em = em;
-
-
     }
 
     @Override
@@ -95,6 +91,7 @@ public class ComprobanteView extends ComprobanteUI implements IComprobanteView, 
         eliminarBtn.setEnabled(false);
         imprimirBtn.setEnabled(false);
 
+        viewLogic = new ComprobanteLogic();
         viewLogic.init(this);
         viewLogic.setupEditComprobanteView();
     }

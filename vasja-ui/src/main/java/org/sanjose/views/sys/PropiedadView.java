@@ -7,7 +7,6 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification;
@@ -15,7 +14,6 @@ import org.sanjose.model.VsjPropiedad;
 import org.sanjose.repo.VsjPropiedadRep;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 
@@ -25,28 +23,26 @@ import java.util.Collection;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-@SpringComponent
-// @UIScope
 public class PropiedadView extends PropiedadUI implements VsjView {
 
     public static final String VIEW_NAME = "Config del Sistema";
     private static final Logger log = LoggerFactory.getLogger(PropiedadView.class);
     public final VsjPropiedadRep repo;
-    private final PropiedadLogic viewLogic = new PropiedadLogic(this);
-    
-    @Autowired
-    public PropiedadView(VsjPropiedadRep repo) {
-        this.repo = repo;
+    private final PropiedadLogic viewLogic;
+    private PropiedadService propiedadService;
+
+    public PropiedadView(PropiedadService propiedadService) {
+        this.propiedadService = propiedadService;
+        this.repo = propiedadService.getPropiedadRep();
+        this.viewLogic = new PropiedadLogic(this);
         ConfigurationUtil.setPropiedadRepo(repo);
         if (ConfigurationUtil.getProperty("LOCALE") == null) {
-            Notification.show("Initializing Configuracion del Sistema", Notification.Type.ERROR_MESSAGE);
             ConfigurationUtil.storeDefaultProperties();
+            log.warn("Initializing Configuracion del Sistema");
+//            Notification.show("Initializing Configuracion del Sistema", Notification.Type.ERROR_MESSAGE);
         }
-
         setSizeFull();
         addStyleName("crud-view");
-
-
     }
 
     @Override
@@ -85,7 +81,7 @@ public class PropiedadView extends PropiedadUI implements VsjView {
 
     @Override
     public void enter(ViewChangeEvent event) {
-        viewLogic.enter(event.getParameters());
+        //viewLogic.enter(event.getParameters());
     }
 
     public void clearSelection() {
@@ -99,5 +95,9 @@ public class PropiedadView extends PropiedadUI implements VsjView {
     public void removeRow(VsjPropiedad vsj) {
     	repo.delete(vsj);    	
     	gridPropiedad.getContainerDataSource().removeItem(vsj);
+    }
+
+    public PropiedadService getPropiedadService() {
+        return propiedadService;
     }
 }

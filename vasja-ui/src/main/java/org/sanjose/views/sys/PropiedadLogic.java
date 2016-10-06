@@ -6,8 +6,9 @@ import com.vaadin.data.fieldgroup.FieldGroup.CommitHandler;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.model.VsjPropiedad;
+import org.sanjose.repo.VsjPropiedadRep;
+import org.sanjose.util.ConfigurationUtil;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,13 +25,13 @@ import java.util.stream.Collectors;
  */
 public class PropiedadLogic implements Serializable {
 
-
 	private static final Logger log = LoggerFactory.getLogger(PropiedadLogic.class);
 
     private final PropiedadView view;
+    private VsjPropiedadRep propiedadRep;
 
     public PropiedadLogic(PropiedadView propiedadView) {
-        view = propiedadView;
+        this.view = propiedadView;
     }
 
     public void init() {
@@ -43,17 +44,13 @@ public class PropiedadLogic implements Serializable {
             }
             @Override
             public void postCommit(CommitEvent commitEvent) throws CommitException {
-                // You can persist your data here
                 Object item = view.gridPropiedad.getContainerDataSource().getItem(view.gridPropiedad.getEditedItemId());
-                if (item!=null) 
-                	view.repo.save((VsjPropiedad)((BeanItem)item).getBean());
+                if (item != null)
+                    view.getPropiedadService().savePropiedad((VsjPropiedad) ((BeanItem) item).getBean());
                 ConfigurationUtil.resetConfiguration();
             }
         });
                
-    }
-
-    public void enter(String productId) {
     }
 
     private void newPropiedad() {
