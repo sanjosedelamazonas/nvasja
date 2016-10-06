@@ -12,7 +12,6 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
-import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.*;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
@@ -24,7 +23,6 @@ import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.INavigatorView;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -47,13 +45,8 @@ import static org.sanjose.util.GenUtil.USD;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-@SpringComponent
-// @UIScope
-@Service
-@Transactional
 class ComprobanteLogic implements Serializable {
 
-	
 	private static final Logger log = LoggerFactory.getLogger(ComprobanteLogic.class);
 
     protected IComprobanteView view;
