@@ -5,7 +5,6 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
@@ -15,24 +14,19 @@ import org.sanjose.MainUI;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.util.GenUtil;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static org.sanjose.util.GenUtil.verifyNumMoneda;
 
 /**
  * VASJA class
  * User: prubach
  * Date: 20.09.16
  */
-@SpringComponent
-// @UIScope
-@Service
-@Transactional
 public class BancoLogic extends BancoItemLogic {
 
     private static final Logger log = LoggerFactory.getLogger(BancoLogic.class);
@@ -43,10 +37,6 @@ public class BancoLogic extends BancoItemLogic {
     private BeanItem<VsjBancocabecera> beanItem;
 
     private boolean isEdited = false;
-
-    //@Autowired
-    public BancoLogic() {
-    }
 
     @Override
     public void init(BancoOperView view) {
@@ -202,7 +192,6 @@ public class BancoLogic extends BancoItemLogic {
             saveCabecera();
     }
 
-    @Transactional()
     private void saveCabecera() {
         log.info("saving Cabecera");
         try {
@@ -210,48 +199,15 @@ public class BancoLogic extends BancoItemLogic {
             view.setEnableCabezeraFields(false);
             log.info("saved in class: " + bancocabecera);
             VsjBancocabecera cabecera = beanItem.getBean();
+            VsjBancodetalle bancoItem = getVsjBancodetalle();
+            if (!verifyNumMoneda(moneda))
+                throw new FieldGroup.CommitException("Moneda no esta de tipo numeral");
             boolean isNew = cabecera.getFecFregistro()==null;
             log.info("cabezera ready: " + cabecera);
-            cabecera.setCodTipomoneda(moneda);
-            cabecera = cabecera.prepareToSave();
-            cabecera = view.getBancocabeceraRep().save(cabecera);
-            if (GenUtil.strNullOrEmpty(cabecera.getTxtCorrelativo())) {
-                cabecera.setTxtCorrelativo(GenUtil.getTxtCorrelativo(cabecera.getCodBancocabecera()));
-                cabecera = view.getBancocabeceraRep().save(cabecera);
-            }
-            //
-            VsjBancodetalle bancoItem = saveItem(cabecera);
-            log.info("detalle ready: " + bancoItem);
-            bancoItem.setVsjBancocabecera(cabecera);
-            bancoItem = view.getBancodetalleRep().save(bancoItem);
-            if (GenUtil.strNullOrEmpty(bancoItem.getTxtCorrelativo())) {
-                bancoItem.setTxtCorrelativo(GenUtil.getTxtCorrelativo(bancoItem.getId().getNumItem()));
-                bancoItem = view.getBancodetalleRep().save(bancoItem);
-            }
-            BigDecimal saldoHabersol = new BigDecimal(0);
-            BigDecimal saldoHaberdolar = new BigDecimal(0);
-            BigDecimal saldoHabermo = new BigDecimal(0);
-            BigDecimal saldoDebesol = new BigDecimal(0);
-            BigDecimal saldoDebedolar = new BigDecimal(0);
-            BigDecimal saldoDebemo = new BigDecimal(0);
-            for (VsjBancodetalle it : view.getBancodetalleRep()
-                    .findById_CodBancocabecera(cabecera.getCodBancocabecera())) {
-                saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
-                saldoDebemo = saldoDebemo.add(it.getNumDebemo());
-                saldoDebesol = saldoDebesol.add(it.getNumDebesol());
-                saldoHaberdolar = saldoHaberdolar.add(it.getNumHaberdolar());
-                saldoHabermo = saldoHabermo.add(it.getNumHabermo());
-                saldoHabersol = saldoHabersol.add(it.getNumHabersol());
-            }
-            cabecera.setNumDebesol(saldoDebesol);
-            cabecera.setNumHabersol(saldoHabersol);
-            cabecera.setNumDebedolar(saldoDebedolar);
-            cabecera.setNumHaberdolar(saldoHaberdolar);
-            cabecera.setNumDebemo(saldoDebemo);
-            cabecera.setNumDebemo(saldoHabermo);
-            cabecera = view.getBancocabeceraRep().save(cabecera);
-            log.info("cabecera after save: " + cabecera);
-            bancocabecera = cabecera;
+
+            bancocabecera = view.getService().saveBancoOperacion(cabecera, bancoItem, moneda);
+
+            log.info("cabecera after save: " + bancocabecera);
             //
             moneda = item.getCodTipomoneda();
             log.info("Moneda set in saveCabecera: " + moneda);
@@ -272,6 +228,9 @@ public class BancoLogic extends BancoItemLogic {
             view.setTotal(moneda);
             view.getGuardarBtn().setEnabled(false);
             view.getNewItemBtn().setEnabled(true);
+            view.getModificarBtn().setEnabled(true);
+            view.refreshData();
+            view.getImprimirTotalBtn().setEnabled(true);
         } catch (Validator.InvalidValueException e) {
             Notification.show("Error al guardar: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
             view.setEnableCabezeraFields(true);
@@ -287,15 +246,4 @@ public class BancoLogic extends BancoItemLogic {
             log.warn("Got Commit Exception: " + ce.getMessage() + "\n" + sb.toString());
         }
     }
-
-    /*private void saveTransferencia() {
-        MessageBox
-                .createQuestion()
-                .withCaption("Guardar la transferencia")
-                .withMessage("?Esta seguro que quiere guardar todos operaciones de esta transferencia?\n" +
-                        "!Despues no se puede regresar a editarlos en esta pantalla!")
-                .withYesButton(this::executeSaveTransferencia)
-                .withNoButton()
-                .open();
-    }*/
 }

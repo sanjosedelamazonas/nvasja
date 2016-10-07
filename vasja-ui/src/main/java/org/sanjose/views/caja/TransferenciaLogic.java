@@ -116,8 +116,10 @@ public class TransferenciaLogic extends ComprobanteLogic {
                     })
                 .withNoButton()
                 .open();
-        else
+        else {
+            if (navigatorView == null) navigatorView = MainUI.get().getCajaManejoView();
             MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
+        }
     }
 
     @Override

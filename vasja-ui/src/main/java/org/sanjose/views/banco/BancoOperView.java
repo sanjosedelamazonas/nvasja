@@ -6,18 +6,15 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.*;
+import org.sanjose.MainUI;
 import org.sanjose.model.VsjBancodetalle;
-import org.sanjose.repo.*;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.VsjView;
-import org.springframework.beans.factory.annotation.Autowired;
 import tm.kod.widgets.numberfield.NumberField;
 
-import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -30,8 +27,6 @@ import static org.sanjose.util.GenUtil.USD;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-@SpringComponent
-// @UIScope
 public class BancoOperView extends BancoOperUI implements VsjView {
 
     public static final String VIEW_NAME = "Cheques";
@@ -54,62 +49,26 @@ public class BancoOperView extends BancoOperUI implements VsjView {
             "Cuenta", "Glosa", "Ing €", "Egr €"
     };
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
+
     private static final Logger log = LoggerFactory.getLogger(BancoOperView.class);
-    private final VsjBancodetalleRep bancodetalleRep;
-    private final VsjBancocabeceraRep bancocabeceraRep;
-    private final ScpPlanproyectoRep planproyectoRepo;
-    private final ScpFinancieraRep financieraRepo;
-    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-    private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
-    private final VsjConfiguracioncajaRep configuracioncajaRepo;
-    private final ScpProyectoRep proyectoRepo;
-    private final ScpDestinoRep destinoRepo;
-    private final ScpPlanespecialRep planespecialRep;
-    private final ScpCargocuartaRep cargocuartaRepo;
-    private final ScpTipodocumentoRep tipodocumentoRepo;
-    private final ScpPlancontableRep planRepo;
-    private final Scp_ContraparteRep contraparteRepo;
-    private final ScpComprobantepagoRep comprobantepagoRepo;
-    private final EntityManager em;
+
     private final Field[] allFields = new Field[] { fechaDoc, selProyecto, selTercero,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosaDetalle, serieDoc, numDoc,
             };
     private final Field[] cabezeraFields = new Field[] { dataFechaComprobante, selCuenta, selCodAuxCabeza,
             glosaCabeza, cheque };
-    BancoItemLogic viewLogic = null;
-    private BancoLogic bancoLogic;
+    private BancoItemLogic viewLogic = null;
     private BeanItemContainer<VsjBancodetalle> container;
+    private BancoService bancoService;
 
-    @Autowired
-    private BancoOperView(VsjBancodetalleRep bancodetalleRep, VsjBancocabeceraRep bancocabeceraRep, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
-                          ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
-                          ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                          ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                          Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                          ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em, BancoLogic bancoLogic) {
-        this.bancodetalleRep = bancodetalleRep;
-        this.bancocabeceraRep = bancocabeceraRep;
-        this.planproyectoRepo = planproyectoRepo;
-        this.financieraRepo = financieraRepo;
-        this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
-        this.configuractacajabancoRepo = configuractacajabancoRepo;
-        this.configuracioncajaRepo = configuracioncajaRepo;
-        this.proyectoRepo = proyectoRepo;
-        this.destinoRepo = destinoRepo;
-        this.cargocuartaRepo = cargocuartaRepo;
-        this.tipodocumentoRepo = tipodocumentoRepo;
-        this.planespecialRep = planEspRepo;
-        this.contraparteRepo = contraparteRepo;
-        this.comprobantepagoRepo = comprobantepagoRepo;
-        this.planRepo = planRepo;
-        this.em = em;
-        this.bancoLogic = bancoLogic;
+    public BancoOperView(BancoService bancoService) {
+        this.bancoService = bancoService;
     }
 
     @Override
     public void init() {
-        viewLogic = bancoLogic;
+        viewLogic = new BancoLogic();
         viewLogic.init(this);
         setSizeFull();
         addStyleName("crud-view");
@@ -225,9 +184,12 @@ public class BancoOperView extends BancoOperUI implements VsjView {
                 "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)) + calcTotal(locMoneda).toString() + "</span>");
     }
 
-
     public void refreshData() {
-        //MainUI.get().getCajaManejoView().refreshData();
+        MainUI.get().getCajaManejoView().refreshData();
+    }
+
+    public BancoService getService() {
+        return bancoService;
     }
 
     public ComboBox getSelProyecto() {
@@ -377,70 +339,5 @@ public class BancoOperView extends BancoOperUI implements VsjView {
 
     @Override
     public void enter(ViewChangeEvent event) {
-    }
-
-
-    public EntityManager getEm() {
-        return em;
-    }
-
-    public VsjBancodetalleRep getBancodetalleRep() {
-        return bancodetalleRep;
-    }
-
-    public ScpPlanproyectoRep getPlanproyectoRepo() {
-        return planproyectoRepo;
-    }
-
-    public ScpFinancieraRep getFinancieraRepo() {
-        return financieraRepo;
-    }
-
-    public Scp_ProyectoPorFinancieraRep getProyectoPorFinancieraRepo() {
-        return proyectoPorFinancieraRepo;
-    }
-
-    public VsjConfiguractacajabancoRep getConfiguractacajabancoRepo() {
-        return configuractacajabancoRepo;
-    }
-
-    public VsjConfiguracioncajaRep getConfiguracioncajaRepo() {
-        return configuracioncajaRepo;
-    }
-
-    public ScpProyectoRep getProyectoRepo() {
-        return proyectoRepo;
-    }
-
-    public ScpDestinoRep getDestinoRepo() {
-        return destinoRepo;
-    }
-
-    public ScpPlanespecialRep getPlanespecialRep() {
-        return planespecialRep;
-    }
-
-    public ScpCargocuartaRep getCargocuartaRepo() {
-        return cargocuartaRepo;
-    }
-
-    public ScpTipodocumentoRep getTipodocumentoRepo() {
-        return tipodocumentoRepo;
-    }
-
-    public ScpPlancontableRep getPlanRepo() {
-        return planRepo;
-    }
-
-    public Scp_ContraparteRep getContraparteRepo() {
-        return contraparteRepo;
-    }
-
-    public ScpComprobantepagoRep getComprobantepagoRepo() {
-        return comprobantepagoRepo;
-    }
-
-    public VsjBancocabeceraRep getBancocabeceraRep() {
-        return bancocabeceraRep;
     }
 }

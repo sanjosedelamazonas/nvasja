@@ -24,7 +24,6 @@ import org.sanjose.model.Scp_ProyectoPorFinanciera;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.render.StringToCharacterConverter;
 import org.sanjose.render.ZeroOneTrafficLight;
-import org.sanjose.repo.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
@@ -32,10 +31,7 @@ import org.sanjose.util.ViewUtil;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.views.sys.INavigatorView;
 import org.sanjose.views.sys.VsjView;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,8 +51,7 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
 
     public static final String VIEW_NAME = "Operaciones de Caja";
     private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
-    public final VsjCajabancoRep repo;
-    private final CajaGridLogic viewLogic = new CajaGridLogic(this);
+    private final CajaGridLogic viewLogic;
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
@@ -78,45 +73,15 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
             2, 2, 6, 6
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado", "flg_Anula" };
-    private final ScpPlanproyectoRep planproyectoRepo;
-    private final ScpFinancieraRep financieraRepo;
-    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-    private final ScpCargocuartaRep cargocuartaRepo;
-    private final ScpDestinoRep destinoRepo;
-    private final ScpTipodocumentoRep tipodocumentoRepo;
-    private final ScpTipocambioRep tipocambioRepo;
-    @PersistenceContext
-    private final EntityManager em;
-    private ScpPlancontableRep planRepo;
-    private ScpPlanespecialRep planEspRepo;
-    private ScpProyectoRep proyectoRepo;
-    private ScpComprobantepagoRep comprobantepagoRepo;
-    private Scp_ContraparteRep contraparteRepo;
+
     private BeanItemContainer<VsjCajabanco> container;
 
     private VsjCajabanco itemSeleccionado;
+    private ComprobanteService comprobanteService;
 
-    @Autowired
-    private CajaGridView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
-                         ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
-                         ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                         ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                         Scp_ContraparteRep contraparteRepo, ScpCargocuartaRep cargocuartaRepo,
-                         ScpTipodocumentoRep tipodocumentoRepo, ScpTipocambioRep tipocambioRepo, EntityManager em) {
-        this.repo = repo;
-        this.planRepo = planRepo;
-        this.planEspRepo = planEspRepo;
-        this.proyectoRepo = proyectoRepo;
-        this.comprobantepagoRepo = comprobantepagoRepo;
-        this.planproyectoRepo = planproyectoRepo;
-        this.financieraRepo = financieraRepo;
-        this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
-        this.destinoRepo = destinoRepo;
-        this.contraparteRepo = contraparteRepo;
-        this.tipodocumentoRepo = tipodocumentoRepo;
-        this.cargocuartaRepo = cargocuartaRepo;
-        this.tipocambioRepo = tipocambioRepo;
-        this.em = em;
+    public CajaGridView(ComprobanteService comprobanteService) {
+        this.comprobanteService = comprobanteService;
+        viewLogic = new CajaGridLogic();
     }
 
     @Override
@@ -124,7 +89,7 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
         setSizeFull();
         addStyleName("crud-view");
         //noinspection unchecked
-        container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
+        container = new BeanItemContainer(VsjCajabanco.class, getService().getCajabancoRep().findAll());
         
         gridCaja.setContainerDataSource(container);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
@@ -165,20 +130,20 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
         // Proyecto
         ComboBox selTercero = new ComboBox();
         ComboBox selProyecto = new ComboBox();
-        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
+        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", getService().getProyectoRepo().findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
         selProyecto.addValueChangeListener(this::setProyectoLogic);
         selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
         gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
         // Tercero
-        DataFilterUtil.bindComboBox(selTercero, "codDestino", destinoRepo.findByIndTipodestino('3'), "Sel Tercero", "txtNombredestino");
+        DataFilterUtil.bindComboBox(selTercero, "codDestino", getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero", "txtNombredestino");
         selTercero.addValueChangeListener(this::setTerceroLogic);
         selTercero.addValidator(new TwoCombosValidator(selProyecto, true, null));
         gridCaja.getColumn("codTercero").setEditorField(selTercero);
 
         // Cta Caja
         ComboBox selCtacontablecaja = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codContracta").setEditorField(selCtacontablecaja);
 
         // Tipo Moneda
@@ -189,49 +154,49 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
 
         // Cta Contable
         ComboBox selCtacontable = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
 
         // Rubro inst
         ComboBox selCtaespecial = new ComboBox();
         DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial",
-                planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
+                getService().getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
                 "Sel cta especial", "txtDescctaespecial");
         gridCaja.getColumn("codCtaespecial").setEditorField(selCtaespecial);
 
         // Responsable
         ComboBox selResponsable = new ComboBox();
-        DataFilterUtil.bindComboBox(selResponsable, "codDestino", destinoRepo.findByIndTipodestinoNot('3'),
+        DataFilterUtil.bindComboBox(selResponsable, "codDestino", getService().getDestinoRepo().findByIndTipodestinoNot('3'),
                 "Responsable", "txtNombredestino");
         gridCaja.getColumn("codDestino").setEditorField(selResponsable);
 
         ComboBox selLugarGasto = new ComboBox();
-        DataFilterUtil.bindComboBox(selLugarGasto, "codContraparte", contraparteRepo.findAll(),
+        DataFilterUtil.bindComboBox(selLugarGasto, "codContraparte", getService().getContraparteRepo().findAll(),
                 "Sel Lugar de Gasto", "txtDescContraparte");
         gridCaja.getColumn("codContraparte").setEditorField(selLugarGasto);
 
         // Cod. Auxiliar
         ComboBox selAuxiliar = new ComboBox();
-        DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", destinoRepo.findByIndTipodestinoNot('3'),
+        DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", getService().getDestinoRepo().findByIndTipodestinoNot('3'),
                 "Auxiliar", "txtNombredestino");
         gridCaja.getColumn("codDestinoitem").setEditorField(selAuxiliar);
 
         // Tipo doc
         ComboBox selComprobantepago = new ComboBox();
-        DataFilterUtil.bindComboBox(selComprobantepago, "codTipocomprobantepago", comprobantepagoRepo.findAll(),
+        DataFilterUtil.bindComboBox(selComprobantepago, "codTipocomprobantepago", getService().getComprobantepagoRepo().findAll(),
                 "Sel Tipo", "txtDescripcion");
         gridCaja.getColumn("codTipocomprobantepago").setEditorField(selComprobantepago);
 
         // Rubro Proy
         ComboBox selPlanproyecto = new ComboBox();
         DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
-                planproyectoRepo.findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
+                getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
                 "Sel Rubro proy", "txtDescctaproyecto");
         gridCaja.getColumn("codCtaproyecto").setEditorField(selPlanproyecto);
 
         // Fuente
         ComboBox selFinanciera = new ComboBox();
-        DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraRepo.findAll(),
+        DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", getService().getFinancieraRepo().findAll(),
                 "Sel Fuente", "txtDescfinanciera");
         gridCaja.getColumn("codFinanciera").setEditorField(selFinanciera);
 
@@ -252,7 +217,7 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
 
-        viewLogic.init();
+        viewLogic.init(this);
     }
 
     private void setProyectoLogic(Property.ValueChangeEvent event) {
@@ -275,7 +240,7 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
             proyecto = objProyecto.toString();
 
         Object id = event.getItem().getItemProperty("codCajabanco").getValue();
-        itemSeleccionado = repo.findByCodCajabanco((Integer)id);
+        itemSeleccionado = getService().getCajabancoRep().findByCodCajabanco((Integer) id);
         setEditorLogic(proyecto);
     }
 
@@ -285,14 +250,14 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
 
         if (codProyecto!=null && !codProyecto.isEmpty()) {
             DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
-                    planproyectoRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
+                    getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
                             "N", GenUtil.getCurYear(), codProyecto),
                     "Sel Rubro proy", "txtDescctaproyecto");
             List<Scp_ProyectoPorFinanciera>
-                    proyectoPorFinancieraList = proyectoPorFinancieraRepo.findById_CodProyecto(codProyecto);
+                    proyectoPorFinancieraList = getService().getProyectoPorFinancieraRepo().findById_CodProyecto(codProyecto);
 
             // Filter financiera if exists in Proyecto Por Financiera
-            List<ScpFinanciera> financieraList = financieraRepo.findAll();
+            List<ScpFinanciera> financieraList = getService().getFinancieraRepo().findAll();
             List<ScpFinanciera> financieraEfectList = new ArrayList<>();
             if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
                 List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
@@ -318,7 +283,7 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
 
     public void refreshData() {
         container.removeAllItems();
-        container.addAll(repo.findAll());
+        container.addAll(getService().getCajabancoRep().findAll());
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
     }
 
@@ -345,29 +310,6 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
         return null;
     }
 
-    public ScpCargocuartaRep getCargocuartaRepo() {
-        return cargocuartaRepo;
-    }
-
-    public ScpDestinoRep getDestinoRepo() {
-        return destinoRepo;
-    }
-
-    public ScpTipodocumentoRep getTipodocumentoRepo() {
-        return tipodocumentoRepo;
-    }
-
-    public VsjCajabancoRep getRepo() {
-        return repo;
-    }
-
-    public ScpTipocambioRep getTipocambioRepo() {
-        return tipocambioRepo;
-    }
-
-    public EntityManager getEm() {
-        return em;
-    }
 
     public VsjCajabanco getItemSeleccionado() {
         return itemSeleccionado;
@@ -376,5 +318,9 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
     @Override
     public String getNavigatorViewName() {
         return VIEW_NAME;
+    }
+
+    public ComprobanteService getService() {
+        return comprobanteService;
     }
 }
