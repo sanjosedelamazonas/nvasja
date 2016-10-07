@@ -1,10 +1,12 @@
 package org.sanjose.views.caja;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitEvent;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitHandler;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.Notification;
@@ -15,18 +17,19 @@ import org.sanjose.MainUI;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpTipocambio;
-import org.sanjose.util.*;
 import org.sanjose.model.VsjCajabanco;
-
-import com.vaadin.data.fieldgroup.FieldGroup.CommitEvent;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitHandler;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.external.org.slf4j.Logger;
-import com.vaadin.external.org.slf4j.LoggerFactory;
+import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.GenUtil;
+import org.sanjose.util.ProcUtil;
+import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.DestinoView;
 
 import javax.persistence.PersistenceException;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -41,17 +44,17 @@ public class CajaGridLogic implements Serializable {
 
 	
 	private static final Logger log = LoggerFactory.getLogger(CajaGridLogic.class);
-	
-    private final CajaGridView view;
 
-    public CajaGridLogic(CajaGridView cajaGridView) {
-        view = cajaGridView;
-    }
-
+    private CajaGridView view;
     private ProcUtil procUtil;
 
-    public void init() {
-        procUtil = new ProcUtil(view.getEm());
+    public CajaGridLogic() {
+
+    }
+
+    public void init(CajaGridView cajaGridView) {
+        view = cajaGridView;
+        procUtil = new ProcUtil(view.getService().getEm());
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.responsablesBtn.addClickListener(e -> editDestino(view.getSelectedRow()));
         view.enviarBtn.addClickListener(e -> enviarContabilidad(view.getSelectedRows()));
@@ -75,11 +78,11 @@ public class CajaGridLogic implements Serializable {
                                 .createQuestion()
                                 .withCaption("Esta operacion ya esta enviado")
                                 .withMessage("?Esta seguro que quiere guardar los cambios?")
-                                .withYesButton(() -> view.repo.save(vcbToSave))
+                                .withYesButton(() -> view.getService().getCajabancoRep().save(vcbToSave))
                                 .withNoButton()
                                 .open();
                     } else
-                        view.repo.save(vcbToSave);
+                        view.getService().getCajabancoRep().save(vcbToSave);
 
                 }
             }
@@ -98,7 +101,7 @@ public class CajaGridLogic implements Serializable {
                 vsjCajabancoList.add(vcb);
                 // Check TipoDeCambio
                 log.info("Check tipoDeCambio: " + vcb);
-                List<ScpTipocambio> tipocambios = view.getTipocambioRepo().findById_FecFechacambio(
+                List<ScpTipocambio> tipocambios = view.getService().getTipocambioRep().findById_FecFechacambio(
                         GenUtil.getBeginningOfDay(vcb.getFecFecha()));
                 if (tipocambios.isEmpty()) {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -137,11 +140,12 @@ public class CajaGridLogic implements Serializable {
         destinoWindow.setModal(true);
         destinoWindow.setClosable(false);
 
-        DestinoView destinoView = new DestinoView(view.getDestinoRepo(), view.getCargocuartaRepo(), view.getTipodocumentoRepo());
+        DestinoView destinoView = new DestinoView(view.getService().getDestinoRepo(), view.getService().getCargocuartaRepo(),
+                view.getService().getTipodocumentoRepo());
         if (vcb==null)
             destinoView.viewLogic.nuevoDestino();
         else {
-            ScpDestino destino = view.getDestinoRepo().findByCodDestino(vcb.getCodDestino());
+            ScpDestino destino = view.getService().getDestinoRepo().findByCodDestino(vcb.getCodDestino());
             if (destino!=null)
                 destinoView.viewLogic.editarDestino(destino);
         }
@@ -172,7 +176,7 @@ public class CajaGridLogic implements Serializable {
                         .withYesButton(() -> {
                             log.debug("To delete: " + item);
 
-                            List<VsjCajabanco> comprobantes = view.getRepo().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
+                            List<VsjCajabanco> comprobantes = view.getService().getCajabancoRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
                             if (comprobantes.isEmpty()) {
                                 destinoView.destinoRepo.delete(item);
                                 //refreshDestino();

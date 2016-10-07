@@ -1,23 +1,17 @@
 package org.sanjose.views.caja;
 
-import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import org.sanjose.model.VsjCajabanco;
-import org.sanjose.repo.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.INavigatorView;
 import org.sanjose.views.sys.VsjView;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Collection;
 
 /**
@@ -26,14 +20,10 @@ import java.util.Collection;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-@SpringComponent
-// @UIScope
 public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjView {
 
     public static final String VIEW_NAME = "Manejo de Caja";
-    final ScpPlancontableRep planRepo;
-    private final CajaManejoLogic viewLogic = new CajaManejoLogic(this);
-    private final VsjCajabancoRep repo;
+    private final CajaManejoLogic viewLogic = new CajaManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
@@ -53,26 +43,13 @@ public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjV
             2
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
-    private final ScpPlanproyectoRep planproyectoRepo;
-    private final ScpFinancieraRep financieraRepo;
-    private final Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo;
-    @PersistenceContext
-    private final EntityManager em;
-    private BeanItemContainer<VsjCajabanco> container;
-    private Container.Filter fechaFilter;
 
-    @Autowired
-    public CajaManejoView(VsjCajabancoRep repo, ScpPlancontableRep planRepo,
-                          ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
-                          ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                          ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                          Scp_ContraparteRep contraparteRepo, EntityManager em) {
-        this.repo = repo;
-        this.planproyectoRepo = planproyectoRepo;
-        this.financieraRepo = financieraRepo;
-        this.proyectoPorFinancieraRepo = proyectoPorFinancieraRepo;
-        this.planRepo = planRepo;
-        this.em = em;
+    private BeanItemContainer<VsjCajabanco> container;
+
+    private ComprobanteService comprobanteService;
+
+    public CajaManejoView(ComprobanteService comprobanteService) {
+        this.comprobanteService = comprobanteService;
     }
 
     @Override
@@ -81,7 +58,7 @@ public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjV
         addStyleName("crud-view");
 
         //noinspection unchecked
-        container = new BeanItemContainer(VsjCajabanco.class, repo.findAll());
+        container = new BeanItemContainer(VsjCajabanco.class, getService().getCajabancoRep().findAll());
         gridCaja.setContainerDataSource(container);
         gridCaja.setEditorEnabled(false);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
@@ -112,7 +89,7 @@ public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjV
         fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
         fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));
 
-        viewLogic.init();
+        viewLogic.init(this);
         viewLogic.setSaldos(gridSaldoInicial, true);
         viewLogic.setSaldos(gridSaldoFInal, false);
 
@@ -120,14 +97,14 @@ public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjV
 
     public void refreshData() {
         container.removeAllItems();
-        container.addAll(repo.findAll());
+        container.addAll(getService().getCajabancoRep().findAll());
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
     }
 
     private void setItemLogic(ItemClickEvent event) {
         if (event.isDoubleClick()) {
             Object id = event.getItem().getItemProperty("codCajabanco").getValue();
-            VsjCajabanco vcb = repo.findByCodCajabanco((Integer)id);
+            VsjCajabanco vcb = getService().getCajabancoRep().findByCodCajabanco((Integer) id);
             viewLogic.editarComprobante(vcb);
         }
     }
@@ -146,16 +123,16 @@ public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjV
     }
 
     public void removeRow(VsjCajabanco vsj) {
-    	repo.delete(vsj);    	
-    	gridCaja.getContainerDataSource().removeItem(vsj);
-    }
-
-    public EntityManager getEm() {
-        return em;
+        getService().getCajabancoRep().delete(vsj);
+        gridCaja.getContainerDataSource().removeItem(vsj);
     }
 
     @Override
     public String getNavigatorViewName() {
         return VIEW_NAME;
+    }
+
+    public ComprobanteService getService() {
+        return comprobanteService;
     }
 }

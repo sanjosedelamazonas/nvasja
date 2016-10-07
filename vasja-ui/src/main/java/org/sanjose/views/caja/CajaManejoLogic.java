@@ -5,16 +5,17 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
-import org.apache.commons.lang.time.DateUtils;
 import org.sanjose.MainUI;
 import org.sanjose.bean.Caja;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.render.EmptyZeroNumberRendrer;
-import org.sanjose.util.*;
+import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.DataUtil;
+import org.sanjose.util.GenUtil;
+import org.sanjose.util.ViewUtil;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -33,18 +34,14 @@ public class CajaManejoLogic implements Serializable {
 
 	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);
 
-    private final CajaManejoView view;
+    private CajaManejoView view;
 
     private Grid.FooterRow saldosFooterInicial;
 
     private Grid.FooterRow saldosFooterFinal;
 
-    public CajaManejoLogic(CajaManejoView cajaManejoView) {
+    public void init(CajaManejoView cajaManejoView) {
         view = cajaManejoView;
-    }
-
-    public void init() {
-
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.btnEditar.addClickListener(e -> {
             for (Object obj : view.getSelectedRow()) {
@@ -114,7 +111,7 @@ public class CajaManejoLogic implements Serializable {
         grid.setColumnOrder("codigo", "descripcion", "soles", "dolares");
         BigDecimal totalSoles = new BigDecimal(0.00);
         BigDecimal totalUsd = new BigDecimal(0.00);
-        for (Caja caja : DataUtil.getCajasList(view.getEm(), view.planRepo,
+        for (Caja caja : DataUtil.getCajasList(view.getService().getEm(), view.getService().getPlanRepo(),
                 (isInicial ? GenUtil.getBeginningOfDay(view.fechaDesde.getValue())
                         : GenUtil.getEndOfDay(view.fechaHasta.getValue())))) {
             c.addItem(caja);

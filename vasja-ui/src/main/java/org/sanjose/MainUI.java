@@ -16,6 +16,7 @@ import org.sanjose.repo.MsgUsuarioRep;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.views.banco.BancoOperView;
+import org.sanjose.views.banco.BancoService;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.PropiedadService;
@@ -54,23 +55,23 @@ public class MainUI extends UI {
     private MainScreen mainScreen;
 
     @Autowired
-    private MainUI(PropiedadService propiedadService, ComprobanteService comprobanteService, MsgUsuarioRep msgUsuarioRep,
+    private MainUI(PropiedadService propiedadService,
+                   ComprobanteService comprobanteService,
+                   BancoService bancoService,
+                   MsgUsuarioRep msgUsuarioRep,
                    EntityManager em,
-                   CajaGridView cajaGridView,
-                   ConfiguracionCajaView configuracionCajaView, ConfiguracionCtaCajaBancoView confView,
-                   BancoOperView bancoOperView,
-                   CajaManejoView cajaManejoView
-    ) {
+                   ConfiguracionCajaView configuracionCajaView,
+                   ConfiguracionCtaCajaBancoView confView) {
         this.propiedadView = new PropiedadView(propiedadService);
         this.msgUsuarioRep = msgUsuarioRep;
         this.em = em;
         this.confView = confView;
-        this.cajaGridView = cajaGridView;
+        this.cajaGridView = new CajaGridView(comprobanteService);
         this.comprobanteView = new ComprobanteView(comprobanteService);
         this.transferenciaView = new TransferenciaView(comprobanteService);
         this.configuracionCajaView = configuracionCajaView;
-        this.cajaManejoView = cajaManejoView;
-        this.bancoOperView = bancoOperView;
+        this.bancoOperView = new BancoOperView(bancoService);
+        this.cajaManejoView = new CajaManejoView(comprobanteService);
     }
 
     public static MainUI get() {
