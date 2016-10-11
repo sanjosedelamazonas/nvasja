@@ -54,7 +54,7 @@ public class CajaGridLogic implements Serializable {
 
     public void init(CajaGridView cajaGridView) {
         view = cajaGridView;
-        procUtil = new ProcUtil(view.getService().getEm());
+        procUtil = MainUI.get().getProcUtil();
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.responsablesBtn.addClickListener(e -> editDestino(view.getSelectedRow()));
         view.enviarBtn.addClickListener(e -> enviarContabilidad(view.getSelectedRows()));

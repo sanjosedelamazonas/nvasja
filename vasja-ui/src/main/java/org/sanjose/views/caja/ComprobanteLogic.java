@@ -67,7 +67,7 @@ class ComprobanteLogic implements Serializable {
         });
         view.getModificarBtn().addClickListener(event -> editarComprobante());
         view.getEliminarBtn().addClickListener(event -> eliminarComprobante());
-        procUtil = new ProcUtil(view.getService().getEm());
+        procUtil = MainUI.get().getProcUtil();
     }
 
 
@@ -440,10 +440,17 @@ class ComprobanteLogic implements Serializable {
                 view.getNumIngreso().setEnabled(false);
                 view.getNumEgreso().setEnabled(false);
             }
-            DataFilterUtil.bindComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
+            /*DataFilterUtil.bindComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
                     view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
                             "N", GenUtil.getCurYear(), codProyecto),
-                    "Sel Rubro proy", "txtDescctaproyecto");
+                    "txtDescctaproyecto");
+*/
+            DataFilterUtil.refreshComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
+                    view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
+                            "N", GenUtil.getCurYear(), codProyecto),
+                    "txtDescctaproyecto");
+
+
             List<Scp_ProyectoPorFinanciera>
                     proyectoPorFinancieraList = view.getService().getProyectoPorFinancieraRepo().findById_CodProyecto(codProyecto);
 
@@ -475,8 +482,8 @@ class ComprobanteLogic implements Serializable {
             } else {
                 financieraEfectList = financieraList;
             }
-            DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", financieraEfectList,
-                    "Sel Fuente", "txtDescfinanciera");
+            DataFilterUtil.refreshComboBox(view.getSelFuente(), "codFinanciera", financieraEfectList,
+                    "txtDescfinanciera");
             if (financieraEfectList.size()==1)
                 view.getSelFuente().select(financieraEfectList.get(0).getCodFinanciera());
 
@@ -499,8 +506,17 @@ class ComprobanteLogic implements Serializable {
         clearSaldos();
         //getSelMoneda().setValue(null);
         beanItem = new BeanItem<>(item);
-        fieldGroup = new FieldGroup(beanItem);
-        fieldGroup.setItemDataSource(beanItem);
+        if (fieldGroup != null) {
+            fieldGroup.discard();
+            //fieldGroup.clear();
+            List<Field<?>> fieldList = new ArrayList<>(fieldGroup.getFields());
+            for (Field f : fieldList) {
+                fieldGroup.unbind(f);
+            }
+            fieldGroup.setItemDataSource(beanItem);
+        } else {
+            fieldGroup = new FieldGroup(beanItem);
+        }
         fieldGroup.bind(view.getSelProyecto(), "codProyecto");
         fieldGroup.bind(view.getSelTercero(), "codTercero");
         fieldGroup.bind(view.getSelMoneda(), "codTipomoneda");

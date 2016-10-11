@@ -83,7 +83,17 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
         gridTrans.addSelectionListener(new SelectionEvent.SelectionListener() {
             @Override
             public void select(SelectionEvent selectionEvent) {
+                if (selectionEvent.getSelected().isEmpty()) return;
+                VsjCajabanco vcb = (VsjCajabanco) selectionEvent.getSelected().toArray()[0];
                 viewLogic.viewComprobante();
+
+                if (vcb.isAnula() || vcb.isEnviado()) {
+                    modificarBtn.setEnabled(false);
+                    eliminarBtn.setEnabled(false);
+                } else {
+                    modificarBtn.setEnabled(true);
+                    eliminarBtn.setEnabled(true);
+                }
             }
         });
 

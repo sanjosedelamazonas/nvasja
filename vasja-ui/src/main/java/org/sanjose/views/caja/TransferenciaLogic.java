@@ -3,6 +3,7 @@ package org.sanjose.views.caja;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
@@ -161,6 +162,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 }
                 tView.getContainer().removeItem(vcbOld);
                 tView.getContainer().addBean(item);
+                tView.gridTrans.sort("fecFregistro", SortDirection.DESCENDING);
             }
             tView.getGuardarBtn().setEnabled(false);
             tView.getNuevoComprobante().setEnabled(true);

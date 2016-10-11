@@ -8,7 +8,6 @@ import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.util.DataUtil;
-import org.sanjose.util.ProcUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
 import tm.kod.widgets.numberfield.NumberField;
@@ -74,7 +73,7 @@ public class ComprobanteView extends ComprobanteUI implements IComprobanteView, 
             BigDecimal total = new BigDecimal(0.00);
             for (ScpPlancontable caja : DataUtil.getCajas(getDataFechaComprobante().getValue(), getService().getPlanRepo(), PEN.equals(selMoneda.getValue().toString().charAt(0)))) {
 
-                BigDecimal saldo = new ProcUtil(getService().getEm()).getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
+                BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(dataFechaComprobante.getValue(), caja.getId().getCodCtacontable()
                         , selMoneda.getValue().toString().charAt(0));
                 Label salLbl = new Label();
                 salLbl.setContentMode(ContentMode.HTML);

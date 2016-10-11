@@ -111,7 +111,7 @@ public class CajaManejoLogic implements Serializable {
         grid.setColumnOrder("codigo", "descripcion", "soles", "dolares");
         BigDecimal totalSoles = new BigDecimal(0.00);
         BigDecimal totalUsd = new BigDecimal(0.00);
-        for (Caja caja : DataUtil.getCajasList(view.getService().getEm(), view.getService().getPlanRepo(),
+        for (Caja caja : DataUtil.getCajasList(view.getService().getPlanRepo(),
                 (isInicial ? GenUtil.getBeginningOfDay(view.fechaDesde.getValue())
                         : GenUtil.getEndOfDay(view.fechaHasta.getValue())))) {
             c.addItem(caja);
