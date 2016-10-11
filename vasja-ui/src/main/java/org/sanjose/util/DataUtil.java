@@ -1,26 +1,14 @@
 package org.sanjose.util;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.fieldgroup.FieldGroup;
 import org.sanjose.MainUI;
-import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.Caja;
-import org.sanjose.model.VsjItem;
 import org.sanjose.model.ScpPlancontable;
-import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.repo.ScpPlancontableRep;
-import org.sanjose.model.VsjCajabanco;
 
-import javax.persistence.EntityManager;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static org.sanjose.util.GenUtil.PEN;
-import static org.sanjose.util.GenUtil.USD;
 
 /**
  * VASJA class
@@ -49,14 +37,10 @@ public class DataUtil {
     }
 
     public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
-        return getCajasList(MainUI.get().getEntityManager(), planRepo, date);
-    }
-
-    public static List<Caja> getCajasList(EntityManager em, ScpPlancontableRep planRepo, Date date) {
         List<Caja> cajas = new ArrayList<>();
         for (ScpPlancontable caja : getTodasCajas(date, planRepo)) {
             Character moneda = caja.getIndTipomoneda().equals('N') ? '0' : '1';
-            BigDecimal saldo = new ProcUtil(em).getSaldoCaja(
+            BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(
                     date,
                     caja.getId().getCodCtacontable()
                     , moneda);
@@ -79,11 +63,11 @@ public class DataUtil {
         cajasInicial.addAll(cajasFinal);
         for (ScpPlancontable caja : cajasInicial) {
             Character moneda = caja.getIndTipomoneda().equals('N') ? '0' : '1';
-            BigDecimal saldoInicial = new ProcUtil(MainUI.get().getEntityManager()).getSaldoCaja(
+            BigDecimal saldoInicial = MainUI.get().getProcUtil().getSaldoCaja(
                     GenUtil.getBeginningOfDay(dateInicial),
                     caja.getId().getCodCtacontable()
                     , moneda);
-            BigDecimal saldoFinal = new ProcUtil(MainUI.get().getEntityManager()).getSaldoCaja(
+            BigDecimal saldoFinal = MainUI.get().getProcUtil().getSaldoCaja(
                     GenUtil.getEndOfDay(datefinal),
                     caja.getId().getCodCtacontable()
                     , moneda);

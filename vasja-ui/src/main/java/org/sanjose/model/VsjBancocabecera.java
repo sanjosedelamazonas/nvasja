@@ -1,20 +1,13 @@
 package org.sanjose.model;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import org.sanjose.util.GenUtil;
 
-import java.io.Serializable;
 import javax.persistence.*;
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-
-import static org.sanjose.util.GenUtil.PEN;
 
 
 /**
@@ -26,10 +19,47 @@ import static org.sanjose.util.GenUtil.PEN;
 @NamedQuery(name="VsjBancocabecera.findAll", query="SELECT v FROM VsjBancocabecera v")
 public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="cod_bancocabecera")
+	private Integer codBancocabecera;
+	@Column(name="cod_comprobanteenlace")
+	private String codComprobanteenlace;
+	@Column(name="cod_ctacontable")
+	private String codCtacontable;
+	@Column(name="cod_destino")
+	private String codDestino;
+	@Column(name="cod_origenenlace")
+	private String codOrigenenlace;
+	@Column(name="flg_enviado")
+	private Character flgEnviado;
+	@Column(name="flg_im")
+	private Character flgIm;
+	@Column(name="flg_saldo")
+	private Character flgSaldo;
+	@Column(name="txt_cheque")
+	private String txtCheque;
+	@Column(name="txt_glosa")
+	private String txtGlosa;
+	@Column(name="ind_cobrado")
+	private Boolean flgCobrado;
+	@Column(name="cod_mescobrado")
+	private String codMescobrado;
+	//bi-directional many-to-one association to VsjBancodetalle
+	@OneToMany(mappedBy = "vsjBancocabecera", fetch = FetchType.EAGER)
+	private List<VsjBancodetalle> vsjBancodetalles;
+
+
+	public VsjBancocabecera() {
+		setFecFecha(new Timestamp(System.currentTimeMillis()));
+		setFlgEnviado('0');
+		setFlgIm('1');
+		setFlgSaldo('0');
+	}
 
 	@Override
 	public VsjBancocabecera prepareToSave() throws FieldGroup.CommitException {
-		VsjBancocabecera item = (VsjBancocabecera)super.prepareToSave();
+		VsjBancocabecera item = (VsjBancocabecera) super.prepareToSave();
 		Logger logger = LoggerFactory.getLogger(VsjBancocabecera.class);
 		item.setIndTipocuenta('2');
 		item.setFlgCobrado(false);
@@ -57,56 +87,6 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 		item.setNumDebemo(saldoDebemo);
 		item.setNumDebemo(saldoHabermo);*/
 		return item;
-	}
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="cod_bancocabecera")
-	private Integer codBancocabecera;
-
-	@Column(name="cod_comprobanteenlace")
-	private String codComprobanteenlace;
-
-	@Column(name="cod_ctacontable")
-	private String codCtacontable;
-
-	@Column(name="cod_destino")
-	private String codDestino;
-
-	@Column(name="cod_origenenlace")
-	private String codOrigenenlace;
-
-	@Column(name="flg_enviado")
-	private Character flgEnviado;
-
-	@Column(name="flg_im")
-	private Character flgIm;
-
-	@Column(name="flg_saldo")
-	private Character flgSaldo;
-
-	@Column(name="txt_cheque")
-	private String txtCheque;
-
-	@Column(name="txt_glosa")
-	private String txtGlosa;
-
-	@Column(name="ind_cobrado")
-	private Boolean flgCobrado;
-
-	@Column(name="cod_mescobrado")
-	private String codMescobrado;
-
-
-	//bi-directional many-to-one association to VsjBancodetalle
-	@OneToMany(mappedBy="vsjBancocabecera")
-	private List<VsjBancodetalle> vsjBancodetalles;
-
-	public VsjBancocabecera() {
-		setFecFecha(new Timestamp(System.currentTimeMillis()));
-		setFlgEnviado('0');
-		setFlgIm('1');
-		setFlgSaldo('0');
 	}
 
 	public Integer getCodBancocabecera() {

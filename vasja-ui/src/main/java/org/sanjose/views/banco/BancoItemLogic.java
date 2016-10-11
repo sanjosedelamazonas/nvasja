@@ -67,7 +67,7 @@ class BancoItemLogic implements Serializable {
           //  if (savedBancodetalle!=null) ViewUtil.printComprobante(savedBancodetalle);
         });
         view.getModificarBtn().addClickListener(event -> editarComprobante());
-        procUtil = new ProcUtil(view.getService().getEm());
+        procUtil = MainUI.get().getProcUtil();
     }
 
 

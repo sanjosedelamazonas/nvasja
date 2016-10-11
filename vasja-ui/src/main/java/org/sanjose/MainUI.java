@@ -16,6 +16,7 @@ import org.sanjose.authentication.MsgAccessControl;
 import org.sanjose.repo.MsgUsuarioRep;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
+import org.sanjose.util.ProcUtil;
 import org.sanjose.views.banco.BancoOperView;
 import org.sanjose.views.banco.BancoService;
 import org.sanjose.views.caja.*;
@@ -23,9 +24,6 @@ import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.PropiedadService;
 import org.sanjose.views.sys.PropiedadView;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 /**
  * Main UI class of the application that shows either the login screen or the
@@ -51,8 +49,7 @@ public class MainUI extends UI {
     private final TransferenciaView transferenciaView;
     private final BancoOperView bancoOperView;
     private final MsgUsuarioRep msgUsuarioRep;
-    @PersistenceContext
-    private final EntityManager em;
+    private ProcUtil procUtil;
     private AccessControl accessControl;
     private MainScreen mainScreen;
 
@@ -61,12 +58,13 @@ public class MainUI extends UI {
                    ComprobanteService comprobanteService,
                    BancoService bancoService,
                    MsgUsuarioRep msgUsuarioRep,
-                   EntityManager em,
+                   ProcUtil procUtil,
+                   //EntityManager em,
                    ConfiguracionCajaView configuracionCajaView,
                    ConfiguracionCtaCajaBancoView confView) {
         this.propiedadView = new PropiedadView(propiedadService);
         this.msgUsuarioRep = msgUsuarioRep;
-        this.em = em;
+        this.procUtil = procUtil;
         this.confView = confView;
         this.cajaGridView = new CajaGridView(comprobanteService);
         this.comprobanteView = new ComprobanteView(comprobanteService);
@@ -109,10 +107,6 @@ public class MainUI extends UI {
         return accessControl;
     }
 
-    public EntityManager getEntityManager() {
-        return em;
-    }
-
     public MainScreen getMainScreen() {
         return mainScreen;
     }
@@ -131,5 +125,9 @@ public class MainUI extends UI {
 
     public MsgUsuarioRep getMsgUsuarioRep() {
         return msgUsuarioRep;
+    }
+
+    public ProcUtil getProcUtil() {
+        return procUtil;
     }
 }

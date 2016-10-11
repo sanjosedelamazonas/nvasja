@@ -5,8 +5,10 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.VsjCajabanco;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.StoredProcedureQuery;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,63 +20,54 @@ import static org.sanjose.util.GenUtil.PEN;
  * User: prubach
  * Date: 12.09.16
  */
+@Service
 public class ProcUtil {
-
 
     private static final Logger log = LoggerFactory.getLogger(ProcUtil.class);
 
-    @PersistenceContext
-    private
-    EntityManager em;
+    private EntityManager em;
 
+    @Autowired
     public ProcUtil(EntityManager em) {
         this.em = em;
     }
 
-    public EntityManager getEntityManager() {
-        return em;
-    }
-
-    @Autowired
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
-    }
-
     public Saldos getSaldos(Date fecha, String codProyecto, String codTercero) {
-        StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getSaldoAlDia");
+        StoredProcedureQuery getSaldoAlDiaQuery = em.createNamedStoredProcedureQuery("getSaldoAlDia");
         if (codProyecto!=null) {
-            query.setParameter(1, "1");
-            query.setParameter(3, codProyecto);
+            getSaldoAlDiaQuery.setParameter(1, "1");
+            getSaldoAlDiaQuery.setParameter(3, codProyecto);
         } else if (codTercero!=null) {
-            query.setParameter(1, "2");
-            query.setParameter(3, codTercero);
+            getSaldoAlDiaQuery.setParameter(1, "2");
+            getSaldoAlDiaQuery.setParameter(3, codTercero);
         }
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         //log.info("Getting date: " + sdf.format(fecha));
-        query.setParameter(2, sdf.format(fecha));
-        query.execute();
-        BigDecimal pen = (BigDecimal) query.getOutputParameterValue(4);
+        getSaldoAlDiaQuery.setParameter(2, sdf.format(fecha));
+        getSaldoAlDiaQuery.execute();
+        BigDecimal pen = (BigDecimal) getSaldoAlDiaQuery.getOutputParameterValue(4);
         pen = pen.setScale(2,BigDecimal.ROUND_HALF_EVEN);
-        BigDecimal usd = (BigDecimal) query.getOutputParameterValue(5);
+        BigDecimal usd = (BigDecimal) getSaldoAlDiaQuery.getOutputParameterValue(5);
         usd = usd.setScale(2,BigDecimal.ROUND_HALF_EVEN);
-        BigDecimal eur = (BigDecimal) query.getOutputParameterValue(6);
+        BigDecimal eur = (BigDecimal) getSaldoAlDiaQuery.getOutputParameterValue(6);
         eur = eur.setScale(2,BigDecimal.ROUND_HALF_EVEN);
+        //em.clear();
+        em.close();
         return new Saldos(pen, usd, eur);
     }
 
     // moneda { 0, 1 }
     public BigDecimal getSaldoCaja(Date fecha, String codCtacaja, Character moneda) {
-        StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getSaldoAlDiaCaja");
-        //SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+        StoredProcedureQuery getSaldoAlDiaCajaQuery = em.createNamedStoredProcedureQuery("getSaldoAlDiaCaja");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //log.info("Getting saldo caja: " +codCtacaja + " " + moneda + " : " + sdf.format(fecha));
-        query.setParameter(1, sdf.format(fecha));
-        query.setParameter(2, codCtacaja);
-        query.setParameter(3, moneda.toString());
-        query.execute();
-        BigDecimal res = (BigDecimal) query.getOutputParameterValue(4);
+        getSaldoAlDiaCajaQuery.setParameter(1, sdf.format(fecha));
+        getSaldoAlDiaCajaQuery.setParameter(2, codCtacaja);
+        getSaldoAlDiaCajaQuery.setParameter(3, moneda.toString());
+        getSaldoAlDiaCajaQuery.execute();
+        BigDecimal res = (BigDecimal) getSaldoAlDiaCajaQuery.getOutputParameterValue(4);
         res = res.setScale(2,BigDecimal.ROUND_HALF_EVEN);
+        em.close();
         return res;
     }
 
