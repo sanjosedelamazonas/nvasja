@@ -98,6 +98,8 @@ public class MainScreen extends HorizontalLayout {
         printHelper = new PrintHelper(this);
         if (ConfigurationUtil.is("PRINTER_LIST_SHOW"))
             menu.addView(printHelper, PrintHelper.VIEW_NAME, PrintHelper.VIEW_NAME, FontAwesome.PRINT);
+        else
+            printHelper.init();
 
         for (VsjView view : menu.getViews()) {
             view.init();
