@@ -49,11 +49,10 @@ class ComprobanteLogic implements Serializable {
 	private static final Logger log = LoggerFactory.getLogger(ComprobanteLogic.class);
 
     protected IComprobanteView view;
-    protected VsjCajabanco item;
     protected INavigatorView navigatorView;
+    protected FieldGroup fieldGroup;
     private VsjCajabanco savedCajabanco;
     private BeanItem<VsjCajabanco> beanItem;
-    private FieldGroup fieldGroup;
     private boolean isLoading = true;
     private boolean isEdit = false;
     private ProcUtil procUtil;
@@ -180,6 +179,8 @@ class ComprobanteLogic implements Serializable {
             }
         });
         view.getGlosa().setMaxLength(70);
+        view.getNumDoc().setMaxLength(20);
+        view.getSerieDoc().setMaxLength(5);
 
         // Validators
         view.getDataFechaComprobante().addValidator(new BeanValidator(VsjCajabanco.class, "fecFecha"));
@@ -298,6 +299,8 @@ class ComprobanteLogic implements Serializable {
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
+                beanItem.getBean().setNumHaberdolar(new BigDecimal(0));
+                beanItem.getBean().setNumDebedolar(new BigDecimal(0));
                 DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), true), "Sel Caja", "txtDescctacontable");
                 setCajaLogic(PEN);
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
@@ -305,6 +308,8 @@ class ComprobanteLogic implements Serializable {
             } else {
                 // Dolares
                 // Cta Caja
+                beanItem.getBean().setNumHabersol(new BigDecimal(0));
+                beanItem.getBean().setNumDebesol(new BigDecimal(0));
                 DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), false), "Sel Caja", "txtDescctacontable");
                 setCajaLogic(USD);
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
@@ -591,6 +596,7 @@ class ComprobanteLogic implements Serializable {
             }
             Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage() + "\n" + sb.toString(), Notification.Type.ERROR_MESSAGE);
             log.warn("Got Commit Exception: " + ce.getMessage() + "\n" + sb.toString());
+            view.setEnableFields(true);
         }
     }
 

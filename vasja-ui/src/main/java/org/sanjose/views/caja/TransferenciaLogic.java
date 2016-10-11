@@ -78,8 +78,22 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 && !tView.getSelectedRow().isAnula()) {
             isEdited = true;
             editarComprobante(tView.getSelectedRow());
+            tView.getFinalizarTransBtn().setEnabled(false);
             view.getSelMoneda().setEnabled(false);
             view.getModificarBtn().setEnabled(true);
+        }
+    }
+
+    public void viewComprobante() {
+        if (!view.getGuardarBtn().isEnabled()) {
+            isEdited = true;
+            editarComprobante(tView.getSelectedRow());
+            tView.setEnableFields(false);
+            view.getNuevoComprobante().setEnabled(true);
+            view.getGuardarBtn().setEnabled(false);
+            view.getEliminarBtn().setEnabled(true);
+            view.getModificarBtn().setEnabled(true);
+            view.getImprimirBtn().setEnabled(true);
         }
     }
 
@@ -148,9 +162,9 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 tView.getContainer().removeItem(vcbOld);
                 tView.getContainer().addBean(item);
             }
-            tView.setSaldoTrans();
             tView.getGuardarBtn().setEnabled(false);
             tView.getNuevoComprobante().setEnabled(true);
+            tView.setSaldoTrans();
         } catch (FieldGroup.CommitException ce) {
             Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             log.info("Got Commit Exception: " + ce.getMessage());
@@ -193,6 +207,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         else
             ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_USD,
                     TransferenciaView.VISIBLE_COLUMN_IDS_USD, TransferenciaView.NONEDITABLE_COLUMN_IDS);
+        ViewUtil.alignMontosInGrid(tView.gridTrans);
 
         List<VsjCajabanco> operaciones = tView.getService().getCajabancoRep().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());
 
@@ -203,10 +218,10 @@ public class TransferenciaLogic extends ComprobanteLogic {
         for (VsjCajabanco oper : operaciones) {
             tView.getContainer().addBean(oper);
         }
-        tView.setSaldoTrans();
         tView.getModificarBtn().setEnabled(true);
         tView.getEliminarBtn().setEnabled(true);
         tView.getGuardarBtn().setEnabled(false);
+        tView.setSaldoTrans();
         tView.getNuevoComprobante().setEnabled(true);
         isEdited = false;
     }
