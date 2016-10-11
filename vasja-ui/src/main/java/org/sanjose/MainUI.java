@@ -1,5 +1,6 @@
 package org.sanjose;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Viewport;
 import com.vaadin.annotations.Widgetset;
@@ -38,6 +39,7 @@ import javax.persistence.PersistenceContext;
 @Viewport("user-scalable=yes,initial-scale=1.0")
 @Theme("mytheme")
 @Widgetset("org.sanjose.MyAppWidgetset")
+@PreserveOnRefresh
 public class MainUI extends UI {
 
     private final ConfiguracionCtaCajaBancoView confView;

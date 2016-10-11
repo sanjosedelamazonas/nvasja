@@ -22,9 +22,12 @@ logging:
         web: INFO
         beans: INFO
       hibernate: INFO
+    com:
+       vaadin: INFO
+
 vaadin:
   servlet:
-    productionMode: true
+    productionMode: false
     heartbeatInterval: 60
 ---
 

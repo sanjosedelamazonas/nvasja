@@ -1,6 +1,7 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.SelectionEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -46,7 +47,6 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
     TransferenciaLogic viewLogic = null;
-    private TransferenciaLogic transLogic;
     private BeanItemContainer<VsjCajabanco> container;
     private ComprobanteService comprobanteService;
 
@@ -79,6 +79,13 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
         gridTrans.sort("fecFregistro", SortDirection.DESCENDING);
 
         gridTrans.getColumn("txtGlosaitem").setWidth(150);
+
+        gridTrans.addSelectionListener(new SelectionEvent.SelectionListener() {
+            @Override
+            public void select(SelectionEvent selectionEvent) {
+                viewLogic.viewComprobante();
+            }
+        });
 
         ViewUtil.setColumnNames(gridTrans, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
 
@@ -131,7 +138,7 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
         saldoTotal.setValue("Differencia:" +
                 "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : "$ ") + calcDifference().toString() + "</span>");
 
-        if (!container.getItemIds().isEmpty() && calcDifference().compareTo(new BigDecimal(0.00))==0)
+        if (!container.getItemIds().isEmpty() && calcDifference().compareTo(new BigDecimal(0.00)) == 0 && !guardarBtn.isEnabled())
             finalizarTransBtn.setEnabled(true);
         else
             finalizarTransBtn.setEnabled(false);
@@ -148,7 +155,12 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
     }
 
     private boolean isPEN() {
-        return selMoneda.getValue() == null || PEN.equals(selMoneda.getValue().toString());
+        if (selMoneda.getValue() == null && container.getItemIds().isEmpty()) return true;
+        if (selMoneda.getValue() == null) {
+            return PEN.equals(container.getItemIds().get(0).getCodTipomoneda());
+        } else {
+            return PEN.equals(selMoneda.getValue().toString().charAt(0));
+        }
     }
 
     @Override
@@ -287,6 +299,10 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
 
     public Button getImprimirBtn() {
         return imprimirBtn;
+    }
+
+    public Button getFinalizarTransBtn() {
+        return finalizarTransBtn;
     }
 
     @Override
