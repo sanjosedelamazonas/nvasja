@@ -3,8 +3,10 @@ package org.sanjose.model;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -37,8 +39,11 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 	private Character flgIm;
 	@Column(name="flg_saldo")
 	private Character flgSaldo;
+	@Size(max=20)
 	@Column(name="txt_cheque")
 	private String txtCheque;
+	@NotBlank
+	@Size(min=2, max=150)
 	@Column(name="txt_glosa")
 	private String txtGlosa;
 	@Column(name="ind_cobrado")

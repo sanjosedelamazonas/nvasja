@@ -1,6 +1,10 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.PropertyValueGenerator;
+import com.vaadin.event.SelectionEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -8,7 +12,10 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
+import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
+import org.sanjose.model.VsjBancodetallePK;
+import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
@@ -30,19 +37,19 @@ import static org.sanjose.util.GenUtil.USD;
 public class BancoOperView extends BancoOperUI implements VsjView {
 
     public static final String VIEW_NAME = "Cheques";
-    static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
+    static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"Numero", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol"
     };
     static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/."
     };
-    static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
+    static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"Numero", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
     };
     static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing $", "Egr $"
     };
-    static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
+    static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"Numero", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebemo", "numHabermo"
     };
     static final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{"Numero", "Proyecto", "Tercero",
@@ -58,8 +65,9 @@ public class BancoOperView extends BancoOperUI implements VsjView {
             };
     private final Field[] cabezeraFields = new Field[] { dataFechaComprobante, selCuenta, selCodAuxCabeza,
             glosaCabeza, cheque };
-    private BancoItemLogic viewLogic = null;
+    private BancoLogic viewLogic = null;
     private BeanItemContainer<VsjBancodetalle> container;
+    private GeneratedPropertyContainer gpContainer;
     private BancoService bancoService;
 
     public BancoOperView(BancoService bancoService) {
@@ -87,11 +95,44 @@ public class BancoOperView extends BancoOperUI implements VsjView {
         // Grid
         //noinspection unchecked
         container = new BeanItemContainer(VsjBancodetalle.class, new ArrayList());
-        gridBanco.setContainerDataSource(container);
+        gpContainer = new GeneratedPropertyContainer(container);
+        gpContainer.addGeneratedProperty("Numero",
+                new PropertyValueGenerator<String>() {
+                    @Override
+                    public String getValue(Item item, Object itemId,
+                                            Object propertyId) {
+                        //
+                        return ((VsjBancocabecera)item.getItemProperty("vsjBancocabecera").getValue()).getTxtCorrelativo() +
+                                "-" + ((VsjBancodetallePK)item.getItemProperty("id").getValue()).getNumItem();
+                    }
+
+                    @Override
+                    public Class<String> getType() {
+                        return String.class;
+                    }
+                });
+
+        gridBanco.setContainerDataSource(gpContainer);
         gridBanco.setEditorEnabled(false);
         gridBanco.sort("fecFregistro", SortDirection.DESCENDING);
 
-        gridBanco.getColumn("txtGlosaitem").setWidth(150);
+        gridBanco.addSelectionListener(new SelectionEvent.SelectionListener() {
+            @Override
+            public void select(SelectionEvent selectionEvent) {
+                if (selectionEvent.getSelected().isEmpty()) return;
+                log.info("Selected: " + selectionEvent.getSelected().toArray()[0]);
+                //VsjCajabanco vcb = (VsjCajabanco) selectionEvent.getSelected().toArray()[0];
+                viewLogic.viewComprobante();
+
+                /*if (vcb.isAnula() || vcb.isEnviado()) {
+                    modificarBtn.setEnabled(false);
+                    eliminarBtn.setEnabled(false);
+                } else {
+                    modificarBtn.setEnabled(true);
+                    eliminarBtn.setEnabled(true);
+                }*/
+            }
+        });
 
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
 
@@ -195,7 +236,6 @@ public class BancoOperView extends BancoOperUI implements VsjView {
     public ComboBox getSelProyecto() {
         return selProyecto;
     }
-
 
     public TextField getNumVoucher() {
         return numVoucher;

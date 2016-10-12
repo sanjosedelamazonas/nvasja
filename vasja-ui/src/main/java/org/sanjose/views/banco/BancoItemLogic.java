@@ -66,7 +66,6 @@ class BancoItemLogic implements Serializable {
         view.getImprimirTotalBtn().addClickListener(event -> {
           //  if (savedBancodetalle!=null) ViewUtil.printComprobante(savedBancodetalle);
         });
-        view.getModificarBtn().addClickListener(event -> editarComprobante());
         procUtil = MainUI.get().getProcUtil();
     }
 
@@ -113,6 +112,9 @@ class BancoItemLogic implements Serializable {
                 view.getGlosaDetalle().setValue(event.getText());
             }
         });
+        view.getSaldoCuenta().setNullRepresentation("0.00");
+        view.getGlosaCabeza().setMaxLength(150);
+        view.getCheque().setMaxLength(20);
 
         // ------------ DETALLE
 
@@ -197,8 +199,9 @@ class BancoItemLogic implements Serializable {
                 view.getSelRubroInst().setValue(config.getCodCtaespecial());
             }
         });
-        view.getGlosaCabeza().setMaxLength(70);
         view.getGlosaDetalle().setMaxLength(70);
+        view.getSerieDoc().setMaxLength(5);
+        view.getNumDoc().setMaxLength(20);
 
         addValidators();
         // Editing Destino
@@ -318,12 +321,9 @@ class BancoItemLogic implements Serializable {
             BigDecimal saldo = procUtil.getSaldoCaja(view.getDataFechaComprobante().getValue(),
                     view.getSelCuenta().getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
-            String s = GenUtil.getSymMoneda(cuenta.getIndTipomoneda());
             view.getSaldoCuenta().setCaption(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
-            log.info("In setCuentaLogic: " + saldo + " cap: " + s + " " + cuenta.getIndTipomoneda());
-            view.getSaldoCuenta().setNullRepresentation("0.00");
-            view.getSaldoCuenta().setValue(df.format(saldo));
             log.info("In setCuentaLogic: " + df.format(saldo));
+            view.getSaldoCuenta().setValue(df.format(saldo));
             moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
             // If still no item created
             if (item==null) {
@@ -474,10 +474,7 @@ class BancoItemLogic implements Serializable {
                     "Sel Fuente", "txtDescfinanciera");
             if (financieraEfectList.size()==1)
                 view.getSelFuente().select(financieraEfectList.get(0).getCodFinanciera());
-
-            //nombreTercero.setValue(getProyectoRepo().findByCodProyecto(codProyecto).getTxtDescproyecto());
             setSaldos();
-            //setCajaLogic();
         } else {
             //log.info("disabling fin y planproy");
             view.getSelFuente().setEnabled(false);
@@ -491,7 +488,6 @@ class BancoItemLogic implements Serializable {
         isLoading = true;
 
         isEdit = !GenUtil.objNullOrEmpty(item.getId());
-        clearSaldos();
         beanItem = new BeanItem<>(item);
         fieldGroup = new FieldGroup(beanItem);
         fieldGroup.setItemDataSource(beanItem);
@@ -541,11 +537,7 @@ class BancoItemLogic implements Serializable {
         if (isEdit) {
             // EDITING
             log.info("is Edit in bindForm");
-            if (item.getVsjBancocabecera()!=null && !GenUtil.strNullOrEmpty(item.getVsjBancocabecera().getTxtCorrelativo())) {
-                log.info("setting numVoucher: " + item.getVsjBancocabecera().getTxtCorrelativo() + "-" + item.getId().getNumItem());
-                view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo()+ "-" + item.getId().getNumItem());
-            }
-            view.getNumVoucher().setEnabled(false);
+            setNumVoucher(item);
             view.setEnableDetalleFields(true);
             setCuentaLogic();
             if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {
@@ -562,6 +554,12 @@ class BancoItemLogic implements Serializable {
 
         setSaldos();
         isEdit = false;
+    }
+
+    protected void setNumVoucher(VsjBancodetalle item) {
+        if (item.getVsjBancocabecera()!=null && !GenUtil.strNullOrEmpty(item.getVsjBancocabecera().getTxtCorrelativo()))
+            view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo()+ "-" + item.getId().getNumItem());
+        view.getNumVoucher().setEnabled(false);
     }
 
     // Buttons
@@ -596,10 +594,6 @@ class BancoItemLogic implements Serializable {
 
     public void nuevoComprobante() {
         nuevoComprobante(PEN);
-    }
-
-    void editarComprobante() {
-        editarComprobante(savedBancodetalle);
     }
 
     public void editarComprobante(VsjBancodetalle vcb) {
