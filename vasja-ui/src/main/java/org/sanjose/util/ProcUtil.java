@@ -6,6 +6,7 @@ import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.VsjCajabanco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.StoredProcedureQuery;
@@ -32,6 +33,7 @@ public class ProcUtil {
         this.em = em;
     }
 
+    @Transactional
     public Saldos getSaldos(Date fecha, String codProyecto, String codTercero) {
         StoredProcedureQuery getSaldoAlDiaQuery = em.createNamedStoredProcedureQuery("getSaldoAlDia");
         if (codProyecto!=null) {
@@ -57,6 +59,7 @@ public class ProcUtil {
     }
 
     // moneda { 0, 1 }
+    @Transactional
     public BigDecimal getSaldoCaja(Date fecha, String codCtacaja, Character moneda) {
         StoredProcedureQuery getSaldoAlDiaCajaQuery = em.createNamedStoredProcedureQuery("getSaldoAlDiaCaja");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -71,6 +74,7 @@ public class ProcUtil {
         return res;
     }
 
+    @Transactional
     public String enviarContabilidad(VsjCajabanco vcb) {
         StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarContabilidad");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");

@@ -8,29 +8,29 @@ spring:
     username: vasja
     password: vasja123
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    tomcat:
-      min-active: 10
-      max-active: 150
-      min-idle: 5
-      max-idle: 150
-      test-while-idle: true
-      test-on-borrow: true
-      validation-query: SELECT 1
-      validation-interval: 15000
-      #log-abandoned: true
-      remove-abandoned: true
-      time-between-eviction-runs-millis: 5000
-      min-evictable-idle-time-millis: 5000
+#    tomcat:
+#      min-active: 10
+#      max-active: 50
+#      min-idle: 5
+#      max-idle: 50
+#      test-while-idle: true
+#      test-on-borrow: true
+#      validation-query: SELECT 1
+#      validation-interval: 15000
+#      #log-abandoned: true
+#      remove-abandoned: true
+#      time-between-eviction-runs-millis: 5000
+#      min-evictable-idle-time-millis: 5000
   jpa:
     show_sql: false
     database-platform: org.hibernate.dialect.SQLServerDialect
-    hibernate:
-      connection:
-        release_mode: after_statement
-    #hibernate:
-  #  hibernate:
-      #ddl-auto: create
-     # ddl: create
+#    hibernate:
+#      connection:
+#        release_mode: after_statement
+#    hibernate:
+#    hibernate:
+#      ddl-auto: create
+#      ddl: create
 logging:
   level:
     org:
@@ -39,11 +39,11 @@ logging:
         beans: INFO
       hibernate:
         engine:
-          jdbc: DEBUG
+          jdbc: INFO
       apache:
         tomcat:
           jdbc:
-            pool: DEBUG
+            pool: INFO
     com:
        vaadin: INFO
 
