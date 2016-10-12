@@ -44,6 +44,7 @@ public class BancoLogic extends BancoItemLogic {
         view.newChequeBtn.addClickListener(ev -> nuevoCheque());
         view.getGuardarBtn().addClickListener(event -> saveCabecera());
         view.getNewItemBtn().addClickListener(event -> nuevoComprobante());
+        view.getModificarBtn().addClickListener(event -> editarComprobante());
         view.getEliminarBtn().addClickListener(event -> eliminarComprobante());
         view.imprimirTotalBtn.setEnabled(false);
     }
@@ -78,6 +79,7 @@ public class BancoLogic extends BancoItemLogic {
             }
         }
         moneda = null;
+        clearSaldos();
         view.setTotal(null);
         item = null;
         bancocabecera = null;
@@ -95,6 +97,7 @@ public class BancoLogic extends BancoItemLogic {
     @Override
     public void nuevoComprobante() {
         isEdited = true;
+        clearSaldos();
         if (bancocabecera!=null) {
             // cabecera in edit mode
             log.info("nuevo Item, cabecera: " + bancocabecera);
@@ -107,15 +110,31 @@ public class BancoLogic extends BancoItemLogic {
         view.getEliminarBtn().setEnabled(true);
     }
 
-    @Override
     public void editarComprobante() {
         if (view.getSelectedRow()!=null
                 && !view.getSelectedRow().isAnula()) {
             isEdited = true;
+            clearSaldos();
             editarComprobante(view.getSelectedRow());
             //view.getSelMoneda().setEnabled(false);
             view.getModificarBtn().setEnabled(true);
+            view.getEliminarBtn().setEnabled(true);
             view.setEnableCabezeraFields(true);
+        }
+    }
+
+    public void viewComprobante() {
+        if (view.getSelectedRow()!=null) {
+            isEdited = true;
+            clearSaldos();
+            editarComprobante(view.getSelectedRow());
+            //view.getSelMoneda().setEnabled(false);
+            if (!view.getSelectedRow().isAnula()) {
+                view.getModificarBtn().setEnabled(true);
+                view.getEliminarBtn().setEnabled(false);
+            }
+            view.setEnableCabezeraFields(false);
+            view.setEnableDetalleFields(false);
         }
     }
 
@@ -205,12 +224,11 @@ public class BancoLogic extends BancoItemLogic {
             boolean isNew = cabecera.getFecFregistro()==null;
             log.info("cabezera ready: " + cabecera);
 
-            bancocabecera = view.getService().saveBancoOperacion(cabecera, bancoItem, moneda);
-
-            log.info("cabecera after save: " + bancocabecera);
-            //
+            bancoItem = view.getService().saveBancoOperacion(cabecera, bancoItem, moneda);
+            bancocabecera = bancoItem.getVsjBancocabecera();
+            log.info("cabecera after save: " + bancoItem.getVsjBancocabecera());
+            setNumVoucher(bancoItem);
             moneda = item.getCodTipomoneda();
-            log.info("Moneda set in saveCabecera: " + moneda);
             if (isNew) {
                 view.getContainer().addBean(bancoItem);
             } else {
@@ -243,7 +261,14 @@ public class BancoLogic extends BancoItemLogic {
                 sb.append(f.getConnectorId()).append(" ").append(fieldMap.get(f).getHtmlMessage()).append("\n");
             }
             Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage() + "\n" + sb.toString(), Notification.Type.ERROR_MESSAGE);
-            log.warn("Got Commit Exception: " + ce.getMessage() + "\n" + sb.toString());
+            log.warn("Error al guardar: " + ce.getMessage() + "\n" + sb.toString());
+            view.setEnableCabezeraFields(true);
+            view.setEnableDetalleFields(true);
+        } catch (RuntimeException re) {
+            log.warn("Error al guardar: " + re.getMessage() + "\n" + re.toString());
+            Notification.show("Error al guardar: " + re.getLocalizedMessage() + "\n" + re.toString(), Notification.Type.ERROR_MESSAGE);
+            view.setEnableCabezeraFields(true);
+            view.setEnableDetalleFields(true);
         }
     }
 }

@@ -63,8 +63,7 @@ public class BancoService {
     }
 
     @Transactional(readOnly = false)
-    public VsjBancocabecera saveBancoOperacion(VsjBancocabecera cabecera, VsjBancodetalle bancoItem, Character moneda) throws FieldGroup.CommitException {
-        boolean isNew = cabecera.getFecFregistro() == null;
+    public VsjBancodetalle saveBancoOperacion(VsjBancocabecera cabecera, VsjBancodetalle bancoItem, Character moneda) throws FieldGroup.CommitException {
         cabecera.setCodTipomoneda(moneda);
         cabecera = cabecera.prepareToSave();
         cabecera = bancocabeceraRep.save(cabecera);
@@ -112,7 +111,8 @@ public class BancoService {
         cabecera.setNumDebemo(saldoDebemo);
         cabecera.setNumDebemo(saldoHabermo);
         cabecera = bancocabeceraRep.save(cabecera);
-        return cabecera;
+        bancoItem.setVsjBancocabecera(cabecera);
+        return bancoItem;
     }
 
     public VsjBancocabeceraRep getBancocabeceraRep() {
