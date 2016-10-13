@@ -49,8 +49,12 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 	@Column(name="cod_mescobrado")
 	private String codMescobrado;
 	//bi-directional many-to-one association to VsjBancodetalle
-	@OneToMany(mappedBy = "vsjBancocabecera", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "vsjBancocabecera")
 	private List<VsjBancodetalle> vsjBancodetalles;
+
+	@ManyToOne(targetEntity = ScpDestino.class)
+	@JoinColumn(name = "cod_destino", insertable = false, updatable = false)
+	private ScpDestino scpDestino;
 
 
 	public VsjBancocabecera() {
@@ -162,6 +166,14 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 
 	public void setCodMescobrado(String codMescobrado) {
 		this.codMescobrado = codMescobrado;
+	}
+
+	public ScpDestino getScpDestino() {
+		return scpDestino;
+	}
+
+	public void setScpDestino(ScpDestino scpDestino) {
+		this.scpDestino = scpDestino;
 	}
 
 	public List<VsjBancodetalle> getVsjBancodetalles() {

@@ -186,6 +186,10 @@ public class ViewUtil {
         setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(new Date()), GenUtil.getEndOfDay(new Date()));
     }
 
+    public static void setupDateFiltersPreviousMonth(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta) {
+        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -30)), GenUtil.getEndOfDay(new Date()));
+    }
+
     public static void setupDateFiltersThisDay(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta) {
         setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfDay(new Date()), GenUtil.getEndOfDay(new Date()));
     }

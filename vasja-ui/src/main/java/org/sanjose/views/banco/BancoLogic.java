@@ -16,10 +16,10 @@ import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.util.GenUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.verifyNumMoneda;
 
 /**
@@ -33,130 +33,123 @@ public class BancoLogic extends BancoItemLogic {
 
     private FieldGroup fieldGroupCabezera;
 
-
     private BeanItem<VsjBancocabecera> beanItem;
-
-    private boolean isEdited = false;
 
     @Override
     public void init(BancoOperView view) {
         super.init(view);
-        view.newChequeBtn.addClickListener(ev -> nuevoCheque());
+        view.getNewChequeBtn().addClickListener(ev -> nuevoCheque());
         view.getGuardarBtn().addClickListener(event -> saveCabecera());
         view.getNewItemBtn().addClickListener(event -> nuevoComprobante());
         view.getModificarBtn().addClickListener(event -> editarComprobante());
         view.getEliminarBtn().addClickListener(event -> eliminarComprobante());
-        view.imprimirTotalBtn.setEnabled(false);
+        view.getAnularBtn().addClickListener(event -> anularComprobante());
+        view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
+        view.getImprimirTotalBtn().addClickListener(event -> {
+            //  if (savedBancodetalle!=null) ViewUtil.printComprobante(savedBancodetalle);
+        });
+        switchMode(Mode.EMPTY);
     }
 
-    private void nuevoCheque() {
-        if (!view.getContainer().getItemIds().isEmpty() && isEdited)
-            MessageBox
-                .createQuestion()
-                    .withCaption("Nuevo Cheque")
-                    .withMessage("?Esta seguro que quiere eliminar este cheque y crear un nuevo?")
-                    .withYesButton(this::resetCheque)
-                .withNoButton()
-                .open();
-        else
-            resetCheque();
+    private void anularComprobante() {
+        if (view.gridBanco.getSelectedRow() != null) {
+            viewComprobante();
+            fieldGroupCabezera.discard();
+        } else {
+            clearFields();
+            switchMode(Mode.VIEW);
+        }
     }
 
-    private void resetCheque() {
-        log.info("new cheque");
-        view.getContainer().removeAllItems();
+    public void nuevoCheque() {
+        switchMode(Mode.NEW);
+        editarCheque(new VsjBancocabecera());
+    }
+
+    private void clearFields() {
         if (fieldGroupCabezera != null) {
-            Collection<Field<?>> cabeceraFields = fieldGroupCabezera.getFields();
-            List<Field> cabeceraList = new ArrayList<>(cabeceraFields);
-            for (Field f : cabeceraList) {
+            new ArrayList<>(fieldGroupCabezera.getFields()).stream().forEach(f -> {
+                f.removeAllValidators();
                 fieldGroupCabezera.unbind(f);
-            }
+                f.setValue(null);
+            });
         }
         if (fieldGroup != null) {
-            Collection<Field<?>> detalleFields = fieldGroup.getFields();
-            for (Field f : new ArrayList<>(detalleFields)) {
+            new ArrayList<>(fieldGroup.getFields()).stream().forEach(f -> {
+                f.removeAllValidators();
                 fieldGroup.unbind(f);
-            }
+                f.setValue(null);
+            });
         }
+    }
+
+    public void editarCheque(VsjBancocabecera vsjBancocabecera) {
+        view.getContainer().removeAllItems();
+        view.gridBanco.select(null);
+        clearFields();
         moneda = null;
         clearSaldos();
         view.setTotal(null);
         item = null;
-        bancocabecera = null;
-        VsjBancocabecera vcb = new VsjBancocabecera();
-        bindForm(vcb);
-        view.setEnableCabezeraFields(true);
-        view.resetDetalleFields();
+        bancocabecera = vsjBancocabecera;
+        bindForm(vsjBancocabecera);
+        addValidators();
+        if (vsjBancocabecera.getCodBancocabecera() != null) {
+            List<VsjBancodetalle> bancodetalleList = view.getService().getBancodetalleRep()
+                    .findById_CodBancocabecera(vsjBancocabecera.getCodBancocabecera());
+            if (!bancodetalleList.isEmpty()) {
+                view.getContainer().addAll(bancodetalleList);
+                view.gridBanco.select(bancodetalleList.toArray()[0]);
+                viewComprobante();
+            }
+            switchMode(Mode.VIEW);
+        }
         view.setEnableDetalleFields(false);
-        //view.getGuardarBtn().setEnabled(true);
-        view.getModificarBtn().setEnabled(false);
-        view.getEliminarBtn().setEnabled(false);
-        view.getImprimirTotalBtn().setEnabled(false);
     }
 
-    @Override
-    public void nuevoComprobante() {
-        isEdited = true;
+    private void nuevoComprobante() {
         clearSaldos();
-        if (bancocabecera!=null) {
+        if (bancocabecera != null) {
             // cabecera in edit mode
             log.info("nuevo Item, cabecera: " + bancocabecera);
             bindForm(bancocabecera);
             super.nuevoComprobante(bancocabecera.getCodTipomoneda());
         } else {
-            super.nuevoComprobante();
+            super.nuevoComprobante(PEN);
         }
-        view.getModificarBtn().setEnabled(true);
-        view.getEliminarBtn().setEnabled(true);
+        switchMode(Mode.NEW);
     }
 
-    public void editarComprobante() {
-        if (view.getSelectedRow()!=null
+    private void editarComprobante() {
+        if (view.getSelectedRow() != null
                 && !view.getSelectedRow().isAnula()) {
-            isEdited = true;
             clearSaldos();
-            editarComprobante(view.getSelectedRow());
-            //view.getSelMoneda().setEnabled(false);
-            view.getModificarBtn().setEnabled(true);
-            view.getEliminarBtn().setEnabled(true);
+            bindForm(view.getSelectedRow());
             view.setEnableCabezeraFields(true);
+            switchMode(Mode.EDIT);
         }
     }
 
     public void viewComprobante() {
-        if (view.getSelectedRow()!=null) {
-            isEdited = true;
+        if (view.getSelectedRow() != null) {
             clearSaldos();
-            editarComprobante(view.getSelectedRow());
-            //view.getSelMoneda().setEnabled(false);
-            if (!view.getSelectedRow().isAnula()) {
-                view.getModificarBtn().setEnabled(true);
-                view.getEliminarBtn().setEnabled(false);
-            }
-            view.setEnableCabezeraFields(false);
-            view.setEnableDetalleFields(false);
+            bindForm(view.getSelectedRow());
         }
+        switchMode(Mode.VIEW);
+        view.setEnableCabezeraFields(false);
+        view.setEnableDetalleFields(false);
     }
 
     @Override
     public void cerrarAlManejo() {
-        if (isEdited)
-            MessageBox
-                .createQuestion()
-                .withCaption("Quitar la transferencia")
-                .withMessage("?Esta seguro que quiere eliminar todos operaciones de esta transferencia \n" +
-                        "y regresar al Manejo de Caja?\n")
-                .withYesButton(() -> MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName()))
-                .withNoButton()
-                .open();
-        else
-            MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
+        if (navigatorView == null) navigatorView = MainUI.get().getBancoManejoView();
+        MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
 
     private void bindForm(VsjBancocabecera item) {
         isLoading = true;
 
-        isEdit = item.getCodBancocabecera()!=null;
+        isEdit = item.getCodBancocabecera() != null;
         clearSaldos();
         beanItem = new BeanItem<>(item);
         fieldGroupCabezera = new FieldGroup(beanItem);
@@ -167,11 +160,11 @@ public class BancoLogic extends BancoItemLogic {
         fieldGroupCabezera.bind(view.getGlosaCabeza(), "txtGlosa");
         fieldGroupCabezera.bind(view.getCheque(), "txtCheque");
 
-        for (Field f: fieldGroupCabezera.getFields()) {
+        for (Field f : fieldGroupCabezera.getFields()) {
             if (f instanceof TextField)
-                ((TextField)f).setNullRepresentation("");
+                ((TextField) f).setNullRepresentation("");
             if (f instanceof ComboBox)
-                ((ComboBox)f).setPageLength(20);
+                ((ComboBox) f).setPageLength(20);
         }
         view.setEnableDetalleFields(true);
         view.getSelProyecto().setEnabled(true);
@@ -189,39 +182,51 @@ public class BancoLogic extends BancoItemLogic {
             setCuentaLogic();
             view.setTotal(moneda);
         } else {
-            //setCuentaLogic();
             view.getNumVoucher().setValue("");
         }
         isEdit = false;
     }
 
     private void eliminarComprobante() {
-        VsjBancodetalle bancoItem = view.getSelectedRow();//getVsjBancodetalle();
-            if (bancoItem == null) {
-                log.info("no se puede eliminar si no esta ya guardado");
-                return;
-            }
-            if (bancoItem.getVsjBancocabecera().isEnviado()) {
-                Notification.show("Problema al eliminar", "No se puede eliminar porque ya esta enviado a la contabilidad",
-                        Notification.Type.WARNING_MESSAGE);
-                return;
-            }
+        VsjBancodetalle bancoItem = view.getSelectedRow();
+        MessageBox
+                .createQuestion()
+                .withCaption("Eliminar operacion")
+                .withMessage("?Esta seguro que quiere eliminar operacion: \n" +
+                        bancoItem.getVsjBancocabecera().getTxtCorrelativo() + "-" + bancoItem.getId().getNumItem() + " ?\n")
+                .withYesButton(() -> {
+                    eliminarRealmenteComprobante(bancoItem);
+                })
+                .withNoButton()
+                .open();
+    }
+
+    private void eliminarRealmenteComprobante(VsjBancodetalle bancoItem) {
+        if (bancoItem == null) {
+            log.info("no se puede eliminar si no esta ya guardado");
+            return;
+        }
+        if (bancoItem.getVsjBancocabecera().isEnviado()) {
+            Notification.show("Problema al eliminar", "No se puede eliminar porque ya esta enviado a la contabilidad",
+                    Notification.Type.WARNING_MESSAGE);
+            return;
+        }
         bancoItem.setFlg_Anula('1');
-            log.info("Ready to ANULAR: " + bancoItem);
-            saveCabecera();
+        log.info("Ready to ANULAR: " + bancoItem);
+        saveCabecera();
     }
 
     private void saveCabecera() {
         log.info("saving Cabecera");
         try {
             fieldGroupCabezera.commit();
-            view.setEnableCabezeraFields(false);
+            //view.setEnableCabezeraFields(false);
             log.info("saved in class: " + bancocabecera);
             VsjBancocabecera cabecera = beanItem.getBean();
             VsjBancodetalle bancoItem = getVsjBancodetalle();
             if (!verifyNumMoneda(moneda))
                 throw new FieldGroup.CommitException("Moneda no esta de tipo numeral");
-            boolean isNew = cabecera.getFecFregistro()==null;
+            boolean isNew = cabecera.getFecFregistro() == null;
             log.info("cabezera ready: " + cabecera);
 
             bancoItem = view.getService().saveBancoOperacion(cabecera, bancoItem, moneda);
@@ -244,13 +249,11 @@ public class BancoLogic extends BancoItemLogic {
                 view.getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
             }
             view.setTotal(moneda);
-            view.getGuardarBtn().setEnabled(false);
-            view.getNewItemBtn().setEnabled(true);
-            view.getModificarBtn().setEnabled(true);
             view.refreshData();
-            view.getImprimirTotalBtn().setEnabled(true);
+            switchMode(Mode.VIEW);
         } catch (Validator.InvalidValueException e) {
             Notification.show("Error al guardar: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            e.printStackTrace();
             view.setEnableCabezeraFields(true);
             view.setEnableDetalleFields(true);
 
@@ -262,13 +265,75 @@ public class BancoLogic extends BancoItemLogic {
             }
             Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage() + "\n" + sb.toString(), Notification.Type.ERROR_MESSAGE);
             log.warn("Error al guardar: " + ce.getMessage() + "\n" + sb.toString());
+            ce.printStackTrace();
             view.setEnableCabezeraFields(true);
             view.setEnableDetalleFields(true);
         } catch (RuntimeException re) {
             log.warn("Error al guardar: " + re.getMessage() + "\n" + re.toString());
             Notification.show("Error al guardar: " + re.getLocalizedMessage() + "\n" + re.toString(), Notification.Type.ERROR_MESSAGE);
+            re.printStackTrace();
             view.setEnableCabezeraFields(true);
             view.setEnableDetalleFields(true);
         }
     }
+
+    private void switchMode(Mode newMode) {
+        switch (newMode) {
+            case EMPTY:
+                view.getGuardarBtn().setEnabled(false);
+                view.getAnularBtn().setEnabled(false);
+                view.getEliminarBtn().setEnabled(false);
+                view.getModificarBtn().setEnabled(false);
+                view.getImprimirTotalBtn().setEnabled(false);
+                view.getNewItemBtn().setEnabled(false);
+                view.getNewChequeBtn().setEnabled(true);
+                view.getCerrarBtn().setEnabled(true);
+                break;
+
+            case NEW:
+                view.getGuardarBtn().setEnabled(true);
+                view.getAnularBtn().setEnabled(true);
+                view.getEliminarBtn().setEnabled(false);
+                view.getModificarBtn().setEnabled(false);
+                view.getImprimirTotalBtn().setEnabled(false);
+                view.getNewItemBtn().setEnabled(false);
+                view.getNewChequeBtn().setEnabled(false);
+                view.getCerrarBtn().setEnabled(false);
+                break;
+
+            case EDIT:
+                view.getGuardarBtn().setEnabled(true);
+                view.getAnularBtn().setEnabled(true);
+                view.getEliminarBtn().setEnabled(true);
+                view.getModificarBtn().setEnabled(false);
+                view.getImprimirTotalBtn().setEnabled(false);
+                view.getNewItemBtn().setEnabled(false);
+                view.getNewChequeBtn().setEnabled(false);
+                view.getCerrarBtn().setEnabled(false);
+                break;
+
+            case VIEW:
+                view.getGuardarBtn().setEnabled(false);
+                view.getAnularBtn().setEnabled(false);
+                if (view.getSelectedRow() != null && view.getSelectedRow().isAnula()) {
+                    view.getModificarBtn().setEnabled(false);
+                    view.getEliminarBtn().setEnabled(false);
+                } else {
+                    view.getModificarBtn().setEnabled(true);
+                    view.getEliminarBtn().setEnabled(true);
+                }
+                view.getCerrarBtn().setEnabled(true);
+                view.getImprimirTotalBtn().setEnabled(false);
+                view.getNewItemBtn().setEnabled(true);
+                view.getNewChequeBtn().setEnabled(true);
+                view.setEnableCabezeraFields(false);
+                view.setEnableDetalleFields(false);
+                break;
+        }
+    }
+
+    public enum Mode {
+        NEW, EDIT, VIEW, EMPTY
+    }
+
 }

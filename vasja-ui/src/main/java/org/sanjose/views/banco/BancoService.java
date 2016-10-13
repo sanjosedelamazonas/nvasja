@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by pol on 06.10.16.
@@ -113,6 +114,11 @@ public class BancoService {
         cabecera = bancocabeceraRep.save(cabecera);
         bancoItem.setVsjBancocabecera(cabecera);
         return bancoItem;
+    }
+
+    @Transactional
+    public List<VsjBancocabecera> findAll() {
+        return bancocabeceraRep.findAll();
     }
 
     public VsjBancocabeceraRep getBancocabeceraRep() {

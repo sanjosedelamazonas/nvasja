@@ -82,13 +82,6 @@ public class BancoOperView extends BancoOperUI implements VsjView {
         ViewUtil.setDefaultsForNumberField(numIngreso);
         ViewUtil.setDefaultsForNumberField(numEgreso);
 
-        guardarBtn.setEnabled(false);
-        modificarBtn.setEnabled(false);
-        eliminarBtn.setEnabled(false);
-        imprimirTotalBtn.setEnabled(false);
-        newItemBtn.setEnabled(false);
-
-
         viewLogic.setupEditComprobanteView();
 
         // Grid
@@ -119,17 +112,7 @@ public class BancoOperView extends BancoOperUI implements VsjView {
             @Override
             public void select(SelectionEvent selectionEvent) {
                 if (selectionEvent.getSelected().isEmpty()) return;
-                log.info("Selected: " + selectionEvent.getSelected().toArray()[0]);
-                //VsjCajabanco vcb = (VsjCajabanco) selectionEvent.getSelected().toArray()[0];
                 viewLogic.viewComprobante();
-
-                /*if (vcb.isAnula() || vcb.isEnviado()) {
-                    modificarBtn.setEnabled(false);
-                    eliminarBtn.setEnabled(false);
-                } else {
-                    modificarBtn.setEnabled(true);
-                    eliminarBtn.setEnabled(true);
-                }*/
             }
         });
 
@@ -150,28 +133,14 @@ public class BancoOperView extends BancoOperUI implements VsjView {
 
     public void setEnableDetalleFields(boolean enabled) {
         log.info("enabling detalle fields");
-        for (Field f : allFields) {
-            //if (f!=selMoneda || !enabled)
-            f.setEnabled(enabled);
-        }
+        for (Field f : allFields) f.setEnabled(enabled);
         btnResponsable.setEnabled(enabled);
         btnDestino.setEnabled(enabled);
     }
 
-    public void resetDetalleFields() {
-        for (Field f : allFields) {
-            //if (f!=selMoneda || !enabled)
-            f.removeAllValidators();
-            f.setValue(null);
-        }
-        viewLogic.addValidators();
-    }
-
 
     public void setEnableCabezeraFields(boolean enabled) {
-        for (Field f : cabezeraFields) {
-            f.setEnabled(enabled);
-        }
+        for (Field f : cabezeraFields) f.setEnabled(enabled);
     }
 
     public BeanItemContainer<VsjBancodetalle> getContainer() {
@@ -225,7 +194,7 @@ public class BancoOperView extends BancoOperUI implements VsjView {
     }
 
     public void refreshData() {
-        MainUI.get().getCajaManejoView().refreshData();
+        MainUI.get().getBancoManejoView().refreshData();
     }
 
     public BancoService getService() {
@@ -375,6 +344,15 @@ public class BancoOperView extends BancoOperUI implements VsjView {
     public TextField getCheque() {
         return cheque;
     }
+
+    public Button getAnularBtn() {
+        return anularBtn;
+    }
+
+    public Button getNewChequeBtn() {
+        return newChequeBtn;
+    }
+
 
     @Override
     public void enter(ViewChangeEvent event) {
