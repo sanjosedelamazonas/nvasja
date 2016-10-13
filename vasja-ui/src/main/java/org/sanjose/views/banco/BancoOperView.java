@@ -15,7 +15,6 @@ import org.sanjose.MainUI;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjBancodetallePK;
-import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
@@ -379,5 +378,9 @@ public class BancoOperView extends BancoOperUI implements VsjView {
 
     @Override
     public void enter(ViewChangeEvent event) {
+    }
+
+    public BancoLogic getViewLogic() {
+        return viewLogic;
     }
 }

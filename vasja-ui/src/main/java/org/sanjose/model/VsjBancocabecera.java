@@ -1,8 +1,6 @@
 package org.sanjose.model;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.external.org.slf4j.Logger;
-import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -65,32 +63,8 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 	@Override
 	public VsjBancocabecera prepareToSave() throws FieldGroup.CommitException {
 		VsjBancocabecera item = (VsjBancocabecera) super.prepareToSave();
-		Logger logger = LoggerFactory.getLogger(VsjBancocabecera.class);
 		item.setIndTipocuenta('2');
 		item.setFlgCobrado(false);
-/*
-		BigDecimal saldoHabersol = new BigDecimal(0);
-		BigDecimal saldoHaberdolar = new BigDecimal(0);
-		BigDecimal saldoHabermo = new BigDecimal(0);
-		BigDecimal saldoDebesol = new BigDecimal(0);
-		BigDecimal saldoDebedolar = new BigDecimal(0);
-		BigDecimal saldoDebemo = new BigDecimal(0);
-		if (getVsjBancodetalles()!=null) {
-			for (VsjBancodetalle it : getVsjBancodetalles()) {
-				saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
-				saldoDebemo = saldoDebemo.add(it.getNumDebemo());
-				saldoDebesol = saldoDebesol.add(it.getNumDebesol());
-				saldoHaberdolar = saldoHaberdolar.add(it.getNumHaberdolar());
-				saldoHabermo = saldoHabermo.add(it.getNumHabermo());
-				saldoHabersol = saldoHabersol.add(it.getNumHabersol());
-			}
-		}
-		item.setNumDebesol(saldoDebesol);
-		item.setNumHabersol(saldoHabersol);
-		item.setNumDebedolar(saldoDebedolar);
-		item.setNumHaberdolar(saldoHaberdolar);
-		item.setNumDebemo(saldoDebemo);
-		item.setNumDebemo(saldoHabermo);*/
 		return item;
 	}
 

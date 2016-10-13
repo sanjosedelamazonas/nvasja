@@ -21,6 +21,10 @@ public class Caja {
 
     private BigDecimal dolaresFinal;
 
+    private BigDecimal euros;
+
+    private BigDecimal eurosFinal;
+
     public Caja(String codigo, String descripcion, BigDecimal soles, BigDecimal dolares) {
         this.codigo = codigo;
         this.descripcion = descripcion;
@@ -28,6 +32,22 @@ public class Caja {
         this.dolares = dolares;
     }
 
+    public Caja(String codigo, String descripcion, BigDecimal soles, BigDecimal dolares, BigDecimal euros) {
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+        this.soles = soles;
+        this.dolares = dolares;
+        this.euros = euros;
+    }
+
+    public Caja(String codigo, String descripcion, BigDecimal soles, BigDecimal dolares, BigDecimal solesFinal, BigDecimal dolaresFinal) {
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+        this.soles = soles;
+        this.dolares = dolares;
+        this.solesFinal = solesFinal;
+        this.dolaresFinal = dolaresFinal;
+    }
 
     public BigDecimal getSolesFinal() {
         return solesFinal;
@@ -77,19 +97,26 @@ public class Caja {
         this.dolares = dolares;
     }
 
-    public Caja(String codigo, String descripcion, BigDecimal soles, BigDecimal dolares, BigDecimal solesFinal, BigDecimal dolaresFinal) {
-        this.codigo = codigo;
-        this.descripcion = descripcion;
-        this.soles = soles;
-        this.dolares = dolares;
-        this.solesFinal = solesFinal;
-        this.dolaresFinal = dolaresFinal;
+    public BigDecimal getEuros() {
+        return euros;
+    }
+
+    public void setEuros(BigDecimal euros) {
+        this.euros = euros;
+    }
+
+    public BigDecimal getEurosFinal() {
+        return eurosFinal;
+    }
+
+    public void setEurosFinal(BigDecimal eurosFinal) {
+        this.eurosFinal = eurosFinal;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Caja)) return false;
 
         Caja caja = (Caja) o;
 
@@ -100,7 +127,10 @@ public class Caja {
         if (getDolares() != null ? !getDolares().equals(caja.getDolares()) : caja.getDolares() != null) return false;
         if (getSolesFinal() != null ? !getSolesFinal().equals(caja.getSolesFinal()) : caja.getSolesFinal() != null)
             return false;
-        return getDolaresFinal() != null ? getDolaresFinal().equals(caja.getDolaresFinal()) : caja.getDolaresFinal() == null;
+        if (getDolaresFinal() != null ? !getDolaresFinal().equals(caja.getDolaresFinal()) : caja.getDolaresFinal() != null)
+            return false;
+        if (getEuros() != null ? !getEuros().equals(caja.getEuros()) : caja.getEuros() != null) return false;
+        return getEurosFinal() != null ? getEurosFinal().equals(caja.getEurosFinal()) : caja.getEurosFinal() == null;
 
     }
 
@@ -112,6 +142,8 @@ public class Caja {
         result = 31 * result + (getDolares() != null ? getDolares().hashCode() : 0);
         result = 31 * result + (getSolesFinal() != null ? getSolesFinal().hashCode() : 0);
         result = 31 * result + (getDolaresFinal() != null ? getDolaresFinal().hashCode() : 0);
+        result = 31 * result + (getEuros() != null ? getEuros().hashCode() : 0);
+        result = 31 * result + (getEurosFinal() != null ? getEurosFinal().hashCode() : 0);
         return result;
     }
 
@@ -124,6 +156,8 @@ public class Caja {
                 ", dolares=" + dolares +
                 ", solesFinal=" + solesFinal +
                 ", dolaresFinal=" + dolaresFinal +
+                ", euros=" + euros +
+                ", eurosFinal=" + eurosFinal +
                 '}';
     }
 }
