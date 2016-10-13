@@ -17,6 +17,7 @@ import org.sanjose.repo.MsgUsuarioRep;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ProcUtil;
+import org.sanjose.views.banco.BancoManejoView;
 import org.sanjose.views.banco.BancoOperView;
 import org.sanjose.views.banco.BancoService;
 import org.sanjose.views.caja.*;
@@ -48,6 +49,7 @@ public class MainUI extends UI {
     private final CajaManejoView cajaManejoView;
     private final TransferenciaView transferenciaView;
     private final BancoOperView bancoOperView;
+    private final BancoManejoView bancoManejoView;
     private final MsgUsuarioRep msgUsuarioRep;
     private ProcUtil procUtil;
     private AccessControl accessControl;
@@ -72,6 +74,7 @@ public class MainUI extends UI {
         this.configuracionCajaView = configuracionCajaView;
         this.bancoOperView = new BancoOperView(bancoService);
         this.cajaManejoView = new CajaManejoView(comprobanteService);
+        this.bancoManejoView = new BancoManejoView(bancoService);
     }
 
     public static MainUI get() {
@@ -95,7 +98,8 @@ public class MainUI extends UI {
 
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
-        mainScreen = new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView, propiedadView, comprobanteView, transferenciaView, bancoOperView);
+        mainScreen = new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView,
+                propiedadView, comprobanteView, transferenciaView, bancoOperView, bancoManejoView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
@@ -129,5 +133,13 @@ public class MainUI extends UI {
 
     public ProcUtil getProcUtil() {
         return procUtil;
+    }
+
+    public BancoOperView getBancoOperView() {
+        return bancoOperView;
+    }
+
+    public BancoManejoView getBancoManejoView() {
+        return bancoManejoView;
     }
 }
