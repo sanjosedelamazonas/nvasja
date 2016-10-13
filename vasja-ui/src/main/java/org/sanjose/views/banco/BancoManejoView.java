@@ -1,7 +1,6 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid.SelectionMode;
@@ -27,21 +26,21 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
     private final BancoManejoLogic viewLogic = new BancoManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
             "codMescobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
-            "codDestino", "txtCheque", "txtGlosa",
+            "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
             "Mes", "Fecha", "Numero", "Cuenta",
-            "Auxiliar", "Cheque", "Glosa",
+            "Auxiliar", "Nombre", "Cheque", "Glosa",
             "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
             "Env", "Origen", "Comprobante"
     };
     private final int[] FILTER_WIDTH = new int[]{
-            2, 4, 5, 4,
-            4, 3, 8,
+            2, 4, 4, 4,
+            6, 10, 4, 12,
             3, 3, 3, 3, 3, 3,
-            2, 3, 4
+            1, 3, 4
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
 
@@ -59,7 +58,8 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
         addStyleName("crud-view");
 
         //noinspection unchecked
-        container = new BeanItemContainer(VsjBancocabecera.class, getService().getBancocabeceraRep().findAll());
+        container = new BeanItemContainer(VsjBancocabecera.class, getService().findAll());
+        container.addNestedContainerBean("scpDestino");
         gridBanco.setContainerDataSource(container);
         gridBanco.setEditorEnabled(false);
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
@@ -74,11 +74,12 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
         gridBanco.setSelectionMode(SelectionMode.SINGLE);
 
         // Fecha Desde Hasta
-        ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
+        //ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
+        ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta);
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
-        gridBanco.addItemClickListener(this::setItemLogic);
+        //gridBanco.addItemClickListener(this::setItemLogic);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
@@ -97,17 +98,17 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
 
     public void refreshData() {
         container.removeAllItems();
-        container.addAll(getService().getBancocabeceraRep().findAll());
+        container.addAll(getService().findAll());
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
     }
-
+/*
     private void setItemLogic(ItemClickEvent event) {
         if (event.isDoubleClick()) {
-            Object id = event.getItem().getItemProperty("codCajabanco").getValue();
+            Object id = event.getItem().getItemProperty("cod").getValue();
             //VsjCajabanco vcb = getService().getBancocabeceraRep().findByCodCajabanco((Integer) id);
             //viewLogic.editarCheque(vcb);
         }
-    }
+    }*/
 
     @Override
     public void enter(ViewChangeEvent event) {

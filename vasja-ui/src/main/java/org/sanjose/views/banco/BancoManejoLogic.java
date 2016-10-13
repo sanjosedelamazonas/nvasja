@@ -12,7 +12,6 @@ import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
-import org.sanjose.views.caja.ComprobanteView;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -55,14 +54,14 @@ public class BancoManejoLogic implements Serializable {
 
     private void nuevoCheque() {
         view.clearSelection();
-        MainUI.get().getBancoOperView().getViewLogic().nuevoComprobante();
+        MainUI.get().getBancoOperView().getViewLogic().nuevoCheque();
         MainUI.get().getBancoOperView().getViewLogic().setNavigatorView(view);
-        MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+        MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
     }
 
     public void editarCheque(VsjBancocabecera vcb) {
         if (!vcb.isEnviado()) {
-            MainUI.get().getBancoOperView().getViewLogic().editarComprobante();
+            MainUI.get().getBancoOperView().getViewLogic().editarCheque(vcb);
             MainUI.get().getBancoOperView().getViewLogic().setNavigatorView(view);
             MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
         }

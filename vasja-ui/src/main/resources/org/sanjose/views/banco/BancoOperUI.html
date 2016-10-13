@@ -123,22 +123,24 @@
        </vaadin-form-layout> 
       </vaadin-horizontal-layout> 
      </vaadin-form-layout> 
-    </vaadin-vertical-layout> 
-    <vaadin-vertical-layout spacing width="694px"> 
-     <vaadin-form-layout style-name="order-summary-layout" height="390px" margin-top="false" margin-bottom="false" _id="order_summary_layout"> 
-      <vaadin-label style-name="header-label-small" width="632px" plain-text _id="order_heading">
+    </vaadin-vertical-layout>
+       <vaadin-vertical-layout spacing width="694px" :expand>
+           <vaadin-form-layout style-name="order-summary-layout" height="390px" margin-top="false" margin-bottom="false"
+                               _id="order_summary_layout" :expand>
+               <vaadin-label style-name="header-label-small" width="632px" plain-text _id="order_heading">
         Operaciones de cheque 
-      </vaadin-label> 
-      <vaadin-grid width="633px" height="256px" _id="gridBanco"></vaadin-grid> 
-      <vaadin-css-layout> 
+      </vaadin-label>
+               <vaadin-grid width="633px" height="256px" tabindex="50" _id="gridBanco"></vaadin-grid>
+               <vaadin-css-layout>
        <vaadin-label style-name="total-sum" _id="saldoTotal">
          Total : 
         <span class="order-sum"> S/. 0.00</span> 
        </vaadin-label> 
       </vaadin-css-layout> 
-     </vaadin-form-layout> 
-     <vaadin-form-layout style-name="billing-formlayout" size-auto margin-top="false" margin-bottom="false" _id="billing_form6" :bottom> 
-      <vaadin-horizontal-layout spacing :middle :center> 
+     </vaadin-form-layout>
+           <vaadin-form-layout style-name="billing-formlayout" size-auto margin-top="false" margin-bottom="false"
+                               _id="billing_form6" :bottom :expand>
+               <vaadin-horizontal-layout spacing :middle :center>
        <vaadin-button plain-text _id="guardarBtn">
          Guardar 
        </vaadin-button> 
@@ -146,7 +148,10 @@
          Nuevo Item 
        </vaadin-button> 
        <vaadin-button plain-text _id="modificarBtn">
-         Modificar 
+         Modificar
+       </vaadin-button>
+                   <vaadin-button plain-text _id="anularBtn">
+                       Anular
        </vaadin-button> 
        <vaadin-button plain-text _id="eliminarBtn">
          Eliminar 
