@@ -64,7 +64,7 @@ public class BancoOperUI extends CssLayout {
 	protected Button modificarBtn;
     protected Button anularBtn;
     protected Button eliminarBtn;
-	protected Button newChequeBtn;
+    protected Button newChequeBtn;
 	protected Button cerrarBtn;
 	protected Button imprimirTotalBtn;
 	protected Button imprimirCheque;
