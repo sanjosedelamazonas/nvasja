@@ -57,7 +57,10 @@ public class BancoLogic extends BancoItemLogic {
             fieldGroupCabezera.discard();
         } else {
             clearFields();
-            switchMode(Mode.VIEW);
+            if (view.getContainer().getItemIds().isEmpty())
+                switchMode(Mode.EMPTY);
+            else
+                switchMode(Mode.VIEW);
         }
     }
 
@@ -86,8 +89,8 @@ public class BancoLogic extends BancoItemLogic {
     public void editarCheque(VsjBancocabecera vsjBancocabecera) {
         view.getContainer().removeAllItems();
         view.gridBanco.select(null);
+        moneda = vsjBancocabecera.getCodTipomoneda();
         clearFields();
-        moneda = null;
         clearSaldos();
         view.setTotal(null);
         item = null;
@@ -99,6 +102,7 @@ public class BancoLogic extends BancoItemLogic {
                     .findById_CodBancocabecera(vsjBancocabecera.getCodBancocabecera());
             if (!bancodetalleList.isEmpty()) {
                 view.getContainer().addAll(bancodetalleList);
+                view.setTotal(moneda);
                 view.gridBanco.select(bancodetalleList.toArray()[0]);
                 viewComprobante();
             }
@@ -148,8 +152,6 @@ public class BancoLogic extends BancoItemLogic {
 
     private void bindForm(VsjBancocabecera item) {
         isLoading = true;
-
-        isEdit = item.getCodBancocabecera() != null;
         clearSaldos();
         beanItem = new BeanItem<>(item);
         fieldGroupCabezera = new FieldGroup(beanItem);
@@ -169,7 +171,7 @@ public class BancoLogic extends BancoItemLogic {
         view.setEnableDetalleFields(true);
         view.getSelProyecto().setEnabled(true);
         view.getSelTercero().setEnabled(true);
-
+        isEdit = item.getCodBancocabecera() != null;
         isLoading = false;
         if (isEdit) {
             // EDITING
