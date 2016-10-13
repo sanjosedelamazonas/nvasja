@@ -108,11 +108,11 @@ public class BancoLogic extends BancoItemLogic {
             }
             switchMode(Mode.VIEW);
         }
-        view.setEnableDetalleFields(false);
     }
 
     private void nuevoComprobante() {
         clearSaldos();
+        switchMode(Mode.NEW);
         if (bancocabecera != null) {
             // cabecera in edit mode
             log.info("nuevo Item, cabecera: " + bancocabecera);
@@ -121,7 +121,7 @@ public class BancoLogic extends BancoItemLogic {
         } else {
             super.nuevoComprobante(PEN);
         }
-        switchMode(Mode.NEW);
+
     }
 
     private void editarComprobante() {
@@ -129,7 +129,6 @@ public class BancoLogic extends BancoItemLogic {
                 && !view.getSelectedRow().isAnula()) {
             clearSaldos();
             bindForm(view.getSelectedRow());
-            view.setEnableCabezeraFields(true);
             switchMode(Mode.EDIT);
         }
     }
@@ -140,8 +139,6 @@ public class BancoLogic extends BancoItemLogic {
             bindForm(view.getSelectedRow());
         }
         switchMode(Mode.VIEW);
-        view.setEnableCabezeraFields(false);
-        view.setEnableDetalleFields(false);
     }
 
     @Override
@@ -168,9 +165,6 @@ public class BancoLogic extends BancoItemLogic {
             if (f instanceof ComboBox)
                 ((ComboBox) f).setPageLength(20);
         }
-        view.setEnableDetalleFields(true);
-        view.getSelProyecto().setEnabled(true);
-        view.getSelTercero().setEnabled(true);
         isEdit = item.getCodBancocabecera() != null;
         isLoading = false;
         if (isEdit) {
@@ -179,7 +173,6 @@ public class BancoLogic extends BancoItemLogic {
                 log.info("isEdit cabecera, setting num voucher: " + item.getTxtCorrelativo());
                 view.getNumVoucher().setValue(item.getTxtCorrelativo());
             }
-            view.setEnableCabezeraFields(true);
             view.getNumVoucher().setEnabled(false);
             setCuentaLogic();
             view.setTotal(moneda);
@@ -290,6 +283,8 @@ public class BancoLogic extends BancoItemLogic {
                 view.getNewItemBtn().setEnabled(false);
                 view.getNewChequeBtn().setEnabled(true);
                 view.getCerrarBtn().setEnabled(true);
+                view.setEnableCabezeraFields(false);
+                view.setEnableDetalleFields(false);
                 break;
 
             case NEW:
@@ -301,6 +296,10 @@ public class BancoLogic extends BancoItemLogic {
                 view.getNewItemBtn().setEnabled(false);
                 view.getNewChequeBtn().setEnabled(false);
                 view.getCerrarBtn().setEnabled(false);
+                view.setEnableCabezeraFields(true);
+                view.setEnableDetalleFields(false);
+                view.selProyecto.setEnabled(false);
+                view.selTercero.setEnabled(false);
                 break;
 
             case EDIT:
@@ -312,6 +311,8 @@ public class BancoLogic extends BancoItemLogic {
                 view.getNewItemBtn().setEnabled(false);
                 view.getNewChequeBtn().setEnabled(false);
                 view.getCerrarBtn().setEnabled(false);
+                view.setEnableCabezeraFields(true);
+                view.setEnableDetalleFields(true);
                 break;
 
             case VIEW:

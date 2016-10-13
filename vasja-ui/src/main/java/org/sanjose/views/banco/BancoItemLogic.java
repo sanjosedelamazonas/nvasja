@@ -202,9 +202,6 @@ class BancoItemLogic implements Serializable {
         // Editing Destino
         view.getBtnDestino().addClickListener(event -> editDestino(view.getSelCodAuxiliar()));
         view.getBtnResponsable().addClickListener(event -> editDestino(view.getSelResponsable()));
-
-        view.setEnableDetalleFields(false);
-        view.setEnableCabezeraFields(false);
     }
 
     public void addValidators() {
@@ -337,8 +334,6 @@ class BancoItemLogic implements Serializable {
                 fieldGroup.unbind(view.getNumIngreso());
             } catch (FieldGroup.BindException be) {
             }
-
-            //view.getSelCaja().removeAllValidators();
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
@@ -513,7 +508,6 @@ class BancoItemLogic implements Serializable {
             if (f instanceof ComboBox)
                 ((ComboBox) f).setPageLength(20);
         }
-        view.setEnableDetalleFields(false);
         view.getSelProyecto().setEnabled(true);
         view.getSelTercero().setEnabled(true);
         view.getDataFechaComprobante().setEnabled(true);
@@ -523,7 +517,6 @@ class BancoItemLogic implements Serializable {
             // EDITING
             log.info("is Edit in bindForm");
             setNumVoucher(item);
-            view.setEnableDetalleFields(true);
             setCuentaLogic();
             if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {
                 setEditorLogic(item.getCodProyecto());
@@ -564,7 +557,9 @@ class BancoItemLogic implements Serializable {
         bindForm(vcb);
         item = vcb;
         view.setEnableCabezeraFields(true);
-        view.setEnableDetalleFields(true);
+        view.setEnableDetalleFields(false);
+        view.getSelProyecto().setEnabled(true);
+        view.getSelTercero().setEnabled(true);
     }
 
     public void setNavigatorView(INavigatorView navigatorView) {
@@ -591,7 +586,6 @@ class BancoItemLogic implements Serializable {
         fieldGroup.commit();
         VsjBancodetalle item = beanItem.getBean();
         log.info("got from getDetalle " + item);
-        //view.setEnableDetalleFields(false);
         return item;
     }
 }
