@@ -12,6 +12,12 @@
             -
         </vaadin-label>
         <vaadin-date-field _id="fechaHasta"></vaadin-date-field>
+        <vaadin-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" item-caption-mode="id" width="300px"
+                          _id="selFiltroCuenta">
+            <option>Option 1</option>
+            <option>Option 2</option>
+            <option>Option 3</option>
+        </vaadin-combo-box>
         <vaadin-button plain-text _id="btnNuevoCheque">
             Nuevo cheque
         </vaadin-button>
@@ -30,9 +36,9 @@
     </vaadin-horizontal-layout>
     <vaadin-grid editor-cancel-caption="Anular" size-full _id="gridBanco" :middle :center :expand></vaadin-grid>
     <vaadin-vertical-layout size-full></vaadin-vertical-layout>
-    <vaadin-horizontal-layout spacing width-full height="220px" _id="horizontalSaldos">
-        <vaadin-vertical-layout spacing size-auto _id="verticalSaldoInicial">
-            <vaadin-horizontal-layout spacing :middle :center>
+    <vaadin-horizontal-layout spacing width-full height="250px" _id="horizontalSaldos">
+        <vaadin-vertical-layout caption="Saldo Inicial" spacing width-auto height-full _id="verticalSaldoInicial">
+            <vaadin-horizontal-layout visible="false" spacing :middle :center>
                 <vaadin-label size-auto plain-text :middle>
                     Saldo Inicial
                 </vaadin-label>
@@ -40,10 +46,10 @@
                 <vaadin-text-field caption="Dólar:" enabled="false" _id="iniUSD"></vaadin-text-field>
                 <vaadin-text-field caption="Euro:" enabled="false" _id="iniEUR"></vaadin-text-field>
             </vaadin-horizontal-layout>
-            <vaadin-grid width="450px" height="180px" _id="gridSaldoInicial"></vaadin-grid>
+            <vaadin-grid width="500px" height-full _id="gridSaldoInicial"></vaadin-grid>
         </vaadin-vertical-layout>
-        <vaadin-vertical-layout spacing _id="verticalSaldoFinal" :expand>
-            <vaadin-horizontal-layout spacing :middle :center>
+        <vaadin-vertical-layout caption="Saldo Final" spacing size-full _id="verticalSaldoFinal" :expand>
+            <vaadin-horizontal-layout visible="false" spacing :middle :center>
                 <vaadin-label width-auto height="20px" plain-text :middle>
                     Saldo Final
                 </vaadin-label>
@@ -51,11 +57,11 @@
                 <vaadin-text-field caption="Dólar:" enabled="false" _id="finUSD"></vaadin-text-field>
                 <vaadin-text-field caption="Euro:" enabled="false" _id="finEUR"></vaadin-text-field>
             </vaadin-horizontal-layout>
-            <vaadin-grid editor-save-caption="Guardar" editor-cancel-caption="Anular" width="450px" height="180px"
+            <vaadin-grid editor-save-caption="Guardar" editor-cancel-caption="Anular" width="500px" height-full
                          _id="gridSaldoFInal"></vaadin-grid>
         </vaadin-vertical-layout>
         <vaadin-vertical-layout spacing size-auto margin _id="verticalSaldoDelDia">
-            <vaadin-grid-layout caption="Total del Dia" width="300px">
+            <vaadin-grid-layout caption="Total del Dia" spacing width="300px" _id="gridSaldoDelDia">
                 <row>
                     <column>
                         <vaadin-label size-auto plain-text></vaadin-label>
@@ -143,11 +149,6 @@
                     </column>
                 </row>
             </vaadin-grid-layout>
-            <vaadin-combo-box item-caption-mode="id" width-full>
-                <option>Option 1</option>
-                <option>Option 2</option>
-                <option>Option 3</option>
-            </vaadin-combo-box>
         </vaadin-vertical-layout>
     </vaadin-horizontal-layout>
 </vaadin-vertical-layout>

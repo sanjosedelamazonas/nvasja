@@ -1,12 +1,19 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.filter.Compare;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.render.ZeroOneTrafficLight;
 import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.DataFilterUtil;
+import org.sanjose.util.DataUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.INavigatorView;
@@ -28,19 +35,19 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
             "codMescobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
             "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
-            "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
+            "codOrigenenlace", "codComprobanteenlace", "flgEnviado"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
             "Mes", "Fecha", "Numero", "Cuenta",
             "Auxiliar", "Nombre", "Cheque", "Glosa",
             "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
-            "Env", "Origen", "Comprobante"
+            "Orig", "Comprob.", "Env"
     };
     private final int[] FILTER_WIDTH = new int[]{
             2, 4, 4, 4,
             6, 10, 4, 12,
             3, 3, 3, 3, 3, 3,
-            1, 3, 4
+            1, 4, 1
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
 
@@ -67,7 +74,7 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
         // Add filters
-        ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
+        ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
 
         ViewUtil.alignMontosInGrid(gridBanco);
 
@@ -79,12 +86,28 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
+        gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLight()).setRenderer(new HtmlRenderer());
+
         //gridBanco.addItemClickListener(this::setItemLogic);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
 
         ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
+
+        DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
+                DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
+                "txtDescctacontable");
+
+        selFiltroCuenta.addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                container.removeContainerFilters("codCtacontable");
+                container.addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
+            } else {
+                container.removeContainerFilters("codCtacontable");
+            }
+            viewLogic.setSaldoDelDia();
+        });
 
         // Set Saldos Inicial
         fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
@@ -130,4 +153,45 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
     public BancoService getService() {
         return bancoService;
     }
+
+    public Label getValSolIng() {
+        return valSolIng;
+    }
+
+    public Label getValSolEgr() {
+        return valSolEgr;
+    }
+
+    public Label getValSolSaldo() {
+        return valSolSaldo;
+    }
+
+    public Label getValDolIng() {
+        return valDolIng;
+    }
+
+    public Label getValDolEgr() {
+        return valDolEgr;
+    }
+
+    public Label getValDolSaldo() {
+        return valDolSaldo;
+    }
+
+    public Label getValEuroIng() {
+        return valEuroIng;
+    }
+
+    public Label getValEuroEgr() {
+        return valEuroEgr;
+    }
+
+    public Label getValEuroSaldo() {
+        return valEuroSaldo;
+    }
+
+    public Grid getGridBanco() {
+        return gridBanco;
+    }
+
 }

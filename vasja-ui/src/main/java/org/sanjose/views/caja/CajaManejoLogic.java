@@ -16,6 +16,7 @@ import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.ISaldoDelDia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ import java.math.BigDecimal;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class CajaManejoLogic implements Serializable {
+public class CajaManejoLogic implements Serializable, ISaldoDelDia {
 
 
 	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);
@@ -150,6 +151,38 @@ public class CajaManejoLogic implements Serializable {
             saldosFooterFinal.getCell("dolares").setStyleName("v-align-right");
             saldosFooterFinal.getCell("dolares").setText(dpf.format(totalUsd.doubleValue()));
         }
-        //grid.addFooterRowAt(numCajas-1);
+        setSaldoDelDia();
     }
+
+    public void setSaldoDelDia() {
+        // Total del Dia
+        BigDecimal totalSolesDiaIng = new BigDecimal(0.00);
+        BigDecimal totalSolesDiaEgr = new BigDecimal(0.00);
+        BigDecimal totalUsdDiaIng = new BigDecimal(0.00);
+        BigDecimal totalUsdDiaEgr = new BigDecimal(0.00);
+
+        for (Object item : view.gridCaja.getContainerDataSource().getItemIds()) {
+            VsjCajabanco cajabanco = (VsjCajabanco) item;
+            // PEN
+            totalSolesDiaEgr = totalSolesDiaEgr.add(cajabanco.getNumHabersol());
+            totalSolesDiaIng = totalSolesDiaIng.add(cajabanco.getNumDebesol());
+            // USD
+            totalUsdDiaEgr = totalUsdDiaEgr.add(cajabanco.getNumHaberdolar());
+            totalUsdDiaIng = totalUsdDiaIng.add(cajabanco.getNumDebedolar());
+        }
+        DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
+                null, ConfigurationUtil.get("DECIMAL_FORMAT"));
+
+        // PEN
+        view.getValSolEgr().setValue(dpf.format(totalSolesDiaEgr.doubleValue()));
+        view.getValSolIng().setValue(dpf.format(totalSolesDiaIng.doubleValue()));
+        view.getValSolSaldo().setValue(dpf.format(totalSolesDiaIng.subtract(totalSolesDiaEgr).doubleValue()));
+        // USD
+        view.getValDolEgr().setValue(dpf.format(totalUsdDiaEgr.doubleValue()));
+        view.getValDolIng().setValue(dpf.format(totalUsdDiaIng.doubleValue()));
+        view.getValDolSaldo().setValue(dpf.format(totalUsdDiaIng.subtract(totalUsdDiaEgr).doubleValue()));
+
+        view.gridSaldoDelDia.setColumnExpandRatio(0, 0);
+    }
+
 }
