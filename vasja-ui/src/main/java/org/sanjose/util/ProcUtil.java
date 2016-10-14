@@ -74,6 +74,21 @@ public class ProcUtil {
         return res;
     }
 
+    // moneda { 0, 1, 2 }
+    @Transactional
+    public BigDecimal getSaldoBanco(Date fecha, String codCtacaja, Character moneda) {
+        StoredProcedureQuery getSaldoAlDiaCajaQuery = em.createNamedStoredProcedureQuery("getSaldoAlDiaBanco");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+        getSaldoAlDiaCajaQuery.setParameter(1, sdf.format(fecha));
+        getSaldoAlDiaCajaQuery.setParameter(2, codCtacaja);
+        getSaldoAlDiaCajaQuery.setParameter(3, moneda.toString());
+        getSaldoAlDiaCajaQuery.execute();
+        BigDecimal res = (BigDecimal) getSaldoAlDiaCajaQuery.getOutputParameterValue(4);
+        res = res.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        em.close();
+        return res;
+    }
+
     @Transactional
     public String enviarContabilidad(VsjCajabanco vcb) {
         StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarContabilidad");

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.sanjose.util.GenUtil.*;
+
 /**
  * VASJA class
  * User: prubach
@@ -21,7 +23,7 @@ public class DataUtil {
     public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo, boolean isPEN) {
         return planRepo.
                 findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                        '0', 'N', GenUtil.getYear(ano), (isPEN ? 'N' : 'D') , "101");
+                        '0', 'N', GenUtil.getYear(ano), (isPEN ? _PEN : _USD), "101");
     }
 
     public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo) {
@@ -36,10 +38,32 @@ public class DataUtil {
                         'N', GenUtil.getYear(ano), "101");
     }
 
+
+    public static List<Caja> getBancoCuentasList(ScpPlancontableRep planRepo, Date date) {
+        List<Caja> cajas = new ArrayList<>();
+        for (ScpPlancontable caja : getBancoCuentas(date, planRepo)) {
+            Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
+            BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(
+                    date,
+                    caja.getId().getCodCtacontable()
+                    , moneda);
+            // If is closed and has a saldo of "0.00" we can omit it
+            if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
+                continue;
+
+            cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
+                    (caja.getIndTipomoneda().equals(_PEN) ? saldo : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals(_USD) ? saldo : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals(_EUR) ? saldo : new BigDecimal(0.00))
+            ));
+        }
+        return cajas;
+    }
+
     public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
         List<Caja> cajas = new ArrayList<>();
         for (ScpPlancontable caja : getTodasCajas(date, planRepo)) {
-            Character moneda = caja.getIndTipomoneda().equals('N') ? '0' : '1';
+            Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
             BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(
                     date,
                     caja.getId().getCodCtacontable()
@@ -49,8 +73,8 @@ public class DataUtil {
                 continue;
 
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
-                    (caja.getIndTipomoneda().equals('N') ? saldo : new BigDecimal(0.00)),
-                    (caja.getIndTipomoneda().equals('D') ? saldo : new BigDecimal(0.00))
+                    (caja.getIndTipomoneda().equals(_PEN) ? saldo : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals(_USD) ? saldo : new BigDecimal(0.00))
             ));
         }
         return cajas;
@@ -62,7 +86,7 @@ public class DataUtil {
         List<ScpPlancontable> cajasFinal = getTodasCajas(datefinal, planRepo);
         cajasInicial.addAll(cajasFinal);
         for (ScpPlancontable caja : cajasInicial) {
-            Character moneda = caja.getIndTipomoneda().equals('N') ? '0' : '1';
+            Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
             BigDecimal saldoInicial = MainUI.get().getProcUtil().getSaldoCaja(
                     GenUtil.getBeginningOfDay(dateInicial),
                     caja.getId().getCodCtacontable()
@@ -77,10 +101,10 @@ public class DataUtil {
                 continue;
 
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
-                    (caja.getIndTipomoneda().equals('N') ? saldoInicial : new BigDecimal(0.00)),
-                    (caja.getIndTipomoneda().equals('D') ? saldoInicial : new BigDecimal(0.00)),
-                    (caja.getIndTipomoneda().equals('N') ? saldoFinal : new BigDecimal(0.00)),
-                    (caja.getIndTipomoneda().equals('D') ? saldoFinal : new BigDecimal(0.00))
+                    (caja.getIndTipomoneda().equals(_PEN) ? saldoInicial : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals(_USD) ? saldoInicial : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals(_PEN) ? saldoFinal : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals(_USD) ? saldoFinal : new BigDecimal(0.00))
             ));
         }
         return cajas;

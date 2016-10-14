@@ -33,11 +33,9 @@ public class CajaManejoLogic implements Serializable {
 
 
 	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);
-
+    private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares"};
     private CajaManejoView view;
-
     private Grid.FooterRow saldosFooterInicial;
-
     private Grid.FooterRow saldosFooterFinal;
 
     public void init(CajaManejoView cajaManejoView) {
@@ -108,7 +106,8 @@ public class CajaManejoLogic implements Serializable {
         grid.getContainerDataSource().removeAllItems();
         BeanItemContainer<Caja> c = new BeanItemContainer<>(Caja.class);
         grid.setContainerDataSource(c);
-        grid.setColumnOrder("codigo", "descripcion", "soles", "dolares");
+        grid.setColumnOrder(COL_VIS_SALDO);
+        grid.setColumns(COL_VIS_SALDO);
         BigDecimal totalSoles = new BigDecimal(0.00);
         BigDecimal totalUsd = new BigDecimal(0.00);
         for (Caja caja : DataUtil.getCajasList(view.getService().getPlanRepo(),

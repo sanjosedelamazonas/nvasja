@@ -1,8 +1,8 @@
 package org.sanjose.model;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import javax.persistence.*;
 
 
 /**
@@ -48,7 +48,18 @@ import javax.persistence.*;
 						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
 						@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class)
 				}
+		),
+		@NamedStoredProcedureQuery(
+				name = "getSaldoAlDiaBanco",
+				procedureName = "usp_scp_vsj_GetSaldoAlDiaBanco",
+				parameters = {
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class)
+				}
 		)
+
 }
 )
 public class VsjPropiedad implements Serializable {
@@ -64,6 +75,11 @@ public class VsjPropiedad implements Serializable {
 	private String valor;
 
 	public VsjPropiedad() {
+	}
+
+	public VsjPropiedad(String nombre, String valor) {
+		this.nombre = nombre;
+		this.valor = valor;
 	}
 
 	public Integer getCodPropiedad() {
@@ -87,12 +103,6 @@ public class VsjPropiedad implements Serializable {
 	}
 
 	public void setValor(String valor) {
-		this.valor = valor;
-	}
-
-
-	public VsjPropiedad(String nombre, String valor) {
-		this.nombre = nombre;
 		this.valor = valor;
 	}
 }

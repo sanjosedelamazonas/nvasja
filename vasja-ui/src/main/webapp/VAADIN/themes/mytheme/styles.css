@@ -28,7 +28,6 @@
 	float: left;
 	padding: 20px;
 	width: 100%;
-	max-width: 722px;
 }
 
 .root-layout.form-template-vivid .billing-formlayout .v-label {
@@ -56,14 +55,14 @@
 
 .root-layout.form-template-vivid .order-summary-layout .v-label {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	color: #fff;
+	color: $order-summary-text-color-usd;
 }
 
 .root-layout.form-template-vivid .order-summary-layout .header-label-small {
 	width: 100%;
 	text-transform: uppercase;
-	color: #fff;
-	border-bottom: 3px solid #FFD2FF;
+	color: #FFFFFF;
+	border-bottom: 3px solid #FFFFFF;
 }
 
 .root-layout.form-template-vivid .order-summary-layout .cancel-order-button {
@@ -92,8 +91,8 @@
 }
 
 .root-layout.form-template-vivid .order-summary-layout .total-sum {
-	border-top: solid 2px #FFD2FF;
-	color: #FFD2FF !important;
+	border-top: solid 2px $total-sum-border-color-usd;
+	color: #FFFFFF !important;
 	font-size: 2em;
 }
 
@@ -102,7 +101,11 @@
 }
 
 .root-layout.form-template-vivid .order-summary-layout-usd {
-	background-color: #71FF58;
+	background-color: #31B245;
+}
+
+.root-layout.form-template-vivid .order-summary-layout-eur {
+	background-color: #8E1611;
 }
 
 .root-layout.form-template-vivid[width-range~="321px-768px"] {

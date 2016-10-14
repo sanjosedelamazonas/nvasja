@@ -29,11 +29,9 @@ public class BancoManejoLogic implements Serializable {
 
 
     private static final Logger log = LoggerFactory.getLogger(BancoManejoLogic.class);
-
+    private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
     private BancoManejoView view;
-
     private Grid.FooterRow saldosFooterInicial;
-
     private Grid.FooterRow saldosFooterFinal;
 
     public void init(BancoManejoView bancoManejoView) {
@@ -88,11 +86,12 @@ public class BancoManejoLogic implements Serializable {
         grid.getContainerDataSource().removeAllItems();
         BeanItemContainer<Caja> c = new BeanItemContainer<>(Caja.class);
         grid.setContainerDataSource(c);
-        grid.setColumnOrder("codigo", "descripcion", "soles", "dolares", "euros");
+        grid.setColumnOrder(COL_VIS_SALDO);
+        grid.setColumns(COL_VIS_SALDO);
         BigDecimal totalSoles = new BigDecimal(0.00);
         BigDecimal totalUsd = new BigDecimal(0.00);
         BigDecimal totalEuros = new BigDecimal(0.00);
-        for (Caja caja : DataUtil.getCajasList(view.getService().getPlanRepo(),
+        for (Caja caja : DataUtil.getBancoCuentasList(view.getService().getPlanRepo(),
                 (isInicial ? GenUtil.getBeginningOfDay(view.fechaDesde.getValue())
                         : GenUtil.getEndOfDay(view.fechaHasta.getValue())))) {
             c.addItem(caja);
@@ -126,6 +125,8 @@ public class BancoManejoLogic implements Serializable {
             saldosFooterInicial.getCell("soles").setStyleName("v-align-right");
             saldosFooterInicial.getCell("dolares").setText(dpf.format(totalUsd.doubleValue()));
             saldosFooterInicial.getCell("dolares").setStyleName("v-align-right");
+            saldosFooterInicial.getCell("euros").setText(dpf.format(totalEuros.doubleValue()));
+            saldosFooterInicial.getCell("euros").setStyleName("v-align-right");
         } else {
             if (saldosFooterFinal == null) saldosFooterFinal = grid.addFooterRowAt(0);
             DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
@@ -135,6 +136,8 @@ public class BancoManejoLogic implements Serializable {
             saldosFooterFinal.getCell("soles").setText(dpf.format(totalSoles.doubleValue()));
             saldosFooterFinal.getCell("dolares").setStyleName("v-align-right");
             saldosFooterFinal.getCell("dolares").setText(dpf.format(totalUsd.doubleValue()));
+            saldosFooterFinal.getCell("euros").setText(dpf.format(totalEuros.doubleValue()));
+            saldosFooterFinal.getCell("euros").setStyleName("v-align-right");
         }
         //grid.addFooterRowAt(numCajas-1);
     }
