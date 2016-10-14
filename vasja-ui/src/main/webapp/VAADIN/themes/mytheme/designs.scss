@@ -14,16 +14,19 @@
 
 	// Comprobante UI Saldos
     $order-summary-background: #579AFF;
-    $order-summary-usd-background: #71FF58;
-    $order-summary-eur-background: #F6FFB7;
+    $order-summary-usd-background: #31B245;
+    $order-summary-eur-background: #8E1611;
     //
 
     $order-summary-header-color: #fff;
-    $order-summary-header-border-color: #FFD2FF;	
+    $order-summary-header-color-usd: #FFFFFF;
+    $order-summary-header-border-color: #FFD2FF;
+    $order-summary-header-border-color-usd: #FFFFFF;
     $order-summary-text-color: #fff;
     $cancel-order-icon-color: #DB2780;    
 	$total-sum-border-color: #FFD2FF;
     $total-sum-text-color: #FFD2FF;
+    $total-sum-text-color-usd: #FFFFFF;
         
 	$header-bar-height: 100px;
 
@@ -55,7 +58,8 @@
 		float: left;
 		padding: 20px;
 		width: 100%;
-		max-width: 722px;
+		//min-width: 400px;
+		//max-width: 722px;
 		
 		.v-label {
 	       font-family: $template-font-family;
@@ -79,17 +83,17 @@
 		background-color: $order-summary-background;
 		float: right;
 		padding: 20px;
-         
+
         .v-label {
             font-family: $template-font-family;
-            color: $order-summary-text-color;
+            color: $order-summary-text-color-usd;
         }         
             
         .header-label-small {
 			width: 100%;
 			text-transform: uppercase;
-            color: $order-summary-header-color;
-            border-bottom: 3px solid $order-summary-header-border-color;
+            color: $order-summary-header-color-usd;
+            border-bottom: 3px solid $order-summary-header-border-color-usd;
         }
 		
 		.cancel-order-button {
@@ -118,8 +122,8 @@
 		}
 		
 		.total-sum {
-			border-top: solid 2px $total-sum-border-color; 
-			color: $total-sum-text-color !important;
+			border-top: solid 2px $total-sum-border-color-usd;
+			color: $total-sum-text-color-usd !important;
 			font-size: 2em;
 			&:first-letter {
 				font-weight: 400;
@@ -128,7 +132,11 @@
 	}
 
 	.order-summary-layout-usd {
-    		background-color: $order-summary-usd-background;
+    	background-color: $order-summary-usd-background;
+    }
+
+    .order-summary-layout-eur {
+        background-color: $order-summary-eur-background;
     }
 
 	&[width-range~="321px-768px"]{

@@ -87,12 +87,12 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
         ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
 
         // Set Saldos Inicial
-        //fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
-        //fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));
+        fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
+        fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));
 
         viewLogic.init(this);
-        //viewLogic.setSaldos(gridSaldoInicial, true);
-        //viewLogic.setSaldos(gridSaldoFInal, false);
+        viewLogic.setSaldos(gridSaldoInicial, true);
+        viewLogic.setSaldos(gridSaldoFInal, false);
 
     }
 
