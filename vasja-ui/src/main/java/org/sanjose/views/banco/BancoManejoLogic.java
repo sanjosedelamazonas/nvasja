@@ -12,6 +12,7 @@ import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
+import org.sanjose.views.sys.ISaldoDelDia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -25,7 +26,7 @@ import java.math.BigDecimal;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class BancoManejoLogic implements Serializable {
+public class BancoManejoLogic implements Serializable, ISaldoDelDia {
 
 
     private static final Logger log = LoggerFactory.getLogger(BancoManejoLogic.class);
@@ -88,6 +89,7 @@ public class BancoManejoLogic implements Serializable {
         grid.setContainerDataSource(c);
         grid.setColumnOrder(COL_VIS_SALDO);
         grid.setColumns(COL_VIS_SALDO);
+        grid.getColumn("descripcion").setWidth(200);
         BigDecimal totalSoles = new BigDecimal(0.00);
         BigDecimal totalUsd = new BigDecimal(0.00);
         BigDecimal totalEuros = new BigDecimal(0.00);
@@ -139,6 +141,45 @@ public class BancoManejoLogic implements Serializable {
             saldosFooterFinal.getCell("euros").setText(dpf.format(totalEuros.doubleValue()));
             saldosFooterFinal.getCell("euros").setStyleName("v-align-right");
         }
-        //grid.addFooterRowAt(numCajas-1);
+        setSaldoDelDia();
+    }
+
+    public void setSaldoDelDia() {
+        // Total del Dia
+        BigDecimal totalSolesDiaIng = new BigDecimal(0.00);
+        BigDecimal totalSolesDiaEgr = new BigDecimal(0.00);
+        BigDecimal totalUsdDiaIng = new BigDecimal(0.00);
+        BigDecimal totalUsdDiaEgr = new BigDecimal(0.00);
+        BigDecimal totalEurosDiaIng = new BigDecimal(0.00);
+        BigDecimal totalEurosDiaEgr = new BigDecimal(0.00);
+
+        for (Object item : view.getGridBanco().getContainerDataSource().getItemIds()) {
+            VsjBancocabecera bancocabecera = (VsjBancocabecera) item;
+            // PEN
+            totalSolesDiaEgr = totalSolesDiaEgr.add(bancocabecera.getNumHabersol());
+            totalSolesDiaIng = totalSolesDiaIng.add(bancocabecera.getNumDebesol());
+            // USD
+            totalUsdDiaEgr = totalUsdDiaEgr.add(bancocabecera.getNumHaberdolar());
+            totalUsdDiaIng = totalUsdDiaIng.add(bancocabecera.getNumDebedolar());
+            // EUR
+            totalEurosDiaEgr = totalEurosDiaEgr.add(bancocabecera.getNumHabermo());
+            totalEurosDiaIng = totalEurosDiaIng.add(bancocabecera.getNumDebemo());
+        }
+        DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
+                null, ConfigurationUtil.get("DECIMAL_FORMAT"));
+        // PEN
+        view.getValSolEgr().setValue(dpf.format(totalSolesDiaEgr.doubleValue()));
+        view.getValSolIng().setValue(dpf.format(totalSolesDiaIng.doubleValue()));
+        view.getValSolSaldo().setValue(dpf.format(totalSolesDiaIng.subtract(totalSolesDiaEgr).doubleValue()));
+        // USD
+        view.getValDolEgr().setValue(dpf.format(totalUsdDiaEgr.doubleValue()));
+        view.getValDolIng().setValue(dpf.format(totalUsdDiaIng.doubleValue()));
+        view.getValDolSaldo().setValue(dpf.format(totalUsdDiaIng.subtract(totalUsdDiaEgr).doubleValue()));
+        // EUR
+        view.getValEuroEgr().setValue(dpf.format(totalEurosDiaEgr.doubleValue()));
+        view.getValEuroIng().setValue(dpf.format(totalEurosDiaIng.doubleValue()));
+        view.getValEuroSaldo().setValue(dpf.format(totalEurosDiaIng.subtract(totalEurosDiaEgr).doubleValue()));
+
+        view.gridSaldoDelDia.setColumnExpandRatio(0, 0);
     }
 }

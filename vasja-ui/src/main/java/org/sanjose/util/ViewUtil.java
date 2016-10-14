@@ -20,6 +20,7 @@ import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.render.EmptyZeroNumberRendrer;
+import org.sanjose.views.sys.ISaldoDelDia;
 
 import javax.print.PrintException;
 import java.sql.Timestamp;
@@ -134,17 +135,23 @@ public class ViewUtil {
     }
 
 
-    public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width) {
+    public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width, ISaldoDelDia saldoDelDia) {
+        Map<String, Integer> filCols = new HashMap<>();
+        for (int i = 0; i < filter_cols_width.length; i++) {
+            filCols.put(visible_cols[i], filter_cols_width[i]);
+        }
+        setupColumnFilters(grid, filCols, saldoDelDia);
+    }
 
+    public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width) {
         Map<String, Integer> filCols = new HashMap<>();
         for (int i=0;i<filter_cols_width.length;i++) {
             filCols.put(visible_cols[i], filter_cols_width[i]);
         }
-
-        setupColumnFilters(grid, filCols);
+        setupColumnFilters(grid, filCols, null);
     }
 
-    private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols) {
+    private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, ISaldoDelDia saldoDelDia) {
         Grid.HeaderRow filterRow = grid.appendHeaderRow();
         for (Grid.Column column: grid.getColumns()) {
             Object pid = column.getPropertyId();
@@ -166,16 +173,12 @@ public class ViewUtil {
                     ((BeanItemContainer)grid.getContainerDataSource()).addContainerFilter(
                             new SimpleStringFilter(pid,
                                     change.getText(), true, false));
+                if (saldoDelDia != null)
+                    saldoDelDia.setSaldoDelDia();
             });
             cell.setComponent(filterField);
         }
     }
-
-
-    public static void setupColumnFilters(Grid grid) {
-        setupColumnFilters(grid, null);
-    }
-
 
 
     public static void setupDateFilters(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta, Date defDesde, Date defHasta) {
