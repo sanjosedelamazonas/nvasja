@@ -9,7 +9,6 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Notification;
 import org.sanjose.model.VsjPropiedad;
 import org.sanjose.repo.VsjPropiedadRep;
 import org.sanjose.util.ConfigurationUtil;
@@ -69,10 +68,19 @@ public class PropiedadView extends PropiedadUI implements VsjView {
             gridContextMenu.removeItems();
             final Object itemId = e.getItemId();
             if (itemId == null) {
-                gridContextMenu.addItem("Add Item", k -> Notification.show("adding"));
+                gridContextMenu.addItem("Nueva propiedad", k -> {
+                    viewLogic.newPropiedad();
+                });
             } else {
-                gridContextMenu.addItem("Remove this row", k -> Notification.show("removing"));
-                gridContextMenu.addItem("Imprimir ", k -> Notification.show("removing"));
+                gridContextMenu.addItem("Editar propiedad", k -> {
+                    gridPropiedad.editItem(itemId);
+                });
+                gridContextMenu.addItem("Nueva propiedad", k -> {
+                    viewLogic.newPropiedad();
+                });
+                gridContextMenu.addItem("Elminar esta propiedad", k -> {
+                    gridPropiedad.getContainerDataSource().removeItem(itemId);
+                });
             }
         });
 

@@ -1,5 +1,6 @@
 package org.sanjose.views.caja;
 
+import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -42,21 +43,26 @@ public class CajaManejoLogic implements Serializable, ISaldoDelDia {
     public void init(CajaManejoView cajaManejoView) {
         view = cajaManejoView;
         view.nuevoComprobante.addClickListener(e -> newComprobante());
-        view.btnEditar.addClickListener(e -> {
-            for (Object obj : view.getSelectedRow()) {
-                log.info("selected: " + obj);
-                editarComprobante((VsjCajabanco) obj);
-                break;
-            }
-        });
+        view.btnEditar.addClickListener(e -> editarComprobante(view.getSelectedRow()));
         view.btnVerVoucher.addClickListener(e -> generateComprobante());
         view.btnImprimir.addClickListener(e -> printComprobante());
         view.btnReporteCaja.addClickListener(e -> {
             ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
         });
-    }
 
-    public void enter(String productId) {
+        GridContextMenu gridContextMenu = new GridContextMenu(view.getGridCaja());
+        gridContextMenu.addGridBodyContextMenuListener(e -> {
+            gridContextMenu.removeItems();
+            final Object itemId = e.getItemId();
+            if (itemId == null) {
+                gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
+            } else {
+                gridContextMenu.addItem("Editar", k -> editarComprobante((VsjCajabanco) itemId));
+                gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
+                gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
+                gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());
+            }
+        });
     }
 
     private void newComprobante() {
@@ -87,19 +93,11 @@ public class CajaManejoLogic implements Serializable, ISaldoDelDia {
 
 
     private void generateComprobante() {
-        for (Object obj : view.getSelectedRow()) {
-            log.info("selected: " + obj);
-            VsjCajabanco vcb = (VsjCajabanco)obj;
-            ReportHelper.generateComprobante(vcb);
-        }
+        ReportHelper.generateComprobante(view.getSelectedRow());
     }
 
     private void printComprobante() {
-        for (Object obj : view.getSelectedRow()) {
-            log.info("selected: " + obj);
-            VsjCajabanco vcb = (VsjCajabanco) obj;
-            ViewUtil.printComprobante(vcb);
-        }
+        ViewUtil.printComprobante(view.getSelectedRow());
     }
 
 

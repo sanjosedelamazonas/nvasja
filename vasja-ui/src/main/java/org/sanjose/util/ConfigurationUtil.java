@@ -1,4 +1,9 @@
 package org.sanjose.util;
+
+import org.sanjose.model.VsjPropiedad;
+import org.sanjose.repo.VsjPropiedadRep;
+
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -6,18 +11,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-import org.sanjose.model.VsjPropiedad;
-import org.sanjose.repo.VsjPropiedadRep;
-
 public class ConfigurationUtil {
-
-	private final static HashMap<String, String> defaultParamMap = new HashMap<>();
-	private static final HashMap<String, String> paramMap = new HashMap<>();
-
-	private static VsjPropiedadRep propRepo = null;
 
 	public final static Locale LOCALE = new Locale("es", "PE");
 	public final static String CSS_RED = "red";
+	private final static HashMap<String, String> defaultParamMap = new HashMap<>();
+	private static final HashMap<String, String> paramMap = new HashMap<>();
+	private static VsjPropiedadRep propRepo = null;
 	private static String OS = null;
 
 	private static void init() {
@@ -103,12 +103,12 @@ public class ConfigurationUtil {
 	public static String getReportsSourceFolder() {
 
 		if (!GenUtil.strNullOrEmpty(get("REPORTS_SOURCE_FOLDER"))) {
-			return get("REPORTS_SOURCE_FOLDER");
+			return get("REPORTS_SOURCE_FOLDER").trim() + File.separator;
 		}
 		if (getOsName().startsWith("Win")) {
-			return get("REPORTS_SOURCE_FOLDER_WIN");
+			return get("REPORTS_SOURCE_FOLDER_WIN").trim() + File.separator;
 		} else {
-			return get("REPORTS_SOURCE_FOLDER_UNIX");
+			return get("REPORTS_SOURCE_FOLDER_UNIX").trim() + File.separator;
 		}
 	}
 

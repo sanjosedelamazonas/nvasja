@@ -101,13 +101,6 @@
             <version>0.0.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.vaadin.addon</groupId>
-            <artifactId>vaadin-context-menu</artifactId>
-            <version>0.7.4</version>
-        </dependency>
-
-
         <!-- Bean validation implementation -->
         <dependency>
             <groupId>org.hibernate</groupId>

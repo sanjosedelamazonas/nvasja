@@ -53,7 +53,7 @@ public class PropiedadLogic implements Serializable {
                
     }
 
-    private void newPropiedad() {
+    public void newPropiedad() {
         view.clearSelection();
         VsjPropiedad vcb = new VsjPropiedad();
         view.gridPropiedad.getContainerDataSource().addItem(vcb);

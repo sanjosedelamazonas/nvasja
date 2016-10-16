@@ -4,12 +4,8 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/1.7.0/distro-source/core/src/gwt-module.dtd">
 <module>
 	<!-- Inherit DefaultWidgetSet -->
-	 
-        <inherits name="org.vaadin.applet.AppletintegrationWidgetset" />
+
+    <inherits name="org.vaadin.applet.AppletintegrationWidgetset"/>
 
     <inherits name="com.vaadin.DefaultWidgetSet" />
-
-    <inherits name="org.vaadin.applet.org.vaadin.applet.AppletintegrationWidgetset"/>
-
-    <inherits name="dk.apaq.vaadin.addon.printservice.gwt.dk.apaq.vaadin.addon.printservice.gwt.WidgetSet"/>
 </module>

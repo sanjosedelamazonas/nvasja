@@ -1,5 +1,6 @@
 package org.sanjose.views.caja;
 
+import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitEvent;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
@@ -48,10 +49,6 @@ public class CajaGridLogic implements Serializable {
     private CajaGridView view;
     private ProcUtil procUtil;
 
-    public CajaGridLogic() {
-
-    }
-
     public void init(CajaGridView cajaGridView) {
         view = cajaGridView;
         procUtil = MainUI.get().getProcUtil();
@@ -87,6 +84,29 @@ public class CajaGridLogic implements Serializable {
                 }
             }
         });
+
+        GridContextMenu gridContextMenu = new GridContextMenu(view.gridCaja);
+        gridContextMenu.addGridBodyContextMenuListener(e -> {
+            gridContextMenu.removeItems();
+            final Object itemId = e.getItemId();
+            if (itemId == null) {
+                gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
+            } else {
+                gridContextMenu.addItem("Editar", k -> editarComprobante((VsjCajabanco) itemId));
+                gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
+                gridContextMenu.addItem("Enviar a contabilidad", k -> {
+                    if (!view.getSelectedRows().isEmpty()) {
+                        enviarContabilidad(view.getSelectedRows());
+                    } else {
+                        List<Object> cajabancos = new ArrayList<>();
+                        cajabancos.add(itemId);
+                        enviarContabilidad(cajabancos);
+                    }
+                });
+                gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajabanco) itemId));
+            }
+        });
+
                
     }
     private void enviarContabilidad(Collection<Object> vcbs) {

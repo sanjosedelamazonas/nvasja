@@ -455,11 +455,10 @@ public class ReportHelper {
 		}
 
 		try {
-			logger.info("Reports folder: " + ConfigurationUtil.getReportsSourceFolder().trim());
+			logger.info("Reports folder: " + ConfigurationUtil.getReportsSourceFolder());
 
 			rep = new FileInputStream(
-					ConfigurationUtil.getReportsSourceFolder() + File.separator
-							+ reportName + ".jasper");
+					ConfigurationUtil.getReportsSourceFolder() + reportName + ".jasper");
 		} catch (FileNotFoundException e) {
 			Notification.show("Report file not found!");
 		}
