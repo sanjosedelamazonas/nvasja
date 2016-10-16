@@ -1,5 +1,6 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -49,6 +50,31 @@ public class BancoManejoLogic implements Serializable, ISaldoDelDia {
         view.btnReporte.addClickListener(e -> {
             //ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
         });
+
+        GridContextMenu gridContextMenu = new GridContextMenu(view.getGridBanco());
+        gridContextMenu.addGridBodyContextMenuListener(e -> {
+            gridContextMenu.removeItems();
+            final Object itemId = e.getItemId();
+            if (itemId == null) {
+                gridContextMenu.addItem("Nuevo cheque", k -> nuevoCheque());
+            } else {
+                gridContextMenu.addItem("Editar", k -> editarCheque((VsjBancocabecera) itemId));
+                gridContextMenu.addItem("Nuevo comprobante", k -> nuevoCheque());
+/*
+                gridContextMenu.addItem("Enviar a contabilidad", k -> {
+                    if (!view.getSelectedRows().isEmpty()) {
+                        enviarContabilidad(view.getSelectedRows());
+                    } else {
+                        List<Object> cajabancos = new ArrayList<>();
+                        cajabancos.add(itemId);
+                        enviarContabilidad(cajabancos);
+                    }
+                });
+*/
+                //gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajabanco)itemId));
+            }
+        });
+
     }
 
     private void nuevoCheque() {

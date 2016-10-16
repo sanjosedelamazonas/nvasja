@@ -186,6 +186,8 @@ public class PrintHelper extends VerticalLayout implements VsjView {
 	public boolean print(JasperPrint jrPrint, boolean isComprobante) throws JRException, PrintException {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
+		if (printServiceManager == null)
+			throw new JRException("No se podia conseguir un servicio de impresoras");
 		if (printService == null || printService.getName()==null) {
 			printService = selectPrintService();
 		}

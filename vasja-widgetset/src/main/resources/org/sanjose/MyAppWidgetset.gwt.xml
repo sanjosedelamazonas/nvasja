@@ -8,5 +8,9 @@
 
     <stylesheet src="resetbuttonfortextfield/styles.css"/>
 
-    <inherits name="org.sanjose.org.sanjose.MyAppWidgetset"/>
+
+    <!-- Inherit add-on widgetset -->
+
+
+    <inherits name="com.vaadin.addon.contextmenu.WidgetSet"/>
 </module>

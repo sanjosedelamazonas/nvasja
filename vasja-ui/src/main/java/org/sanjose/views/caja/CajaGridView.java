@@ -232,7 +232,6 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
         selTercero.getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
-
     private void setItemLogic(ItemClickEvent event) {
         String proyecto = null;
         Object objProyecto = event.getItem().getItemProperty("codProyecto").getValue();
@@ -289,7 +288,6 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
 
     @Override
     public void enter(ViewChangeEvent event) {
-        viewLogic.enter(event.getParameters());
     }
 
     public void clearSelection() {

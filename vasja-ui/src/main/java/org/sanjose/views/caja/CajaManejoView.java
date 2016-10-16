@@ -18,8 +18,6 @@ import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.INavigatorView;
 import org.sanjose.views.sys.VsjView;
 
-import java.util.Collection;
-
 /**
  * A view for performing create-read-update-delete operations on products.
  *
@@ -133,15 +131,14 @@ public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjV
 
     @Override
     public void enter(ViewChangeEvent event) {
-        viewLogic.enter(event.getParameters());
     }
 
     public void clearSelection() {
         gridCaja.getSelectionModel().reset();
     }
 
-    public Collection<Object> getSelectedRow() {
-        return gridCaja.getSelectedRows();
+    public VsjCajabanco getSelectedRow() {
+        return (VsjCajabanco) gridCaja.getSelectedRows().toArray()[0];
     }
 
     @Override
