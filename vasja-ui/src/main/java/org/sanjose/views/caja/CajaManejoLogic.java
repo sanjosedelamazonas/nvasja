@@ -7,6 +7,7 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.NonEditableException;
@@ -21,6 +22,8 @@ import org.sanjose.views.sys.ISaldoDelDia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -61,6 +64,15 @@ public class CajaManejoLogic implements Serializable, ISaldoDelDia {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
                 gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
                 gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());
+
+                if (Role.isPrivileged()) {
+                    gridContextMenu.addItem("Enviar a contabilidad", k -> {
+                        List<Object> cajabancos = new ArrayList<>();
+                        cajabancos.add(itemId);
+                        MainUI.get().getProcUtil().enviarContabilidad(cajabancos, view.getService());
+                        view.refreshData();
+                    });
+                }
             }
         });
     }

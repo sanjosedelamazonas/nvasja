@@ -17,7 +17,6 @@ import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.model.ScpDestino;
-import org.sanjose.model.ScpTipocambio;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
@@ -25,11 +24,8 @@ import org.sanjose.util.ProcUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.DestinoView;
 
-import javax.persistence.PersistenceException;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -54,7 +50,7 @@ public class CajaGridLogic implements Serializable {
         procUtil = MainUI.get().getProcUtil();
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.responsablesBtn.addClickListener(e -> editDestino(view.getSelectedRow()));
-        view.enviarBtn.addClickListener(e -> enviarContabilidad(view.getSelectedRows()));
+        view.enviarBtn.addClickListener(e -> procUtil.enviarContabilidad(view.getSelectedRows(), view.getService()));
         view.editarBtn.addClickListener(e -> editarComprobante(view.getSelectedRow()));
         view.imprimirBtn.addClickListener(event -> {
                     if (view.getSelectedRow()!=null) ViewUtil.printComprobante(view.getSelectedRow());
@@ -96,12 +92,13 @@ public class CajaGridLogic implements Serializable {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
                 gridContextMenu.addItem("Enviar a contabilidad", k -> {
                     if (!view.getSelectedRows().isEmpty()) {
-                        enviarContabilidad(view.getSelectedRows());
+                        procUtil.enviarContabilidad(view.getSelectedRows(), view.getService());
                     } else {
                         List<Object> cajabancos = new ArrayList<>();
                         cajabancos.add(itemId);
-                        enviarContabilidad(cajabancos);
+                        procUtil.enviarContabilidad(cajabancos, view.getService());
                     }
+                    view.refreshData();
                 });
                 gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajabanco) itemId));
             }
@@ -109,45 +106,7 @@ public class CajaGridLogic implements Serializable {
 
                
     }
-    private void enviarContabilidad(Collection<Object> vcbs) {
-        VsjCajabanco vcb = null;
-        try {
-            List<VsjCajabanco> vsjCajabancoList = new ArrayList<>();
-            for (Object objVcb : vcbs) {
-                vcb = (VsjCajabanco) objVcb;
-                if (vcb.isEnviado()) {
-                    continue;
-                }
-                vsjCajabancoList.add(vcb);
-                // Check TipoDeCambio
-                log.info("Check tipoDeCambio: " + vcb);
-                List<ScpTipocambio> tipocambios = view.getService().getTipocambioRep().findById_FecFechacambio(
-                        GenUtil.getBeginningOfDay(vcb.getFecFecha()));
-                if (tipocambios.isEmpty()) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    Notification.show("Falta tipo de cambio para el dia: " + sdf.format(vcb.getFecFecha()), Notification.Type.WARNING_MESSAGE);
-                    return;
-                }
-            }
-            for (VsjCajabanco vcbS : vsjCajabancoList) {
-                vcb = vcbS;
-                log.info("Enviando: " + vcb);
-                String result = procUtil.enviarContabilidad(vcb);
-                log.info("Resultado: " + result);
-                Notification.show("Operacion: " + vcb.getCodCajabanco(), result, Notification.Type.TRAY_NOTIFICATION);
-            }
-            if (vcbs.size()!=vsjCajabancoList.size()) {
-                Notification.show("!Attention!", "!Algunas operaciones eran omitidas por ya ser enviadas!", Notification.Type.TRAY_NOTIFICATION);
-            }
-            view.refreshData();
-        } catch (PersistenceException pe){
-            Notification.show("Problema al enviar a contabilidad operacion: " + (vcb != null ? vcb.getCodCajabanco() : 0)
-                    + "\n\n" + pe.getMessage() +
-                    (pe.getCause()!=null ? "\n" + pe.getCause().getMessage() : "")
-                    + (pe.getCause()!=null && pe.getCause().getCause()!=null ? "\n" + pe.getCause().getCause().getMessage() : "")
-                    , Notification.Type.ERROR_MESSAGE);
-        }
-    }
+
 
     private void editDestino(VsjCajabanco vcb) {
         Window destinoWindow = new Window();

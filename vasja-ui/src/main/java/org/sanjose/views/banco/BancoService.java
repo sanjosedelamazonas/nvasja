@@ -41,15 +41,18 @@ public class BancoService {
     private final VsjBancocabeceraRep bancocabeceraRep;
     private final VsjBancodetalleRep bancodetalleRep;
     private final Logger log = LoggerFactory.getLogger(BancoService.class);
+    private ScpTipocambioRep scpTipocambioRep;
     private ScpComprobantedetalleRep scpComprobantedetalleRep;
 
     @Autowired
-    public BancoService(VsjBancocabeceraRep bancocabeceraRep, VsjBancodetalleRep bancodetalleRep, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
+    public BancoService(VsjBancocabeceraRep bancocabeceraRep, VsjBancodetalleRep bancodetalleRep,
+                        VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
                         ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                         ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                         ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                         Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                        ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, ScpComprobantedetalleRep scpComprobantedetalleRep, EntityManager em) {
+                        ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo,
+                        ScpComprobantedetalleRep scpComprobantedetalleRep, ScpTipocambioRep scpTipocambioRep, EntityManager em) {
         this.bancocabeceraRep = bancocabeceraRep;
         this.bancodetalleRep = bancodetalleRep;
         this.configuractacajabancoRepo = configuractacajabancoRepo;
@@ -66,6 +69,7 @@ public class BancoService {
         this.cargocuartaRepo = cargocuartaRepo;
         this.tipodocumentoRepo = tipodocumentoRepo;
         this.scpComprobantedetalleRep = scpComprobantedetalleRep;
+        this.scpTipocambioRep = scpTipocambioRep;
         this.em = em;
     }
 
@@ -144,7 +148,6 @@ public class BancoService {
         bancocabeceraRep.save(bancocabecera);
     }
 
-
     @Transactional
     public List<VsjBancocabecera> findAll() {
         return bancocabeceraRep.findAll();
@@ -208,6 +211,10 @@ public class BancoService {
 
     public ScpTipodocumentoRep getTipodocumentoRepo() {
         return tipodocumentoRepo;
+    }
+
+    public ScpTipocambioRep getScpTipocambioRep() {
+        return scpTipocambioRep;
     }
 
     public EntityManager getEm() {

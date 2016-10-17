@@ -58,10 +58,7 @@ public class MainScreen extends HorizontalLayout {
         final Navigator navigator = new Navigator(ui, viewContainer);
         navigator.setErrorView(ErrorView.class);
         menu = new Menu(navigator);
-        if (ui.getAccessControl().isUserInRole(Role.CAJA) ||
-                ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
-                ui.getAccessControl().isUserInRole(Role.ADMIN)
-                ) {
+        if (Role.isCaja()) {
             menu.addSeparator("Caja");
             menu.addView(comprobanteView, ComprobanteView.VIEW_NAME,
                     ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
@@ -70,25 +67,18 @@ public class MainScreen extends HorizontalLayout {
             menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
                     CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
-        if (ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
-                ui.getAccessControl().isUserInRole(Role.ADMIN)
-                ) {
+        if (Role.isPrivileged()) {
             menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
                     CajaGridView.VIEW_NAME, FontAwesome.EDIT);
         }
-        if (ui.getAccessControl().isUserInRole(Role.BANCO) ||
-                ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
-                ui.getAccessControl().isUserInRole(Role.ADMIN)
-                ) {
+        if (Role.isBanco()) {
             menu.addSeparator("Banco");
             menu.addView(bancoOperView, BancoOperView.VIEW_NAME,
                     BancoOperView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(bancoManejoView, BancoManejoView.VIEW_NAME,
                     BancoManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
-        if (ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
-                ui.getAccessControl().isUserInRole(Role.ADMIN)
-                ) {
+        if (Role.isPrivileged()) {
             menu.addView(bancoOperacionesView, BancoOperacionesView.VIEW_NAME,
                     BancoOperacionesView.VIEW_NAME, FontAwesome.EDIT);
             menu.addSeparator("Configuracion");
@@ -97,7 +87,7 @@ public class MainScreen extends HorizontalLayout {
             menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
                     ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
         }
-        if (ui.getAccessControl().isUserInRole(Role.ADMIN)) {
+        if (Role.isAdmin()) {
             menu.addSeparator("Sistema");
             menu.addView(propiedadView, PropiedadView.VIEW_NAME,
                     PropiedadView.VIEW_NAME, FontAwesome.EDIT);

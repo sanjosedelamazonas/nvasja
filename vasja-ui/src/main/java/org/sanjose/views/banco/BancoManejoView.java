@@ -84,7 +84,7 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
 
         ViewUtil.alignMontosInGrid(gridBanco);
 
-        gridBanco.setSelectionMode(SelectionMode.SINGLE);
+        gridBanco.setSelectionMode(SelectionMode.MULTI);
 
         // Fecha Desde Hasta
         //ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
@@ -151,7 +151,7 @@ public class BancoManejoView extends BancoManejoUI implements INavigatorView, Vs
         gridBanco.getSelectionModel().reset();
     }
 
-    public Collection<Object> getSelectedRow() {
+    public Collection<Object> getSelectedRows() {
         return gridBanco.getSelectedRows();
     }
 
