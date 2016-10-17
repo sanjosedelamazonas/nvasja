@@ -37,6 +37,8 @@ public class ProcUtil {
 
     private EntityManager em;
 
+    private VsjBancocabecera curBancoCabecera = null;
+
     @Autowired
     public ProcUtil(EntityManager em) {
         this.em = em;
@@ -98,7 +100,7 @@ public class ProcUtil {
         return res;
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public String enviarContabilidad(VsjCajabanco vcb) {
         StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarContabilidad");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -121,6 +123,7 @@ public class ProcUtil {
         query.execute();
         return (String)query.getOutputParameterValue(8);
     }
+
 
     public void enviarContabilidad(Collection<Object> vcbs, ComprobanteService service) {
         VsjCajabanco vcb = null;
@@ -161,7 +164,7 @@ public class ProcUtil {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public String enviarContabilidadBanco(VsjBancocabecera vcb) {
         StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarContabilidadBanco");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -173,42 +176,47 @@ public class ProcUtil {
         return (String) query.getOutputParameterValue(5);
     }
 
+    @Transactional(readOnly = false)
+    public void enviarContabilidadBancoInTransaction(Collection<Object> vcbs, BancoService service) {
+        List<VsjBancocabecera> vsjBancocabeceras = new ArrayList<>();
+        for (Object objVcb : vcbs) {
+            curBancoCabecera = (VsjBancocabecera) objVcb;
+            if (curBancoCabecera.isEnviado()) {
+                continue;
+            }
+            vsjBancocabeceras.add(curBancoCabecera);
+            // Check TipoDeCambio
+            log.info("Check tipoDeCambio: " + curBancoCabecera);
+            List<ScpTipocambio> tipocambios = service.getScpTipocambioRep().findById_FecFechacambio(
+                    GenUtil.getBeginningOfDay(curBancoCabecera.getFecFecha()));
+            if (tipocambios.isEmpty()) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                Notification.show("Falta tipo de cambio para el dia: " + sdf.format(curBancoCabecera.getFecFecha()), Notification.Type.WARNING_MESSAGE);
+                return;
+            }
+        }
+        for (VsjBancocabecera vcbS : vsjBancocabeceras) {
+            curBancoCabecera = vcbS;
+            log.info("Enviando: " + curBancoCabecera);
+            String result = enviarContabilidadBanco(curBancoCabecera);
+            log.info("Resultado: " + result);
+            Notification.show("Operacion: " + curBancoCabecera.getCodBancocabecera(), result, Notification.Type.TRAY_NOTIFICATION);
+        }
+        if (vcbs.size() != vsjBancocabeceras.size()) {
+            Notification.show("!Attention!", "!Algunas operaciones eran omitidas por ya ser enviadas!", Notification.Type.TRAY_NOTIFICATION);
+        }
+    }
+
     public void enviarContabilidadBanco(Collection<Object> vcbs, BancoService service) {
-        VsjBancocabecera vcb = null;
         try {
-            List<VsjBancocabecera> vsjBancocabeceras = new ArrayList<>();
-            for (Object objVcb : vcbs) {
-                vcb = (VsjBancocabecera) objVcb;
-                if (vcb.isEnviado()) {
-                    continue;
-                }
-                vsjBancocabeceras.add(vcb);
-                // Check TipoDeCambio
-                log.info("Check tipoDeCambio: " + vcb);
-                List<ScpTipocambio> tipocambios = service.getScpTipocambioRep().findById_FecFechacambio(
-                        GenUtil.getBeginningOfDay(vcb.getFecFecha()));
-                if (tipocambios.isEmpty()) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    Notification.show("Falta tipo de cambio para el dia: " + sdf.format(vcb.getFecFecha()), Notification.Type.WARNING_MESSAGE);
-                    return;
-                }
-            }
-            for (VsjBancocabecera vcbS : vsjBancocabeceras) {
-                vcb = vcbS;
-                log.info("Enviando: " + vcb);
-                String result = enviarContabilidadBanco(vcb);
-                log.info("Resultado: " + result);
-                Notification.show("Operacion: " + vcb.getCodBancocabecera(), result, Notification.Type.TRAY_NOTIFICATION);
-            }
-            if (vcbs.size() != vsjBancocabeceras.size()) {
-                Notification.show("!Attention!", "!Algunas operaciones eran omitidas por ya ser enviadas!", Notification.Type.TRAY_NOTIFICATION);
-            }
+            enviarContabilidadBancoInTransaction(vcbs, service);
         } catch (PersistenceException pe) {
-            Notification.show("Problema al enviar a contabilidad operacion: " + (vcb != null ? vcb.getCodBancocabecera() : 0)
+            Notification.show("Problema al enviar a contabilidad operacion: " + (curBancoCabecera != null ? curBancoCabecera.getCodBancocabecera() : 0)
                             + "\n\n" + pe.getMessage() +
                             (pe.getCause() != null ? "\n" + pe.getCause().getMessage() : "")
                             + (pe.getCause() != null && pe.getCause().getCause() != null ? "\n" + pe.getCause().getCause().getMessage() : "")
                     , Notification.Type.ERROR_MESSAGE);
+            pe.printStackTrace();
         }
     }
 
