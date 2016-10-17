@@ -12,6 +12,7 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
+import org.sanjose.converter.ZeroOneToBooleanConverter;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjBancodetallePK;
@@ -19,6 +20,7 @@ import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.VsjView;
+import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
 
 import java.math.BigDecimal;
@@ -62,7 +64,7 @@ public class BancoOperView extends BancoOperUI implements VsjView {
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosaDetalle, serieDoc, numDoc,
             };
-    private final Field[] cabezeraFields = new Field[] { dataFechaComprobante, selCuenta, selCodAuxCabeza,
+    private final Field[] cabezeraFields = new Field[]{chkCobrado, dataFechaComprobante, selCuenta, selCodAuxCabeza,
             glosaCabeza, cheque };
     private BancoLogic viewLogic = null;
     private BeanItemContainer<VsjBancodetalle> container;
@@ -84,6 +86,10 @@ public class BancoOperView extends BancoOperUI implements VsjView {
 
         viewLogic.setupEditComprobanteView();
 
+        chkCobrado.setAnimated(true);
+        chkCobrado.setSimpleMode(false);
+        chkEnviado.setSimpleMode(false);
+        chkEnviado.setConverter(new ZeroOneToBooleanConverter());
         // Grid
         //noinspection unchecked
         container = new BeanItemContainer(VsjBancodetalle.class, new ArrayList());
@@ -141,6 +147,7 @@ public class BancoOperView extends BancoOperUI implements VsjView {
 
     public void setEnableCabezeraFields(boolean enabled) {
         for (Field f : cabezeraFields) f.setEnabled(enabled);
+        btnAuxiliar.setEnabled(enabled);
     }
 
     public BeanItemContainer<VsjBancodetalle> getContainer() {
@@ -353,6 +360,25 @@ public class BancoOperView extends BancoOperUI implements VsjView {
         return newChequeBtn;
     }
 
+    public Button getBtnAuxiliar() {
+        return btnAuxiliar;
+    }
+
+    public TextField getTxtOrigen() {
+        return txtOrigen;
+    }
+
+    public TextField getTxtNumCombrobante() {
+        return txtNumCombrobante;
+    }
+
+    public CssCheckBox getChkCobrado() {
+        return chkCobrado;
+    }
+
+    public CssCheckBox getChkEnviado() {
+        return chkEnviado;
+    }
 
     @Override
     public void enter(ViewChangeEvent event) {

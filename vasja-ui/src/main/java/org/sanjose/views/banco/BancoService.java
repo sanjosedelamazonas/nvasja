@@ -1,6 +1,9 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
+import org.sanjose.model.ScpComprobantedetalle;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjBancodetallePK;
@@ -37,6 +40,8 @@ public class BancoService {
     private final EntityManager em;
     private final VsjBancocabeceraRep bancocabeceraRep;
     private final VsjBancodetalleRep bancodetalleRep;
+    private final Logger log = LoggerFactory.getLogger(BancoService.class);
+    private ScpComprobantedetalleRep scpComprobantedetalleRep;
 
     @Autowired
     public BancoService(VsjBancocabeceraRep bancocabeceraRep, VsjBancodetalleRep bancodetalleRep, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
@@ -44,7 +49,7 @@ public class BancoService {
                         ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                         ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                         Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                        ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, EntityManager em) {
+                        ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, ScpComprobantedetalleRep scpComprobantedetalleRep, EntityManager em) {
         this.bancocabeceraRep = bancocabeceraRep;
         this.bancodetalleRep = bancodetalleRep;
         this.configuractacajabancoRepo = configuractacajabancoRepo;
@@ -60,6 +65,7 @@ public class BancoService {
         this.configuracioncajaRepo = configuracioncajaRepo;
         this.cargocuartaRepo = cargocuartaRepo;
         this.tipodocumentoRepo = tipodocumentoRepo;
+        this.scpComprobantedetalleRep = scpComprobantedetalleRep;
         this.em = em;
     }
 
@@ -115,6 +121,29 @@ public class BancoService {
         bancoItem.setVsjBancocabecera(cabecera);
         return bancoItem;
     }
+
+    @Transactional(readOnly = false)
+    public void updateCobradoInCabecera(VsjBancocabecera bancocabecera) {
+        if (bancocabecera.isEnviado()) {
+            // UPDATE in contabilidad
+            List<ScpComprobantedetalle> comprobantedetalles = scpComprobantedetalleRep.findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobanteAndCodCtacontable(
+                    bancocabecera.getTxtAnoproceso(), bancocabecera.getCodMes(), bancocabecera.getCodOrigenenlace(),
+                    bancocabecera.getCodComprobanteenlace(), bancocabecera.getCodCtacontable());
+            log.info("Will update comprodets: " + comprobantedetalles.size());
+            for (ScpComprobantedetalle det : comprobantedetalles) {
+                if (bancocabecera.getFlgCobrado() != null && bancocabecera.getFlgCobrado()) {
+                    det.setFlgChequecobrado('1');
+                    det.setCodMescobr(bancocabecera.getCodMescobrado());
+                } else {
+                    det.setFlgChequecobrado('0');
+                    det.setCodMescobr("");
+                }
+                scpComprobantedetalleRep.save(det);
+            }
+        }
+        bancocabeceraRep.save(bancocabecera);
+    }
+
 
     @Transactional
     public List<VsjBancocabecera> findAll() {

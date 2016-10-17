@@ -38,6 +38,31 @@
             <version>0.7.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>CssCheckBox</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>de.steinwedel.vaadin.addon</groupId>
+            <artifactId>messagebox</artifactId>
+            <version>3.0.18</version>
+        </dependency>
+
+        <dependency>
+            <groupId>tm.kod</groupId>
+            <artifactId>numberfield7</artifactId>
+            <version>0.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>grid-renderers-collection-addon</artifactId>
+            <version>0.94</version>
+        </dependency>
+
     </dependencies>
 
     <build>

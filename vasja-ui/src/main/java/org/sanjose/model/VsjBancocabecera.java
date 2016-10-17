@@ -48,6 +48,7 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 	private Boolean flgCobrado;
 	@Column(name="cod_mescobrado")
 	private String codMescobrado;
+	private Character flg_Anula;
 	//bi-directional many-to-one association to VsjBancodetalle
 	@OneToMany(mappedBy = "vsjBancocabecera")
 	private List<VsjBancodetalle> vsjBancodetalles;
@@ -62,14 +63,18 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 		setFlgEnviado('0');
 		setFlgIm('1');
 		setFlgSaldo('0');
+		setFlg_Anula('0');
 	}
 
 	@Override
 	public VsjBancocabecera prepareToSave() throws FieldGroup.CommitException {
 		VsjBancocabecera item = (VsjBancocabecera) super.prepareToSave();
 		item.setIndTipocuenta('2');
-		item.setFlgCobrado(false);
 		return item;
+	}
+
+	public boolean isAnula() {
+		return flg_Anula != null && flg_Anula.equals('1');
 	}
 
 	public Integer getCodBancocabecera() {
@@ -166,6 +171,14 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 
 	public void setCodMescobrado(String codMescobrado) {
 		this.codMescobrado = codMescobrado;
+	}
+
+	public Character getFlg_Anula() {
+		return this.flg_Anula;
+	}
+
+	public void setFlg_Anula(Character flg_Anula) {
+		this.flg_Anula = flg_Anula;
 	}
 
 	public ScpDestino getScpDestino() {

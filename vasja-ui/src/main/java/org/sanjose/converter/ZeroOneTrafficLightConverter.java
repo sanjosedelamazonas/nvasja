@@ -1,22 +1,30 @@
-package org.sanjose.render;
+package org.sanjose.converter;
 
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.FontAwesome;
 
 import java.util.Locale;
 
-public class StringToCharacterConverter implements Converter<String, Character> {
+public class ZeroOneTrafficLightConverter implements Converter<String, Character> {
 
 	@Override
 	public Character convertToModel(String s, Class<? extends Character> aClass, Locale locale) throws ConversionException {
-		return s.charAt(0);
+		if (s.contains("#f54993")) return '0';
+		else return '1';
 	}
 
 	@Override
 	public String convertToPresentation(Character value,
 			Class<? extends String> targetType, Locale locale)
 					throws ConversionException {
-		return value.toString();
+		String color;
+		if (value == null || value.equals('0')) {
+			color = "#f54993";
+		} else {
+			color = "#2dd085";			
+		}
+		return FontAwesome.CIRCLE.getHtml().replace("style=\"",
+				"style=\"color: " + color + ";");
 	}
 
 	@Override

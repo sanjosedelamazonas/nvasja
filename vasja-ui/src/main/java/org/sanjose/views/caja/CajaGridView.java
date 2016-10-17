@@ -18,12 +18,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.DateToTimestampConverter;
+import org.sanjose.converter.StringToCharacterConverter;
+import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpFinanciera;
 import org.sanjose.model.ScpPlanproyecto;
 import org.sanjose.model.Scp_ProyectoPorFinanciera;
 import org.sanjose.model.VsjCajabanco;
-import org.sanjose.render.StringToCharacterConverter;
-import org.sanjose.render.ZeroOneTrafficLight;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
@@ -200,8 +200,8 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
                 "Sel Fuente", "txtDescfinanciera");
         gridCaja.getColumn("codFinanciera").setEditorField(selFinanciera);
 
-        gridCaja.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLight()).setRenderer(new HtmlRenderer());
-        gridCaja.getColumn("flg_Anula").setConverter(new ZeroOneTrafficLight()).setRenderer(new HtmlRenderer());
+        gridCaja.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridCaja.getColumn("flg_Anula").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
         ViewUtil.colorizeRows(gridCaja);
 

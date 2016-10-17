@@ -8,8 +8,8 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
+import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.render.ZeroOneTrafficLight;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.DataUtil;
@@ -85,7 +85,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements INavigat
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
-        gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLight()).setRenderer(new HtmlRenderer());
+        gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
         //gridBanco.addItemClickListener(this::setItemLogic);
 

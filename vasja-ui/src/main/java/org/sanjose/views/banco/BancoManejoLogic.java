@@ -1,12 +1,15 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Grid;
 import org.sanjose.MainUI;
 import org.sanjose.bean.Caja;
+import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.render.EmptyZeroNumberRendrer;
@@ -51,6 +54,23 @@ public class BancoManejoLogic implements Serializable, ISaldoDelDia {
             //ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
         });
 
+        view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
+            @Override
+            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+            }
+
+            @Override
+            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+                Object item = view.gridBanco.getContainerDataSource().getItem(view.gridBanco.getEditedItemId());
+                if (item != null) {
+                    VsjBancocabecera vcb = (VsjBancocabecera) ((BeanItem) item).getBean();
+                    vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
+                            .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
+                    view.getService().updateCobradoInCabecera(vcb);
+                }
+            }
+        });
+
         GridContextMenu gridContextMenu = new GridContextMenu(view.getGridBanco());
         gridContextMenu.addGridBodyContextMenuListener(e -> {
             gridContextMenu.removeItems();
@@ -85,11 +105,9 @@ public class BancoManejoLogic implements Serializable, ISaldoDelDia {
     }
 
     public void editarCheque(VsjBancocabecera vcb) {
-        if (!vcb.isEnviado()) {
-            MainUI.get().getBancoOperView().getViewLogic().editarCheque(vcb);
-            MainUI.get().getBancoOperView().getViewLogic().setNavigatorView(view);
-            MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
-        }
+        MainUI.get().getBancoOperView().getViewLogic().editarCheque(vcb);
+        MainUI.get().getBancoOperView().getViewLogic().setNavigatorView(view);
+        MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
     }
 
 
