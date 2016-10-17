@@ -14,6 +14,7 @@ import org.sanjose.helper.PrintHelper;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.views.banco.BancoManejoView;
 import org.sanjose.views.banco.BancoOperView;
+import org.sanjose.views.banco.BancoOperacionesView;
 import org.sanjose.views.caja.*;
 
 import java.util.List;
@@ -38,7 +39,6 @@ public class MainScreen extends HorizontalLayout {
         @Override
         public void afterViewChange(ViewChangeEvent event) {
             menu.setActiveView(event.getViewName());
-            //JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
         }
 
     };
@@ -46,7 +46,7 @@ public class MainScreen extends HorizontalLayout {
 
     public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
                       ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView,
-                      TransferenciaView transferenciaView, BancoOperView bancoOperView, BancoManejoView bancoManejoView) {
+                      TransferenciaView transferenciaView, BancoOperView bancoOperView, BancoManejoView bancoManejoView, BancoOperacionesView bancoOperacionesView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -58,11 +58,11 @@ public class MainScreen extends HorizontalLayout {
         final Navigator navigator = new Navigator(ui, viewContainer);
         navigator.setErrorView(ErrorView.class);
         menu = new Menu(navigator);
-
         if (ui.getAccessControl().isUserInRole(Role.CAJA) ||
                 ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
                 ui.getAccessControl().isUserInRole(Role.ADMIN)
                 ) {
+            menu.addSeparator("Caja");
             menu.addView(comprobanteView, ComprobanteView.VIEW_NAME,
                     ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(transferenciaView, TransferenciaView.VIEW_NAME,
@@ -70,10 +70,17 @@ public class MainScreen extends HorizontalLayout {
             menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
                     CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
+        if (ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
+                ui.getAccessControl().isUserInRole(Role.ADMIN)
+                ) {
+            menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
+                    CajaGridView.VIEW_NAME, FontAwesome.EDIT);
+        }
         if (ui.getAccessControl().isUserInRole(Role.BANCO) ||
                 ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
                 ui.getAccessControl().isUserInRole(Role.ADMIN)
                 ) {
+            menu.addSeparator("Banco");
             menu.addView(bancoOperView, BancoOperView.VIEW_NAME,
                     BancoOperView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(bancoManejoView, BancoManejoView.VIEW_NAME,
@@ -82,14 +89,16 @@ public class MainScreen extends HorizontalLayout {
         if (ui.getAccessControl().isUserInRole(Role.CONTADOR) ||
                 ui.getAccessControl().isUserInRole(Role.ADMIN)
                 ) {
-            menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
-                    CajaGridView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(bancoOperacionesView, BancoOperacionesView.VIEW_NAME,
+                    BancoOperacionesView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addSeparator("Configuracion");
             menu.addView(configuracionCajaView, ConfiguracionCajaView.VIEW_NAME,
                     ConfiguracionCajaView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
                     ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
         }
         if (ui.getAccessControl().isUserInRole(Role.ADMIN)) {
+            menu.addSeparator("Sistema");
             menu.addView(propiedadView, PropiedadView.VIEW_NAME,
                     PropiedadView.VIEW_NAME, FontAwesome.EDIT);
         }

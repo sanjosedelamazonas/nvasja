@@ -136,6 +136,13 @@ public class Menu extends CssLayout {
         viewButtons.put(name, button);
     }
 
+    public void addSeparator(final String name) {
+        Label label = new Label(name);
+        label.setPrimaryStyleName(ValoTheme.MENU_SUBTITLE);
+        menuItemsLayout.addComponent(label);
+    }
+
+
     /**
      * Highlights a view navigation button as the currently active view in the
      * menu. This method does not perform the actual navigation.

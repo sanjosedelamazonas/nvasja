@@ -35,7 +35,7 @@ import java.util.Collection;
 // @UIScope
 public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI implements VsjView {
 
-    public static final String VIEW_NAME = "Configuracion";
+    public static final String VIEW_NAME = "Movimientos";
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionCtaCajaBancoView.class);
     public final VsjConfiguractacajabancoRep repo;
     private final ConfiguracionCtaCajaBancoLogic viewLogic = new ConfiguracionCtaCajaBancoLogic(this);

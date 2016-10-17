@@ -67,7 +67,7 @@ public class BancoOperUI extends CssLayout {
     protected Button newChequeBtn;
     protected Button cerrarBtn;
     protected Button imprimirTotalBtn;
-	protected Button imprimirCheque;
+    protected Button imprimirCheque;
 
 	public BancoOperUI() {
 		Design.read(this);
