@@ -190,7 +190,7 @@ public class ViewUtil {
     }
 
     public static void setupDateFiltersPreviousMonth(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta) {
-        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -30)), GenUtil.getEndOfDay(new Date()));
+        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -60)), GenUtil.getEndOfDay(new Date()));
     }
 
     public static void setupDateFiltersThisDay(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta) {
@@ -235,6 +235,8 @@ public class ViewUtil {
             if (clas.equals(VsjBancocabecera.class) && ((VsjBancocabecera)rowReference.getItemId()).isEnviado()) {
                 return "enviado";
             }
+            if (clas.equals(VsjBancocabecera.class) && ((VsjBancocabecera) rowReference.getItemId()).isAnula())
+                return "anulado";
             if (clas.equals(VsjBancodetalle.class) && ((VsjBancodetalle) rowReference.getItemId()).isAnula())
                 return "anulado";
             return "";

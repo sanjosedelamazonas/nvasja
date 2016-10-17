@@ -84,18 +84,6 @@
         <!--VAADIN Add-Ons-->
 
         <dependency>
-            <groupId>de.steinwedel.vaadin.addon</groupId>
-            <artifactId>messagebox</artifactId>
-            <version>3.0.18</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tm.kod</groupId>
-            <artifactId>numberfield7</artifactId>
-            <version>0.0.6</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.sanjosedelamazonas</groupId>
             <artifactId>printapplet-addon</artifactId>
             <version>0.0.5</version>

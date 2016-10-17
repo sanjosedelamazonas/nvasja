@@ -190,8 +190,10 @@ class BancoItemLogic implements Serializable {
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
                 VsjConfiguractacajabanco config = view.getService().getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
-                view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
-                view.getSelRubroInst().setValue(config.getCodCtaespecial());
+                if (config != null) {
+                    view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
+                    view.getSelRubroInst().setValue(config.getCodCtaespecial());
+                }
             }
         });
         view.getGlosaDetalle().setMaxLength(70);
@@ -202,6 +204,7 @@ class BancoItemLogic implements Serializable {
         // Editing Destino
         view.getBtnDestino().addClickListener(event -> editDestino(view.getSelCodAuxiliar()));
         view.getBtnResponsable().addClickListener(event -> editDestino(view.getSelResponsable()));
+        view.getBtnAuxiliar().addClickListener(event -> editDestino(view.getSelCodAuxCabeza()));
     }
 
     public void addValidators() {

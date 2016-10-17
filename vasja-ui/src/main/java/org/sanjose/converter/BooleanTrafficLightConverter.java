@@ -1,11 +1,11 @@
-package org.sanjose.render;
-
-import java.util.Locale;
+package org.sanjose.converter;
 
 import com.vaadin.data.util.converter.StringToBooleanConverter;
 import com.vaadin.server.FontAwesome;
 
-public class BooleanTrafficLight extends StringToBooleanConverter {
+import java.util.Locale;
+
+public class BooleanTrafficLightConverter extends StringToBooleanConverter {
 
 	@Override
 	public String convertToPresentation(Boolean value,

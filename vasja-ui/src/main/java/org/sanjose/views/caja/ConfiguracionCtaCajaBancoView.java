@@ -13,8 +13,8 @@ import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.HtmlRenderer;
+import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.model.VsjConfiguractacajabanco;
-import org.sanjose.render.BooleanTrafficLight;
 import org.sanjose.repo.ScpPlancontableRep;
 import org.sanjose.repo.ScpPlanespecialRep;
 import org.sanjose.repo.VsjConfiguractacajabancoRep;
@@ -93,11 +93,11 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial", planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()), "Sel cta especial", "txtDescctaespecial");
         gridConfigCtaCajaBanco.getColumn("codCtaespecial").setEditorField(selCtaespecial);
 
-        gridConfigCtaCajaBanco.getColumn("activo").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCtaCajaBanco.getColumn("paraProyecto").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCtaCajaBanco.getColumn("paraTercero").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCtaCajaBanco.getColumn("paraBanco").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
-        gridConfigCtaCajaBanco.getColumn("paraCaja").setConverter(new BooleanTrafficLight()).setRenderer(new HtmlRenderer());
+        gridConfigCtaCajaBanco.getColumn("activo").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridConfigCtaCajaBanco.getColumn("paraProyecto").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridConfigCtaCajaBanco.getColumn("paraTercero").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridConfigCtaCajaBanco.getColumn("paraBanco").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridConfigCtaCajaBanco.getColumn("paraCaja").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
         // Grey out inactive rows
         gridConfigCtaCajaBanco.setRowStyleGenerator(rowRef -> {// Java 8

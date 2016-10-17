@@ -13,4 +13,14 @@
 
 
     <inherits name="com.vaadin.addon.contextmenu.WidgetSet"/>
+
+    <inherits name="tm.kod.widgets.numberfield.WidgetSet"/>
+
+    <inherits name="org.vaadin.addons.CssCheckBoxWidgetSet"/>
+
+    <inherits name="org.vaadin.teemu.ratingstars.gwt.RatingStarsWidgetset"/>
+
+    <inherits name="org.vaadin.sparklines.SparklinesWidgetset"/>
+
+    <inherits name="org.vaadin.grid.cellrenderers.RenderersCollectionWidgetSet"/>
 </module>

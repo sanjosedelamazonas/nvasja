@@ -38,7 +38,8 @@ CREATE TABLE [dbo].[vsj_bancocabecera](
 	[cod_uregistro] [varchar](15) NULL,
 	[fec_factualiza] [datetime] NULL,
 	[cod_uactualiza] [varchar](15) NULL,
-	[ind_cobrado] [bit] NULL
+	[ind_cobrado] [bit] NULL,
+	[flg_Anula] [char](1) NULL
 ) ON [PRIMARY]
 SET ANSI_PADDING ON
 ALTER TABLE [dbo].[vsj_bancocabecera] ADD [cod_mescobrado] [varchar](2) NULL

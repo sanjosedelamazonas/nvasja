@@ -11,6 +11,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.util.GenUtil;
@@ -158,6 +159,16 @@ public class BancoLogic extends BancoItemLogic {
         fieldGroupCabezera.bind(view.getSelCodAuxCabeza(), "codDestino");
         fieldGroupCabezera.bind(view.getGlosaCabeza(), "txtGlosa");
         fieldGroupCabezera.bind(view.getCheque(), "txtCheque");
+        fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigenenlace");
+        view.getTxtOrigen().setEnabled(false);
+        fieldGroupCabezera.bind(view.getTxtNumCombrobante(), "codComprobanteenlace");
+        view.getTxtNumCombrobante().setEnabled(false);
+        fieldGroupCabezera.bind(view.getChkEnviado(), "flgEnviado");
+        fieldGroupCabezera.bind(view.getChkEnviado(), "flgEnviado");
+        view.getChkCobrado().setConverter(new MesCobradoToBooleanConverter(item));
+        fieldGroupCabezera.bind(view.getChkCobrado(), "codMescobrado");
+        view.getChkEnviado().setEnabled(false);
+        //view.getChkCobrado().setValue(GenUtil.strNullOrEmpty(item.getCodMescobrado()) ? false : true);
 
         for (Field f : fieldGroupCabezera.getFields()) {
             if (f instanceof TextField)
@@ -218,6 +229,7 @@ public class BancoLogic extends BancoItemLogic {
             //view.setEnableCabezeraFields(false);
             log.info("saved in class: " + bancocabecera);
             VsjBancocabecera cabecera = beanItem.getBean();
+            cabecera.setFlgCobrado(!GenUtil.strNullOrEmpty(cabecera.getCodMescobrado()));
             VsjBancodetalle bancoItem = getVsjBancodetalle();
             if (!verifyNumMoneda(moneda))
                 throw new FieldGroup.CommitException("Moneda no esta de tipo numeral");
@@ -318,7 +330,8 @@ public class BancoLogic extends BancoItemLogic {
             case VIEW:
                 view.getGuardarBtn().setEnabled(false);
                 view.getAnularBtn().setEnabled(false);
-                if (view.getSelectedRow() != null && view.getSelectedRow().isAnula()) {
+                if ((view.getSelectedRow() != null && view.getSelectedRow().isAnula()) ||
+                        bancocabecera != null && bancocabecera.isEnviado()) {
                     view.getModificarBtn().setEnabled(false);
                     view.getEliminarBtn().setEnabled(false);
                 } else {
@@ -327,7 +340,11 @@ public class BancoLogic extends BancoItemLogic {
                 }
                 view.getCerrarBtn().setEnabled(true);
                 view.getImprimirTotalBtn().setEnabled(false);
-                view.getNewItemBtn().setEnabled(true);
+                if (bancocabecera != null && bancocabecera.isEnviado()) {
+                    view.getNewItemBtn().setEnabled(false);
+                } else {
+                    view.getNewItemBtn().setEnabled(true);
+                }
                 view.getNewChequeBtn().setEnabled(true);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
