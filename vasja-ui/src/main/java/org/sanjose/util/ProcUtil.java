@@ -2,17 +2,26 @@ package org.sanjose.util;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import com.vaadin.ui.Notification;
 import org.sanjose.authentication.CurrentUser;
+import org.sanjose.model.ScpTipocambio;
+import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjCajabanco;
+import org.sanjose.views.banco.BancoService;
+import org.sanjose.views.caja.ComprobanteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.persistence.StoredProcedureQuery;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import static org.sanjose.util.GenUtil.PEN;
 
@@ -109,10 +118,98 @@ public class ProcUtil {
         } else {
             query.setParameter(7, vcb.getCodTercero());
         }
-        boolean success = query.execute();
-        //if (!success)
-        //    throw new EnviarException(result, vcb);
+        query.execute();
         return (String)query.getOutputParameterValue(8);
+    }
+
+    public void enviarContabilidad(Collection<Object> vcbs, ComprobanteService service) {
+        VsjCajabanco vcb = null;
+        try {
+            List<VsjCajabanco> vsjCajabancoList = new ArrayList<>();
+            for (Object objVcb : vcbs) {
+                vcb = (VsjCajabanco) objVcb;
+                if (vcb.isEnviado()) {
+                    continue;
+                }
+                vsjCajabancoList.add(vcb);
+                // Check TipoDeCambio
+                log.info("Check tipoDeCambio: " + vcb);
+                List<ScpTipocambio> tipocambios = service.getTipocambioRep().findById_FecFechacambio(
+                        GenUtil.getBeginningOfDay(vcb.getFecFecha()));
+                if (tipocambios.isEmpty()) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    Notification.show("Falta tipo de cambio para el dia: " + sdf.format(vcb.getFecFecha()), Notification.Type.WARNING_MESSAGE);
+                    return;
+                }
+            }
+            for (VsjCajabanco vcbS : vsjCajabancoList) {
+                vcb = vcbS;
+                log.info("Enviando: " + vcb);
+                String result = enviarContabilidad(vcb);
+                log.info("Resultado: " + result);
+                Notification.show("Operacion: " + vcb.getCodCajabanco(), result, Notification.Type.TRAY_NOTIFICATION);
+            }
+            if (vcbs.size() != vsjCajabancoList.size()) {
+                Notification.show("!Attention!", "!Algunas operaciones eran omitidas por ya ser enviadas!", Notification.Type.TRAY_NOTIFICATION);
+            }
+        } catch (PersistenceException pe) {
+            Notification.show("Problema al enviar a contabilidad operacion: " + (vcb != null ? vcb.getCodCajabanco() : 0)
+                            + "\n\n" + pe.getMessage() +
+                            (pe.getCause() != null ? "\n" + pe.getCause().getMessage() : "")
+                            + (pe.getCause() != null && pe.getCause().getCause() != null ? "\n" + pe.getCause().getCause().getMessage() : "")
+                    , Notification.Type.ERROR_MESSAGE);
+        }
+    }
+
+    @Transactional
+    public String enviarContabilidadBanco(VsjBancocabecera vcb) {
+        StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarContabilidadBanco");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        query.setParameter(1, vcb.getCodBancocabecera());
+        query.setParameter(2, CurrentUser.get());
+        query.setParameter(3, sdf.format(vcb.getFecFecha()));
+        query.setParameter(4, vcb.getCodTipomoneda());
+        query.execute();
+        return (String) query.getOutputParameterValue(5);
+    }
+
+    public void enviarContabilidadBanco(Collection<Object> vcbs, BancoService service) {
+        VsjBancocabecera vcb = null;
+        try {
+            List<VsjBancocabecera> vsjBancocabeceras = new ArrayList<>();
+            for (Object objVcb : vcbs) {
+                vcb = (VsjBancocabecera) objVcb;
+                if (vcb.isEnviado()) {
+                    continue;
+                }
+                vsjBancocabeceras.add(vcb);
+                // Check TipoDeCambio
+                log.info("Check tipoDeCambio: " + vcb);
+                List<ScpTipocambio> tipocambios = service.getScpTipocambioRep().findById_FecFechacambio(
+                        GenUtil.getBeginningOfDay(vcb.getFecFecha()));
+                if (tipocambios.isEmpty()) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    Notification.show("Falta tipo de cambio para el dia: " + sdf.format(vcb.getFecFecha()), Notification.Type.WARNING_MESSAGE);
+                    return;
+                }
+            }
+            for (VsjBancocabecera vcbS : vsjBancocabeceras) {
+                vcb = vcbS;
+                log.info("Enviando: " + vcb);
+                String result = enviarContabilidadBanco(vcb);
+                log.info("Resultado: " + result);
+                Notification.show("Operacion: " + vcb.getCodBancocabecera(), result, Notification.Type.TRAY_NOTIFICATION);
+            }
+            if (vcbs.size() != vsjBancocabeceras.size()) {
+                Notification.show("!Attention!", "!Algunas operaciones eran omitidas por ya ser enviadas!", Notification.Type.TRAY_NOTIFICATION);
+            }
+        } catch (PersistenceException pe) {
+            Notification.show("Problema al enviar a contabilidad operacion: " + (vcb != null ? vcb.getCodBancocabecera() : 0)
+                            + "\n\n" + pe.getMessage() +
+                            (pe.getCause() != null ? "\n" + pe.getCause().getMessage() : "")
+                            + (pe.getCause() != null && pe.getCause().getCause() != null ? "\n" + pe.getCause().getCause().getMessage() : "")
+                    , Notification.Type.ERROR_MESSAGE);
+        }
     }
 
 

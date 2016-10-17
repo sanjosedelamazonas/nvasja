@@ -116,14 +116,6 @@ public class BancoOperacionesView extends BancoOperacionesUI implements INavigat
         container.addAll(getService().findAll());
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
     }
-/*
-    private void setItemLogic(ItemClickEvent event) {
-        if (event.isDoubleClick()) {
-            Object id = event.getItem().getItemProperty("cod").getValue();
-            //VsjCajabanco vcb = getService().getBancocabeceraRep().findByCodCajabanco((Integer) id);
-            //viewLogic.editarCheque(vcb);
-        }
-    }*/
 
     @Override
     public void enter(ViewChangeEvent event) {
@@ -133,7 +125,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements INavigat
         gridBanco.getSelectionModel().reset();
     }
 
-    public Collection<Object> getSelectedRow() {
+    public Collection<Object> getSelectedRows() {
         return gridBanco.getSelectedRows();
     }
 

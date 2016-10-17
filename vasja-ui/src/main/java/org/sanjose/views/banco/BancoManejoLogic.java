@@ -8,6 +8,7 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Grid;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.DoubleDecimalFormatter;
@@ -20,6 +21,8 @@ import org.sanjose.views.sys.ISaldoDelDia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -43,7 +46,7 @@ public class BancoManejoLogic implements Serializable, ISaldoDelDia {
         view = bancoManejoView;
         view.btnNuevoCheque.addClickListener(e -> nuevoCheque());
         view.btnEditar.addClickListener(e -> {
-            for (Object obj : view.getSelectedRow()) {
+            for (Object obj : view.getSelectedRows()) {
                 editarCheque((VsjBancocabecera) obj);
                 break;
             }
@@ -80,17 +83,19 @@ public class BancoManejoLogic implements Serializable, ISaldoDelDia {
             } else {
                 gridContextMenu.addItem("Editar", k -> editarCheque((VsjBancocabecera) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> nuevoCheque());
-/*
-                gridContextMenu.addItem("Enviar a contabilidad", k -> {
-                    if (!view.getSelectedRows().isEmpty()) {
-                        enviarContabilidad(view.getSelectedRows());
-                    } else {
-                        List<Object> cajabancos = new ArrayList<>();
-                        cajabancos.add(itemId);
-                        enviarContabilidad(cajabancos);
-                    }
-                });
-*/
+
+                if (Role.isPrivileged()) {
+                    gridContextMenu.addItem("Enviar a contabilidad", k -> {
+                        if (!view.getSelectedRows().isEmpty()) {
+                            MainUI.get().getProcUtil().enviarContabilidadBanco(view.getSelectedRows(), view.getService());
+                        } else {
+                            List<Object> bancocabeceras = new ArrayList<>();
+                            bancocabeceras.add(itemId);
+                            MainUI.get().getProcUtil().enviarContabilidadBanco(bancocabeceras, view.getService());
+                        }
+                        view.refreshData();
+                    });
+                }
                 //gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajabanco)itemId));
             }
         });
@@ -112,7 +117,7 @@ public class BancoManejoLogic implements Serializable, ISaldoDelDia {
 
 
     private void generateComprobante() {
-        for (Object obj : view.getSelectedRow()) {
+        for (Object obj : view.getSelectedRows()) {
             log.info("selected: " + obj);
             VsjBancocabecera vcb = (VsjBancocabecera) obj;
             //ReportHelper.generateComprobante(vcb);
@@ -120,7 +125,7 @@ public class BancoManejoLogic implements Serializable, ISaldoDelDia {
     }
 
     private void printComprobante() {
-        for (Object obj : view.getSelectedRow()) {
+        for (Object obj : view.getSelectedRows()) {
             VsjBancocabecera vcb = (VsjBancocabecera) obj;
             //ViewUtil.printComprobante(vcb);
         }
