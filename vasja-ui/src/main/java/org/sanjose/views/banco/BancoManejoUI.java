@@ -20,8 +20,8 @@ public class BancoManejoUI extends VerticalLayout {
 	protected HorizontalLayout horizontalFechas;
 	protected DateField fechaDesde;
 	protected DateField fechaHasta;
-    protected ComboBox selFiltroCuenta;
-    protected Button btnNuevoCheque;
+	protected ComboBox selFiltroCuenta;
+	protected Button btnNuevoCheque;
 	protected Button btnEditar;
 	protected Button btnImprimir;
 	protected Button btnVerVoucher;
@@ -39,8 +39,8 @@ public class BancoManejoUI extends VerticalLayout {
 	protected TextField finEUR;
 	protected Grid gridSaldoFInal;
 	protected VerticalLayout verticalSaldoDelDia;
-    protected GridLayout gridSaldoDelDia;
-    protected Label lblIng;
+	protected GridLayout gridSaldoDelDia;
+	protected Label lblIng;
 	protected Label lblEgr;
 	protected Label lblSaldo;
 	protected Label lblSol;

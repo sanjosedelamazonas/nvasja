@@ -32,7 +32,7 @@ import java.util.Date;
 // @UIScope
 public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjView {
 
-    public static final String VIEW_NAME = "Configuracion de Caja";
+    public static final String VIEW_NAME = "Cajas";
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionCajaView.class);
     public final VsjConfiguracioncajaRep repo;
     private final ConfiguracionCajaLogic viewLogic = new ConfiguracionCajaLogic(this);
