@@ -217,8 +217,9 @@ public class BancoLogic extends BancoItemLogic {
                     Notification.Type.WARNING_MESSAGE);
             return;
         }
-        bancoItem.setFlg_Anula('1');
+        //bancoItem.setFlg_Anula('1');
         log.info("Ready to ANULAR: " + bancoItem);
+
         saveCabecera();
     }
 

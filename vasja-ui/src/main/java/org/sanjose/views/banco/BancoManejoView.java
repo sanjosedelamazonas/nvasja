@@ -30,7 +30,7 @@ import java.util.Collection;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class BancoManejoView extends BancoManejoUI implements INavigatorView, VsjView {
+public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView {
 
     public static final String VIEW_NAME = "Manejo de Cheques";
     private final BancoManejoLogic viewLogic = new BancoManejoLogic();

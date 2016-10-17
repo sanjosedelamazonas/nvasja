@@ -25,22 +25,21 @@ public class BancoOperacionesLogic implements Serializable {
 
 
     private static final Logger log = LoggerFactory.getLogger(BancoOperacionesLogic.class);
-    private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
     private BancoOperacionesView view;
-    private Grid.FooterRow saldosFooterInicial;
-    private Grid.FooterRow saldosFooterFinal;
+    private BancoGridLogic gridLogic;
 
     public void init(BancoOperacionesView bancoOperacionesView) {
         view = bancoOperacionesView;
-        view.btnNuevoCheque.addClickListener(e -> nuevoCheque());
+        gridLogic = new BancoGridLogic(view);
+        view.btnNuevoCheque.addClickListener(e -> gridLogic.nuevoCheque());
         view.btnEditar.addClickListener(e -> {
             for (Object obj : view.getSelectedRows()) {
-                editarCheque((VsjBancocabecera) obj);
+                gridLogic.editarCheque((VsjBancocabecera) obj);
                 break;
             }
         });
-        view.btnVerVoucher.addClickListener(e -> generateComprobante());
-        view.btnImprimir.addClickListener(e -> printComprobante());
+        view.btnVerVoucher.addClickListener(e -> gridLogic.generateComprobante());
+        view.btnImprimir.addClickListener(e -> gridLogic.printComprobante());
         view.btnReporte.addClickListener(e -> {
             //ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
         });
@@ -50,10 +49,10 @@ public class BancoOperacionesLogic implements Serializable {
             gridContextMenu.removeItems();
             final Object itemId = e.getItemId();
             if (itemId == null) {
-                gridContextMenu.addItem("Nuevo cheque", k -> nuevoCheque());
+                gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
             } else {
-                gridContextMenu.addItem("Editar", k -> editarCheque((VsjBancocabecera) itemId));
-                gridContextMenu.addItem("Nuevo comprobante", k -> nuevoCheque());
+                gridContextMenu.addItem("Editar", k -> gridLogic.editarCheque((VsjBancocabecera) itemId));
+                gridContextMenu.addItem("Nuevo comprobante", k -> gridLogic.nuevoCheque());
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
                         if (!view.getSelectedRows().isEmpty()) {
@@ -69,36 +68,5 @@ public class BancoOperacionesLogic implements Serializable {
             }
         });
 
-    }
-
-    private void nuevoCheque() {
-        view.clearSelection();
-        MainUI.get().getBancoOperView().getViewLogic().nuevoCheque();
-        MainUI.get().getBancoOperView().getViewLogic().setNavigatorView(view);
-        MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
-    }
-
-    public void editarCheque(VsjBancocabecera vcb) {
-        if (!vcb.isEnviado()) {
-            MainUI.get().getBancoOperView().getViewLogic().editarCheque(vcb);
-            MainUI.get().getBancoOperView().getViewLogic().setNavigatorView(view);
-            MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
-        }
-    }
-
-
-    private void generateComprobante() {
-        for (Object obj : view.getSelectedRows()) {
-            log.info("selected: " + obj);
-            VsjBancocabecera vcb = (VsjBancocabecera) obj;
-            //ReportHelper.generateComprobante(vcb);
-        }
-    }
-
-    private void printComprobante() {
-        for (Object obj : view.getSelectedRows()) {
-            VsjBancocabecera vcb = (VsjBancocabecera) obj;
-            //ViewUtil.printComprobante(vcb);
-        }
     }
 }

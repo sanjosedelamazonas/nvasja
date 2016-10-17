@@ -26,7 +26,7 @@ import java.util.Collection;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class BancoOperacionesView extends BancoOperacionesUI implements INavigatorView, VsjView {
+public class BancoOperacionesView extends BancoOperacionesUI implements VsjView, BancoView {
 
     public static final String VIEW_NAME = "Operaciones de Cheques";
     private final BancoOperacionesLogic viewLogic = new BancoOperacionesLogic();
