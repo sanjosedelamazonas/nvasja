@@ -54,8 +54,8 @@ class ComprobanteLogic implements Serializable {
     protected IComprobanteView view;
     protected INavigatorView navigatorView;
     protected FieldGroup fieldGroup;
+    protected BeanItem<VsjCajabanco> beanItem;
     private VsjCajabanco savedCajabanco;
-    private BeanItem<VsjCajabanco> beanItem;
     private boolean isLoading = false;
     private boolean isEdit = false;
     private ProcUtil procUtil;
@@ -83,7 +83,6 @@ class ComprobanteLogic implements Serializable {
         } else {
             switchMode(VsjView.Mode.VIEW);
         }
-
     }
 
     // Buttons
@@ -396,6 +395,7 @@ class ComprobanteLogic implements Serializable {
             try {
                 fieldGroup.unbind(view.getNumEgreso());
                 fieldGroup.unbind(view.getNumIngreso());
+                fieldGroup.unbind(view.getSelCaja());
             } catch (FieldGroup.BindException be) {
             }
             view.getSelCaja().removeAllValidators();
@@ -418,6 +418,7 @@ class ComprobanteLogic implements Serializable {
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
             }
+            fieldGroup.bind(view.getSelCaja(), "codCtacontable");
             view.getSelCaja().addValueChangeListener(e -> setSaldoCaja());
             setSaldoCaja();
             view.getSelCaja().addValidator(new BeanValidator(VsjCajabanco.class, "codCtacontable"));
@@ -597,7 +598,6 @@ class ComprobanteLogic implements Serializable {
         fieldGroup.bind(view.getSelProyecto(), "codProyecto");
         fieldGroup.bind(view.getSelTercero(), "codTercero");
         fieldGroup.bind(view.getSelMoneda(), "codTipomoneda");
-        fieldGroup.bind(view.getSelCaja(), "codCtacontable");
         fieldGroup.bind(view.getDataFechaComprobante(), "fecFecha");
         view.getChkEnviado().setConverter(new ZeroOneToBooleanConverter());
         fieldGroup.bind(view.getChkEnviado(), "flgEnviado");
@@ -691,7 +691,7 @@ class ComprobanteLogic implements Serializable {
         return item;
     }
 
-    private void switchMode(VsjView.Mode newMode) {
+    protected void switchMode(VsjView.Mode newMode) {
         mode = newMode;
         switch (newMode) {
             case EMPTY:
@@ -743,8 +743,8 @@ class ComprobanteLogic implements Serializable {
                 view.getNuevoComprobante().setEnabled(true);
                 view.getImprimirBtn().setEnabled(true);
 
-                if (beanItem.getBean().isAnula() ||
-                        (beanItem.getBean().isEnviado() && !Role.isPrivileged())) {
+                if (beanItem != null && (beanItem.getBean().isAnula() ||
+                        (beanItem.getBean().isEnviado() && !Role.isPrivileged()))) {
                     view.getModificarBtn().setEnabled(false);
                     view.getEliminarBtn().setEnabled(false);
                 } else {

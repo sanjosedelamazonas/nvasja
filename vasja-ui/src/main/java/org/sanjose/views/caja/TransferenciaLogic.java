@@ -7,10 +7,12 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.Role;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.VsjView;
 
 import java.util.List;
 
@@ -34,8 +36,9 @@ public class TransferenciaLogic extends ComprobanteLogic {
         tView = (TransferenciaView) comprobanteView;
         tView.nuevaTransBtn.addClickListener(ev -> nuevaTrans());
         tView.finalizarTransBtn.addClickListener(ev -> saveTransferencia());
-        tView.finalizarTransBtn.setEnabled(false);
-        tView.imprimirTotalBtn.setEnabled(false);
+        //tView.finalizarTransBtn.setEnabled(false);
+        //tView.imprimirTotalBtn.setEnabled(false);
+        switchMode(VsjView.Mode.VIEW);
     }
 
     private void nuevaTrans() {
@@ -69,8 +72,9 @@ public class TransferenciaLogic extends ComprobanteLogic {
             super.nuevoComprobante();
             view.getSelMoneda().setEnabled(true);
         }
-        view.getModificarBtn().setEnabled(true);
-        view.getEliminarBtn().setEnabled(true);
+//        view.getModificarBtn().setEnabled(true);
+//        view.getEliminarBtn().setEnabled(true);
+        switchMode(VsjView.Mode.NEW);
     }
 
     @Override
@@ -79,9 +83,10 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 && !tView.getSelectedRow().isAnula()) {
             isEdited = true;
             editarComprobante(tView.getSelectedRow());
-            tView.getFinalizarTransBtn().setEnabled(false);
-            view.getSelMoneda().setEnabled(false);
-            view.getModificarBtn().setEnabled(true);
+//            tView.getFinalizarTransBtn().setEnabled(false);
+//            view.getSelMoneda().setEnabled(false);
+//            view.getModificarBtn().setEnabled(true);
+            switchMode(VsjView.Mode.EDIT);
         }
     }
 
@@ -90,11 +95,12 @@ public class TransferenciaLogic extends ComprobanteLogic {
             isEdited = true;
             editarComprobante(tView.getSelectedRow());
             tView.setEnableFields(false);
-            view.getNuevoComprobante().setEnabled(true);
-            view.getGuardarBtn().setEnabled(false);
-            view.getEliminarBtn().setEnabled(true);
-            view.getModificarBtn().setEnabled(true);
-            view.getImprimirBtn().setEnabled(true);
+//            view.getNuevoComprobante().setEnabled(true);
+//            view.getGuardarBtn().setEnabled(false);
+//            view.getEliminarBtn().setEnabled(true);
+//            view.getModificarBtn().setEnabled(true);
+//            view.getImprimirBtn().setEnabled(true);
+            switchMode(VsjView.Mode.VIEW);
         }
     }
 
@@ -114,7 +120,13 @@ public class TransferenciaLogic extends ComprobanteLogic {
             tView.getContainer().removeItem(vcbOld);
             tView.getContainer().addBean(anuladoVcb);
         }
+        if (tView.getContainer().getItemIds().isEmpty()) {
+            nuevoComprobante();
+            moneda = null;
+        } else
+            tView.getGridTrans().select(tView.getContainer().firstItemId());
         tView.setSaldoTrans();
+        switchMode(VsjView.Mode.VIEW);
     }
 
     @Override
@@ -164,9 +176,10 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 tView.getContainer().addBean(item);
                 tView.gridTrans.sort("fecFregistro", SortDirection.DESCENDING);
             }
-            tView.getGuardarBtn().setEnabled(false);
-            tView.getNuevoComprobante().setEnabled(true);
+//            tView.getGuardarBtn().setEnabled(false);
+//            tView.getNuevoComprobante().setEnabled(true);
             tView.setSaldoTrans();
+            switchMode(VsjView.Mode.VIEW);
         } catch (FieldGroup.CommitException ce) {
             Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             log.info("Got Commit Exception: " + ce.getMessage());
@@ -174,7 +187,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     }
 
     private void saveTransferencia() {
-        MessageBox
+        if (isEdited) MessageBox
                 .createQuestion()
                 .withCaption("Guardar la transferencia")
                 .withMessage("?Esta seguro que quiere guardar todos operaciones de esta transferencia?\n" +
@@ -182,6 +195,8 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 .withYesButton(this::executeSaveTransferencia)
                 .withNoButton()
                 .open();
+        else
+            executeSaveTransferencia();
     }
 
     private void executeSaveTransferencia() {
@@ -189,15 +204,16 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
         tView.getContainer().removeAllItems();
         tView.getContainer().addAll(savedOperaciones);
-        tView.finalizarTransBtn.setEnabled(false);
-        tView.imprimirTotalBtn.setEnabled(true);
-        view.getGuardarBtn().setEnabled(false);
-        view.getModificarBtn().setEnabled(false);
-        view.getEliminarBtn().setEnabled(false);
-        view.getNuevoComprobante().setEnabled(false);
-        tView.nuevaTransBtn.setEnabled(true);
+//        tView.finalizarTransBtn.setEnabled(false);
+//        tView.imprimirTotalBtn.setEnabled(true);
+//        view.getGuardarBtn().setEnabled(false);
+//        view.getModificarBtn().setEnabled(false);
+//        view.getEliminarBtn().setEnabled(false);
+//        view.getNuevoComprobante().setEnabled(false);
+//        tView.nuevaTransBtn.setEnabled(true);
         view.refreshData();
         isEdited = false;
+        switchMode(VsjView.Mode.VIEW);
     }
 
     public void editarTransferencia(VsjCajabanco vcb) throws NonEditableException {
@@ -220,76 +236,61 @@ public class TransferenciaLogic extends ComprobanteLogic {
         for (VsjCajabanco oper : operaciones) {
             tView.getContainer().addBean(oper);
         }
-        tView.getModificarBtn().setEnabled(true);
-        tView.getEliminarBtn().setEnabled(true);
-        tView.getGuardarBtn().setEnabled(false);
-        tView.setSaldoTrans();
-        tView.getNuevoComprobante().setEnabled(true);
+//        tView.getModificarBtn().setEnabled(true);
+//        tView.getEliminarBtn().setEnabled(true);
+//        tView.getGuardarBtn().setEnabled(false);
+//        tView.getNuevoComprobante().setEnabled(true);
+        switchMode(VsjView.Mode.VIEW);
         isEdited = false;
     }
 
-
-    /*private void switchMode(VsjView.Mode newMode) {
+    @Override
+    protected void switchMode(VsjView.Mode newMode) {
+        super.switchMode(newMode);
         switch (newMode) {
             case EMPTY:
-                view.getGuardarBtn().setEnabled(false);
-                view.getAnularBtn().setEnabled(false);
-                view.getEliminarBtn().setEnabled(false);
-                view.getModificarBtn().setEnabled(false);
+                tView.getNuevaTransBtn().setEnabled(true);
                 view.getImprimirTotalBtn().setEnabled(false);
                 view.getFinalizarTransBtn().setEnabled(false);
-                view.getNuevoComprobante().setEnabled(true);
-                view.getCerrarBtn().setEnabled(true);
                 break;
 
             case NEW:
-                view.getGuardarBtn().setEnabled(true);
-                view.getAnularBtn().setEnabled(true);
-                view.getEliminarBtn().setEnabled(false);
-                view.getModificarBtn().setEnabled(false);
+                tView.getNuevaTransBtn().setEnabled(false);
                 view.getImprimirTotalBtn().setEnabled(false);
                 view.getFinalizarTransBtn().setEnabled(false);
-                view.getNuevoComprobante().setEnabled(false);
-                view.getCerrarBtn().setEnabled(false);
-                view.selProyecto.setEnabled(false);
-                view.selTercero.setEnabled(false);
                 break;
 
             case EDIT:
-                view.getGuardarBtn().setEnabled(true);
-                view.getAnularBtn().setEnabled(true);
-                if (view.getContainer().size() > 1) view.getEliminarBtn().setEnabled(true);
-                else view.getEliminarBtn().setEnabled(false);
-                view.getModificarBtn().setEnabled(false);
-                view.getImprimirTotalBtn().setEnabled(false);
+                tView.getNuevaTransBtn().setEnabled(false);
+                view.getImprimirTotalBtn().setEnabled(true);
                 view.getFinalizarTransBtn().setEnabled(false);
-                view.getNuevoComprobante().setEnabled(false);
-                view.getCerrarBtn().setEnabled(false);
                 break;
 
             case VIEW:
-                view.getGuardarBtn().setEnabled(false);
-                view.getAnularBtn().setEnabled(false);
-                if ((view.getSelectedRow() != null && view.getSelectedRow().isAnula()) ||
-                        (bancocabecera != null && (bancocabecera.isAnula()
-                                || (bancocabecera.isEnviado() && !Role.isPrivileged())))) {
+                tView.getNuevaTransBtn().setEnabled(true);
+                view.getImprimirTotalBtn().setEnabled(true);
+                if (tView.getContainer() == null || tView.getContainer().getItemIds().isEmpty()
+                        || tView.getGridTrans() == null || tView.getGridTrans().getSelectedRow() == null) {
                     view.getModificarBtn().setEnabled(false);
                     view.getEliminarBtn().setEnabled(false);
+                    view.getImprimirBtn().setEnabled(false);
                 } else {
-                    view.getModificarBtn().setEnabled(true);
-                    if (view.getContainer().size() > 1) view.getEliminarBtn().setEnabled(true);
-                    else view.getEliminarBtn().setEnabled(false);
+                    view.getImprimirBtn().setEnabled(true);
+                    if (beanItem != null && (beanItem.getBean().isAnula() ||
+                            (beanItem.getBean().isEnviado() && !Role.isPrivileged()))) {
+                        view.getModificarBtn().setEnabled(false);
+                        view.getEliminarBtn().setEnabled(false);
+                    } else {
+                        view.getModificarBtn().setEnabled(true);
+                        view.getEliminarBtn().setEnabled(true);
+                    }
                 }
-                view.getCerrarBtn().setEnabled(true);
-                view.getImprimirTotalBtn().setEnabled(false);
-                if (bancocabecera != null && ((bancocabecera.isEnviado() && !Role.isPrivileged())
-                        || bancocabecera.isAnula())) {
-                    view.getNuevoComprobante().setEnabled(false);
-                } else {
-                    view.getNuevoComprobante().setEnabled(true);
-                }
-                view.getFinalizarTransBtn().setEnabled(true);
+                tView.setSaldoTrans();
                 break;
         }
-    }*/
+    }
+
+    public boolean isEdited() {
+        return isEdited;
+    }
 }

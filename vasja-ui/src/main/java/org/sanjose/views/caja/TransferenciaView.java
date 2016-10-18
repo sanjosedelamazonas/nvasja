@@ -128,12 +128,13 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
 
     private BigDecimal calcDifference() {
         BigDecimal total = new BigDecimal(0.00);
-
-        for (VsjCajabanco cajabanco : container.getItemIds()) {
-            if (isPEN())
-                total = total.add(cajabanco.getNumDebesol()).subtract(cajabanco.getNumHabersol());
-            else
-                total = total.add(cajabanco.getNumDebedolar()).subtract(cajabanco.getNumHaberdolar());
+        if (container != null) {
+            for (VsjCajabanco cajabanco : container.getItemIds()) {
+                if (isPEN())
+                    total = total.add(cajabanco.getNumDebesol()).subtract(cajabanco.getNumHabersol());
+                else
+                    total = total.add(cajabanco.getNumDebedolar()).subtract(cajabanco.getNumHaberdolar());
+            }
         }
         return total;
     }
@@ -149,10 +150,12 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
         saldoTotal.setValue("Differencia:" +
                 "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : "$ ") + calcDifference().toString() + "</span>");
 
-        if (!container.getItemIds().isEmpty() && calcDifference().compareTo(new BigDecimal(0.00)) == 0 && !guardarBtn.isEnabled())
+        if (container != null && !container.getItemIds().isEmpty() && calcDifference().compareTo(new BigDecimal(0.00)) == 0
+                && !guardarBtn.isEnabled() && viewLogic.isEdited())
             finalizarTransBtn.setEnabled(true);
         else
             finalizarTransBtn.setEnabled(false);
+        ViewUtil.alignMontosInGrid(gridTrans);
     }
 
 
@@ -166,7 +169,7 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
     }
 
     private boolean isPEN() {
-        if (selMoneda.getValue() == null && container.getItemIds().isEmpty()) return true;
+        if (selMoneda.getValue() == null && (container == null || container.getItemIds().isEmpty())) return true;
         if (selMoneda.getValue() == null) {
             return PEN.equals(container.getItemIds().get(0).getCodTipomoneda());
         } else {
@@ -338,6 +341,10 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
 
     public Button getImprimirTotalBtn() {
         return imprimirTotalBtn;
+    }
+
+    public Button getNuevaTransBtn() {
+        return nuevaTransBtn;
     }
 
     @Override
