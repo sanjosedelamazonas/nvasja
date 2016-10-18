@@ -16,6 +16,7 @@ import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.util.GenUtil;
+import org.sanjose.views.sys.VsjView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.verifyNumMoneda;
+import static org.sanjose.views.sys.VsjView.Mode.*;
 
 /**
  * VASJA class
@@ -50,7 +52,7 @@ public class BancoLogic extends BancoItemLogic {
         view.getImprimirTotalBtn().addClickListener(event -> {
             //  if (savedBancodetalle!=null) ViewUtil.printComprobante(savedBancodetalle);
         });
-        switchMode(Mode.EMPTY);
+        switchMode(EMPTY);
     }
 
     private void anularComprobante() {
@@ -60,14 +62,14 @@ public class BancoLogic extends BancoItemLogic {
         } else {
             clearFields();
             if (view.getContainer().getItemIds().isEmpty())
-                switchMode(Mode.EMPTY);
+                switchMode(EMPTY);
             else
-                switchMode(Mode.VIEW);
+                switchMode(VIEW);
         }
     }
 
     public void nuevoCheque() {
-        switchMode(Mode.NEW);
+        switchMode(NEW);
         editarCheque(new VsjBancocabecera());
     }
 
@@ -108,13 +110,13 @@ public class BancoLogic extends BancoItemLogic {
                 view.gridBanco.select(bancodetalleList.toArray()[0]);
                 viewComprobante();
             }
-            switchMode(Mode.VIEW);
+            switchMode(VIEW);
         }
     }
 
     private void nuevoComprobante() {
         clearSaldos();
-        switchMode(Mode.NEW);
+        switchMode(NEW);
         if (bancocabecera != null) {
             // cabecera in edit mode
             log.info("nuevo Item, cabecera: " + bancocabecera);
@@ -131,7 +133,7 @@ public class BancoLogic extends BancoItemLogic {
                 && !view.getSelectedRow().isAnula()) {
             clearSaldos();
             bindForm(view.getSelectedRow());
-            switchMode(Mode.EDIT);
+            switchMode(EDIT);
         }
     }
 
@@ -140,7 +142,7 @@ public class BancoLogic extends BancoItemLogic {
             clearSaldos();
             bindForm(view.getSelectedRow());
         }
-        switchMode(Mode.VIEW);
+        switchMode(VIEW);
     }
 
     @Override
@@ -267,7 +269,7 @@ public class BancoLogic extends BancoItemLogic {
             }
             view.setTotal(moneda);
             view.refreshData();
-            switchMode(Mode.VIEW);
+            switchMode(VIEW);
         } catch (Validator.InvalidValueException e) {
             Notification.show("Error al guardar: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
             e.printStackTrace();
@@ -294,7 +296,7 @@ public class BancoLogic extends BancoItemLogic {
         }
     }
 
-    private void switchMode(Mode newMode) {
+    private void switchMode(VsjView.Mode newMode) {
         switch (newMode) {
             case EMPTY:
                 view.getGuardarBtn().setEnabled(false);
@@ -365,9 +367,4 @@ public class BancoLogic extends BancoItemLogic {
                 break;
         }
     }
-
-    public enum Mode {
-        NEW, EDIT, VIEW, EMPTY
-    }
-
 }

@@ -261,7 +261,6 @@ class BancoItemLogic implements Serializable {
         destinoView.getBtnEliminar().addClickListener(clickEvent -> {
             try {
                 ScpDestino item = destinoView.getScpDestino();
-                //log.info("eliminar: " + item);
                 String codDestino = item.getCodDestino();
                 MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
                 MessageBox
@@ -272,14 +271,20 @@ class BancoItemLogic implements Serializable {
                             log.debug("To delete: " + item);
 
                             List<VsjBancodetalle> comprobantes = view.getService().getBancodetalleRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
-                            if (comprobantes.isEmpty()) {
+                            List<VsjBancocabecera> cabeceras = view.getService().getBancocabeceraRep().findByCodDestino(codDestino);
+                            if (comprobantes.isEmpty() && cabeceras.isEmpty()) {
                                 destinoView.destinoRepo.delete(item);
                                 refreshDestino();
                                 destinoWindow.close();
                             } else {
                                 StringBuilder sb = new StringBuilder();
                                 for (VsjBancodetalle vcb : comprobantes) {
-                                    sb.append("\n").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosaitem());
+                                    sb.append("\n").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha())
+                                            .append(" ").append(vcb.getTxtGlosaitem());
+                                }
+                                for (VsjBancocabecera vcb : cabeceras) {
+                                    sb.append("\n").append(vcb.getTxtCorrelativo()).append(" ").
+                                            append(vcb.getCodBancocabecera()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosa());
                                 }
                                 MessageBox
                                         .createWarning()
