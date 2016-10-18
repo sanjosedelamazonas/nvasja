@@ -42,7 +42,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     }
 
     private void nuevaTrans() {
-        if (!tView.getContainer().getItemIds().isEmpty() && isEdited)
+        if (!tView.getContainer().getItemIds().isEmpty() && isEdited())
             MessageBox
                 .createQuestion()
                 .withCaption("Nueva transferencia")
@@ -92,7 +92,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     public void viewComprobante() {
         if (!view.getGuardarBtn().isEnabled()) {
-            isEdited = true;
+            isEdited = false;
             editarComprobante(tView.getSelectedRow());
             tView.setEnableFields(false);
 //            view.getNuevoComprobante().setEnabled(true);
@@ -131,7 +131,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     @Override
     public void cerrarAlManejo() {
-        if (isEdited)
+        if (isEdited())
             MessageBox
                 .createQuestion()
                 .withCaption("Quitar la transferencia")
@@ -187,7 +187,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     }
 
     private void saveTransferencia() {
-        if (isEdited) MessageBox
+        if (isEdited()) MessageBox
                 .createQuestion()
                 .withCaption("Guardar la transferencia")
                 .withMessage("?Esta seguro que quiere guardar todos operaciones de esta transferencia?\n" +

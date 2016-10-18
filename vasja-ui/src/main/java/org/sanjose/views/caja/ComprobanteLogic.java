@@ -399,6 +399,7 @@ class ComprobanteLogic implements Serializable {
                 fieldGroup.unbind(view.getSelCaja());
             } catch (FieldGroup.BindException be) {
             }
+            fieldGroup.bind(view.getSelCaja(), "codCtacontable");
             view.getSelCaja().removeAllValidators();
             if (moneda.equals(PEN)) {
                 // Soles        0
@@ -419,7 +420,6 @@ class ComprobanteLogic implements Serializable {
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
             }
-            fieldGroup.bind(view.getSelCaja(), "codCtacontable");
             view.getSelCaja().addValueChangeListener(e -> setSaldoCaja());
             setSaldoCaja();
             view.getSelCaja().addValidator(new BeanValidator(VsjCajabanco.class, "codCtacontable"));
