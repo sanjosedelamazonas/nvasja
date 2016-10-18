@@ -103,7 +103,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         if (GenUtil.strNullOrEmpty(tView.getSelectedRow().getCodTranscorrelativo()))
             tView.getContainer().removeItem(tView.getSelectedRow());
         else {
-            VsjCajabanco anuladoVcb = prepareToEliminar(tView.getSelectedRow());
+            VsjCajabanco anuladoVcb = tView.getSelectedRow().prepareToEliminar();
             VsjCajabanco vcbOld = null;
             for (VsjCajabanco vcb : tView.getContainer().getItemIds()) {
                 if (anuladoVcb .getFecFregistro().equals(vcb.getFecFregistro())) {
@@ -141,7 +141,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     public void saveComprobante() {
         try {
             boolean isNew = getVsjCajabanco().getFecFregistro()==null;
-            VsjCajabanco item = prepareToSave();
+            VsjCajabanco item = getVsjCajabanco().prepareToSave();
             moneda = item.getCodTipomoneda();
             if (isNew) {
                 tView.getContainer().addBean(item);
@@ -227,4 +227,69 @@ public class TransferenciaLogic extends ComprobanteLogic {
         tView.getNuevoComprobante().setEnabled(true);
         isEdited = false;
     }
+
+
+    /*private void switchMode(VsjView.Mode newMode) {
+        switch (newMode) {
+            case EMPTY:
+                view.getGuardarBtn().setEnabled(false);
+                view.getAnularBtn().setEnabled(false);
+                view.getEliminarBtn().setEnabled(false);
+                view.getModificarBtn().setEnabled(false);
+                view.getImprimirTotalBtn().setEnabled(false);
+                view.getFinalizarTransBtn().setEnabled(false);
+                view.getNuevoComprobante().setEnabled(true);
+                view.getCerrarBtn().setEnabled(true);
+                break;
+
+            case NEW:
+                view.getGuardarBtn().setEnabled(true);
+                view.getAnularBtn().setEnabled(true);
+                view.getEliminarBtn().setEnabled(false);
+                view.getModificarBtn().setEnabled(false);
+                view.getImprimirTotalBtn().setEnabled(false);
+                view.getFinalizarTransBtn().setEnabled(false);
+                view.getNuevoComprobante().setEnabled(false);
+                view.getCerrarBtn().setEnabled(false);
+                view.selProyecto.setEnabled(false);
+                view.selTercero.setEnabled(false);
+                break;
+
+            case EDIT:
+                view.getGuardarBtn().setEnabled(true);
+                view.getAnularBtn().setEnabled(true);
+                if (view.getContainer().size() > 1) view.getEliminarBtn().setEnabled(true);
+                else view.getEliminarBtn().setEnabled(false);
+                view.getModificarBtn().setEnabled(false);
+                view.getImprimirTotalBtn().setEnabled(false);
+                view.getFinalizarTransBtn().setEnabled(false);
+                view.getNuevoComprobante().setEnabled(false);
+                view.getCerrarBtn().setEnabled(false);
+                break;
+
+            case VIEW:
+                view.getGuardarBtn().setEnabled(false);
+                view.getAnularBtn().setEnabled(false);
+                if ((view.getSelectedRow() != null && view.getSelectedRow().isAnula()) ||
+                        (bancocabecera != null && (bancocabecera.isAnula()
+                                || (bancocabecera.isEnviado() && !Role.isPrivileged())))) {
+                    view.getModificarBtn().setEnabled(false);
+                    view.getEliminarBtn().setEnabled(false);
+                } else {
+                    view.getModificarBtn().setEnabled(true);
+                    if (view.getContainer().size() > 1) view.getEliminarBtn().setEnabled(true);
+                    else view.getEliminarBtn().setEnabled(false);
+                }
+                view.getCerrarBtn().setEnabled(true);
+                view.getImprimirTotalBtn().setEnabled(false);
+                if (bancocabecera != null && ((bancocabecera.isEnviado() && !Role.isPrivileged())
+                        || bancocabecera.isAnula())) {
+                    view.getNuevoComprobante().setEnabled(false);
+                } else {
+                    view.getNuevoComprobante().setEnabled(true);
+                }
+                view.getFinalizarTransBtn().setEnabled(true);
+                break;
+        }
+    }*/
 }

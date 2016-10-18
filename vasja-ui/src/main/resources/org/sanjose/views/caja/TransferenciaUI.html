@@ -2,6 +2,7 @@
 <html>
  <head>
   <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+     <meta charset="UTF-8" name="package-mapping" content="org_vaadin_addons:org.vaadin.addons">
   <meta charset="UTF-8" name="package-mapping" content="tm_kod_widgets_numberfield:tm.kod.widgets.numberfield">
   <meta charset="UTF-8" name="package-mapping" content="org_sanjose_helper:org.sanjose.helper">
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_addons_maskedtextfield:org.vaadin.addons.maskedtextfield">
@@ -17,7 +18,14 @@
      <vaadin-form-layout style-name="billing-formlayout" width="550px" margin-top="false" margin-bottom="false" _id="cuenta_form"> 
       <vaadin-horizontal-layout spacing> 
        <vaadin-text-field description="Num de Voucher" caption="Nro de comprobante" enabled="false" style-name="form-textfield" width="105px" _id="numVoucher" :middle :center></vaadin-text-field> 
-       <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante"></vaadin-popup-date-field> 
+       <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante"></vaadin-popup-date-field>
+          <org_vaadin_addons-css-check-box caption="Enviado" enabled="false" width="84px" _id="chkEnviado"
+                                           :bottom></org_vaadin_addons-css-check-box>
+          <vaadin-text-field description="Origen en contabilidad" caption="Orig." enabled="false"
+                             style-name="form-textfield" responsive width="54px" _id="txtOrigen"></vaadin-text-field>
+          <vaadin-text-field description="Numero de comprobante en contabilidad" caption="Comprobante" enabled="false"
+                             style-name="form-textfield" responsive width="100px"
+                             _id="txtNumCombrobante"></vaadin-text-field>
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout style-name="cuenta-Layout" spacing> 
        <vaadin-vertical-layout spacing> 
@@ -50,13 +58,16 @@
         <option>Dolares</option> 
        </vaadin-option-group> 
        <tm_kod_widgets_numberfield-number-field caption="Ingreso" width="69px" _id="numIngreso"></tm_kod_widgets_numberfield-number-field> 
-       <tm_kod_widgets_numberfield-number-field caption="Egreso" width="69px" _id="numEgreso"></tm_kod_widgets_numberfield-number-field> 
-       <vaadin-combo-box caption="Caja" style-name="form-textfield" item-caption-mode="id" width="115.71%" _id="selCaja">
-        <option>Option 1</option> 
+       <tm_kod_widgets_numberfield-number-field caption="Egreso" width="69px" _id="numEgreso"></tm_kod_widgets_numberfield-number-field>
+          <vaadin-combo-box caption="Caja" style-name="form-textfield" item-caption-mode="id" width="115.71%"
+                            _id="selCaja">
+              <option>Option 1</option>
         <option>Option 2</option> 
-       </vaadin-combo-box> 
-       <vaadin-text-field caption="Caja S/." enabled="false" style-name="form-textfield" width="75px" _id="saldoCajaPEN"></vaadin-text-field>
-       <vaadin-text-field caption="Caja $" enabled="false" style-name="form-textfield" width="72px" _id="saldoCajaUSD"></vaadin-text-field>
+       </vaadin-combo-box>
+          <vaadin-text-field caption="Caja S/." enabled="false" style-name="form-textfield" width="75px"
+                             _id="saldoCajaPEN"></vaadin-text-field>
+          <vaadin-text-field caption="Caja $" enabled="false" style-name="form-textfield" width="72px"
+                             _id="saldoCajaUSD"></vaadin-text-field>
       </vaadin-horizontal-layout> 
       <vaadin-text-field input-prompt="Glosa" style-name="form-textfield" width="502px" _id="glosa"></vaadin-text-field> 
       <vaadin-horizontal-layout spacing> 
@@ -138,8 +149,11 @@
       <vaadin-horizontal-layout spacing :middle :center> 
        <vaadin-button plain-text _id="guardarBtn">
          Guardar 
-       </vaadin-button> 
-       <vaadin-button plain-text _id="modificarBtn">
+       </vaadin-button>
+          <vaadin-button plain-text _id="anularBtn">
+              Anular
+          </vaadin-button>
+          <vaadin-button plain-text _id="modificarBtn">
          Modificar 
        </vaadin-button> 
        <vaadin-button plain-text _id="eliminarBtn">
@@ -160,7 +174,7 @@
          Finalizar Transferencia 
        </vaadin-button> 
        <vaadin-button plain-text _id="cerrarBtn">
-         Manejo de Caja
+           Manejo de Caja
        </vaadin-button> 
        <vaadin-button plain-text _id="imprimirTotalBtn">
          Imprimir transferencia 

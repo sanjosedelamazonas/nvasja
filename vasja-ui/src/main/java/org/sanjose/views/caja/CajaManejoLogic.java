@@ -60,7 +60,7 @@ public class CajaManejoLogic implements Serializable, ISaldoDelDia {
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
             } else {
-                gridContextMenu.addItem("Editar", k -> editarComprobante((VsjCajabanco) itemId));
+                gridContextMenu.addItem(((VsjCajabanco) itemId).isReadOnly() ? "Ver detalles" : "Editar", k -> editarComprobante((VsjCajabanco) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
                 gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
                 gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());
@@ -85,7 +85,7 @@ public class CajaManejoLogic implements Serializable, ISaldoDelDia {
     }
 
     public void editarComprobante(VsjCajabanco vcb) {
-        if (!vcb.isEnviado() && !vcb.isAnula()) {
+        //if (!vcb.isEnviado() && !vcb.isAnula()) {
             // Transferencia
             if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
                 try {
@@ -100,7 +100,7 @@ public class CajaManejoLogic implements Serializable, ISaldoDelDia {
                 MainUI.get().getComprobanteView().viewLogic.setNavigatorView(view);
                 MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
             }
-        }
+        //}
     }
 
 

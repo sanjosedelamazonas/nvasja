@@ -20,8 +20,8 @@ import java.math.BigDecimal;
 						@StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class),
 						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
 						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
-						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
-						@StoredProcedureParameter(mode = ParameterMode.IN, type = BigDecimal.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, type = Character.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, type = BigDecimal.class),
 						@StoredProcedureParameter(mode = ParameterMode.IN, type = BigDecimal.class),
 						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
 						@StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class)

@@ -3,11 +3,13 @@ package org.sanjose.model;
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import org.hibernate.validator.constraints.NotBlank;
+import org.sanjose.authentication.CurrentUser;
+import org.sanjose.authentication.Role;
 import org.sanjose.util.GenUtil;
 
-import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -23,11 +25,80 @@ import static org.sanjose.util.GenUtil.PEN;
 @NamedQuery(name="VsjCajabanco.findAll", query="SELECT v FROM VsjCajabanco v")
 public class VsjCajabanco extends VsjItem implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="cod_cajabanco")
+	private Integer codCajabanco;
+	@Column(name="cod_comprobanteenlace")
+	private String codComprobanteenlace;
+	@NotBlank
+	@Column(name="cod_contracta")
+	private String codContracta;
+	@Column(name="cod_contraparte")
+	private String codContraparte;
+	//@NotNull
+	@NotBlank
+	@Column(name="cod_ctacontable")
+	private String codCtacontable;
+	@Column(name="cod_ctaespecial")
+	private String codCtaespecial;
+	@Column(name="cod_ctaproyecto")
+	private String codCtaproyecto;
+	//@NotNull
+	@NotBlank
+	@Column(name="cod_destino")
+	private String codDestino;
+	//@NotNull
+	@NotBlank
+	@Column(name="cod_destinoitem")
+	private String codDestinoitem;
+	@Column(name="cod_financiera")
+	private String codFinanciera;
+	@Column(name="cod_origenenlace")
+	private String codOrigenenlace;
+	@Column(name="cod_proyecto")
+	private String codProyecto;
+	@Column(name="cod_tercero")
+	private String codTercero;
+	@Column(name="cod_tipocomprobantepago")
+	private String codTipocomprobantepago;
+	@NotNull
+	@Column(name="cod_tipomov")
+	private Integer codTipomov;
+	@Column(name="cod_transcorrelativo")
+	private String codTranscorrelativo;
+	@Column(name="fec_comprobantepago")
+	private Timestamp fecComprobantepago;
+	private Character flg_Anula;
+	@Column(name="flg_enviado")
+	private Character flgEnviado;
+	@Column(name="num_debedolar", columnDefinition="decimal(12,2)")
+	private BigDecimal numDebedolar;
+	@Column(name="num_debesol", columnDefinition="decimal(12,2)")
+	private BigDecimal numDebesol;
+	@Column(name="num_haberdolar", columnDefinition="decimal(12,2)")
+	private BigDecimal numHaberdolar;
+	@Column(name="num_habersol", columnDefinition="decimal(12,2)")
+	private BigDecimal numHabersol;
+	@Column(name="txt_comprobantepago")
+	private String txtComprobantepago;
+	@NotBlank
+	@Column(name="txt_glosaitem")
+	private String txtGlosaitem;
+	@Column(name="txt_seriecomprobantepago")
+	private String txtSeriecomprobantepago;
+/*
 
+	@Column(name="txt_anoproceso")
+	private String txtAnoproceso;
+*/
+
+	public VsjCajabanco() {
+	}
 
 	@Override
 	public VsjCajabanco prepareToSave() throws FieldGroup.CommitException {
-		VsjCajabanco item = (VsjCajabanco)super.prepareToSave();
+		VsjCajabanco item = (VsjCajabanco) super.prepareToSave();
 		if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
 			throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
 		if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
@@ -54,101 +125,27 @@ public class VsjCajabanco extends VsjItem implements Serializable {
 		return item;
 	}
 
+	public VsjCajabanco prepareToEliminar() {
+		if (GenUtil.strNullOrEmpty(getCodProyecto()) && GenUtil.strNullOrEmpty(getCodTercero()))
+			throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="cod_cajabanco")
-	private Integer codCajabanco;
+		setCodUactualiza(CurrentUser.get());
+		setFecFactualiza(new Timestamp(System.currentTimeMillis()));
 
-	@Column(name="cod_comprobanteenlace")
-	private String codComprobanteenlace;
+		// Verify moneda and fields
+		setNumHabersol(new BigDecimal(0.00));
+		setNumDebesol(new BigDecimal(0.00));
+		setNumHaberdolar(new BigDecimal(0.00));
+		setNumDebedolar(new BigDecimal(0.00));
 
-	@NotBlank
-	@Column(name="cod_contracta")
-	private String codContracta;
+		setTxtGlosaitem("ANULADO - " + (getTxtGlosaitem().length() > 60 ?
+				getTxtGlosaitem().substring(0, 60) : getTxtGlosaitem()));
+		setFlg_Anula('1');
+		return this;
+	}
 
-	@Column(name="cod_contraparte")
-	private String codContraparte;
-
-	//@NotNull
-	@NotBlank
-	@Column(name="cod_ctacontable")
-	private String codCtacontable;
-
-	@Column(name="cod_ctaespecial")
-	private String codCtaespecial;
-
-	@Column(name="cod_ctaproyecto")
-	private String codCtaproyecto;
-
-	//@NotNull
-	@NotBlank
-	@Column(name="cod_destino")
-	private String codDestino;
-
-	//@NotNull
-	@NotBlank
-	@Column(name="cod_destinoitem")
-	private String codDestinoitem;
-
-	@Column(name="cod_financiera")
-	private String codFinanciera;
-
-	@Column(name="cod_origenenlace")
-	private String codOrigenenlace;
-
-	@Column(name="cod_proyecto")
-	private String codProyecto;
-
-	@Column(name="cod_tercero")
-	private String codTercero;
-
-	@Column(name="cod_tipocomprobantepago")
-	private String codTipocomprobantepago;
-
-	@NotNull
-	@Column(name="cod_tipomov")
-	private Integer codTipomov;
-
-	@Column(name="cod_transcorrelativo")
-	private String codTranscorrelativo;
-
-	@Column(name="fec_comprobantepago")
-	private Timestamp fecComprobantepago;
-
-	private Character flg_Anula;
-
-	@Column(name="flg_enviado")
-	private Character flgEnviado;
-
-	@Column(name="num_debedolar", columnDefinition="decimal(12,2)")
-	private BigDecimal numDebedolar;
-
-	@Column(name="num_debesol", columnDefinition="decimal(12,2)")
-	private BigDecimal numDebesol;
-
-	@Column(name="num_haberdolar", columnDefinition="decimal(12,2)")
-	private BigDecimal numHaberdolar;
-
-	@Column(name="num_habersol", columnDefinition="decimal(12,2)")
-	private BigDecimal numHabersol;
-/*
-
-	@Column(name="txt_anoproceso")
-	private String txtAnoproceso;
-*/
-
-	@Column(name="txt_comprobantepago")
-	private String txtComprobantepago;
-
-	@NotBlank
-	@Column(name="txt_glosaitem")
-	private String txtGlosaitem;
-
-	@Column(name="txt_seriecomprobantepago")
-	private String txtSeriecomprobantepago;
-
-	public VsjCajabanco() {
+	public boolean isReadOnly() {
+		return isAnula() || (isEnviado() && !Role.isPrivileged());
 	}
 
 	public Integer getCodCajabanco() {

@@ -10,6 +10,7 @@ import org.sanjose.model.ScpPlancontable;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
+import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
 
 import java.math.BigDecimal;
@@ -231,6 +232,11 @@ public class ComprobanteView extends ComprobanteUI implements IComprobanteView, 
         return guardarBtn;
     }
 
+    @Override
+    public Button getAnularBtn() {
+        return anularBtn;
+    }
+
     public Button getModificarBtn() {
         return modificarBtn;
     }
@@ -247,6 +253,27 @@ public class ComprobanteView extends ComprobanteUI implements IComprobanteView, 
         return imprimirBtn;
     }
 
+    @Override
+    public Button getImprimirTotalBtn() {
+        return null;
+    }
+
+    @Override
+    public Button getFinalizarTransBtn() {
+        return null;
+    }
+
+    public CssCheckBox getChkEnviado() {
+        return chkEnviado;
+    }
+
+    public TextField getTxtOrigen() {
+        return txtOrigen;
+    }
+
+    public TextField getTxtNumCombrobante() {
+        return txtNumCombrobante;
+    }
 
     public ComprobanteService getService() {
         return comprobanteService;

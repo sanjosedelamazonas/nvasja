@@ -167,11 +167,9 @@ public class BancoLogic extends BancoItemLogic {
         fieldGroupCabezera.bind(view.getTxtNumCombrobante(), "codComprobanteenlace");
         view.getTxtNumCombrobante().setEnabled(false);
         fieldGroupCabezera.bind(view.getChkEnviado(), "flgEnviado");
-        fieldGroupCabezera.bind(view.getChkEnviado(), "flgEnviado");
         view.getChkCobrado().setConverter(new MesCobradoToBooleanConverter(item));
         fieldGroupCabezera.bind(view.getChkCobrado(), "codMescobrado");
         view.getChkEnviado().setEnabled(false);
-        //view.getChkCobrado().setValue(GenUtil.strNullOrEmpty(item.getCodMescobrado()) ? false : true);
 
         for (Field f : fieldGroupCabezera.getFields()) {
             if (f instanceof TextField)
