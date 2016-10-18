@@ -1,6 +1,7 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.ui.*;
+import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
 
 /**
@@ -76,6 +77,8 @@ interface IComprobanteView {
 
     Button getGuardarBtn();
 
+    Button getAnularBtn();
+
     Button getModificarBtn();
 
     Button getEliminarBtn();
@@ -83,6 +86,16 @@ interface IComprobanteView {
     Button getNuevoComprobante();
 
     Button getImprimirBtn();
+
+    Button getImprimirTotalBtn();
+
+    Button getFinalizarTransBtn();
+
+    CssCheckBox getChkEnviado();
+
+    TextField getTxtOrigen();
+
+    TextField getTxtNumCombrobante();
 
     PopupDateField getDataFechaComprobante();
 

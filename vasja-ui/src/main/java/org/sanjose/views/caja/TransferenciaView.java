@@ -12,6 +12,7 @@ import org.sanjose.MainUI;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
+import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
 
 import java.math.BigDecimal;
@@ -313,6 +314,30 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
 
     public Button getFinalizarTransBtn() {
         return finalizarTransBtn;
+    }
+
+    public CssCheckBox getChkEnviado() {
+        return chkEnviado;
+    }
+
+    public TextField getTxtOrigen() {
+        return txtOrigen;
+    }
+
+    public TextField getTxtNumCombrobante() {
+        return txtNumCombrobante;
+    }
+
+    public Grid getGridTrans() {
+        return gridTrans;
+    }
+
+    public Button getAnularBtn() {
+        return anularBtn;
+    }
+
+    public Button getImprimirTotalBtn() {
+        return imprimirTotalBtn;
     }
 
     @Override

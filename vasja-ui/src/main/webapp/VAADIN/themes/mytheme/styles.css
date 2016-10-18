@@ -55,7 +55,7 @@
 
 .root-layout.form-template-vivid .order-summary-layout .v-label {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	color: $order-summary-text-color-usd;
+	color: #FFFFFF;
 }
 
 .root-layout.form-template-vivid .order-summary-layout .header-label-small {
