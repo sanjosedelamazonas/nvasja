@@ -1,8 +1,11 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.ui.Notification;
+import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.Role;
 import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.views.sys.INavigatorView;
 
 /**
  * VASJA class
@@ -30,12 +33,28 @@ public class BancoGridLogic {
         MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
     }
 
-    public void anularCheque() {
-        view.clearSelection();
-        for (Object obj : view.getSelectedRows()) {
-            VsjBancocabecera vcb = (VsjBancocabecera) obj;
-            //ViewUtil.printComprobante(vcb);
+    public void anularCheque(VsjBancocabecera cabeceraToAnular) {
+        if (cabeceraToAnular.isEnviado() && !Role.isPrivileged()) {
+            Notification.show("!No se puede eliminar este cheque porque ya esta enviado a contabilidad!", Notification.Type.WARNING_MESSAGE);
+            return;
         }
+
+        StringBuilder sb = new StringBuilder("?Esta seguro que quiere eliminar cheque numero: \n"
+                + cabeceraToAnular.getTxtCheque() + " cod operacion: " + cabeceraToAnular.getCodBancocabecera());
+        MessageBox
+                .createQuestion()
+                .withCaption("Eliminar cheque")
+                .withMessage(sb.toString())
+                .withYesButton(() -> {
+                    try {
+                        view.getService().anularCheque(cabeceraToAnular);
+                        view.refreshData();
+                    } catch (FieldGroup.CommitException ce) {
+                        Notification.show("Error al anular: " + ce.getMessage());
+                    }
+                })
+                .withNoButton()
+                .open();
     }
 
     public void generateComprobante() {

@@ -126,6 +126,48 @@ public class BancoService {
         return bancoItem;
     }
 
+
+    @Transactional(readOnly = false)
+    public void deleteBancoOperacion(VsjBancocabecera cabecera, VsjBancodetalle bancoItem) {
+        int delNumItem = bancoItem.getId().getNumItem();
+        bancodetalleRep.delete(bancoItem);
+        for (VsjBancodetalle it : bancodetalleRep
+                .findById_CodBancocabeceraAndId_NumItemGreaterThan(cabecera.getCodBancocabecera(), delNumItem)) {
+            try {
+                VsjBancodetalle newBancoDetalle = (VsjBancodetalle) it.clone();
+                VsjBancodetallePK id = (VsjBancodetallePK) it.getId().clone();
+                id.setNumItem(it.getId().getNumItem() - 1);
+                newBancoDetalle.setId(id);
+                bancodetalleRep.delete(it);
+                bancodetalleRep.save(newBancoDetalle);
+            } catch (CloneNotSupportedException cle) {
+                cle.printStackTrace();
+            }
+        }
+        BigDecimal saldoHabersol = new BigDecimal(0);
+        BigDecimal saldoHaberdolar = new BigDecimal(0);
+        BigDecimal saldoHabermo = new BigDecimal(0);
+        BigDecimal saldoDebesol = new BigDecimal(0);
+        BigDecimal saldoDebedolar = new BigDecimal(0);
+        BigDecimal saldoDebemo = new BigDecimal(0);
+        for (VsjBancodetalle it : bancodetalleRep
+                .findById_CodBancocabecera(cabecera.getCodBancocabecera())) {
+            saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
+            saldoDebemo = saldoDebemo.add(it.getNumDebemo());
+            saldoDebesol = saldoDebesol.add(it.getNumDebesol());
+            saldoHaberdolar = saldoHaberdolar.add(it.getNumHaberdolar());
+            saldoHabermo = saldoHabermo.add(it.getNumHabermo());
+            saldoHabersol = saldoHabersol.add(it.getNumHabersol());
+        }
+        cabecera.setNumDebesol(saldoDebesol);
+        cabecera.setNumHabersol(saldoHabersol);
+        cabecera.setNumDebedolar(saldoDebedolar);
+        cabecera.setNumHaberdolar(saldoHaberdolar);
+        cabecera.setNumDebemo(saldoDebemo);
+        cabecera.setNumDebemo(saldoHabermo);
+        bancocabeceraRep.save(cabecera);
+    }
+
     @Transactional(readOnly = false)
     public void updateCobradoInCabecera(VsjBancocabecera bancocabecera) {
         if (bancocabecera.isEnviado()) {
@@ -147,6 +189,19 @@ public class BancoService {
         }
         bancocabeceraRep.save(bancocabecera);
     }
+
+    @Transactional(readOnly = false)
+    public void anularCheque(VsjBancocabecera vcb) throws FieldGroup.CommitException {
+        vcb.setTxtGlosa("ANULADO");
+        vcb.setCodDestino("00000000");
+        vcb.setFlg_Anula('1');
+        for (VsjBancodetalle det : bancodetalleRep.findById_CodBancocabecera(vcb.getCodBancocabecera())) {
+            det.setFlg_Anula('1');
+            saveBancoOperacion(vcb, det, vcb.getCodTipomoneda());
+        }
+    }
+
+
 
     @Transactional
     public List<VsjBancocabecera> findAll() {

@@ -11,6 +11,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
@@ -217,17 +218,25 @@ public class BancoLogic extends BancoItemLogic {
                     Notification.Type.WARNING_MESSAGE);
             return;
         }
-        //bancoItem.setFlg_Anula('1');
-        log.info("Ready to ANULAR: " + bancoItem);
-
-        saveCabecera();
+        log.info("Ready to eliminar: " + bancoItem);
+        view.getService().deleteBancoOperacion(bancocabecera, bancoItem);
+        view.refreshData();
+        view.getContainer().removeAllItems();
+        List<VsjBancodetalle> bancodetalleList = view.getService().getBancodetalleRep()
+                .findById_CodBancocabecera(bancocabecera.getCodBancocabecera());
+        if (!bancodetalleList.isEmpty()) {
+            view.getContainer().addAll(bancodetalleList);
+            view.getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
+            view.setTotal(moneda);
+            view.gridBanco.select(bancodetalleList.toArray()[0]);
+            viewComprobante();
+        }
     }
 
     private void saveCabecera() {
         log.info("saving Cabecera");
         try {
             fieldGroupCabezera.commit();
-            //view.setEnableCabezeraFields(false);
             log.info("saved in class: " + bancocabecera);
             VsjBancocabecera cabecera = beanItem.getBean();
             cabecera.setFlgCobrado(!GenUtil.strNullOrEmpty(cabecera.getCodMescobrado()));
@@ -318,7 +327,8 @@ public class BancoLogic extends BancoItemLogic {
             case EDIT:
                 view.getGuardarBtn().setEnabled(true);
                 view.getAnularBtn().setEnabled(true);
-                view.getEliminarBtn().setEnabled(true);
+                if (view.getContainer().size() > 1) view.getEliminarBtn().setEnabled(true);
+                else view.getEliminarBtn().setEnabled(false);
                 view.getModificarBtn().setEnabled(false);
                 view.getImprimirTotalBtn().setEnabled(false);
                 view.getNewItemBtn().setEnabled(false);
@@ -332,16 +342,19 @@ public class BancoLogic extends BancoItemLogic {
                 view.getGuardarBtn().setEnabled(false);
                 view.getAnularBtn().setEnabled(false);
                 if ((view.getSelectedRow() != null && view.getSelectedRow().isAnula()) ||
-                        bancocabecera != null && bancocabecera.isEnviado()) {
+                        (bancocabecera != null && (bancocabecera.isAnula()
+                                || (bancocabecera.isEnviado() && !Role.isPrivileged())))) {
                     view.getModificarBtn().setEnabled(false);
                     view.getEliminarBtn().setEnabled(false);
                 } else {
                     view.getModificarBtn().setEnabled(true);
-                    view.getEliminarBtn().setEnabled(true);
+                    if (view.getContainer().size() > 1) view.getEliminarBtn().setEnabled(true);
+                    else view.getEliminarBtn().setEnabled(false);
                 }
                 view.getCerrarBtn().setEnabled(true);
                 view.getImprimirTotalBtn().setEnabled(false);
-                if (bancocabecera != null && bancocabecera.isEnviado()) {
+                if (bancocabecera != null && ((bancocabecera.isEnviado() && !Role.isPrivileged())
+                        || bancocabecera.isAnula())) {
                     view.getNewItemBtn().setEnabled(false);
                 } else {
                     view.getNewItemBtn().setEnabled(true);

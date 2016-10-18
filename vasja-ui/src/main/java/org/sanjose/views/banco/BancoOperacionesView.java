@@ -1,13 +1,17 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare;
+import com.vaadin.event.SelectionEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
+import org.sanjose.MainUI;
+import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.util.ConfigurationUtil;
@@ -15,8 +19,8 @@ import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
-import org.sanjose.views.sys.INavigatorView;
 import org.sanjose.views.sys.VsjView;
+import org.vaadin.addons.CssCheckBox;
 
 import java.util.Collection;
 
@@ -31,22 +35,22 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
     public static final String VIEW_NAME = "Operaciones de Cheques";
     private final BancoOperacionesLogic viewLogic = new BancoOperacionesLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
-            "codMescobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
+            "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
             "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
-            "codOrigenenlace", "codComprobanteenlace", "flgEnviado"
+            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
-            "Mes", "Fecha", "Numero", "Cuenta",
+            "Cobr.", "Fecha", "Numero", "Cuenta",
             "Auxiliar", "Nombre", "Cheque", "Glosa",
             "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
-            "Orig", "Comprob.", "Env"
+            "Orig", "Comprob.", "Env", "Anul."
     };
     private final int[] FILTER_WIDTH = new int[]{
             2, 4, 4, 4,
             6, 10, 4, 12,
             3, 3, 3, 3, 3, 3,
-            1, 4, 1
+            1, 4, 1, 1
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
 
@@ -84,10 +88,25 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
         ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta);
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
-
         gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridBanco.getColumn("flg_Anula").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridBanco.getColumn("flgEnviado").setHidden(true);
+        gridBanco.getColumn("flg_Anula").setHidden(true);
 
-        //gridBanco.addItemClickListener(this::setItemLogic);
+        CssCheckBox cobradoChkBox = new CssCheckBox();
+        cobradoChkBox.setSimpleMode(false);
+        cobradoChkBox.setAnimated(false);
+        cobradoChkBox.setCaption("");
+        cobradoChkBox.setBigPreset(false);
+        //gridBanco.getColumn("flgCobrado").setRenderer(new CheckboxRenderer());
+        gridBanco.setEditorFieldGroup(
+                new BeanFieldGroup<>(VsjBancocabecera.class));
+        gridBanco.setEditorEnabled(true);
+        gridBanco.setEditorBuffered(true);
+
+        gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
+        gridBanco.getColumn("flgCobrado").setEditable(true);
+        gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
@@ -106,6 +125,16 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
                 container.removeContainerFilters("codCtacontable");
             }
             //viewLogic.setSaldoDelDia();
+        });
+        bancoOperView.init(MainUI.get().getBancoManejoView().getService());
+        bancoOperView.getViewLogic().nuevoCheque();
+        gridBanco.addSelectionListener(new SelectionEvent.SelectionListener() {
+            @Override
+            public void select(SelectionEvent selectionEvent) {
+                if (selectionEvent.getSelected().isEmpty()) return;
+                VsjBancocabecera cabeceraSelected = (VsjBancocabecera) selectionEvent.getSelected().toArray()[0];
+                bancoOperView.getViewLogic().editarCheque(cabeceraSelected);
+            }
         });
 
         viewLogic.init(this);
