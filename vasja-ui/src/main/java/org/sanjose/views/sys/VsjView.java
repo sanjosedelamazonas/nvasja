@@ -7,5 +7,11 @@ import com.vaadin.navigator.View;
  */
 public interface VsjView extends View {
 
+    public enum Mode {
+        NEW, EDIT, VIEW, EMPTY
+    }
+
     void init();
 }
+
+
