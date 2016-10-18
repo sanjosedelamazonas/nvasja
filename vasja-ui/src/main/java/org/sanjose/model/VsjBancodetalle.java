@@ -25,7 +25,7 @@ import static org.sanjose.util.GenUtil.USD;
 @Entity
 @Table(name="vsj_bancodetalle")
 @NamedQuery(name="VsjBancodetalle.findAll", query="SELECT v FROM VsjBancodetalle v")
-public class VsjBancodetalle extends VsjBancoItem implements Serializable{
+public class VsjBancodetalle extends VsjBancoItem implements Serializable, Cloneable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	private VsjBancodetallePK id;
@@ -430,9 +430,13 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable{
 		this.vsjBancocabecera = vsjBancocabecera;
 	}
 
-
 	public boolean isAnula() {
 		return flg_Anula!=null && flg_Anula.equals('1');
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 
 	@Override

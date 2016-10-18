@@ -18,7 +18,6 @@ import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
-import org.sanjose.views.sys.INavigatorView;
 import org.sanjose.views.sys.VsjView;
 import org.vaadin.addons.CssCheckBox;
 
@@ -38,24 +37,24 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
             "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
             "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
-            "codOrigenenlace", "codComprobanteenlace", "flgEnviado"
+            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
             "Cobr", "Fecha", "Numero", "Cuenta",
             "Auxiliar", "Nombre", "Cheque", "Glosa",
             "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
-            "Orig", "Comprob.", "Env"
+            "Orig", "Comprob.", "Env", "Anul"
     };
     private final int[] FILTER_WIDTH = new int[]{
             1, 4, 4, 4,
             6, 10, 4, 12,
             3, 3, 3, 3, 3, 3,
-            1, 4, 1
+            1, 4, 1, 1
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codCtacontable",
             "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
-            "codOrigenenlace", "codComprobanteenlace", "flgEnviado"};
+            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"};
 
     private BeanItemContainer<VsjBancocabecera> container;
 
@@ -92,6 +91,9 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridBanco.getColumn("flg_Anula").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridBanco.getColumn("flgEnviado").setHidden(true);
+        gridBanco.getColumn("flg_Anula").setHidden(true);
 
         CssCheckBox cobradoChkBox = new CssCheckBox();
         cobradoChkBox.setSimpleMode(false);

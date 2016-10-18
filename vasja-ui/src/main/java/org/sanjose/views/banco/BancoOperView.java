@@ -71,15 +71,23 @@ public class BancoOperView extends BancoOperUI implements VsjView {
     private GeneratedPropertyContainer gpContainer;
     private BancoService bancoService;
 
+    public BancoOperView() {
+    }
+
     public BancoOperView(BancoService bancoService) {
         this.bancoService = bancoService;
+        setSizeFull();
+    }
+
+    public void init(BancoService bancoService) {
+        this.bancoService = bancoService;
+        init();
     }
 
     @Override
     public void init() {
         viewLogic = new BancoLogic();
         viewLogic.init(this);
-        setSizeFull();
         addStyleName("crud-view");
         ViewUtil.setDefaultsForNumberField(numIngreso);
         ViewUtil.setDefaultsForNumberField(numEgreso);

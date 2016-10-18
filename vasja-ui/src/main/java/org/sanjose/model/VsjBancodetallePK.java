@@ -1,14 +1,15 @@
 package org.sanjose.model;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
-import javax.persistence.*;
 
 /**
  * The primary key class for the vsj_bancodetalle database table.
  * 
  */
 @Embeddable
-public class VsjBancodetallePK implements Serializable {
+public class VsjBancodetallePK implements Serializable, Cloneable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
@@ -62,5 +63,10 @@ public class VsjBancodetallePK implements Serializable {
 				"numItem=" + numItem +
 				", codBancocabecera=" + codBancocabecera +
 				'}';
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }

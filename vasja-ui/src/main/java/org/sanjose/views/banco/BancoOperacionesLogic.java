@@ -1,12 +1,15 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.Grid;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
+import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.util.ConfigurationUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,8 +46,25 @@ public class BancoOperacionesLogic implements Serializable {
         view.btnReporte.addClickListener(e -> {
             //ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
         });
+        view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
+            @Override
+            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+            }
+
+            @Override
+            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+                Object item = view.gridBanco.getContainerDataSource().getItem(view.gridBanco.getEditedItemId());
+                if (item != null) {
+                    VsjBancocabecera vcb = (VsjBancocabecera) ((BeanItem) item).getBean();
+                    vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
+                            .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
+                    view.getService().updateCobradoInCabecera(vcb);
+                }
+            }
+        });
 
         GridContextMenu gridContextMenu = new GridContextMenu(view.getGridBanco());
+
         gridContextMenu.addGridBodyContextMenuListener(e -> {
             gridContextMenu.removeItems();
             final Object itemId = e.getItemId();
@@ -52,7 +72,10 @@ public class BancoOperacionesLogic implements Serializable {
                 gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
             } else {
                 gridContextMenu.addItem("Editar", k -> gridLogic.editarCheque((VsjBancocabecera) itemId));
-                gridContextMenu.addItem("Nuevo comprobante", k -> gridLogic.nuevoCheque());
+                gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
+                if (!((VsjBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
+                    gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque((VsjBancocabecera) itemId));
+                }
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
                         if (!view.getSelectedRows().isEmpty()) {
@@ -65,8 +88,8 @@ public class BancoOperacionesLogic implements Serializable {
                         view.refreshData();
                     });
                 }
+                //gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajabanco)itemId));
             }
         });
-
     }
 }

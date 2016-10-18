@@ -14,4 +14,8 @@ public interface BancoView extends INavigatorView {
     void clearSelection();
 
     Collection<Object> getSelectedRows();
+
+    BancoService getService();
+
+    void refreshData();
 }
