@@ -31,6 +31,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -310,6 +312,25 @@ class ComprobanteLogic implements Serializable {
         view.getNumDoc().addValidator(new BeanValidator(VsjCajabanco.class, "txtComprobantepago"));
         view.getSelCtaContable().addValidator(new BeanValidator(VsjCajabanco.class, "codContracta"));
         view.getSelTipoMov().addValidator(new BeanValidator(VsjCajabanco.class, "codTipomov"));
+
+        view.getNumEgreso().addBlurListener(event -> {
+
+            NumberFormat nf = NumberFormat.getInstance(ConfigurationUtil.getLocale());
+            try {
+                String strVal = ((TextField) event.getSource()).getValue();
+                if (strVal == null) return;
+                BigDecimal newVal = new BigDecimal(nf.parse(strVal).toString());
+                nf = NumberFormat.getInstance(Locale.US);
+                BigDecimal caja = new BigDecimal(nf.parse(view.getSaldoCajaPEN().getValue()).toString());
+                if (newVal.compareTo(caja) > 0) {
+                    Notification.show("El monto de egreso esta mas grande que el saldo de caja", Notification.Type.WARNING_MESSAGE);
+                }
+                log.info("validator found newVal: " + newVal + " " + caja);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
+
         // Editing Destino
         view.getBtnDestino().addClickListener(event->editDestino(view.getSelCodAuxiliar()));
         view.getBtnResponsable().addClickListener(event->editDestino(view.getSelResponsable()));
