@@ -32,21 +32,22 @@ public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjV
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
-            "flgEnviado"
+            "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $",
             "Responsable", "Lug. Gasto", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
-            "Env"
+            "Env", "Origen", "Comprobante"
     };
     private final int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
             5, 10, 6, 6, 6, 6, //
             6, 4, 6, 5, 5, 2, // Tipo Doc
             4, 5, 5, 5, 4, // Fuente
-            2
+            2, 2, 5
     };
-    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado" };
+    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"txtCorrelativo", "flgEnviado", "codOrigenenlace",
+            "codComprobanteenlace"};
 
     private BeanItemContainer<VsjCajabanco> container;
 

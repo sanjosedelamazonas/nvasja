@@ -60,7 +60,8 @@ public class CajaManejoLogic implements Serializable, ISaldoDelDia {
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
             } else {
-                gridContextMenu.addItem(((VsjCajabanco) itemId).isReadOnly() ? "Ver detalles" : "Editar", k -> editarComprobante((VsjCajabanco) itemId));
+                gridContextMenu.addItem(((VsjCajabanco) itemId).isReadOnly() ? "Ver detalles" : "Editar",
+                        k -> editarComprobante((VsjCajabanco) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
                 gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
                 gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());
@@ -85,22 +86,20 @@ public class CajaManejoLogic implements Serializable, ISaldoDelDia {
     }
 
     public void editarComprobante(VsjCajabanco vcb) {
-        //if (!vcb.isEnviado() && !vcb.isAnula()) {
-            // Transferencia
-            if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
-                try {
-                    MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
-                    MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
-                    MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
-                } catch (NonEditableException e) {
-                    Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-                }
-            } else {
-                MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
-                MainUI.get().getComprobanteView().viewLogic.setNavigatorView(view);
-                MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+        // Transferencia
+        if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
+            try {
+                MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
+                MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
+                MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
+            } catch (NonEditableException e) {
+                Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
             }
-        //}
+        } else {
+            MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
+            MainUI.get().getComprobanteView().viewLogic.setNavigatorView(view);
+            MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+        }
     }
 
 

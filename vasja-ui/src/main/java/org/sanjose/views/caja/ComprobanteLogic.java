@@ -148,6 +148,11 @@ class ComprobanteLogic implements Serializable {
             switchMode(VsjView.Mode.EDIT);
     }
 
+    public void viewComprobante(VsjCajabanco vcb) {
+        savedCajabanco = vcb;
+        bindForm(vcb);
+    }
+
     void eliminarComprobante() {
         try {
             if (savedCajabanco == null) {
@@ -225,6 +230,9 @@ class ComprobanteLogic implements Serializable {
                     }
                 }
         );
+
+        DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(new Date(), view.getService().getPlanRepo(), true), "Sel Caja", "txtDescctacontable");
+        view.getSelCaja().addValueChangeListener(e -> setSaldoCaja());
 
         // Responsable
         DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
@@ -396,18 +404,15 @@ class ComprobanteLogic implements Serializable {
             try {
                 fieldGroup.unbind(view.getNumEgreso());
                 fieldGroup.unbind(view.getNumIngreso());
-                fieldGroup.unbind(view.getSelCaja());
             } catch (FieldGroup.BindException be) {
             }
-            fieldGroup.bind(view.getSelCaja(), "codCtacontable");
             view.getSelCaja().removeAllValidators();
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
                 beanItem.getBean().setNumHaberdolar(new BigDecimal(0));
                 beanItem.getBean().setNumDebedolar(new BigDecimal(0));
-                DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), true), "Sel Caja", "txtDescctacontable");
-                setCajaLogic(PEN);
+                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), true), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
             } else {
@@ -415,13 +420,15 @@ class ComprobanteLogic implements Serializable {
                 // Cta Caja
                 beanItem.getBean().setNumHabersol(new BigDecimal(0));
                 beanItem.getBean().setNumDebesol(new BigDecimal(0));
-                DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), false), "Sel Caja", "txtDescctacontable");
-                setCajaLogic(USD);
+                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), false), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
             }
-            view.getSelCaja().addValueChangeListener(e -> setSaldoCaja());
-            setSaldoCaja();
+            if (savedCajabanco != null && !GenUtil.objNullOrEmpty(savedCajabanco.getCodCtacontable())) {
+                view.getSelCaja().select(savedCajabanco.getCodCtacontable());
+            } else {
+                setCajaLogic(moneda);
+            }
             view.getSelCaja().addValidator(new BeanValidator(VsjCajabanco.class, "codCtacontable"));
             ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
             ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
@@ -600,6 +607,7 @@ class ComprobanteLogic implements Serializable {
         fieldGroup.bind(view.getSelTercero(), "codTercero");
         fieldGroup.bind(view.getSelMoneda(), "codTipomoneda");
         fieldGroup.bind(view.getDataFechaComprobante(), "fecFecha");
+        fieldGroup.bind(view.getSelCaja(), "codCtacontable");
         view.getChkEnviado().setConverter(new ZeroOneToBooleanConverter());
         fieldGroup.bind(view.getChkEnviado(), "flgEnviado");
         view.getChkEnviado().setEnabled(false);
@@ -607,7 +615,6 @@ class ComprobanteLogic implements Serializable {
         view.getTxtOrigen().setEnabled(false);
         fieldGroup.bind(view.getTxtNumCombrobante(), "codComprobanteenlace");
         view.getTxtNumCombrobante().setEnabled(false);
-
 
         if (isEdit && PEN.equals(item.getCodTipomoneda())) {
             fieldGroup.bind(view.getNumEgreso(), "numHabersol");

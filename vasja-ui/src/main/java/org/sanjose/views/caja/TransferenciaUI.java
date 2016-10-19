@@ -27,7 +27,7 @@ public class TransferenciaUI extends CssLayout {
     protected TextField txtOrigen;
     protected TextField txtNumCombrobante;
     protected ComboBox selProyecto;
-	protected ComboBox selFuente;
+    protected ComboBox selFuente;
 	protected ComboBox selTercero;
 	protected TextField saldoProyPEN;
 	protected TextField saldoProyUSD;
@@ -65,7 +65,7 @@ public class TransferenciaUI extends CssLayout {
 	protected Button guardarBtn;
     protected Button anularBtn;
     protected Button modificarBtn;
-	protected Button eliminarBtn;
+    protected Button eliminarBtn;
 	protected Button nuevoComprobante;
 	protected Button imprimirBtn;
 	protected Button nuevaTransBtn;

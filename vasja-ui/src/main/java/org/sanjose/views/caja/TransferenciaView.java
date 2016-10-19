@@ -85,16 +85,7 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
             @Override
             public void select(SelectionEvent selectionEvent) {
                 if (selectionEvent.getSelected().isEmpty()) return;
-                VsjCajabanco vcb = (VsjCajabanco) selectionEvent.getSelected().toArray()[0];
                 viewLogic.viewComprobante();
-
-                if (vcb.isAnula() || vcb.isEnviado()) {
-                    modificarBtn.setEnabled(false);
-                    eliminarBtn.setEnabled(false);
-                } else {
-                    modificarBtn.setEnabled(true);
-                    eliminarBtn.setEnabled(true);
-                }
             }
         });
 
@@ -151,7 +142,7 @@ public class TransferenciaView extends TransferenciaUI implements IComprobanteVi
                 "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : "$ ") + calcDifference().toString() + "</span>");
 
         if (container != null && !container.getItemIds().isEmpty() && calcDifference().compareTo(new BigDecimal(0.00)) == 0
-                && !guardarBtn.isEnabled() && viewLogic.isEdited())
+                && !guardarBtn.isEnabled() && viewLogic.getState().isEdited())
             finalizarTransBtn.setEnabled(true);
         else
             finalizarTransBtn.setEnabled(false);

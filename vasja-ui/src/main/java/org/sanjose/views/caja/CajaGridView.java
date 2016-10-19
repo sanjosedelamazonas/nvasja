@@ -18,7 +18,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.DateToTimestampConverter;
-import org.sanjose.converter.StringToCharacterConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpFinanciera;
 import org.sanjose.model.ScpPlanproyecto;
@@ -53,26 +52,26 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
     private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
     private final CajaGridLogic viewLogic;
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
-            "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda",
+            "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
-
             "flg_Anula", "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
 
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
-            "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "S/$",
+            "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $",
             "Responsable", "Lug. Gasto", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
-            "Anl", "Env", "Origen", "Comprobante"
+            "Anl", "Env", "Orig.", "Comprob."
     };
     private final int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
-            5, 10, 6, 6, 6, 6, 2, // S/$
+            5, 10, 6, 6, 6, 6, // S/$
             6, 4, 6, 5, 5, 2, // Tipo Doc
             4, 5, 5, 5, 4, // Fuente
-            2, 2, 6, 6
+            2, 2, 2, 4
     };
-    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"fecFecha",*/ "txtCorrelativo", "flgEnviado", "flg_Anula" };
+    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"txtCorrelativo", "flgEnviado", "flg_Anula",
+            "codOrigenenlace", "codComprobanteenlace"};
 
     private BeanItemContainer<VsjCajabanco> container;
 
@@ -145,12 +144,6 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
         ComboBox selCtacontablecaja = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridCaja.getColumn("codContracta").setEditorField(selCtacontablecaja);
-
-        // Tipo Moneda
-        ComboBox selTipomoneda = new ComboBox();
-        DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "codTipomoneda", "Moneda");
-        gridCaja.getColumn("codTipomoneda").setEditorField(selTipomoneda);
-        gridCaja.getColumn("codTipomoneda").setConverter(new StringToCharacterConverter());
 
         // Cta Contable
         ComboBox selCtacontable = new ComboBox();

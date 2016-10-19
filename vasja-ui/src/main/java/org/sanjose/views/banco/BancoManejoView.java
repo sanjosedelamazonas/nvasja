@@ -106,6 +106,8 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
         gridBanco.setEditorEnabled(true);
         gridBanco.setEditorBuffered(true);
 
+        gridBanco.setEditorSaveCaption("Guardar");
+
         gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
         gridBanco.getColumn("flgCobrado").setEditable(true);
         gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
