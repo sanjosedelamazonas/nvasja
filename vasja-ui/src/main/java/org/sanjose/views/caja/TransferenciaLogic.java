@@ -11,6 +11,7 @@ import org.sanjose.authentication.Role;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
+import org.sanjose.util.StateUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
 
@@ -28,7 +29,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     private static final Logger log = LoggerFactory.getLogger(TransferenciaLogic.class);
     private TransferenciaView tView;
     private Character moneda;
-    private boolean isEdited = false;
+    private StateUtil state;
 
     @Override
     public void init(IComprobanteView  comprobanteView) {
@@ -36,13 +37,12 @@ public class TransferenciaLogic extends ComprobanteLogic {
         tView = (TransferenciaView) comprobanteView;
         tView.nuevaTransBtn.addClickListener(ev -> nuevaTrans());
         tView.finalizarTransBtn.addClickListener(ev -> saveTransferencia());
-        //tView.finalizarTransBtn.setEnabled(false);
-        //tView.imprimirTotalBtn.setEnabled(false);
+        state = new StateUtil();
         switchMode(VsjView.Mode.VIEW);
     }
 
     private void nuevaTrans() {
-        if (!tView.getContainer().getItemIds().isEmpty() && isEdited())
+        if (!tView.getContainer().getItemIds().isEmpty() && state.isEdited())
             MessageBox
                 .createQuestion()
                 .withCaption("Nueva transferencia")
@@ -63,7 +63,6 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     @Override
     public void nuevoComprobante() {
-        isEdited = true;
         if (moneda!=null) {
             super.nuevoComprobante(moneda);
             view.getSelMoneda().setEnabled(false);
@@ -72,8 +71,6 @@ public class TransferenciaLogic extends ComprobanteLogic {
             super.nuevoComprobante();
             view.getSelMoneda().setEnabled(true);
         }
-//        view.getModificarBtn().setEnabled(true);
-//        view.getEliminarBtn().setEnabled(true);
         switchMode(VsjView.Mode.NEW);
     }
 
@@ -81,25 +78,16 @@ public class TransferenciaLogic extends ComprobanteLogic {
     public void editarComprobante() {
         if (tView.getSelectedRow()!=null
                 && !tView.getSelectedRow().isAnula()) {
-            isEdited = true;
+            state.edit();
             editarComprobante(tView.getSelectedRow());
-//            tView.getFinalizarTransBtn().setEnabled(false);
-//            view.getSelMoneda().setEnabled(false);
-//            view.getModificarBtn().setEnabled(true);
             switchMode(VsjView.Mode.EDIT);
         }
     }
 
     public void viewComprobante() {
         if (!view.getGuardarBtn().isEnabled()) {
-            isEdited = false;
-            editarComprobante(tView.getSelectedRow());
+            super.viewComprobante(tView.getSelectedRow());
             tView.setEnableFields(false);
-//            view.getNuevoComprobante().setEnabled(true);
-//            view.getGuardarBtn().setEnabled(false);
-//            view.getEliminarBtn().setEnabled(true);
-//            view.getModificarBtn().setEnabled(true);
-//            view.getImprimirBtn().setEnabled(true);
             switchMode(VsjView.Mode.VIEW);
         }
     }
@@ -127,11 +115,12 @@ public class TransferenciaLogic extends ComprobanteLogic {
             tView.getGridTrans().select(tView.getContainer().firstItemId());
         tView.setSaldoTrans();
         switchMode(VsjView.Mode.VIEW);
+        state.edit();
     }
 
     @Override
     public void cerrarAlManejo() {
-        if (isEdited())
+        if (state.isEdited())
             MessageBox
                 .createQuestion()
                 .withCaption("Quitar la transferencia")
@@ -176,8 +165,6 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 tView.getContainer().addBean(item);
                 tView.gridTrans.sort("fecFregistro", SortDirection.DESCENDING);
             }
-//            tView.getGuardarBtn().setEnabled(false);
-//            tView.getNuevoComprobante().setEnabled(true);
             tView.setSaldoTrans();
             switchMode(VsjView.Mode.VIEW);
         } catch (FieldGroup.CommitException ce) {
@@ -187,32 +174,12 @@ public class TransferenciaLogic extends ComprobanteLogic {
     }
 
     private void saveTransferencia() {
-        if (isEdited()) MessageBox
-                .createQuestion()
-                .withCaption("Guardar la transferencia")
-                .withMessage("?Esta seguro que quiere guardar todos operaciones de esta transferencia?\n" +
-                        "!Despues no se puede regresar a editarlos en esta pantalla!")
-                .withYesButton(this::executeSaveTransferencia)
-                .withNoButton()
-                .open();
-        else
-            executeSaveTransferencia();
-    }
-
-    private void executeSaveTransferencia() {
+        if (state.isSaved()) log.error("Called Finalizar but is already SAVED");
         List<VsjCajabanco> savedOperaciones = view.getService().saveVsjCajabancos(tView.getContainer().getItemIds());
-
         tView.getContainer().removeAllItems();
         tView.getContainer().addAll(savedOperaciones);
-//        tView.finalizarTransBtn.setEnabled(false);
-//        tView.imprimirTotalBtn.setEnabled(true);
-//        view.getGuardarBtn().setEnabled(false);
-//        view.getModificarBtn().setEnabled(false);
-//        view.getEliminarBtn().setEnabled(false);
-//        view.getNuevoComprobante().setEnabled(false);
-//        tView.nuevaTransBtn.setEnabled(true);
         view.refreshData();
-        isEdited = false;
+        state.save();
         switchMode(VsjView.Mode.VIEW);
     }
 
@@ -230,18 +197,12 @@ public class TransferenciaLogic extends ComprobanteLogic {
         List<VsjCajabanco> operaciones = tView.getService().getCajabancoRep().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());
 
         for (VsjCajabanco oper : operaciones) {
-            if (oper.isEnviado())
-                throw new NonEditableException("No se puede editar porque una de los operaciones ya esta enviada a contabilidad: " + oper.getCodCajabanco());
-        }
-        for (VsjCajabanco oper : operaciones) {
             tView.getContainer().addBean(oper);
         }
-//        tView.getModificarBtn().setEnabled(true);
-//        tView.getEliminarBtn().setEnabled(true);
-//        tView.getGuardarBtn().setEnabled(false);
-//        tView.getNuevoComprobante().setEnabled(true);
         switchMode(VsjView.Mode.VIEW);
-        isEdited = false;
+        state.reset();
+        if (!tView.getContainer().getItemIds().isEmpty())
+            tView.getGridTrans().select(tView.getContainer().getItemIds().toArray()[0]);
     }
 
     @Override
@@ -255,27 +216,32 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 break;
 
             case NEW:
+                state.edit();
                 tView.getNuevaTransBtn().setEnabled(false);
                 view.getImprimirTotalBtn().setEnabled(false);
                 view.getFinalizarTransBtn().setEnabled(false);
+                view.getImprimirBtn().setEnabled(false);
                 break;
 
             case EDIT:
+                state.edit();
                 tView.getNuevaTransBtn().setEnabled(false);
-                view.getImprimirTotalBtn().setEnabled(true);
+                view.getImprimirTotalBtn().setEnabled(false);
+                view.getImprimirBtn().setEnabled(false);
                 view.getFinalizarTransBtn().setEnabled(false);
                 break;
 
             case VIEW:
                 tView.getNuevaTransBtn().setEnabled(true);
-                view.getImprimirTotalBtn().setEnabled(true);
+                if (state.isSaved()) view.getImprimirTotalBtn().setEnabled(true);
                 if (tView.getContainer() == null || tView.getContainer().getItemIds().isEmpty()
                         || tView.getGridTrans() == null || tView.getGridTrans().getSelectedRow() == null) {
                     view.getModificarBtn().setEnabled(false);
                     view.getEliminarBtn().setEnabled(false);
                     view.getImprimirBtn().setEnabled(false);
                 } else {
-                    view.getImprimirBtn().setEnabled(true);
+                    if (state.isSaved()) view.getImprimirBtn().setEnabled(true);
+                    else view.getImprimirBtn().setEnabled(false);
                     if (beanItem != null && (beanItem.getBean().isAnula() ||
                             (beanItem.getBean().isEnviado() && !Role.isPrivileged()))) {
                         view.getModificarBtn().setEnabled(false);
@@ -290,7 +256,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         }
     }
 
-    public boolean isEdited() {
-        return isEdited;
+    public StateUtil getState() {
+        return state;
     }
 }

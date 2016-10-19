@@ -7,7 +7,7 @@
   <meta charset="UTF-8" name="package-mapping" content="org_sanjose_helper:org.sanjose.helper">
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_addons_maskedtextfield:org.vaadin.addons.maskedtextfield">
   <meta charset="UTF-8" name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
- </head> 
+ </head>
  <body>
  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive width="1260px" height="664px"
                     _id="root_layout">
@@ -18,14 +18,15 @@
     <vaadin-vertical-layout size-auto> 
      <vaadin-form-layout style-name="billing-formlayout" width="620px" margin-top="false" margin-bottom="false" _id="cuenta_form"> 
       <vaadin-horizontal-layout spacing> 
-       <vaadin-text-field description="Num de Voucher" caption="Nro de comprobante" enabled="false" style-name="form-textfield" width="105px" _id="numVoucher" :middle :center></vaadin-text-field> 
-       <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante"></vaadin-popup-date-field>
-          <org_vaadin_addons-css-check-box caption="Enviado" enabled="false" _id="chkEnviado"
+       <vaadin-text-field description="Num de Voucher" caption="Nro de comprobante" enabled="false" style-name="form-textfield" width="105px" _id="numVoucher" :middle :center></vaadin-text-field>
+          <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield"
+                                   _id="dataFechaComprobante"></vaadin-popup-date-field>
+          <org_vaadin_addons-css-check-box caption="Enviado" enabled="false" width="62px" _id="chkEnviado"
                                            :bottom></org_vaadin_addons-css-check-box>
           <vaadin-text-field description="Origen en contabilidad" caption="Orig." enabled="false"
                              style-name="form-textfield" responsive width="54px" _id="txtOrigen"></vaadin-text-field>
           <vaadin-text-field description="Numero de comprobante en contabilidad" caption="Comprobante" enabled="false"
-                             style-name="form-textfield" responsive width="100px"
+                             style-name="form-textfield" responsive width="130px"
                              _id="txtNumCombrobante"></vaadin-text-field>
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout style-name="cuenta-Layout" spacing> 
@@ -58,13 +59,14 @@
         <option>Soles</option> 
         <option>Dolares</option> 
        </vaadin-option-group> 
-       <tm_kod_widgets_numberfield-number-field caption="Ingreso" width="85px" _id="numIngreso"></tm_kod_widgets_numberfield-number-field> 
-       <tm_kod_widgets_numberfield-number-field caption="Egreso" width="85px" _id="numEgreso"></tm_kod_widgets_numberfield-number-field>
+       <tm_kod_widgets_numberfield-number-field caption="Ingreso" width="85px" _id="numIngreso"></tm_kod_widgets_numberfield-number-field>
+          <tm_kod_widgets_numberfield-number-field caption="Egreso" width="85px"
+                                                   _id="numEgreso"></tm_kod_widgets_numberfield-number-field>
           <vaadin-combo-box caption="Caja" style-name="form-textfield" item-caption-mode="id" width="87px"
                             _id="selCaja">
               <option>Option 1</option>
-        <option>Option 2</option> 
-       </vaadin-combo-box>
+              <option>Option 2</option>
+          </vaadin-combo-box>
           <vaadin-text-field caption="Caja S/." enabled="false" style-name="form-textfield" width="70px"
                              _id="saldoCajaPEN"></vaadin-text-field>
           <vaadin-text-field caption="Caja $" enabled="false" style-name="form-textfield" width="71px"
@@ -126,38 +128,39 @@
          </vaadin-combo-box> 
         </vaadin-horizontal-layout> 
         <vaadin-horizontal-layout width="190px"> 
-         <vaadin-text-field input-prompt="Serie de doc" style-name="form-textfield" width="50px" _id="serieDoc" :bottom></vaadin-text-field> 
-         <vaadin-text-field input-prompt="Nr doc" style-name="form-textfield" width="100px" _id="numDoc" :bottom></vaadin-text-field> 
+         <vaadin-text-field input-prompt="Serie de doc" style-name="form-textfield" width="50px" _id="serieDoc" :bottom></vaadin-text-field>
+            <vaadin-text-field input-prompt="Nr doc" style-name="form-textfield" width="150px" _id="numDoc"
+                               :bottom></vaadin-text-field>
         </vaadin-horizontal-layout> 
        </vaadin-form-layout> 
       </vaadin-horizontal-layout> 
-     </vaadin-form-layout> 
+     </vaadin-form-layout>
     </vaadin-vertical-layout>
        <vaadin-form-layout style-name="billing-formlayout" spacing="false" size-auto margin-top="false"
                            margin-bottom="false" _id="billing_form6" :bottom>
            <vaadin-vertical-layout spacing size-auto :middle :center>
                <vaadin-button width-full plain-text _id="cerrarBtn" :middle>
                    Manejo de Caja
-      </vaadin-button>
+               </vaadin-button>
                <vaadin-button width-full plain-text _id="guardarBtn" :middle>
-        Guardar 
-      </vaadin-button>
+        Guardar
+               </vaadin-button>
                <vaadin-button width-full height="22px" plain-text _id="anularBtn" :middle>
                    Anular
                </vaadin-button>
                <vaadin-button width-full plain-text _id="modificarBtn">
-        Modificar 
-      </vaadin-button>
+        Modificar
+               </vaadin-button>
                <vaadin-button width-full plain-text _id="eliminarBtn">
-        Eliminar 
-      </vaadin-button>
+        Eliminar
+               </vaadin-button>
                <vaadin-button width-full plain-text _id="nuevoComprobante">
-        Nuevo Comprobante 
-      </vaadin-button>
+        Nuevo Comprobante
+               </vaadin-button>
                <vaadin-button width-full plain-text _id="imprimirBtn">
         Imprimir voucher 
-      </vaadin-button> 
-     </vaadin-vertical-layout>
+      </vaadin-button>
+           </vaadin-vertical-layout>
        </vaadin-form-layout>
        <vaadin-form-layout style-name="order-summary-layout" width="357px" margin-top="false" margin-bottom="false"
                            _id="order_summary_layout">
