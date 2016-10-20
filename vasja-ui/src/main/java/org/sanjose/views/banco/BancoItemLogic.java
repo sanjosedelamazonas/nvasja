@@ -17,6 +17,7 @@ import org.sanjose.MainUI;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
+import org.sanjose.validator.SaldoChecker;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
@@ -58,6 +59,8 @@ class BancoItemLogic implements Serializable {
     protected BancoOperView view;
     private BeanItem<VsjBancodetalle> beanItem;
     private ProcUtil procUtil;
+    private SaldoChecker saldoChecker;
+
 
     public void init(BancoOperView view) {
         this.view = view;
@@ -223,6 +226,9 @@ class BancoItemLogic implements Serializable {
         view.getNumDoc().addValidator(new BeanValidator(VsjBancodetalle.class, "txtComprobantepago"));
         view.getSelCtaContable().addValidator(new BeanValidator(VsjBancodetalle.class, "codContracta"));
         view.getSelTipoMov().addValidator(new BeanValidator(VsjBancodetalle.class, "codTipomov"));
+        // Check saldos and warn
+        saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN());
+        view.getNumEgreso().addBlurListener(event -> saldoChecker.check());
     }
 
     private void editDestino(ComboBox comboBox) {
@@ -299,7 +305,6 @@ class BancoItemLogic implements Serializable {
                 Notification.show("Error al eliminar el destino: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
                 log.info("Got Commit Exception: " + ce.getMessage());
             }
-            //destinoWindow.close();
         });
         UI.getCurrent().addWindow(destinoWindow);
     }
@@ -321,7 +326,7 @@ class BancoItemLogic implements Serializable {
                     view.getSelCuenta().getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             view.getSaldoCuenta().setCaption(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
-            log.info("In setCuentaLogic: " + df.format(saldo));
+            log.debug("In setCuentaLogic: " + df.format(saldo));
             view.getSaldoCuenta().setValue(df.format(saldo));
             moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
             // If still no item created
@@ -335,7 +340,7 @@ class BancoItemLogic implements Serializable {
     }
 
     private void setMonedaLogic(Character moneda) {
-        log.info("in moneda logic: " + isLoading + " " + moneda);
+        log.debug("in moneda logic: " + isLoading + " " + moneda);
         if (!isLoading) {
             try {
                 fieldGroup.unbind(view.getNumEgreso());
@@ -348,19 +353,21 @@ class BancoItemLogic implements Serializable {
                 log.info("in moneda logic set PEN");
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
+                saldoChecker.setProyectoField(view.getSaldoProyPEN());
             } else if (moneda.equals(USD)) {
                 // Dolares
                 // Cta Caja
                 log.info("in moneda logic set USD");
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
+                saldoChecker.setProyectoField(view.getSaldoProyUSD());
             } else {
                 // Euros
                 // Cta Caja
                 log.info("in moneda logic set EUR");
                 fieldGroup.bind(view.getNumEgreso(), "numHabermo");
                 fieldGroup.bind(view.getNumIngreso(), "numDebemo");
-
+                saldoChecker.setProyectoField(view.getSaldoProyEUR());
             }
             view.getNumEgreso().setEnabled(true);
             view.getNumIngreso().setEnabled(true);
@@ -386,6 +393,7 @@ class BancoItemLogic implements Serializable {
                 view.getSaldoProyEUR().setValue("");
 
             }
+            saldoChecker.check();
         }
     }
 

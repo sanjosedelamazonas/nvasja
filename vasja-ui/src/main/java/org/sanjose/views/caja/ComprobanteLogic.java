@@ -20,6 +20,7 @@ import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.converter.ZeroOneToBooleanConverter;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
+import org.sanjose.validator.SaldoChecker;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
@@ -31,8 +32,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,6 +61,7 @@ class ComprobanteLogic implements Serializable {
     private boolean isEdit = false;
     private ProcUtil procUtil;
     private VsjView.Mode mode;
+    private SaldoChecker saldoChecker;
 
     public void init(IComprobanteView  comprobanteView) {
         view = comprobanteView;
@@ -314,23 +314,9 @@ class ComprobanteLogic implements Serializable {
         view.getSelCtaContable().addValidator(new BeanValidator(VsjCajabanco.class, "codContracta"));
         view.getSelTipoMov().addValidator(new BeanValidator(VsjCajabanco.class, "codTipomov"));
 
-        view.getNumEgreso().addBlurListener(event -> {
-
-            NumberFormat nf = NumberFormat.getInstance(ConfigurationUtil.getLocale());
-            try {
-                String strVal = ((TextField) event.getSource()).getValue();
-                if (strVal == null) return;
-                BigDecimal newVal = new BigDecimal(nf.parse(strVal).toString());
-                nf = NumberFormat.getInstance(Locale.US);
-                BigDecimal caja = new BigDecimal(nf.parse(view.getSaldoCajaPEN().getValue()).toString());
-                if (newVal.compareTo(caja) > 0) {
-                    Notification.show("El monto de egreso esta mas grande que el saldo de caja", Notification.Type.WARNING_MESSAGE);
-                }
-                log.info("validator found newVal: " + newVal + " " + caja);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        });
+        // Check saldos and warn
+        saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCajaPEN(), view.getSaldoProyPEN());
+        view.getNumEgreso().addBlurListener(event -> saldoChecker.check());
 
         // Editing Destino
         view.getBtnDestino().addClickListener(event->editDestino(view.getSelCodAuxiliar()));
@@ -436,6 +422,8 @@ class ComprobanteLogic implements Serializable {
                 DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), true), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
+                saldoChecker.setSaldoField(view.getSaldoCajaPEN());
+                saldoChecker.setProyectoField(view.getSaldoProyPEN());
             } else {
                 // Dolares
                 // Cta Caja
@@ -444,6 +432,8 @@ class ComprobanteLogic implements Serializable {
                 DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), false), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
+                saldoChecker.setSaldoField(view.getSaldoCajaUSD());
+                saldoChecker.setProyectoField(view.getSaldoProyUSD());
             }
             if (savedCajabanco != null && !GenUtil.objNullOrEmpty(savedCajabanco.getCodCtacontable())) {
                 view.getSelCaja().select(savedCajabanco.getCodCtacontable());
@@ -485,9 +475,11 @@ class ComprobanteLogic implements Serializable {
             if (PEN.equals(view.getSelMoneda().getValue().toString().charAt(0))) {
                 view.getSaldoCajaPEN().setValue(saldo.toString());
                 view.getSaldoCajaUSD().setValue("");
+                saldoChecker.setSaldoField(view.getSaldoCajaPEN());
             } else {
                 view.getSaldoCajaUSD().setValue(saldo.toString());
                 view.getSaldoCajaPEN().setValue("");
+                saldoChecker.setSaldoField(view.getSaldoCajaUSD());
             }
         }
     }
@@ -551,6 +543,7 @@ class ComprobanteLogic implements Serializable {
             }
             setSaldos();
             setMonedaLogic(view.getSelMoneda().getValue().toString().charAt(0));
+            //saldoChecker.setProyectoField(view.getSelMoneda().getValue().equals('0') ? view.getSaldoProyPEN() : view.getSaldoCajaUSD());
         }
     }
 
@@ -601,6 +594,7 @@ class ComprobanteLogic implements Serializable {
 
             setSaldos();
             setMonedaLogic(view.getSelMoneda().getValue().toString().charAt(0));
+            //saldoChecker.setProyectoField(view.getSelMoneda().getValue().toString().charAt(0)==PEN ? view.getSaldoProyPEN() : view.getSaldoCajaUSD());
         } else {
             view.getSelFuente().setEnabled(false);
             view.getSelFuente().setValue("");
