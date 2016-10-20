@@ -17,10 +17,7 @@ import org.sanjose.repo.MsgUsuarioRep;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ProcUtil;
-import org.sanjose.views.banco.BancoManejoView;
-import org.sanjose.views.banco.BancoOperView;
-import org.sanjose.views.banco.BancoOperacionesView;
-import org.sanjose.views.banco.BancoService;
+import org.sanjose.views.banco.*;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.PropiedadService;
@@ -51,6 +48,7 @@ public class MainUI extends UI {
     private final TransferenciaView transferenciaView;
     private final BancoOperView bancoOperView;
     private final BancoManejoView bancoManejoView;
+    private final BancoConciliacionView bancoConciliacionView;
     private final BancoOperacionesView bancoOperacionesView;
     private final MsgUsuarioRep msgUsuarioRep;
     private ProcUtil procUtil;
@@ -78,6 +76,7 @@ public class MainUI extends UI {
         this.cajaManejoView = new CajaManejoView(comprobanteService);
         this.bancoManejoView = new BancoManejoView(bancoService);
         this.bancoOperacionesView = new BancoOperacionesView(bancoService);
+        this.bancoConciliacionView = new BancoConciliacionView(bancoService);
     }
 
     public static MainUI get() {
@@ -102,7 +101,7 @@ public class MainUI extends UI {
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
         mainScreen = new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView,
-                propiedadView, comprobanteView, transferenciaView, bancoOperView, bancoManejoView, bancoOperacionesView);
+                propiedadView, comprobanteView, transferenciaView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);

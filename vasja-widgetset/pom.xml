@@ -63,6 +63,12 @@
             <version>0.94</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.vaadin</groupId>
+            <artifactId>gridtree</artifactId>
+            <version>1.0.3.alpha3</version>
+        </dependency>
+
     </dependencies>
 
     <build>

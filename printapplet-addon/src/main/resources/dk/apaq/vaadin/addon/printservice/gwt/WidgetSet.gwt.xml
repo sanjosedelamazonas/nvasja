@@ -9,5 +9,5 @@
 
     <inherits name="com.vaadin.DefaultWidgetSet" />
 
-    <inherits name="dk.apaq.vaadin.addon.printservice.gwt.dk.apaq.vaadin.addon.printservice.gwt.WidgetSet" />
+
 </module>

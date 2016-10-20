@@ -24,5 +24,6 @@
 
     <inherits name="org.vaadin.grid.cellrenderers.RenderersCollectionWidgetSet"/>
 
-    <inherits name="org.sanjose.org.sanjose.MyAppWidgetset" />
+
+    <inherits name="org.vaadin.gridtree.WidgetSet"/>
 </module>
