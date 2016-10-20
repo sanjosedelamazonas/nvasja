@@ -12,6 +12,7 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.views.banco.BancoConciliacionView;
 import org.sanjose.views.banco.BancoManejoView;
 import org.sanjose.views.banco.BancoOperView;
 import org.sanjose.views.banco.BancoOperacionesView;
@@ -46,7 +47,8 @@ public class MainScreen extends HorizontalLayout {
 
     public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
                       ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView,
-                      TransferenciaView transferenciaView, BancoOperView bancoOperView, BancoManejoView bancoManejoView, BancoOperacionesView bancoOperacionesView) {
+                      TransferenciaView transferenciaView, BancoOperView bancoOperView, BancoManejoView bancoManejoView,
+                      BancoConciliacionView bancoConciliacionView, BancoOperacionesView bancoOperacionesView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -77,6 +79,8 @@ public class MainScreen extends HorizontalLayout {
                     BancoOperView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(bancoManejoView, BancoManejoView.VIEW_NAME,
                     BancoManejoView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(bancoConciliacionView, BancoConciliacionView.VIEW_NAME,
+                    BancoConciliacionView.VIEW_NAME, FontAwesome.EDIT);
         }
         if (Role.isPrivileged()) {
             menu.addView(bancoOperacionesView, BancoOperacionesView.VIEW_NAME,
