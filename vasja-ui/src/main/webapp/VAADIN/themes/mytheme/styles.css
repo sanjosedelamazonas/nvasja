@@ -13743,6 +13743,12 @@ div.v-layout.v-horizontal.v-widget {
 	color: gray;
 }
 
+.v-textfield-warning {
+	border-color: #2bff11 !important;
+	background: #FEFFBC !important;
+	color: #6c213f;
+}
+
 .contextmenu.v-app, .contextmenu.v-app-loading {
 	font: 400 13px/1.55 "Open Sans", sans-serif;
 	color: #464646;

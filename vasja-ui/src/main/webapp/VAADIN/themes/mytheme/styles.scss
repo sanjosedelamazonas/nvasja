@@ -26,6 +26,12 @@ $v-layout-margin: $v-layout-margin-top $v-layout-margin-right $v-layout-margin-b
     color: gray;
 }
 
+.v-textfield-warning {
+	border-color: #2bff11 !important;
+	background: #FEFFBC !important;
+	color: #6c213f;
+}
+
 .contextmenu {
 // Prefix all selectors in your theme with .demo
 
