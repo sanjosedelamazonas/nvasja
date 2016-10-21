@@ -100,7 +100,6 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
         cobradoChkBox.setAnimated(false);
         cobradoChkBox.setCaption("");
         cobradoChkBox.setBigPreset(false);
-        //gridBanco.getColumn("flgCobrado").setRenderer(new CheckboxRenderer());
         gridBanco.setEditorFieldGroup(
                 new BeanFieldGroup<>(VsjBancocabecera.class));
         gridBanco.setEditorEnabled(true);

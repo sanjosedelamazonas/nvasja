@@ -201,8 +201,6 @@ public class BancoService {
         }
     }
 
-
-
     @Transactional
     public List<VsjBancocabecera> findAll() {
         return bancocabeceraRep.findAll();
