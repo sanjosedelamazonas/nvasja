@@ -134,6 +134,10 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
             }
         }
         GridTreeContainer treeContainer = new GridTreeContainer(indCon);
+
+        for (Object itemId : treeContainer.getItemIds()) {
+            treeContainer.toogleCollapse(itemId);
+        }
         gridBanco = new GridTree(treeContainer, "id");
         //gridBanco = new Grid();
         gridBanco.setWidth(100, Unit.PERCENTAGE);
