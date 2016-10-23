@@ -2,13 +2,13 @@ package org.sanjose.views.banco;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.ContainerHierarchicalWrapper;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
+import org.sanjose.helper.SortableGridTreeContainer;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjBancodetallePK;
@@ -19,7 +19,6 @@ import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.VsjView;
 import org.vaadin.addons.CssCheckBox;
 import org.vaadin.gridtree.GridTree;
-import org.vaadin.gridtree.GridTreeContainer;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -70,7 +69,8 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
             "numDebesol", "numHabersol"*/};
     Grid gridBanco;
     //private HierarchicalBeanItemContainer<VsjBancodetalle> container = null;
-    ContainerHierarchicalWrapper container = null;
+    //ContainerHierarchicalWrapper container = null;
+    SortableGridTreeContainer container = null;
     private BancoService bancoService;
 
     public BancoConciliacionView(BancoService bancoService) {
@@ -92,16 +92,16 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         // Fecha Desde Hasta
         //ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
         //noinspection unchecked
-        //container = new HierarchicalBeanItemContainer<>(VsjBancodetalle.class, "txtCorrelativo");
-        //BeanItemContainer<VsjBancodetalle> bcontainer = new BeanItemContainer<>(VsjBancodetalle.class);
+/*        container = new HierarchicalBeanItemContainer<>(VsjBancodetalle.class, "txtCorrelativo");
+        BeanItemContainer<VsjBancodetalle> bcontainer = new BeanItemContainer<>(VsjBancodetalle.class);
         //container = new ContainerHierarchicalWrapper(bcontainer);
 
-        //container.addNestedContainerBean("vsjBancocabecera");
-        //container.addNestedContainerBean("vsjBancocabecera.scpDestino");
-        //container.addNestedContainerProperty("vsjBancocabecera.scpDestino.txtNombredestino");
-        //container.addNestedContainerProperty("vsjBancocabecera.txtCheque");
-        //container.addNestedContainerProperty("vsjBancocabecera.flgCobrado");
-        //IndexedContainer = new IndexedContainer();
+        container.addNestedContainerBean("vsjBancocabecera");
+        container.addNestedContainerBean("vsjBancocabecera.scpDestino");
+        container.addNestedContainerProperty("vsjBancocabecera.scpDestino.txtNombredestino");
+        container.addNestedContainerProperty("vsjBancocabecera.txtCheque");
+        container.addNestedContainerProperty("vsjBancocabecera.flgCobrado");*/
+
         final HierarchicalContainer indCon = new HierarchicalContainer();
         indCon.addContainerProperty("id", Integer.class, "");
         indCon.addContainerProperty("txtCorrelativo", String.class, "");
@@ -133,12 +133,13 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
                 //container.setParent(det, newDet);
             }
         }
-        GridTreeContainer treeContainer = new GridTreeContainer(indCon);
+        container = new SortableGridTreeContainer(indCon);
+        //GridTreeContainer treeContainer = new GridTreeContainer(container);
 
-        for (Object itemId : treeContainer.getItemIds()) {
-            treeContainer.toogleCollapse(itemId);
+        for (Object itemId : container.getItemIds()) {
+            container.toogleCollapse(itemId);
         }
-        gridBanco = new GridTree(treeContainer, "id");
+        gridBanco = new GridTree(container, "id");
         //gridBanco = new Grid();
         gridBanco.setWidth(100, Unit.PERCENTAGE);
         gridBanco.setHeight(100, Unit.PERCENTAGE);
@@ -146,7 +147,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
 
 //        gridBanco.setContainerDataSource(container);
         gridBanco.setEditorEnabled(false);
-        //      gridBanco.sort("fecFecha", SortDirection.DESCENDING);
+        //       gridBanco.sort("fecFecha", SortDirection.DESCENDING);
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);

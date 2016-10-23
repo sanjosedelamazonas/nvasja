@@ -6,6 +6,7 @@ import com.vaadin.data.util.ItemSorter;
 import org.vaadin.gridtree.GridTreeContainer;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Created by pol on 23.10.16.
@@ -20,8 +21,7 @@ public class SortableGridTreeContainer extends GridTreeContainer implements Cont
 
     @Override
     public void sort(Object[] propertyId, boolean[] ascending) {
-
-
+        sortContainer(propertyId, ascending);
     }
 
     protected void sortContainer(Object[] propertyId, boolean[] ascending) {
@@ -30,18 +30,25 @@ public class SortableGridTreeContainer extends GridTreeContainer implements Cont
                     "Cannot sort a Container that does not implement Sortable");
         }
 
-/*
+
         // Set up the item sorter for the sort operation
         getItemSorter().setSortProperties((Sortable) this, propertyId,
                 ascending);
 
         // Perform the actual sort
-        doSort();
-*/
+        Collections.sort(getItemIds(0, size() - 1), getItemSorter());
     }
 
     @Override
     public Collection<?> getSortableContainerPropertyIds() {
         return null;
+    }
+
+    public ItemSorter getItemSorter() {
+        return itemSorter;
+    }
+
+    public void setItemSorter(ItemSorter itemSorter) {
+        this.itemSorter = itemSorter;
     }
 }
