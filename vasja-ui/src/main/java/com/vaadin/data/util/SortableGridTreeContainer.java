@@ -160,10 +160,11 @@ public abstract class SortableGridTreeContainer extends GridTreeContainer implem
             // expand item
             if (it.equals(itemId)) {
                 expandedItems.add(it);
-                for (final Object child : hierachical.getChildren(itemId)) {
-                    tmpItems.add(child);
+                if (hierachical.getChildren(itemId) != null) {
+                    for (final Object child : hierachical.getChildren(itemId)) {
+                        tmpItems.add(child);
+                    }
                 }
-                ;
             }
         }
         visibleItems = tmpItems;
