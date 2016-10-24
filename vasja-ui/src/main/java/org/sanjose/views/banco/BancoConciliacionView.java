@@ -11,13 +11,11 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
+import org.sanjose.MainUI;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
-import org.sanjose.model.ScpDestino;
-import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.model.VsjBancodetalle;
-import org.sanjose.model.VsjBancodetallePK;
+import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.VsjView;
@@ -26,6 +24,8 @@ import org.vaadin.gridtree.GridTree;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -54,25 +54,27 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
             "id", "txtCorrelativo", "fecFecha", "txtCheque", "codProyecto", "codCtacontable",
             "txtNombredestino", "txtGlosaitem", "flgCobrado",
-            "numDebesol", "numHabersol", "flgEnviado", "flg_Anula"
-            //, "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
+            "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
+            "flgEnviado", "flg_Anula"
     };
 
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
             "Num", "Numero", "Fecha", "Cheque", "Proyecto", "Cta Cont.",
             "Auxiliar", "Glosa", "Cobr",
-            "Ing S/.", "Egr S/.", "Env", "Anul"
+            "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
+            "Env", "Anul"
     };
-    //"Ing $", "Egr $", "Ing €", "Egr €"
+
     private final int[] FILTER_WIDTH = new int[]{
-            4, 4, 2, 4, 3, 3,
-            10, 12, //1,
-            //3, 3
+            5, 5, 4, 4, 4, 4,
+            10, 12, 1,
+            3, 3, 3, 3, 3, 3,
+            1, 1
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"id", "txtCorrelativo", "fecFecha", "txtCheque",
             "codProyecto", "codCtacontable",
             "txtNombredestino", "txtGlosaitem",
-            "numDebesol", "numHabersol", "flgEnviado", "flg_Anula"};
+            "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo", "flgEnviado", "flg_Anula"};
     Grid gridBanco;
 
     HierarchicalContainer indContainer;
@@ -90,49 +92,9 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         setSizeFull();
         addStyleName("crud-view");
 
-     /*   HierarchicalContainer hc= createContainer();
-
-        //Create grid tree container
-        GridTreeContainer treeContainer=new GridTreeContainer(hc);
-
-        GridTree gridBanco = new GridTree(treeContainer, "txtCorrelativo");
-     */
-        // Fecha Desde Hasta
-        //ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
-        //noinspection unchecked
-/*        container = new HierarchicalBeanItemContainer<>(VsjBancodetalle.class, "txtCorrelativo");
-        BeanItemContainer<VsjBancodetalle> bcontainer = new BeanItemContainer<>(VsjBancodetalle.class);
-        //container = new ContainerHierarchicalWrapper(bcontainer);
-
-        container.addNestedContainerBean("vsjBancocabecera");
-        container.addNestedContainerBean("vsjBancocabecera.scpDestino");
-        container.addNestedContainerProperty("vsjBancocabecera.scpDestino.txtNombredestino");
-        container.addNestedContainerProperty("vsjBancocabecera.txtCheque");
-        container.addNestedContainerProperty("vsjBancocabecera.flgCobrado");*/
-
-        indContainer = new HierarchicalContainer();
-        indContainer.addContainerProperty("id", Integer.class, "");
-        indContainer.addContainerProperty("txtCorrelativo", String.class, "");
-        indContainer.addContainerProperty("fecFecha", Date.class, "");
-        indContainer.addContainerProperty("txtCheque", String.class, "");
-        indContainer.addContainerProperty("codProyecto", String.class, "");
-        indContainer.addContainerProperty("codCtacontable", String.class, "");
-        indContainer.addContainerProperty("txtNombredestino", String.class, "");
-        indContainer.addContainerProperty("txtGlosaitem", String.class, "");
-        indContainer.addContainerProperty("numDebesol", BigDecimal.class, "");
-        indContainer.addContainerProperty("numHabersol", BigDecimal.class, "");
-        indContainer.addContainerProperty("flgCobrado", Boolean.class, "");
-        indContainer.addContainerProperty("flgEnviado", Character.class, "");
-        indContainer.addContainerProperty("flg_Anula", Character.class, "");
-        indContainer.addContainerProperty("cabeceraObject", VsjBancocabecera.class, "");
-
-        //addItems(getService().getBancocabeceraRep().findByFecFechaBetween(GenUtil.dateAddMonths(new Date(), -2), new Date()));
         setupDateFilters();
         filterComprobantes();
-        container = new FilterableSortableGridTreeContainer(indContainer);
-        container.expandAll();
-
-        gridBanco = new GridTree(container, "id");
+        //gridBanco = new GridTree(container, "id");
         gridBanco.setWidth(100, Unit.PERCENTAGE);
         gridBanco.setHeight(100, Unit.PERCENTAGE);
         verticalGrid.addComponent(gridBanco);
@@ -167,29 +129,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
 
         gridBanco.setSelectionMode(SelectionMode.MULTI);
 
-        // Fecha Desde Hasta
-        //ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
-/*
-        gridBanco.setEditorFieldGroup(
-                new BeanFieldGroup<>(VsjBancocabecera.class));
-        gridBanco.setEditorEnabled(true);
-        gridBanco.setEditorBuffered(true);
-        gridBanco.setEditorSaveCaption("Guardar");
-*/
-
-/*
-
-        gridBanco.getColumn("vsjBancocabecera.flgCobrado").setEditorField(cobradoChkBox);
-        gridBanco.getColumn("vsjBancocabecera.flgCobrado").setEditable(true);
-        gridBanco.getColumn("vsjBancocabecera.flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
-
-*/
-
-        // Run date filter
-        //filterComprobantes(container, fechaDesde, fechaHasta);
-
         ViewUtil.colorizeRows(gridBanco, FilterableSortableGridTreeContainer.class);
-
 
         DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
@@ -197,7 +137,47 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
 
         selFiltroCuenta.addValueChangeListener(e -> {
             filterComprobantes();
-            viewLogic.setSaldoDelDia();
+            if (selFiltroCuenta.getValue() != null) {
+                ScpPlancontable cuenta = getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
+                        GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
+                BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(fechaDesde.getValue(),
+                        selFiltroCuenta.getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+                DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+                txtSaldoInicial.setValue(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()) + " " + df.format(saldo));
+                saldo = MainUI.get().getProcUtil().getSaldoBanco(fechaHasta.getValue(),
+                        selFiltroCuenta.getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+                txtSaldoFinal.setValue(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()) + " " + df.format(saldo));
+
+                gridBanco.getColumn("numHabersol").setHidden(true);
+                gridBanco.getColumn("numDebesol").setHidden(true);
+                gridBanco.getColumn("numHaberdolar").setHidden(true);
+                gridBanco.getColumn("numDebedolar").setHidden(true);
+                gridBanco.getColumn("numHabermo").setHidden(true);
+                gridBanco.getColumn("numDebemo").setHidden(true);
+                switch (GenUtil.getNumMoneda(cuenta.getIndTipomoneda()).charValue()) {
+                    case '0':
+                        gridBanco.getColumn("numHabersol").setHidden(false);
+                        gridBanco.getColumn("numDebesol").setHidden(false);
+                        break;
+                    case '1':
+                        gridBanco.getColumn("numHaberdolar").setHidden(false);
+                        gridBanco.getColumn("numDebedolar").setHidden(false);
+                        break;
+                    case '2':
+                        gridBanco.getColumn("numHabermo").setHidden(false);
+                        gridBanco.getColumn("numDebemo").setHidden(false);
+                        break;
+                }
+            } else {
+                gridBanco.getColumn("numHabersol").setHidden(false);
+                gridBanco.getColumn("numDebesol").setHidden(false);
+                gridBanco.getColumn("numHaberdolar").setHidden(false);
+                gridBanco.getColumn("numDebedolar").setHidden(false);
+                gridBanco.getColumn("numHabermo").setHidden(false);
+                gridBanco.getColumn("numDebemo").setHidden(false);
+                txtSaldoInicial.setValue("");
+                txtSaldoFinal.setValue("");
+            }
         });
 
         // Set Saldos Inicial
@@ -240,14 +220,34 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
             from = (fechaDesde.getValue() != null ? fechaDesde.getValue() : new Date(0));
             to = (fechaHasta.getValue() != null ? fechaHasta.getValue() : new Date(Long.MAX_VALUE));
             if (codCtaContable != null)
-                addItems(getService().getBancocabeceraRep().findByFecFechaBetweenAndCodCtacontable(from, to, codCtaContable));
+                loadItems(getService().getBancocabeceraRep().findByFecFechaBetweenAndCodCtacontable(from, to, codCtaContable));
             else
-                addItems(getService().getBancocabeceraRep().findByFecFechaBetween(from, to));
+                loadItems(getService().getBancocabeceraRep().findByFecFechaBetween(from, to));
         }
     }
 
-    private void addItems(List<VsjBancocabecera> vsjBancocabeceras) {
-        indContainer.removeAllItems();
+    private void loadItems(List<VsjBancocabecera> vsjBancocabeceras) {
+
+        indContainer = new HierarchicalContainer();
+        indContainer.addContainerProperty("id", Integer.class, "");
+        indContainer.addContainerProperty("txtCorrelativo", String.class, "");
+        indContainer.addContainerProperty("fecFecha", Date.class, "");
+        indContainer.addContainerProperty("txtCheque", String.class, "");
+        indContainer.addContainerProperty("codProyecto", String.class, "");
+        indContainer.addContainerProperty("codCtacontable", String.class, "");
+        indContainer.addContainerProperty("txtNombredestino", String.class, "");
+        indContainer.addContainerProperty("txtGlosaitem", String.class, "");
+        indContainer.addContainerProperty("numDebesol", BigDecimal.class, "");
+        indContainer.addContainerProperty("numHabersol", BigDecimal.class, "");
+        indContainer.addContainerProperty("numDebedolar", BigDecimal.class, "");
+        indContainer.addContainerProperty("numHaberdolar", BigDecimal.class, "");
+        indContainer.addContainerProperty("numDebemo", BigDecimal.class, "");
+        indContainer.addContainerProperty("numHabermo", BigDecimal.class, "");
+        indContainer.addContainerProperty("flgCobrado", Boolean.class, "");
+        indContainer.addContainerProperty("flgEnviado", Character.class, "");
+        indContainer.addContainerProperty("flg_Anula", Character.class, "");
+        indContainer.addContainerProperty("cabeceraObject", VsjBancocabecera.class, "");
+
         for (VsjBancocabecera cabecera : vsjBancocabeceras) {
             VsjBancodetalle newDet = new VsjBancodetalle();
             VsjBancodetallePK newId = new VsjBancodetallePK();
@@ -260,6 +260,10 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
             newDet.setVsjBancocabecera(cabecera);
             newDet.setNumDebesol(cabecera.getNumDebesol());
             newDet.setNumHabersol(cabecera.getNumHabersol());
+            newDet.setNumDebedolar(cabecera.getNumDebedolar());
+            newDet.setNumHaberdolar(cabecera.getNumHaberdolar());
+            newDet.setNumDebemo(cabecera.getNumDebemo());
+            newDet.setNumHabermo(cabecera.getNumHabermo());
             List<VsjBancodetalle> detalles = getService().getBancodetalleRep().findById_CodBancocabecera(cabecera.getCodBancocabecera());
             if (detalles.size() > 1) addItem(indContainer, newDet, true);
 
@@ -272,6 +276,12 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
                 }
             }
         }
+        container = new FilterableSortableGridTreeContainer(indContainer);
+        if (gridBanco == null)
+            gridBanco = new GridTree(container, "id");
+        else
+            gridBanco.setContainerDataSource(container);
+        container.expandAll();
     }
 
 
@@ -288,6 +298,10 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         item.getItemProperty("txtGlosaitem").setValue(vbd.getTxtGlosaitem());
         item.getItemProperty("numDebesol").setValue(vbd.getNumDebesol());
         item.getItemProperty("numHabersol").setValue(vbd.getNumHabersol());
+        item.getItemProperty("numDebedolar").setValue(vbd.getNumDebedolar());
+        item.getItemProperty("numHaberdolar").setValue(vbd.getNumHaberdolar());
+        item.getItemProperty("numDebemo").setValue(vbd.getNumDebemo());
+        item.getItemProperty("numHabermo").setValue(vbd.getNumHabermo());
         item.getItemProperty("flg_Anula").setValue(vbd.getFlg_Anula());
         item.getItemProperty("flgEnviado").setValue(vbd.getVsjBancocabecera().getFlgEnviado());
         item.getItemProperty("flgCobrado").setValue(isParent && !vbd.getVsjBancocabecera().isAnula() ? vbd.getVsjBancocabecera().getFlgCobrado() : null);
