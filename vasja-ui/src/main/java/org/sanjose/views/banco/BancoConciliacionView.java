@@ -77,8 +77,6 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo", "flgEnviado", "flg_Anula"};
     Grid gridBanco;
 
-    HierarchicalContainer indContainer;
-
     FilterableSortableGridTreeContainer container = null;
 
     private BancoService bancoService;
@@ -134,6 +132,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
                 "txtDescctacontable");
+        selFiltroCuenta.setPageLength(20);
 
         selFiltroCuenta.addValueChangeListener(e -> {
             filterComprobantes();
@@ -227,8 +226,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
     }
 
     private void loadItems(List<VsjBancocabecera> vsjBancocabeceras) {
-
-        indContainer = new HierarchicalContainer();
+        HierarchicalContainer indContainer = new HierarchicalContainer();
         indContainer.addContainerProperty("id", Integer.class, "");
         indContainer.addContainerProperty("txtCorrelativo", String.class, "");
         indContainer.addContainerProperty("fecFecha", Date.class, "");
@@ -277,11 +275,15 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
             }
         }
         container = new FilterableSortableGridTreeContainer(indContainer);
+        container.expandAll();
+     /*   for (Object itemId : container.getItemIds()) {
+            container.toogleCollapse(itemId);
+        }*/
         if (gridBanco == null)
             gridBanco = new GridTree(container, "id");
         else
             gridBanco.setContainerDataSource(container);
-        container.expandAll();
+        gridBanco.sort("fecFecha", SortDirection.DESCENDING);
     }
 
 
@@ -292,7 +294,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         item.getItemProperty("fecFecha").setValue(vbd.getFecFecha());
         item.getItemProperty("txtCheque").setValue(vbd.getVsjBancocabecera().getTxtCheque());
         item.getItemProperty("codProyecto").setValue(vbd.getCodProyecto());
-        item.getItemProperty("codCtacontable").setValue(vbd.getCodCtacontable());
+        item.getItemProperty("codCtacontable").setValue(vbd.getCodContracta());
         ScpDestino destino = getService().getDestinoRepo().findByCodDestino(vbd.getVsjBancocabecera().getCodDestino());
         item.getItemProperty("txtNombredestino").setValue(destino != null ? destino.getTxtNombredestino() : "");
         item.getItemProperty("txtGlosaitem").setValue(vbd.getTxtGlosaitem());

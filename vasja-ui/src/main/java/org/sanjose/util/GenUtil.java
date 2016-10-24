@@ -12,7 +12,6 @@ import java.util.*;
 
 public class GenUtil {
 
-
     public final static Character PEN='0';
 
     public final static Character USD='1';
@@ -141,6 +140,7 @@ public class GenUtil {
                 return 'E';
             default:
                 Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
+                Thread.dumpStack();
                 return 'U';
         }
     }
@@ -155,6 +155,7 @@ public class GenUtil {
                 return '2';
             default:
                 Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
+                Thread.dumpStack();
                 return '9';
         }
     }
