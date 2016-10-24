@@ -1,6 +1,8 @@
 package org.sanjose.util;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.FilterableSortableGridTreeContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.filter.Between;
 import com.vaadin.data.util.filter.SimpleStringFilter;
@@ -166,13 +168,14 @@ public class ViewUtil {
             // Update filter When the filter input is changed
             filterField.addTextChangeListener(change -> {
                 // Can't modify filters so need to replace
-                ((BeanItemContainer)grid.getContainerDataSource()).removeContainerFilters(pid);
+                ((Container.SimpleFilterable) grid.getContainerDataSource()).removeContainerFilters(pid);
 
                 // (Re)create the filter if necessary
-                if (! change.getText().isEmpty())
-                    ((BeanItemContainer)grid.getContainerDataSource()).addContainerFilter(
+                if (!change.getText().isEmpty()) {
+                    ((Container.Filterable) grid.getContainerDataSource()).addContainerFilter(
                             new SimpleStringFilter(pid,
                                     change.getText(), true, false));
+                }
                 if (saldoDelDia != null)
                     saldoDelDia.setSaldoDelDia();
             });
@@ -230,6 +233,10 @@ public class ViewUtil {
         }
     }
 
+    public static boolean isParent(Grid.RowReference rowReference) {
+        return ((FilterableSortableGridTreeContainer) rowReference.getGrid().getContainerDataSource()).getHierachical().getParent(rowReference.getItemId()) == null;
+    }
+
     public static void colorizeRows(Grid grid, Class clas) {
         grid.setRowStyleGenerator(rowReference -> {
             if (clas.equals(VsjBancocabecera.class) && ((VsjBancocabecera)rowReference.getItemId()).isEnviado()) {
@@ -239,6 +246,17 @@ public class ViewUtil {
                 return "anulado";
             if (clas.equals(VsjBancodetalle.class) && ((VsjBancodetalle) rowReference.getItemId()).isAnula())
                 return "anulado";
+
+            if (clas.equals(FilterableSortableGridTreeContainer.class)) {
+                if (rowReference.getItem().getItemProperty("flgEnviado").getValue().equals('1')) {
+                    return (isParent(rowReference) ? "parentenviado" : "enviado");
+                }
+
+                if (rowReference.getItem().getItemProperty("flg_Anula").getValue().equals('1')) {
+                    return (isParent(rowReference) ? "parentanulado" : "anulado");
+                }
+                if (isParent(rowReference)) return "parent";
+            }
             return "";
         });
     }

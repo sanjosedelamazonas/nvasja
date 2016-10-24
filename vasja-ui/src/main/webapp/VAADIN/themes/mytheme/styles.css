@@ -13149,6 +13149,21 @@ div.v-layout.v-horizontal.v-widget {
 	overflow: hidden;
 }
 
+.mytheme .v-grid-row.parent {
+	color: #00007E;
+	font-weight: 600;
+}
+
+.mytheme .v-grid-row.parentenviado {
+	color: #7FEC6C;
+	font-weight: 600;
+}
+
+.mytheme .v-grid-row.parentanulado {
+	color: #C2B4AA;
+	font-weight: 600;
+}
+
 .mytheme .v-grid-row.enviado {
 	color: #7FEC6C;
 }
