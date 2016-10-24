@@ -90,6 +90,7 @@ public class ProcUtil {
     public BigDecimal getSaldoBanco(Date fecha, String codCtacaja, Character moneda) {
         StoredProcedureQuery getSaldoAlDiaCajaQuery = em.createNamedStoredProcedureQuery("getSaldoAlDiaBanco");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+        log.info("running getSaldoBanco for: " + sdf.format(fecha) + " " + codCtacaja + " " + moneda);
         getSaldoAlDiaCajaQuery.setParameter(1, sdf.format(fecha));
         getSaldoAlDiaCajaQuery.setParameter(2, codCtacaja);
         getSaldoAlDiaCajaQuery.setParameter(3, moneda.toString());
