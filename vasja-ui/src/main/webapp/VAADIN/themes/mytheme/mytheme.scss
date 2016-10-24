@@ -67,6 +67,21 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
 @mixin mytheme {
   @include valo;
 
+    .v-grid-row.parent {
+        color: #00007E;
+        font-weight: 600;
+    }
+
+    .v-grid-row.parentenviado {
+        color: #7FEC6C;
+        font-weight: 600;
+    }
+
+    .v-grid-row.parentanulado {
+        color: #C2B4AA;
+        font-weight: 600;
+    }
+
     .v-grid-row.enviado {
         color: #7FEC6C;
     }
