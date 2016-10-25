@@ -13,11 +13,13 @@ import org.sanjose.bean.Caja;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
-import org.sanjose.views.sys.ISaldoDelDia;
+import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.SaldoDelDia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -33,7 +35,7 @@ import java.util.List;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class BancoManejoLogic implements Serializable, ISaldoDelDia {
+public class BancoManejoLogic implements Serializable, SaldoDelDia {
 
 
     private static final Logger log = LoggerFactory.getLogger(BancoManejoLogic.class);
@@ -100,7 +102,7 @@ public class BancoManejoLogic implements Serializable, ISaldoDelDia {
                         view.refreshData();
                     });
                 }
-                //gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajabanco)itemId));
+                gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjItem) itemId));
             }
         });
 

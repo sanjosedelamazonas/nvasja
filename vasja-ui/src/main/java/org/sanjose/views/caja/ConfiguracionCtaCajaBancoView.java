@@ -7,7 +7,6 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.BooleanTrafficLightConverter;
@@ -68,14 +67,11 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         gridConfigCtaCajaBanco.setColumnOrder(VISIBLE_COLUMN_IDS);
 
         gridConfigCtaCajaBanco.getDefaultHeaderRow().getCell("codTipocuenta").setText("Codigo");
-
         gridConfigCtaCajaBanco.getColumn("txtTipocuenta").setWidth(120);
-        //gridConfigCtaCajaBanco.setCol
-
         gridConfigCtaCajaBanco.getColumn("codTipocuenta").setEditable(false);
 
         gridConfigCtaCajaBanco.setSelectionMode(SelectionMode.MULTI);
-        HeaderRow filterRow = gridConfigCtaCajaBanco.appendHeaderRow();
+        //gridConfigCtaCajaBanco.appendHeaderRow();
 
         gridConfigCtaCajaBanco.setEditorFieldGroup(
                 new BeanFieldGroup<>(VsjConfiguractacajabanco.class));
@@ -110,7 +106,6 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
 
     @Override
     public void enter(ViewChangeEvent event) {
-        viewLogic.enter(event.getParameters());
     }
 
     public void clearSelection() {

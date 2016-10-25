@@ -23,7 +23,7 @@ import static org.sanjose.util.GenUtil.PEN;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class ComprobanteView extends ComprobanteUI implements IComprobanteView, VsjView {
+public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing, VsjView {
 
     public static final String VIEW_NAME = "Caja";
     private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);

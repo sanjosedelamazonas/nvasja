@@ -10,12 +10,14 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.renderers.HtmlRenderer;
+import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.INavigatorView;
+import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.VsjView;
 
 /**
@@ -24,7 +26,7 @@ import org.sanjose.views.sys.VsjView;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjView {
+public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, VsjView {
 
     public static final String VIEW_NAME = "Manejo de Caja";
     private final CajaManejoLogic viewLogic = new CajaManejoLogic();
@@ -70,9 +72,6 @@ public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjV
 
         ViewUtil.setColumnNames(gridCaja, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
-        // Add filters
-        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
-
         ViewUtil.alignMontosInGrid(gridCaja);
 
         gridCaja.setSelectionMode(SelectionMode.SINGLE);
@@ -98,13 +97,16 @@ public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjV
         });
 
         gridCaja.addItemClickListener(this::setItemLogic);
+        gridCaja.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridCaja.getColumn("flgEnviado").setHidden(true);
+
+        // Add filters
+        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
 
         ViewUtil.colorizeRows(gridCaja);
-
-        gridCaja.getColumn("flgEnviado").setHidden(true);
 
         // Set Saldos Inicial
         fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
@@ -132,6 +134,7 @@ public class CajaManejoView extends CajaManejoUI implements INavigatorView, VsjV
 
     @Override
     public void enter(ViewChangeEvent event) {
+        refreshData();
     }
 
     public void clearSelection() {

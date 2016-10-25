@@ -29,7 +29,7 @@ import java.util.Collection;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView {
+public class BancoManejoView extends BancoManejoUI implements VsjView, BancoViewing {
 
     public static final String VIEW_NAME = "Manejo de Cheques";
     private final BancoManejoLogic viewLogic = new BancoManejoLogic();
@@ -78,9 +78,6 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
 
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
-        // Add filters
-        ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
-
         ViewUtil.alignMontosInGrid(gridBanco);
 
         gridBanco.setSelectionMode(SelectionMode.MULTI);
@@ -110,6 +107,9 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
         gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
         gridBanco.getColumn("flgCobrado").setEditable(true);
         gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+
+        // Add filters
+        ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
@@ -144,10 +144,12 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
         container.removeAllItems();
         container.addAll(getService().findAll());
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
+        //log.info("Refreshing Manejo De Cheques");
     }
 
     @Override
     public void enter(ViewChangeEvent event) {
+        refreshData();
     }
 
     public void clearSelection() {

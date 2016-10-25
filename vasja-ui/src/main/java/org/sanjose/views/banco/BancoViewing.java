@@ -1,6 +1,6 @@
 package org.sanjose.views.banco;
 
-import org.sanjose.views.sys.INavigatorView;
+import org.sanjose.views.sys.NavigatorViewing;
 
 import java.util.Collection;
 
@@ -9,7 +9,7 @@ import java.util.Collection;
  * User: prubach
  * Date: 18.10.16
  */
-public interface BancoView extends INavigatorView {
+public interface BancoViewing extends NavigatorViewing {
 
     void clearSelection();
 

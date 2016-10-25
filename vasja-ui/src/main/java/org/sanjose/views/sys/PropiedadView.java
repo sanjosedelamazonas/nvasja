@@ -7,11 +7,11 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
 import org.sanjose.model.VsjPropiedad;
 import org.sanjose.repo.VsjPropiedadRep;
 import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 
 import java.util.Collection;
@@ -28,6 +28,8 @@ public class PropiedadView extends PropiedadUI implements VsjView {
     private static final Logger log = LoggerFactory.getLogger(PropiedadView.class);
     public final VsjPropiedadRep repo;
     private final PropiedadLogic viewLogic;
+    private final String[] VISIBLE_COLUMN_IDS = new String[]{"nombre", "valor"};
+    private final int[] FILTER_WIDTH = new int[]{16, 16};
     private PropiedadService propiedadService;
 
     public PropiedadView(PropiedadService propiedadService) {
@@ -51,16 +53,16 @@ public class PropiedadView extends PropiedadUI implements VsjView {
         gridPropiedad.setSelectionMode(SelectionMode.MULTI);
         gridPropiedad
         	.setContainerDataSource(container);
-        Object[] VISIBLE_COLUMN_IDS = new String[]{"nombre", "valor"};
         gridPropiedad.setColumns(VISIBLE_COLUMN_IDS);
-        gridPropiedad.setColumnOrder("nombre", "valor");
+        gridPropiedad.setColumnOrder(VISIBLE_COLUMN_IDS);
         gridPropiedad.sort("nombre", SortDirection.ASCENDING);
 
         gridPropiedad.setSelectionMode(SelectionMode.MULTI);
-        HeaderRow filterRow = gridPropiedad.appendHeaderRow();
-        
+
         gridPropiedad.setEditorFieldGroup(
                 new BeanFieldGroup<>(VsjPropiedad.class));
+
+        ViewUtil.setupColumnFilters(gridPropiedad, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
         GridContextMenu gridContextMenu = new GridContextMenu(gridPropiedad);
 

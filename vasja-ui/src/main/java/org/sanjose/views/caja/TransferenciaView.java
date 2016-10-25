@@ -26,7 +26,7 @@ import static org.sanjose.util.GenUtil.PEN;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class TransferenciaView extends TransferenciaUI implements IComprobanteView, VsjView {
+public class TransferenciaView extends TransferenciaUI implements ComprobanteViewing, VsjView {
 
     public static final String VIEW_NAME = "Transferencia";
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"txtCorrelativo", "codProyecto", "codTercero",

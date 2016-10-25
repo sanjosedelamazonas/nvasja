@@ -2,20 +2,18 @@ package org.sanjose.views.caja;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid.HeaderCell;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.TextField;
 import org.sanjose.model.VsjConfiguracioncaja;
 import org.sanjose.repo.*;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
+import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,6 +34,14 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjVie
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionCajaView.class);
     public final VsjConfiguracioncajaRep repo;
     private final ConfiguracionCajaLogic viewLogic = new ConfiguracionCajaLogic(this);
+    private final String[] VISIBLE_COLUMN_IDS = new String[]{
+            "codConfiguracion", "txtConfiguracion", "indTipomoneda",
+            "codCtacontable", "codDestino", "codProyecto"
+    };
+    private final int[] FILTER_WIDTH = new int[]{
+            6, 12, 2,
+            6, 6, 6
+    };
     private ScpPlancontableRep planRepo;
     private ScpDestinoRep destinoRepo;
     private ScpProyectoRep proyectoRepo;
@@ -57,13 +63,10 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjVie
         @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguracioncaja> container = new BeanItemContainer(VsjConfiguracioncaja.class, repo.findAll());
         gridConfigCaja
         	.setContainerDataSource(container);
-        gridConfigCaja.setColumnOrder("codConfiguracion", "txtConfiguracion", "indTipomoneda",
-                "codCtacontable", "codDestino", "codProyecto");
+        gridConfigCaja.setColumnOrder(VISIBLE_COLUMN_IDS);
         
         gridConfigCaja.getDefaultHeaderRow().getCell("codConfiguracion").setText("Codigo");
-        
         gridConfigCaja.getColumn("txtConfiguracion").setWidth(200);
-
         gridConfigCaja.getColumn("codConfiguracion").setEditable(false);
                
         gridConfigCaja.setSelectionMode(SelectionMode.MULTI);
@@ -95,33 +98,9 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjVie
         ComboBox selTipomoneda = new ComboBox();
         DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "indTipomoneda", "Moneda");
         gridConfigCaja.getColumn("indTipomoneda").setEditorField(selTipomoneda);
-        
-        // Set up a filter for all columns
-	     for (Object pid: gridConfigCaja.getContainerDataSource()
-	                          .getContainerPropertyIds()) {
-	         HeaderCell cell = filterRow.getCell(pid);
-	
-	         // Have an input field to use for filter
-	         TextField filterField = new TextField();
-	         if (pid.toString().contains("para") || pid.toString().contains("activo"))
-	        	 filterField.setColumns(2);
-	         else
-	        	 filterField.setColumns(6);
 
-	         // Update filter When the filter input is changed
-	         filterField.addTextChangeListener(change -> {
-	             // Can't modify filters so need to replace
-	        	 container.removeContainerFilters(pid);
-	
-	             // (Re)create the filter if necessary
-	             if (! change.getText().isEmpty())
-	                 container.addContainerFilter(
-	                     new SimpleStringFilter(pid,
-	                         change.getText(), true, false));
-	         });
-	         cell.setComponent(filterField);
-	     }
-        
+        ViewUtil.setupColumnFilters(gridConfigCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
+
         viewLogic.init();
     }
 
