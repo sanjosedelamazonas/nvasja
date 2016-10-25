@@ -3,7 +3,9 @@ package org.sanjose.util;
 //import org.vaadin.ui.NumberField;
 
 import com.vaadin.ui.Notification;
+import org.sanjose.model.VsjBancoItem;
 import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.VsjItem;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -39,9 +41,15 @@ public class GenUtil {
         return val == null || (val.compareTo(new BigDecimal(0.00))) == 0;
     }
 
-	public static boolean isIngreso(VsjCajabanco vcb) {
-        return vcb.getNumDebesol().compareTo(new BigDecimal(0))>0
-                || vcb.getNumDebedolar().compareTo(new BigDecimal(0))>0;
+    public static boolean isIngreso(VsjItem vcb) {
+        if (vcb instanceof VsjCajabanco)
+            return ((VsjCajabanco) vcb).getNumDebesol().compareTo(new BigDecimal(0)) > 0
+                    || ((VsjCajabanco) vcb).getNumDebedolar().compareTo(new BigDecimal(0)) > 0;
+        if (vcb instanceof VsjBancoItem)
+            return ((VsjBancoItem) vcb).getNumDebesol().compareTo(new BigDecimal(0)) > 0
+                    || ((VsjBancoItem) vcb).getNumDebedolar().compareTo(new BigDecimal(0)) > 0
+                    || ((VsjBancoItem) vcb).getNumDebemo().compareTo(new BigDecimal(0)) > 0;
+        return false;
     }
 
     public static String getTxtCorrelativo(Integer id) {

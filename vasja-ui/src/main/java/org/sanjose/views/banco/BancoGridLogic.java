@@ -5,7 +5,9 @@ import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
+import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.util.ViewUtil;
 
 /**
  * VASJA class
@@ -14,9 +16,9 @@ import org.sanjose.model.VsjBancocabecera;
  */
 public class BancoGridLogic {
 
-    private BancoView view;
+    private BancoViewing view;
 
-    public BancoGridLogic(BancoView view) {
+    public BancoGridLogic(BancoViewing view) {
         this.view = view;
     }
 
@@ -60,14 +62,14 @@ public class BancoGridLogic {
     public void generateComprobante() {
         for (Object obj : view.getSelectedRows()) {
             VsjBancocabecera vcb = (VsjBancocabecera) obj;
-            //ReportHelper.generateComprobante(vcb);
+            ReportHelper.generateComprobante(vcb);
         }
     }
 
     public void printComprobante() {
         for (Object obj : view.getSelectedRows()) {
             VsjBancocabecera vcb = (VsjBancocabecera) obj;
-            //ViewUtil.printComprobante(vcb);
+            ViewUtil.printComprobante(vcb);
         }
     }
 

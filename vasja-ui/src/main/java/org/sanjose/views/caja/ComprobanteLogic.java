@@ -24,7 +24,7 @@ import org.sanjose.validator.SaldoChecker;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
-import org.sanjose.views.sys.INavigatorView;
+import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.VsjView;
 
 import java.io.Serializable;
@@ -52,8 +52,8 @@ class ComprobanteLogic implements Serializable {
 
 	private static final Logger log = LoggerFactory.getLogger(ComprobanteLogic.class);
 
-    protected IComprobanteView view;
-    protected INavigatorView navigatorView;
+    protected ComprobanteViewing view;
+    protected NavigatorViewing navigatorView;
     protected FieldGroup fieldGroup;
     protected BeanItem<VsjCajabanco> beanItem;
     private VsjCajabanco savedCajabanco;
@@ -63,7 +63,7 @@ class ComprobanteLogic implements Serializable {
     private VsjView.Mode mode;
     private SaldoChecker saldoChecker;
 
-    public void init(IComprobanteView  comprobanteView) {
+    public void init(ComprobanteViewing comprobanteView) {
         view = comprobanteView;
         view.getGuardarBtn().addClickListener(event -> saveComprobante());
         view.getNuevoComprobante().addClickListener(event -> nuevoComprobante());
@@ -688,7 +688,7 @@ class ComprobanteLogic implements Serializable {
 
     // Helpers
 
-    public void setNavigatorView(INavigatorView navigatorView) {
+    public void setNavigatorView(NavigatorViewing navigatorView) {
         this.navigatorView = navigatorView;
     }
 

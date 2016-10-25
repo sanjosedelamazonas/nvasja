@@ -9,7 +9,7 @@ import tm.kod.widgets.numberfield.NumberField;
  * User: prubach
  * Date: 20.09.16
  */
-interface IComprobanteView {
+interface ComprobanteViewing {
 
     void setSaldoDeCajas();
 

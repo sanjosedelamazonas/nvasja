@@ -37,20 +37,10 @@ import java.util.List;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class BancoConciliacionView extends BancoConciliacionUI implements VsjView, BancoView {
+public class BancoConciliacionView extends BancoConciliacionUI implements VsjView, BancoViewing {
 
     public static final String VIEW_NAME = "Conciliacion de bancos";
     private final BancoConciliacionLogic viewLogic = new BancoConciliacionLogic();
-/*
-    private final String[] VISIBLE_COLUMN_IDS = new String[]{
-            "txtCorrelativo", "fecFecha", "txtCheque", */
-/*"codProyecto",*//*
- "codCtacontable",
-            "scpDestino.txtNombredestino", "txtGlosa", "flgCobrado",
-            "numDebesol", "numHabersol"
-            //, "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
-    };
-*/
 
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
             "id", "txtCorrelativo", "fecFecha", "txtCheque", "codProyecto", "codCtacontable",
@@ -93,7 +83,6 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
 
         setupDateFilters();
         filterComprobantes();
-        //gridBanco = new GridTree(container, "id");
         gridBanco.setWidth(100, Unit.PERCENTAGE);
         gridBanco.setHeight(100, Unit.PERCENTAGE);
         verticalGrid.addComponent(gridBanco);
@@ -115,18 +104,15 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         cobradoChkBox.setCaption("");
         cobradoChkBox.setBigPreset(false);
         gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
-        //gridBanco.getColumn("flgCobrado").
-        //gridBanco.getColumn("flgCobrado").setRenderer(new FlgCobradoCheckboxRenderer());
         gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
 
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
         // Add filters
         ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
-
         ViewUtil.alignMontosInGrid(gridBanco);
 
-        gridBanco.setSelectionMode(SelectionMode.MULTI);
+        gridBanco.setSelectionMode(SelectionMode.SINGLE);
 
         ViewUtil.colorizeRows(gridBanco, FilterableSortableGridTreeContainer.class);
 
@@ -179,15 +165,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
                 txtSaldoFinal.setValue("");
             }
         });
-
-        // Set Saldos Inicial
-//        fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
-//        fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));
-
         viewLogic.init(this);
-//        viewLogic.setSaldos(gridSaldoInicial, true);
-//        viewLogic.setSaldos(gridSaldoFInal, false);
-
     }
 
     private void setupDateFilters() {
@@ -207,11 +185,9 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         fechaHasta.setPropertyDataSource(prop);
         fechaHasta.setConverter(DateToTimestampConverter.INSTANCE);
         fechaHasta.setResolution(Resolution.DAY);
-
         fechaHasta.setValue(defHasta);
         fechaHasta.addValueChangeListener(valueChangeEvent -> filterComprobantes());
     }
-
 
     public void filterComprobantes() {
         String codCtaContable = selFiltroCuenta.getValue() != null ? selFiltroCuenta.getValue().toString() : null;
@@ -284,7 +260,6 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
     }
 
-
     private void addItem(HierarchicalContainer indCon, VsjBancodetalle vbd, boolean isParent) {
         final Item item = indCon.addItem(vbd.getId().getCodBancocabecera() + (vbd.getId().getNumItem() != 0 ? "-" + vbd.getId().getNumItem() : ""));
         item.getItemProperty("id").setValue(vbd.getId().getCodBancocabecera());
@@ -317,13 +292,13 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
     }
 
     public void refreshData() {
-        container.removeAllItems();
         filterComprobantes();
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
     }
 
     @Override
     public void enter(ViewChangeEvent event) {
+        refreshData();
     }
 
     public void clearSelection() {
@@ -331,7 +306,9 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
     }
 
     public Collection<Object> getSelectedRows() {
-        return gridBanco.getSelectedRows();
+
+        Collection<Object> selected = gridBanco.getSelectedRows();
+        return selected;
     }
 
     @Override
@@ -350,5 +327,4 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
     public Button getExpandirContraerBtn() {
         return expandirContraerBtn;
     }
-
 }

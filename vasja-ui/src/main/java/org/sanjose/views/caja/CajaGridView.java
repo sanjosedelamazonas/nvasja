@@ -28,7 +28,7 @@ import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.validator.TwoCombosValidator;
-import org.sanjose.views.sys.INavigatorView;
+import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.VsjView;
 
 import java.sql.Timestamp;
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  */
 @SpringComponent
 // @UIScope
-public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView {
+public class CajaGridView extends CajaGridUI implements NavigatorViewing, VsjView {
 
     public static final String VIEW_NAME = "Operaciones de Caja";
     private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
@@ -281,6 +281,7 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
 
     @Override
     public void enter(ViewChangeEvent event) {
+        refreshData();
     }
 
     public void clearSelection() {

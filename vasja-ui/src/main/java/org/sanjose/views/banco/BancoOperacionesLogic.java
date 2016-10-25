@@ -9,7 +9,9 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.ViewUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -88,7 +90,7 @@ public class BancoOperacionesLogic implements Serializable {
                         view.refreshData();
                     });
                 }
-                //gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajabanco)itemId));
+                gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjItem) itemId));
             }
         });
     }

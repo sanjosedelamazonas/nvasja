@@ -1,13 +1,21 @@
 package org.sanjose.util;
 
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.OptionGroup;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Logger;
-
-import com.vaadin.data.Property;
-import com.vaadin.ui.OptionGroup;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 /*import org.sanjose.model.CentroCosto;
 import org.sanjose.model.Cuenta;
@@ -23,15 +31,6 @@ import com.vaadin.addon.BeanItemContainer.BeanItemContainer;
 import com.vaadin.addon.BeanItemContainer.BeanItemContainerFactory;
 import com.vaadin.addon.BeanItemContainer.filter.Filters;
 */
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.shared.ui.combobox.FilteringMode;
-import com.vaadin.ui.ComboBox;
 
 public class DataFilterUtil {
 
@@ -94,8 +93,6 @@ public class DataFilterUtil {
 	@SuppressWarnings("unchecked")
     public static void bindBooleanComboBox(final ComboBox combo, String column,
                                            final String prompt, String[] values) {
-
-		// propietarios.setWidth(ConfigurationUtil.get("COMMON_FIELD_WIDTH"));
 		IndexedContainer c = new IndexedContainer();
 		c.addContainerProperty(column, String.class, "");
 
@@ -176,7 +173,15 @@ public class DataFilterUtil {
 		combo.setInvalidAllowed(false);
 		combo.setInputPrompt(prompt);
 		combo.setFilteringMode(FilteringMode.CONTAINS);
-	}
+    }
+
+    public static void bindZeroOneComboBox(final ComboBox combo, String column,
+                                           final String prompt) {
+        Map<Character, String> valMap = new TreeMap<>();
+        valMap.put('0', "0");
+        valMap.put('1', "1");
+        bindFixedValComboBox(combo, column, prompt, valMap);
+    }
 
 	public static void bindGeneroComboBox(final ComboBox combo, String column,
 										  final String prompt) {

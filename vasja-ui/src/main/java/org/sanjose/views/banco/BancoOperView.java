@@ -107,7 +107,6 @@ public class BancoOperView extends BancoOperUI implements VsjView {
                     @Override
                     public String getValue(Item item, Object itemId,
                                             Object propertyId) {
-                        //
                         return ((VsjBancocabecera)item.getItemProperty("vsjBancocabecera").getValue()).getTxtCorrelativo() +
                                 "-" + ((VsjBancodetallePK)item.getItemProperty("id").getValue()).getNumItem();
                     }
@@ -146,7 +145,7 @@ public class BancoOperView extends BancoOperUI implements VsjView {
     }
 
     public void setEnableDetalleFields(boolean enabled) {
-        log.info("enabling detalle fields");
+        log.debug("enabling detalle fields");
         for (Field f : allFields) f.setEnabled(enabled);
         btnResponsable.setEnabled(enabled);
         btnDestino.setEnabled(enabled);
@@ -165,7 +164,7 @@ public class BancoOperView extends BancoOperUI implements VsjView {
     private BigDecimal calcTotal(Character locMoneda) {
         BigDecimal total = new BigDecimal(0.00);
         for (VsjBancodetalle cajabanco : container.getItemIds()) {
-            log.info("calcTotal: " + cajabanco);
+            log.debug("calcTotal: " + cajabanco);
             if (locMoneda.equals(PEN)) {
                 total = total.add(cajabanco.getNumDebesol()).subtract(cajabanco.getNumHabersol());
             } else if (locMoneda.equals(USD))
@@ -179,7 +178,7 @@ public class BancoOperView extends BancoOperUI implements VsjView {
     public void setTotal(Character locMoneda) {
         if (locMoneda == null) {
             //viewLogic.item.getCodTipomoneda()
-            log.info("in setSaldo - moneda = NULL");
+            log.debug("in setSaldo - moneda = NULL");
             saldoTotal.setValue("Total:" +
                     "<span class=\"order-sum\"> S./ 0.00</span>");
             return;

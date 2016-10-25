@@ -22,8 +22,9 @@ import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
-import org.sanjose.views.sys.ISaldoDelDia;
+import org.sanjose.views.sys.SaldoDelDia;
 
 import javax.print.PrintException;
 import java.sql.Timestamp;
@@ -38,7 +39,7 @@ import java.util.Map;
  */
 public class ViewUtil {
 
-    public static void printComprobante(VsjCajabanco vcb) {
+    public static void printComprobante(VsjItem vcb) {
         try {
             printComprobanteAndThrow(vcb);
         } catch (JRException | PrintException e) {
@@ -50,7 +51,7 @@ public class ViewUtil {
         }
     }
 
-    private static void printComprobanteAndThrow(VsjCajabanco vcb) throws JRException, PrintException {
+    private static void printComprobanteAndThrow(VsjItem vcb) throws JRException, PrintException {
         JasperPrint jrPrint = ReportHelper.printComprobante(vcb);
         boolean isPrinted = false;
         PrintHelper ph = ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper();
@@ -138,7 +139,7 @@ public class ViewUtil {
     }
 
 
-    public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width, ISaldoDelDia saldoDelDia) {
+    public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width, SaldoDelDia saldoDelDia) {
         Map<String, Integer> filCols = new HashMap<>();
         for (int i = 0; i < filter_cols_width.length; i++) {
             filCols.put(visible_cols[i], filter_cols_width[i]);
@@ -154,7 +155,7 @@ public class ViewUtil {
         setupColumnFilters(grid, filCols, null);
     }
 
-    private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, ISaldoDelDia saldoDelDia) {
+    private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, SaldoDelDia saldoDelDia) {
         Grid.HeaderRow filterRow = grid.appendHeaderRow();
         for (Grid.Column column: grid.getColumns()) {
             Object pid = column.getPropertyId();
@@ -164,7 +165,10 @@ public class ViewUtil {
                     || column.getConverter() instanceof BooleanTrafficLightConverter) {
                 ComboBox filterCombo = new ComboBox();
                 filterCombo.setWidth(40, Sizeable.Unit.PIXELS);
-                DataFilterUtil.bindBooleanComboBox(filterCombo, pid.toString(), "", new String[]{"1", "0"});
+                if (column.getConverter() instanceof ZeroOneTrafficLightConverter)
+                    DataFilterUtil.bindZeroOneComboBox(filterCombo, pid.toString(), "");
+                else
+                    DataFilterUtil.bindBooleanComboBox(filterCombo, pid.toString(), "", new String[]{"1", "0"});
                 filterCombo.addValueChangeListener(event -> {
                     ((Container.SimpleFilterable) grid.getContainerDataSource()).removeContainerFilters(pid);
                     if (!GenUtil.objNullOrEmpty(event.getProperty().getValue()))
@@ -173,10 +177,8 @@ public class ViewUtil {
                     if (saldoDelDia != null)
                         saldoDelDia.setSaldoDelDia();
                 });
-                filterCombo.setInputPrompt("-");
                 cell.setComponent(filterCombo);
             } else {
-
                 TextField filterField = new TextField();
                 // Set filter width according to table
                 if (filCols != null && filCols.get(pid) != null)
