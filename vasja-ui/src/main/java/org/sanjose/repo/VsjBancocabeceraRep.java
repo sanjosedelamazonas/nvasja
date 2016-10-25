@@ -15,4 +15,6 @@ public interface VsjBancocabeceraRep extends JpaRepository<VsjBancocabecera, Lon
     List<VsjBancocabecera> findByCodCtacontable(String cta);
 
     List<VsjBancocabecera> findByFecFechaBetween(Date from, Date to);
+
+    List<VsjBancocabecera> findByFecFechaBetweenAndCodCtacontable(Date from, Date to, String ctaCont);
 }

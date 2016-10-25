@@ -21,9 +21,23 @@ public class DataUtil {
 
 
     public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo, boolean isPEN) {
-        return planRepo.
-                findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                        '0', 'N', GenUtil.getYear(ano), (isPEN ? _PEN : _USD), "101");
+        List<ScpPlancontable> allCajas = planRepo.
+                findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
+                        'N', GenUtil.getYear(ano), (isPEN ? _PEN : _USD), "101");
+        List<ScpPlancontable> cajas = new ArrayList<>();
+        for (ScpPlancontable caja : allCajas) {
+            Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
+            BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(
+                    ano,
+                    caja.getId().getCodCtacontable()
+                    , moneda);
+            // If is closed and has a saldo of "0.00" we can omit it
+            if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
+                continue;
+            cajas.add(caja);
+        }
+        return cajas;
+
     }
 
     public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo) {
@@ -111,8 +125,8 @@ public class DataUtil {
     }
 
     public static List<ScpPlancontable> getBancoCuentas(Date ano, ScpPlancontableRep planRepo) {
-        return planRepo.findByFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike (
-                '0', 'N', GenUtil.getYear(ano), "104%",
-                '0', 'N', GenUtil.getYear(ano), "106%");
+        return planRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike(
+                'N', GenUtil.getYear(ano), "104%",
+                'N', GenUtil.getYear(ano), "106%");
     }
 }

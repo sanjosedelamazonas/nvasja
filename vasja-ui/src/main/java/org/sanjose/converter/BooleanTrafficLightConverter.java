@@ -12,6 +12,7 @@ public class BooleanTrafficLightConverter extends StringToBooleanConverter {
 			Class<? extends String> targetType, Locale locale)
 					throws com.vaadin.data.util.converter.Converter.ConversionException {
 		String color;
+		if (value == null) return "";
 		if (value == null || !value) {
 			color = "#f54993";
 		} else {

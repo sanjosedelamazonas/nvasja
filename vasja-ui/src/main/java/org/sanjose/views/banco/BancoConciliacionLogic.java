@@ -2,7 +2,6 @@ package org.sanjose.views.banco;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Grid;
@@ -14,6 +13,8 @@ import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.views.sys.ISaldoDelDia;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +34,22 @@ public class BancoConciliacionLogic implements Serializable, ISaldoDelDia {
     private Grid.FooterRow saldosFooterInicial;
     private Grid.FooterRow saldosFooterFinal;
     private BancoGridLogic gridLogic;
+    private boolean expandedAll = true;
 
     public void init(BancoConciliacionView bancoConciliacionView) {
         view = bancoConciliacionView;
         gridLogic = new BancoGridLogic(view);
+        view.getExpandirContraerBtn().addClickListener(event -> {
+            if (expandedAll) {
+                view.container.collapseAll();
+                view.getExpandirContraerBtn().setCaption("Expandir todo");
+            } else {
+                view.container.expandAll();
+                view.getExpandirContraerBtn().setCaption("Contraer todo");
+            }
+            expandedAll = !expandedAll;
+        });
+
         view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
@@ -44,9 +57,9 @@ public class BancoConciliacionLogic implements Serializable, ISaldoDelDia {
 
             @Override
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                Object item = view.gridBanco.getContainerDataSource().getItem(view.gridBanco.getEditedItemId());
-                if (item != null) {
-                    VsjBancocabecera vcb = (VsjBancocabecera) ((BeanItem) item).getBean();
+                VsjBancocabecera vcb = getCabeceraFromItemId(view.gridBanco.getEditedItemId());
+                if (vcb != null) {
+                    vcb.setFlgCobrado((Boolean) view.gridBanco.getContainerDataSource().getItem(view.gridBanco.getEditedItemId()).getItemProperty("flgCobrado").getValue());
                     vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
                             .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
                     view.getService().updateCobradoInCabecera(vcb);
@@ -61,10 +74,10 @@ public class BancoConciliacionLogic implements Serializable, ISaldoDelDia {
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
             } else {
-                gridContextMenu.addItem("Editar", k -> gridLogic.editarCheque((VsjBancocabecera) itemId));
+                gridContextMenu.addItem("Editar", k -> gridLogic.editarCheque(getCabeceraFromItemId(itemId)));
                 gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
-                if (!((VsjBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
-                    gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque((VsjBancocabecera) itemId));
+                if (!(getCabeceraFromItemId(itemId)).isEnviado() || Role.isPrivileged()) {
+                    gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque(getCabeceraFromItemId(itemId)));
                 }
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
@@ -72,7 +85,7 @@ public class BancoConciliacionLogic implements Serializable, ISaldoDelDia {
                             MainUI.get().getProcUtil().enviarContabilidadBanco(view.getSelectedRows(), view.getService());
                         } else {
                             List<Object> bancocabeceras = new ArrayList<>();
-                            bancocabeceras.add(itemId);
+                            bancocabeceras.add(getCabeceraFromItemId(itemId));
                             MainUI.get().getProcUtil().enviarContabilidadBanco(bancocabeceras, view.getService());
                         }
                         view.refreshData();
@@ -82,6 +95,22 @@ public class BancoConciliacionLogic implements Serializable, ISaldoDelDia {
             }
         });
 
+    }
+
+    private VsjBancocabecera getCabeceraFromItemId(Object itemId) {
+        Object itemProperty = view.gridBanco.getContainerDataSource().getItem(itemId).getItemProperty("cabeceraObject");
+        if (itemProperty != null) {
+            try {
+                Method mth = itemProperty.getClass().getMethod("getValue", new Class[]{});
+                mth.setAccessible(true);
+                return (VsjBancocabecera) mth.invoke(itemProperty);
+            } catch (NoSuchMethodException nsm) {
+                nsm.printStackTrace();
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     @Override
