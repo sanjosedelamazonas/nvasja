@@ -52,7 +52,10 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
             3, 3, 3, 3, 3, 3,
             1, 4, 1, 1
     };
-    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
+    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codCtacontable",
+            "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
+            "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
+            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"};
 
     private BeanItemContainer<VsjBancocabecera> container;
 
@@ -128,15 +131,17 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
         });
         bancoOperView.init(MainUI.get().getBancoManejoView().getService());
         bancoOperView.getViewLogic().nuevoCheque();
+        BancoOperacionesView bancoOperacionesView = this;
         gridBanco.addSelectionListener(new SelectionEvent.SelectionListener() {
             @Override
             public void select(SelectionEvent selectionEvent) {
                 if (selectionEvent.getSelected().isEmpty()) return;
                 VsjBancocabecera cabeceraSelected = (VsjBancocabecera) selectionEvent.getSelected().toArray()[0];
+                bancoOperView.getViewLogic().setNavigatorView(bancoOperacionesView);
                 bancoOperView.getViewLogic().editarCheque(cabeceraSelected);
             }
         });
-
+        bancoOperView.getCerrarBtn().setVisible(false);
         viewLogic.init(this);
     }
 

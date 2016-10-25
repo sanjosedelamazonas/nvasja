@@ -351,6 +351,10 @@ class BancoItemLogic implements Serializable {
                 // Soles        0
                 // Cta Caja
                 log.debug("in moneda logic set PEN");
+                beanItem.getBean().setNumHaberdolar(new BigDecimal(0));
+                beanItem.getBean().setNumDebedolar(new BigDecimal(0));
+                beanItem.getBean().setNumHabermo(new BigDecimal(0));
+                beanItem.getBean().setNumDebemo(new BigDecimal(0));
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
                 saldoChecker.setProyectoField(view.getSaldoProyPEN());
@@ -358,6 +362,10 @@ class BancoItemLogic implements Serializable {
                 // Dolares
                 // Cta Caja
                 log.debug("in moneda logic set USD");
+                beanItem.getBean().setNumHabersol(new BigDecimal(0));
+                beanItem.getBean().setNumDebesol(new BigDecimal(0));
+                beanItem.getBean().setNumHabermo(new BigDecimal(0));
+                beanItem.getBean().setNumDebemo(new BigDecimal(0));
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
                 saldoChecker.setProyectoField(view.getSaldoProyUSD());
@@ -365,6 +373,10 @@ class BancoItemLogic implements Serializable {
                 // Euros
                 // Cta Caja
                 log.debug("in moneda logic set EUR");
+                beanItem.getBean().setNumHaberdolar(new BigDecimal(0));
+                beanItem.getBean().setNumDebedolar(new BigDecimal(0));
+                beanItem.getBean().setNumHabersol(new BigDecimal(0));
+                beanItem.getBean().setNumDebesol(new BigDecimal(0));
                 fieldGroup.bind(view.getNumEgreso(), "numHabermo");
                 fieldGroup.bind(view.getNumIngreso(), "numDebemo");
                 saldoChecker.setProyectoField(view.getSaldoProyEUR());

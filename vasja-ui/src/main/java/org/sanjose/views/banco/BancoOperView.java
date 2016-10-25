@@ -11,7 +11,6 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
-import org.sanjose.MainUI;
 import org.sanjose.converter.ZeroOneToBooleanConverter;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
@@ -208,7 +207,7 @@ public class BancoOperView extends BancoOperUI implements VsjView {
     }
 
     public void refreshData() {
-        MainUI.get().getBancoManejoView().refreshData();
+        viewLogic.navigatorView.refreshData();
     }
 
     public BancoService getService() {
