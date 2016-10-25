@@ -2,16 +2,13 @@ package org.sanjose.views.caja;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid.HeaderCell;
 import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.model.VsjConfiguractacajabanco;
@@ -20,6 +17,7 @@ import org.sanjose.repo.ScpPlanespecialRep;
 import org.sanjose.repo.VsjConfiguractacajabancoRep;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
+import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,6 +37,14 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionCtaCajaBancoView.class);
     public final VsjConfiguractacajabancoRep repo;
     private final ConfiguracionCtaCajaBancoLogic viewLogic = new ConfiguracionCtaCajaBancoLogic(this);
+    private final String[] VISIBLE_COLUMN_IDS = new String[]{
+            "activo", "codTipocuenta", "txtTipocuenta", "codCtacontablecaja",
+            "codCtacontablegasto", "codCtaespecial", "paraCaja", "paraBanco", "paraProyecto", "paraTercero"
+    };
+    private final int[] FILTER_WIDTH = new int[]{
+            3, 3, 12, 6,
+            6, 6, 3, 3, 3, 3
+    };
     private ScpPlancontableRep planRepo;
     private ScpPlanespecialRep planEspRepo;
 
@@ -59,9 +65,7 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguractacajabanco> container = new BeanItemContainer(VsjConfiguractacajabanco.class, repo.findAll());
         gridConfigCtaCajaBanco
         	.setContainerDataSource(container);
-        gridConfigCtaCajaBanco.setColumnOrder("activo", "codTipocuenta", "txtTipocuenta", "codCtacontablecaja",
-                "codCtacontablegasto", "codCtaespecial", "paraCaja", "paraBanco", "paraProyecto", "paraTercero");
-
+        gridConfigCtaCajaBanco.setColumnOrder(VISIBLE_COLUMN_IDS);
 
         gridConfigCtaCajaBanco.getDefaultHeaderRow().getCell("codTipocuenta").setText("Codigo");
 
@@ -99,41 +103,7 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         gridConfigCtaCajaBanco.getColumn("paraBanco").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
         gridConfigCtaCajaBanco.getColumn("paraCaja").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
-        // Grey out inactive rows
-        gridConfigCtaCajaBanco.setRowStyleGenerator(rowRef -> {// Java 8
-		  if (!(Boolean) rowRef.getItem()
-                  .getItemProperty("activo")
-                  .getValue())
-		      return "grayed";
-		  else
-		      return null;
-		});
-
-        // Set up a filter for all columns
-	     for (Object pid: gridConfigCtaCajaBanco.getContainerDataSource()
-	                          .getContainerPropertyIds()) {
-	         HeaderCell cell = filterRow.getCell(pid);
-
-             // Have an input field to use for filter
-             TextField filterField = new TextField();
-	         if (pid.toString().contains("para") || pid.toString().contains("activo"))
-	        	 filterField.setColumns(2);
-	         else
-	        	 filterField.setColumns(6);
-
-             // Update filter When the filter input is changed
-             filterField.addTextChangeListener(change -> {
-	             // Can't modify filters so need to replace
-	        	 container.removeContainerFilters(pid);
-
-                 // (Re)create the filter if necessary
-                 if (! change.getText().isEmpty())
-	                 container.addContainerFilter(
-	                     new SimpleStringFilter(pid,
-	                         change.getText(), true, false));
-	         });
-	         cell.setComponent(filterField);
-	     }
+        ViewUtil.setupColumnFilters(gridConfigCtaCajaBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
         viewLogic.init();
     }

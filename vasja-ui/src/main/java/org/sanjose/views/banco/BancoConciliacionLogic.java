@@ -34,10 +34,22 @@ public class BancoConciliacionLogic implements Serializable, ISaldoDelDia {
     private Grid.FooterRow saldosFooterInicial;
     private Grid.FooterRow saldosFooterFinal;
     private BancoGridLogic gridLogic;
+    private boolean expandedAll = true;
 
     public void init(BancoConciliacionView bancoConciliacionView) {
         view = bancoConciliacionView;
         gridLogic = new BancoGridLogic(view);
+        view.getExpandirContraerBtn().addClickListener(event -> {
+            if (expandedAll) {
+                view.container.collapseAll();
+                view.getExpandirContraerBtn().setCaption("Expandir todo");
+            } else {
+                view.container.expandAll();
+                view.getExpandirContraerBtn().setCaption("Contraer todo");
+            }
+            expandedAll = !expandedAll;
+        });
+
         view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
