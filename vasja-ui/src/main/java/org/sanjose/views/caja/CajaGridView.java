@@ -95,9 +95,6 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
 
         ViewUtil.setColumnNames(gridCaja, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
-        // Add filters
-        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
-
         ViewUtil.alignMontosInGrid(gridCaja);
 
         gridCaja.getColumn("txtGlosaitem").setWidth(120);
@@ -195,6 +192,9 @@ public class CajaGridView extends CajaGridUI implements INavigatorView, VsjView 
 
         gridCaja.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
         gridCaja.getColumn("flg_Anula").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+
+        // Add filters
+        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
         ViewUtil.colorizeRows(gridCaja);
 

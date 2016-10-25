@@ -5,17 +5,18 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.FilterableSortableGridTreeContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.filter.Between;
+import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.*;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
 import org.sanjose.converter.BigDecimalConverter;
+import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.DateToTimestampConverter;
+import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.VsjBancocabecera;
@@ -159,27 +160,45 @@ public class ViewUtil {
             Object pid = column.getPropertyId();
             Grid.HeaderCell cell = filterRow.getCell(pid);
             // Have an input field to use for filter
-            TextField filterField = new TextField();
-            // Set filter width according to table
-            if (filCols!=null && filCols.get(pid)!=null)
-                filterField.setColumns(filCols.get(pid));
-            else
-                filterField.setColumns(Integer.parseInt(ConfigurationUtil.get("DEFAULT_FILTER_WIDTH")));
-            // Update filter When the filter input is changed
-            filterField.addTextChangeListener(change -> {
-                // Can't modify filters so need to replace
-                ((Container.SimpleFilterable) grid.getContainerDataSource()).removeContainerFilters(pid);
+            if (column.getConverter() instanceof ZeroOneTrafficLightConverter
+                    || column.getConverter() instanceof BooleanTrafficLightConverter) {
+                ComboBox filterCombo = new ComboBox();
+                filterCombo.setWidth(40, Sizeable.Unit.PIXELS);
+                DataFilterUtil.bindBooleanComboBox(filterCombo, pid.toString(), "", new String[]{"1", "0"});
+                filterCombo.addValueChangeListener(event -> {
+                    ((Container.SimpleFilterable) grid.getContainerDataSource()).removeContainerFilters(pid);
+                    if (!GenUtil.objNullOrEmpty(event.getProperty().getValue()))
+                        ((Container.Filterable) grid.getContainerDataSource()).addContainerFilter(
+                                new Compare.Equal(pid, event.getProperty().getValue()));
+                    if (saldoDelDia != null)
+                        saldoDelDia.setSaldoDelDia();
+                });
+                filterCombo.setInputPrompt("-");
+                cell.setComponent(filterCombo);
+            } else {
 
-                // (Re)create the filter if necessary
-                if (!change.getText().isEmpty()) {
-                    ((Container.Filterable) grid.getContainerDataSource()).addContainerFilter(
-                            new SimpleStringFilter(pid,
-                                    change.getText(), true, false));
-                }
-                if (saldoDelDia != null)
-                    saldoDelDia.setSaldoDelDia();
-            });
-            cell.setComponent(filterField);
+                TextField filterField = new TextField();
+                // Set filter width according to table
+                if (filCols != null && filCols.get(pid) != null)
+                    filterField.setColumns(filCols.get(pid));
+                else
+                    filterField.setColumns(Integer.parseInt(ConfigurationUtil.get("DEFAULT_FILTER_WIDTH")));
+                // Update filter When the filter input is changed
+                filterField.addTextChangeListener(change -> {
+                    // Can't modify filters so need to replace
+                    ((Container.SimpleFilterable) grid.getContainerDataSource()).removeContainerFilters(pid);
+
+                    // (Re)create the filter if necessary
+                    if (!change.getText().isEmpty()) {
+                        ((Container.Filterable) grid.getContainerDataSource()).addContainerFilter(
+                                new SimpleStringFilter(pid,
+                                        change.getText(), true, false));
+                    }
+                    if (saldoDelDia != null)
+                        saldoDelDia.setSaldoDelDia();
+                });
+                cell.setComponent(filterField);
+            }
         }
     }
 

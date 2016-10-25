@@ -7,6 +7,7 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -67,9 +68,9 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
 
     private final int[] FILTER_WIDTH = new int[]{
             5, 5, 4, 4, 4, 4,
-            10, 12, 1,
+            10, 12, 2,
             3, 3, 3, 3, 3, 3,
-            1, 1
+            2, 2
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"id", "txtCorrelativo", "fecFecha", "txtCheque",
             "codProyecto", "codCtacontable",
@@ -276,9 +277,6 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         }
         container = new FilterableSortableGridTreeContainer(indContainer);
         container.expandAll();
-     /*   for (Object itemId : container.getItemIds()) {
-            container.toogleCollapse(itemId);
-        }*/
         if (gridBanco == null)
             gridBanco = new GridTree(container, "id");
         else
@@ -308,6 +306,14 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         item.getItemProperty("flgEnviado").setValue(vbd.getVsjBancocabecera().getFlgEnviado());
         item.getItemProperty("flgCobrado").setValue(isParent && !vbd.getVsjBancocabecera().isAnula() ? vbd.getVsjBancocabecera().getFlgCobrado() : null);
         item.getItemProperty("cabeceraObject").setValue(vbd.getVsjBancocabecera());
+    }
+
+    private void addParent(HierarchicalContainer container, String item, String parent) {
+        if (container.getItem(item) != null) {
+            if (container.getItem(parent) != null) {
+                container.setParent(item, parent);
+            }
+        }
     }
 
     public void refreshData() {
@@ -341,11 +347,8 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         return gridBanco;
     }
 
-    private void addParent(HierarchicalContainer container,String item,String parent) {
-        if(container.getItem(item)!=null) {
-            if(container.getItem(parent)!=null) {
-                container.setParent(item,parent);
-            }
-        }
+    public Button getExpandirContraerBtn() {
+        return expandirContraerBtn;
     }
+
 }

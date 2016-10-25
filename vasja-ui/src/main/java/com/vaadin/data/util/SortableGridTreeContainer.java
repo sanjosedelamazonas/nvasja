@@ -65,13 +65,17 @@ public abstract class SortableGridTreeContainer extends GridTreeContainer implem
 
     public void collapseAll() {
         for (Object itemId : new ArrayList<>(getNotFilteredItems())) {
-            collapse(itemId);
+            final List<Object> changedItems = new ArrayList<Object>();
+            if (isItemExpanded(itemId)) collapseSelfAndChildren(itemId, false, changedItems);
+            //collapse(itemId);
         }
+        fireItemSetChange();
+
     }
 
     public void expandAll() {
         for (Object itemId : getNotFilteredItems()) {
-            expand(itemId);
+            if (!isItemExpanded(itemId)) expand(itemId);
         }
     }
 
