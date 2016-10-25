@@ -5,6 +5,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import com.vaadin.shared.data.sort.SortDirection;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
@@ -71,10 +72,10 @@ public class BancoOperacionesLogic implements Serializable {
             gridContextMenu.removeItems();
             final Object itemId = e.getItemId();
             if (itemId == null) {
-                gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
+                //  gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
             } else {
-                gridContextMenu.addItem("Editar", k -> gridLogic.editarCheque((VsjBancocabecera) itemId));
-                gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
+                // gridContextMenu.addItem("Editar", k -> gridLogic.editarCheque((VsjBancocabecera) itemId));
+                // gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
                 if (!((VsjBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
                     gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque((VsjBancocabecera) itemId));
                 }
@@ -88,6 +89,8 @@ public class BancoOperacionesLogic implements Serializable {
                             MainUI.get().getProcUtil().enviarContabilidadBanco(bancocabeceras, view.getService());
                         }
                         view.refreshData();
+                        view.getGridBanco().clearSortOrder();
+                        view.getGridBanco().sort("fecFecha", SortDirection.DESCENDING);
                     });
                 }
                 gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjItem) itemId));

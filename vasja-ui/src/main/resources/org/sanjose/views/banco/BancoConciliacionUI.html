@@ -1,43 +1,43 @@
 <!doctype html>
 <html>
 <head>
-    <meta charset="UTF-8" name="design-properties"
-          content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+ <meta charset="UTF-8" name="design-properties"
+       content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
 </head>
 <body>
 <vaadin-vertical-layout id="verticalMain" size-full margin>
-    <vaadin-horizontal-layout spacing height="50px" margin _id="horizontalFechas" :middle :center>
-        <vaadin-horizontal-layout spacing>
-            <vaadin-button plain-text _id="expandirContraerBtn">
-                Contraer todo
-            </vaadin-button>
-            <vaadin-date-field _id="fechaDesde"></vaadin-date-field>
-            <vaadin-label size-auto plain-text>
-                -
-            </vaadin-label>
-            <vaadin-date-field _id="fechaHasta"></vaadin-date-field>
-            <vaadin-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" item-caption-mode="id"
-                              width="400px" _id="selFiltroCuenta">
-                <option>Option 1</option>
-                <option>Option 2</option>
-                <option>Option 3</option>
-            </vaadin-combo-box>
-        </vaadin-horizontal-layout>
-        <vaadin-label></vaadin-label>
-        <vaadin-horizontal-layout spacing width="200px" :bottom :right>
-            <vaadin-label size-auto plain-text :bottom :right>
-                Saldo Inicial
-            </vaadin-label>
-            <vaadin-text-field enabled="false" _id="txtSaldoInicial" :bottom :right></vaadin-text-field>
-        </vaadin-horizontal-layout>
-    </vaadin-horizontal-layout>
-    <vaadin-vertical-layout size-full _id="verticalGrid" :middle :center :expand></vaadin-vertical-layout>
-    <vaadin-horizontal-layout spacing :bottom :right>
-        <vaadin-label size-auto plain-text>
-            Saldo en Libro
-        </vaadin-label>
-        <vaadin-text-field enabled="false" _id="txtSaldoFinal"></vaadin-text-field>
-    </vaadin-horizontal-layout>
+ <vaadin-horizontal-layout spacing width-full height="50px" margin _id="horizontalFechas" :bottom :right>
+  <vaadin-horizontal-layout spacing>
+   <vaadin-button plain-text _id="expandirContraerBtn">
+    Contraer todo
+   </vaadin-button>
+   <vaadin-date-field _id="fechaDesde"></vaadin-date-field>
+   <vaadin-label size-auto plain-text>
+    -
+   </vaadin-label>
+   <vaadin-date-field _id="fechaHasta"></vaadin-date-field>
+   <vaadin-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" item-caption-mode="id" width="400px"
+                     _id="selFiltroCuenta">
+    <option>Option 1</option>
+    <option>Option 2</option>
+    <option>Option 3</option>
+   </vaadin-combo-box>
+  </vaadin-horizontal-layout>
+  <vaadin-label></vaadin-label>
+  <vaadin-horizontal-layout spacing width="200px" :bottom :right>
+   <vaadin-label size-auto plain-text :bottom :right>
+    Saldo Inicial
+   </vaadin-label>
+   <vaadin-text-field enabled="false" _id="txtSaldoInicial" :bottom :right></vaadin-text-field>
+  </vaadin-horizontal-layout>
+ </vaadin-horizontal-layout>
+ <vaadin-vertical-layout size-full _id="verticalGrid" :middle :center :expand></vaadin-vertical-layout>
+ <vaadin-horizontal-layout spacing :bottom :right>
+  <vaadin-label size-auto plain-text>
+   Saldo en Libro
+  </vaadin-label>
+  <vaadin-text-field enabled="false" _id="txtSaldoFinal"></vaadin-text-field>
+ </vaadin-horizontal-layout>
 </vaadin-vertical-layout>
 </body>
 </html>

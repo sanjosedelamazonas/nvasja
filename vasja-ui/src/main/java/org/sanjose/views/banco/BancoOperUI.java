@@ -51,7 +51,6 @@ public class BancoOperUI extends CssLayout {
 	protected ComboBox selRubroInst;
 	protected ComboBox selRubroProy;
 	protected FormLayout billing_form5;
-	protected Label documento_header_label4;
 	protected HorizontalLayout name_wrapper9;
 	protected ComboBox selCodAuxiliar;
 	protected Button btnDestino;

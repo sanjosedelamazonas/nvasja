@@ -20,6 +20,7 @@ public class BancoGridLogic {
 
     public BancoGridLogic(BancoViewing view) {
         this.view = view;
+        MainUI.get().getBancoOperView().getViewLogic().setNavigatorView(view);
     }
 
     public void nuevoCheque() {
@@ -72,7 +73,5 @@ public class BancoGridLogic {
             ViewUtil.printComprobante(vcb);
         }
     }
-
-
 }
 

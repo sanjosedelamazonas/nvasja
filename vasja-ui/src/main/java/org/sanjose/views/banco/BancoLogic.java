@@ -147,6 +147,7 @@ public class BancoLogic extends BancoItemLogic {
     @Override
     public void cerrarAlManejo() {
         if (navigatorView == null) navigatorView = MainUI.get().getBancoManejoView();
+        navigatorView.refreshData();
         MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
 
@@ -272,7 +273,6 @@ public class BancoLogic extends BancoItemLogic {
             e.printStackTrace();
             view.setEnableCabezeraFields(true);
             view.setEnableDetalleFields(true);
-
         } catch (FieldGroup.CommitException ce) {
             StringBuilder sb = new StringBuilder();
             Map<Field<?>, Validator.InvalidValueException> fieldMap = ce.getInvalidFields();
