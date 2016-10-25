@@ -43,6 +43,7 @@ CREATE TABLE [dbo].[vsj_bancocabecera](
 ) ON [PRIMARY]
 SET ANSI_PADDING ON
 ALTER TABLE [dbo].[vsj_bancocabecera] ADD [cod_mescobrado] [varchar](2) NULL
+ALTER TABLE [dbo].[vsj_bancocabecera] ADD [flg_Anula] [char](1) NULL
 /****** Object:  Index [PK_vsj_bancocabecera]    Script Date: 09/26/2016 02:30:46 ******/
 ALTER TABLE [dbo].[vsj_bancocabecera] ADD  CONSTRAINT [PK_vsj_bancocabecera] PRIMARY KEY CLUSTERED 
 (
