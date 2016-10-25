@@ -64,6 +64,7 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 		setFlgIm('1');
 		setFlgSaldo('0');
 		setFlg_Anula('0');
+		setFlgCobrado(false);
 	}
 
 	@Override

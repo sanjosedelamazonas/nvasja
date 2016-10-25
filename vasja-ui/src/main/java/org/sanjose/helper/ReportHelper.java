@@ -16,7 +16,9 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.Caja;
 import org.sanjose.model.MsgUsuario;
+import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
@@ -54,13 +56,24 @@ public class ReportHelper {
         return instance;
     }
 
+	private static String getReportFromItem(VsjItem op) {
+		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
+				.equalsIgnoreCase("TXT");
+		return (op instanceof VsjCajabanco ? (isTxt ? "ComprobanteTxt" : "Comprobante") : (isTxt ? "ComprobanteBancoTxt" : "ComprobanteBanco"));
+	}
+
+	private static Integer getIdFromItem(VsjItem op) {
+		return (op instanceof VsjCajabanco ? ((VsjCajabanco) op).getCodCajabanco()
+				: ((VsjBancocabecera) op).getCodBancocabecera());
+	}
+
 	@SuppressWarnings({"serial", "unchecked"})
-	public static void generateComprobante(final VsjCajabanco op) {
+	public static void generateComprobante(final VsjItem op) {
 		final boolean isPdf = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("PDF");
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
-		final String REPORT = (isTxt ? "ComprobanteTxt" : "Comprobante");
+		final String REPORT = getReportFromItem(op);
 		StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {
             byte[] b = null;
             try {
@@ -72,16 +85,8 @@ public class ReportHelper {
                     @SuppressWarnings("rawtypes")
                     HashMap paramMap = new HashMap();
                     paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
-                    paramMap.put("OP_ID", op.getCodCajabanco());
-                    DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
-                            null, ConfigurationUtil.get("DECIMAL_FORMAT"));
-/*
-                    paramMap.put(
-                            "OP_AMOUNT",
-                            (op.getIsPen() ? dpf.format(op.getPen()) : dpf
-                                    .format(op.getUsd())));
-*/
-                    if (isPdf)
+					paramMap.put("OP_ID", getIdFromItem(op));
+					if (isPdf)
                         b = JasperRunManager.runReportToPdf(report,
                                 paramMap, get().getSqlConnection());
                     else if (isTxt) {
@@ -101,7 +106,7 @@ public class ReportHelper {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		StreamResource resource = new StreamResource(source,
 				(GenUtil.isIngreso(op) ? "Ingreso_" : "Egreso_")
-						+ op.getTxtAnoproceso() + "_" + op.getCodMes() + "_" + op.getCodCajabanco() + "_"
+						+ op.getTxtAnoproceso() + "_" + op.getCodMes() + "_" + getIdFromItem(op) + "_"
 						+ df.format(new Date(System.currentTimeMillis()))
 						+ (isPdf ? ".pdf" : (isTxt ? ".txt" : ".html")));
 		resource.setMIMEType((isPdf ? "application/pdf" : (isTxt ? "text/plain" : "text/html")));
@@ -134,10 +139,8 @@ public class ReportHelper {
 	}
 
 	@SuppressWarnings({ "serial", "unchecked" })
-	public static JasperPrint printComprobante(final VsjCajabanco op) {
-		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
-				.equalsIgnoreCase("TXT");
-		final String REPORT = (isTxt ? "ComprobanteTxt" : "Comprobante");
+	public static JasperPrint printComprobante(final VsjItem op) {
+		final String REPORT = getReportFromItem(op);
 			try {
 					InputStream rep = loadReport(REPORT);
 					if (rep != null) {
@@ -147,7 +150,7 @@ public class ReportHelper {
 						@SuppressWarnings("rawtypes")
 						HashMap paramMap = new HashMap();
 						paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
-						paramMap.put("OP_ID", op.getCodCajabanco());
+						paramMap.put("OP_ID", getIdFromItem(op));
 						return prepareToPrint(REPORT, paramMap);
 					} else {
 						logger.warn("There is no report file!");
@@ -222,48 +225,6 @@ public class ReportHelper {
 		generateLG(fechaMin, fechaMax, window, format, reportName);
 	}
 
-
-/*
-	@SuppressWarnings("serial")
-	public static void generateReporteCuenta(final Date fechaMin, final Date fechaMax, 
-			Cuenta cuenta, Set<Object> cuentaIds, Window window) {
-		HashMap paramMap = new HashMap();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
-		paramMap.put("STR_FECHA_MIN", sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)));
-		paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
-		paramMap.put("FECHA_MIN", fechaMin);
-		paramMap.put("FECHA_MAX", fechaMax);
-		if (cuenta!=null) {
-			paramMap.put("CUENTA_ID", cuenta.getId());
-			paramMap.put("CUENTA_NUMERO", cuenta.getNumero());
-			paramMap.put("CUENTA_NOMBRE", cuenta.getNombre());
-			paramMap.put("CATEGORIA_NOMBRE", cuenta.getCategoriaCuenta().getNombre());
-			generateReport("ReporteCuentaMultiHorizontal", "REPORTS_CUENTA_TYPE", paramMap, window, null);	
-		}
-		if (cuentaIds!=null) {
-			paramMap.put("CUENTA_IDS", cuentaIds);		
-			generateReport("ReporteCuentaMultiHorizontal", "REPORTS_CUENTA_TYPE", paramMap, window, null);
-		}
-	}
-	
-*/
-/*
-	public static void generateDiarioBanco(final Date fechaMin, final Date fechaMax,
-			boolean isPen, Window window, String format, String type) {
-		if (type.equals("Detallado")) 
-		generateDiario("ReporteLibroDeBancosDetallado", ConfigurationUtil.getBeginningOfDay(fechaMin), 
-				ConfigurationUtil.getEndOfDay(fechaMax), isPen, window, format, 
-				ConfigurationUtil.get("REPORTE_BANCOS_PREPARADO_POR"),
-				ConfigurationUtil.get("REPORTE_BANCOS_REVISADOR_POR"));
-		else 
-			generateDiario("ReporteLibroDeBancos", ConfigurationUtil.getBeginningOfDay(fechaMin), 
-					ConfigurationUtil.getEndOfDay(fechaMax), isPen, window, format, 
-					ConfigurationUtil.get("REPORTE_BANCOS_PREPARADO_POR"),
-					ConfigurationUtil.get("REPORTE_BANCOS_REVISADOR_POR"));
-	}
-*/
-
 	@SuppressWarnings("unchecked")
 	public static void generateCC(final Date minfecha, final Date maxfecha, boolean isPen, Window window, String format, String grouping) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
@@ -282,57 +243,6 @@ public class ReportHelper {
 		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
 //		generateReport("ReporteCentroDeCostosStructure", "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
 	}
-	
-/*
-	public static void generateDiarioBancoCategoria(final Date fechaMin, final Date fechaMax,
-			boolean isPen, Window window, String format) {
-		generateDiario("ReporteBancoCategoria", ConfigurationUtil.getBeginningOfDay(fechaMin), 
-				ConfigurationUtil.getEndOfDay(fechaMax), isPen, window, format,ConfigurationUtil.get("REPORTE_BANCOS_PREPARADO_POR"),ConfigurationUtil.get("REPORTE_BANCOS_REVISADOR_POR"));
-	}
-	
-	public static void generateDiarioBancoBancos(final Date fechaMin, final Date fechaMax,
-			boolean isPen, Window window, String format) {
-		generateDiario("ReporteBancoBancos", ConfigurationUtil.getBeginningOfDay(fechaMin), 
-				ConfigurationUtil.getEndOfDay(fechaMax), isPen, window, format,ConfigurationUtil.get("REPORTE_BANCOS_PREPARADO_POR"),ConfigurationUtil.get("REPORTE_BANCOS_REVISADOR_POR"));
-	}
-	
-	public static void generateDiarioCaja(final Date fechaMin, Date fechaMax,
-			boolean isPen, Window window, String format) {
-		if (fechaMax==null) fechaMax = fechaMin;
-		generateDiario("ReporteCajaDiario", 
-*/
-/*ab*//*
-			ConfigurationUtil.getBeginningOfDay(fechaMin),
-				ConfigurationUtil.getEndOfDay(fechaMax), 
-				isPen, window, format,
-				ConfigurationUtil.get("REPORTE_CAJA_PREPARADO_POR"),
-				ConfigurationUtil.get("REPORTE_CAJA_REVISADOR_POR"));
-	}
-*/
-
-/*
-	public static void generateDiario(String reportName, final Date fechaMin, final Date fechaMax,
-			boolean isPen, Window window, String format, String preparado, String revisado) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-		HashMap paramMap = new HashMap();
-		Operacion operSaldoTotal = ConfigurationUtil.getSaldoTotalPorFecha(fechaMin);
-		if (fechaMax==null) ConfigurationUtil.calculateSaldosDiario(fechaMin, ConfigurationUtil.getEndOfDay(fechaMin));
-		else ConfigurationUtil.calculateSaldosDiario(fechaMin, fechaMax);
-		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
-		paramMap.put("SALDO_INICIAL", (isPen ? operSaldoTotal.getSaldoPen() : operSaldoTotal.getSaldoUsd()));
-		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
-		paramMap.put("DIARIO_FECHA_MAX", fechaMax);
-		paramMap.put("DIARIO_ISPEN", isPen);
-		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
-		paramMap.put("STR_FECHA_MIN", sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)));
-		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
-		paramMap.put("REPORTE_PREPARADO_POR", preparado);
-		paramMap.put("REPORTE_REVISADOR_POR", revisado);
-		logger.info("ParamMap: " + paramMap.toString());
-		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
-	}
-
-*/
 
 	@SuppressWarnings("unchecked")
 	private static void generateLG(final Date minfecha, final Date maxfecha, Window window, String format, String reportName) {

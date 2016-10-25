@@ -85,6 +85,7 @@ public class BancoService {
 
         bancoItem.setCodTipomoneda(moneda);
         bancoItem = bancoItem.prepareToSave();
+        bancoItem.setFecFecha(cabecera.getFecFecha());
         bancoItem.setTxtCheque(cabecera.getTxtCheque());
         bancoItem.setVsjBancocabecera(cabecera);
         if (bancoItem.getId() == null) {

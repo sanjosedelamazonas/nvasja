@@ -32,7 +32,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     private StateUtil state;
 
     @Override
-    public void init(IComprobanteView  comprobanteView) {
+    public void init(ComprobanteViewing comprobanteView) {
         super.init(comprobanteView);
         tView = (TransferenciaView) comprobanteView;
         tView.nuevaTransBtn.addClickListener(ev -> nuevaTrans());

@@ -40,12 +40,9 @@ public class ConfiguracionCajaLogic implements Serializable {
         view.gridConfigCaja.getEditorFieldGroup().addCommitHandler(new CommitHandler() {
             @Override
             public void preCommit(CommitEvent commitEvent) throws CommitException {
-            	//Notification.show("Item " + view.gridConfigCaja.getEditedItemId() + " was edited PRE.");                
             }
             @Override
             public void postCommit(CommitEvent commitEvent) throws CommitException {
-                // You can persist your data here            	
-                //Notification.show("Item " + view.gridConfigCaja.getEditedItemId() + " was edited.");
                 Object item = view.gridConfigCaja.getContainerDataSource().getItem(view.gridConfigCaja.getEditedItemId());
                 if (item!=null) 
                 	view.repo.save((VsjConfiguracioncaja)((BeanItem)item).getBean());

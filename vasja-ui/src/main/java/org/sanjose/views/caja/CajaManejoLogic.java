@@ -18,7 +18,7 @@ import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.ISaldoDelDia;
+import org.sanjose.views.sys.SaldoDelDia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -34,7 +34,7 @@ import java.util.List;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class CajaManejoLogic implements Serializable, ISaldoDelDia {
+public class CajaManejoLogic implements Serializable, SaldoDelDia {
 
 
 	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);

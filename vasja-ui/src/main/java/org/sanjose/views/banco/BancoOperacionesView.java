@@ -30,7 +30,7 @@ import java.util.Collection;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class BancoOperacionesView extends BancoOperacionesUI implements VsjView, BancoView {
+public class BancoOperacionesView extends BancoOperacionesUI implements VsjView, BancoViewing {
 
     public static final String VIEW_NAME = "Operaciones de Cheques";
     private final BancoOperacionesLogic viewLogic = new BancoOperacionesLogic();
@@ -76,9 +76,6 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
 
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
-        // Add filters
-        ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, null);
-
         ViewUtil.alignMontosInGrid(gridBanco);
 
         gridBanco.setSelectionMode(SelectionMode.SINGLE);
@@ -107,6 +104,9 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
         gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
         gridBanco.getColumn("flgCobrado").setEditable(true);
         gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+
+        // Add filters
+        ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, null);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
@@ -144,10 +144,12 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
         container.removeAllItems();
         container.addAll(getService().findAll());
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
+        ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
     }
 
     @Override
     public void enter(ViewChangeEvent event) {
+        refreshData();
     }
 
     public void clearSelection() {

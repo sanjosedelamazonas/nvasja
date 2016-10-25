@@ -21,7 +21,7 @@ import org.sanjose.validator.SaldoChecker;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
-import org.sanjose.views.sys.INavigatorView;
+import org.sanjose.views.sys.NavigatorViewing;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -52,7 +52,7 @@ class BancoItemLogic implements Serializable {
     protected VsjBancodetalle item;
     protected boolean isLoading = true;
     protected boolean isEdit = false;
-    protected INavigatorView navigatorView;
+    protected NavigatorViewing navigatorView;
     protected Character moneda;
     protected VsjBancocabecera bancocabecera;
     protected FieldGroup fieldGroup;
@@ -303,7 +303,7 @@ class BancoItemLogic implements Serializable {
                         .open();
             } catch (CommitException ce) {
                 Notification.show("Error al eliminar el destino: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
-                log.info("Got Commit Exception: " + ce.getMessage());
+                log.warn("Got Commit Exception: " + ce.getMessage());
             }
         });
         UI.getCurrent().addWindow(destinoWindow);
@@ -350,21 +350,21 @@ class BancoItemLogic implements Serializable {
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
-                log.info("in moneda logic set PEN");
+                log.debug("in moneda logic set PEN");
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
                 saldoChecker.setProyectoField(view.getSaldoProyPEN());
             } else if (moneda.equals(USD)) {
                 // Dolares
                 // Cta Caja
-                log.info("in moneda logic set USD");
+                log.debug("in moneda logic set USD");
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
                 saldoChecker.setProyectoField(view.getSaldoProyUSD());
             } else {
                 // Euros
                 // Cta Caja
-                log.info("in moneda logic set EUR");
+                log.debug("in moneda logic set EUR");
                 fieldGroup.bind(view.getNumEgreso(), "numHabermo");
                 fieldGroup.bind(view.getNumIngreso(), "numDebemo");
                 saldoChecker.setProyectoField(view.getSaldoProyEUR());
@@ -531,7 +531,7 @@ class BancoItemLogic implements Serializable {
         isLoading = false;
         if (isEdit) {
             // EDITING
-            log.info("is Edit in bindForm");
+            log.debug("is Edit in bindForm");
             setNumVoucher(item);
             setCuentaLogic();
             if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {
@@ -541,7 +541,7 @@ class BancoItemLogic implements Serializable {
             }
         } else if (item.getVsjBancocabecera() != null) {
             if (item.getId() == null && item.getVsjBancocabecera().getTxtCorrelativo() != null) {
-                log.info("is NOT Edit in bindForm but ID is null");
+                log.debug("is NOT Edit in bindForm but ID is null");
                 view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo() + "-" + String.valueOf(view.getContainer().size() + 1));
             }
         }
@@ -578,7 +578,7 @@ class BancoItemLogic implements Serializable {
         view.getSelTercero().setEnabled(true);
     }
 
-    public void setNavigatorView(INavigatorView navigatorView) {
+    public void setNavigatorView(NavigatorViewing navigatorView) {
         this.navigatorView = navigatorView;
     }
 
@@ -601,7 +601,7 @@ class BancoItemLogic implements Serializable {
     VsjBancodetalle getVsjBancodetalle() throws CommitException {
         fieldGroup.commit();
         VsjBancodetalle item = beanItem.getBean();
-        log.info("got from getDetalle " + item);
+        log.debug("got from getDetalle " + item);
         return item;
     }
 }

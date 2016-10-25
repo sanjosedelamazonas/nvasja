@@ -16,6 +16,7 @@ import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.util.GenUtil;
+import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
 
 import java.util.ArrayList;
@@ -49,9 +50,7 @@ public class BancoLogic extends BancoItemLogic {
         view.getEliminarBtn().addClickListener(event -> eliminarComprobante());
         view.getAnularBtn().addClickListener(event -> anularComprobante());
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
-        view.getImprimirTotalBtn().addClickListener(event -> {
-            //  if (savedBancodetalle!=null) ViewUtil.printComprobante(savedBancodetalle);
-        });
+        view.getImprimirTotalBtn().addClickListener(event -> ViewUtil.printComprobante(beanItem.getBean()));
         switchMode(EMPTY);
     }
 
@@ -119,7 +118,7 @@ public class BancoLogic extends BancoItemLogic {
         switchMode(NEW);
         if (bancocabecera != null) {
             // cabecera in edit mode
-            log.info("nuevo Item, cabecera: " + bancocabecera);
+            log.debug("nuevo Item, cabecera: " + bancocabecera);
             bindForm(bancocabecera);
             super.nuevoComprobante(bancocabecera.getCodTipomoneda());
         } else {
@@ -182,7 +181,7 @@ public class BancoLogic extends BancoItemLogic {
         if (isEdit) {
             // EDITING
             if (!GenUtil.strNullOrEmpty(item.getTxtCorrelativo())) {
-                log.info("isEdit cabecera, setting num voucher: " + item.getTxtCorrelativo());
+                log.debug("isEdit cabecera, setting num voucher: " + item.getTxtCorrelativo());
                 view.getNumVoucher().setValue(item.getTxtCorrelativo());
             }
             view.getNumVoucher().setEnabled(false);
@@ -210,7 +209,7 @@ public class BancoLogic extends BancoItemLogic {
 
     private void eliminarRealmenteComprobante(VsjBancodetalle bancoItem) {
         if (bancoItem == null) {
-            log.info("no se puede eliminar si no esta ya guardado");
+            log.error("no se puede eliminar si no esta ya guardado");
             return;
         }
         if (bancoItem.getVsjBancocabecera().isEnviado()) {
@@ -234,21 +233,21 @@ public class BancoLogic extends BancoItemLogic {
     }
 
     private void saveCabecera() {
-        log.info("saving Cabecera");
+        log.debug("saving Cabecera");
         try {
             fieldGroupCabezera.commit();
-            log.info("saved in class: " + bancocabecera);
+            log.debug("saved in class: " + bancocabecera);
             VsjBancocabecera cabecera = beanItem.getBean();
             cabecera.setFlgCobrado(!GenUtil.strNullOrEmpty(cabecera.getCodMescobrado()));
             VsjBancodetalle bancoItem = getVsjBancodetalle();
             if (!verifyNumMoneda(moneda))
                 throw new FieldGroup.CommitException("Moneda no esta de tipo numeral");
             boolean isNew = cabecera.getFecFregistro() == null;
-            log.info("cabezera ready: " + cabecera);
+            log.debug("cabezera ready: " + cabecera);
 
             bancoItem = view.getService().saveBancoOperacion(cabecera, bancoItem, moneda);
             bancocabecera = bancoItem.getVsjBancocabecera();
-            log.info("cabecera after save: " + bancoItem.getVsjBancocabecera());
+            log.debug("cabecera after save: " + bancoItem.getVsjBancocabecera());
             setNumVoucher(bancoItem);
             moneda = item.getCodTipomoneda();
             if (isNew) {
