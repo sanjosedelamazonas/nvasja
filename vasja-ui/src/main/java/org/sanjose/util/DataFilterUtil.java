@@ -327,13 +327,19 @@ public class DataFilterUtil {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	public static void refreshComboBox(final ComboBox combo, String column, List elements, String concatenatedColumn) {
+		refreshComboBox(combo, elements, column, concatenatedColumn, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void refreshComboBox(final ComboBox combo, List elements,
+									   String firstColumn, String concatenatedColumn, String idColumn) {
 
 		IndexedContainer c = (IndexedContainer)combo.getContainerDataSource();
 		c.removeAllItems();
 		String idCol = null;
 		String colProp = null;
+		String column = idColumn != null ? idColumn : firstColumn;
 		if (column.contains(".")) {
 			idCol = column.substring(0, column.indexOf("."));
 			colProp = column.substring(column.indexOf(".")+1);
@@ -367,10 +373,10 @@ public class DataFilterUtil {
 			Item item = c.addItem(value);
 			if (concatenatedColumn!=null) {
 				Property prop = c.getContainerProperty(value, contProp);
-				prop.setValue(value + " " + bItem.getItemProperty(concatenatedColumn).getValue());
+				prop.setValue(idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value + " " + bItem.getItemProperty(concatenatedColumn).getValue());
 			}
 			else
-				c.getContainerProperty(value, contProp).setValue(value);
+				c.getContainerProperty(value, contProp).setValue(idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value);
 		}
 		c.sort(new String[]{contProp},  new boolean[]{true});
 	}
@@ -381,13 +387,20 @@ public class DataFilterUtil {
 		bindComboBox(combo, column, elements, null, concatenatedColumn);
 	}
 
-		@SuppressWarnings("unchecked")
 	public static void bindComboBox(final ComboBox combo, String column, List elements,
 									final String prompt, String concatenatedColumn) {
-		
+		bindComboBox(combo, elements, prompt, column, concatenatedColumn, null);
+
+	}
+
+	public static void bindComboBox(final ComboBox combo, List elements,
+									final String prompt, String firstColumn, String concatenatedColumn, String idColumn) {
+		@SuppressWarnings("unchecked")
+
 		IndexedContainer c = new IndexedContainer();
 		String idCol = null;
 		String colProp = null;
+		String column = idColumn != null ? idColumn : firstColumn;
 		if (column.contains(".")) {
 			idCol = column.substring(0, column.indexOf("."));
 			colProp = column.substring(column.indexOf(".")+1);
@@ -419,14 +432,11 @@ public class DataFilterUtil {
 					value = bItem.getItemProperty(column).getValue();
 			}			
 			Item item = c.addItem(value);
-			if (concatenatedColumn!=null) 
-				c.getContainerProperty(value, contProp).setValue(value + " " + bItem.getItemProperty(concatenatedColumn).getValue());
+			if (concatenatedColumn != null)
+				c.getContainerProperty(value, contProp).setValue(idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value
+						+ " " + bItem.getItemProperty(concatenatedColumn).getValue());
 			else
-				c.getContainerProperty(value, contProp).setValue(value);
-/*			if (concatenatedColumn!=null) item.getItemProperty(contProp)
-					.setValue(value + " " + bItem.getItemProperty(concatenatedColumn).getValue());
-			else item.getItemProperty(contProp)
-					.setValue(value);*/
+				c.getContainerProperty(value, contProp).setValue(idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value);
 		}
 		c.sort(new String[]{contProp},  new boolean[]{true});
 		combo.setContainerDataSource(c);

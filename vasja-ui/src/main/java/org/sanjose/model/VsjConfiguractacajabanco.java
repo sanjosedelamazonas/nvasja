@@ -1,9 +1,9 @@
 package org.sanjose.model;
 
-import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 
 /**
@@ -18,8 +18,11 @@ public class VsjConfiguractacajabanco implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Integer id;
+
 	@Column(name="cod_tipocuenta")
-	private Integer codTipocuenta;
+	private String codTipocuenta;
 
 	@NotNull
 	private boolean activo = true;
@@ -50,14 +53,6 @@ public class VsjConfiguractacajabanco implements Serializable {
 	private String txtTipocuenta;
 
 	public VsjConfiguractacajabanco() {
-	}
-
-	public Integer getCodTipocuenta() {
-		return this.codTipocuenta;
-	}
-
-	public void setCodTipocuenta(Integer codTipocuenta) {
-		this.codTipocuenta = codTipocuenta;
 	}
 
 	public boolean getActivo() {
@@ -132,4 +127,19 @@ public class VsjConfiguractacajabanco implements Serializable {
 		this.txtTipocuenta = txtTipocuenta;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getCodTipocuenta() {
+		return codTipocuenta;
+	}
+
+	public void setCodTipocuenta(String codTipocuenta) {
+		this.codTipocuenta = codTipocuenta;
+	}
 }
