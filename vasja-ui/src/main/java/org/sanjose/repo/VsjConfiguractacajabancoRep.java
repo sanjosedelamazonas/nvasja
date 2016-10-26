@@ -19,5 +19,5 @@ public interface VsjConfiguractacajabancoRep extends JpaRepository<VsjConfigurac
 
     List<VsjConfiguractacajabanco> findByActivoAndParaBancoAndParaTercero(Boolean activo, Boolean paraBanco, Boolean paraTercero);
 
-    VsjConfiguractacajabanco findByCodTipocuenta(Integer codTipocuenta);
+    VsjConfiguractacajabanco findById(Integer id);
 }

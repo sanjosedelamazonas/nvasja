@@ -373,7 +373,7 @@ public class DataFilterUtil {
 			Item item = c.addItem(value);
 			if (concatenatedColumn!=null) {
 				Property prop = c.getContainerProperty(value, contProp);
-				prop.setValue(idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value + " " + bItem.getItemProperty(concatenatedColumn).getValue());
+				prop.setValue((idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value) + " " + bItem.getItemProperty(concatenatedColumn).getValue());
 			}
 			else
 				c.getContainerProperty(value, contProp).setValue(idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value);
@@ -433,7 +433,7 @@ public class DataFilterUtil {
 			}			
 			Item item = c.addItem(value);
 			if (concatenatedColumn != null)
-				c.getContainerProperty(value, contProp).setValue(idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value
+				c.getContainerProperty(value, contProp).setValue((idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value)
 						+ " " + bItem.getItemProperty(concatenatedColumn).getValue());
 			else
 				c.getContainerProperty(value, contProp).setValue(idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value);
