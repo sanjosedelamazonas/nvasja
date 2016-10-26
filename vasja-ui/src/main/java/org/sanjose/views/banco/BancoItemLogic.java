@@ -186,8 +186,10 @@ class BancoItemLogic implements Serializable {
                 view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getYear(view.getDataFechaComprobante().getValue())),
                 "txtDescctaproyecto");
 
-        DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta", view.getService().getConfiguractacajabancoRepo().findByActivoAndParaBanco(true, true),
-                "txtTipocuenta");
+
+        DataFilterUtil.bindComboBox(view.getSelTipoMov(), view.getService().getConfiguractacajabancoRepo().findByActivoAndParaBanco(true, true), "Tipo Movimiento",
+                "codTipocuenta", "txtTipocuenta", "id");
+
         //getSelTipoMov().setEnabled(false);
         view.getSelTipoMov().addValueChangeListener(event -> {
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {

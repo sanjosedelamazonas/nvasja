@@ -278,8 +278,8 @@ class ComprobanteLogic implements Serializable {
         DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", view.getService().getFinancieraRepo().findAll(),
                 "Sel Fuente", "txtDescfinanciera");
 
-        DataFilterUtil.bindComboBox(view.getSelTipoMov(), "codTipocuenta", view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCaja(true, true),
-                "Sel Tipo de Movimiento", "txtTipocuenta");
+        DataFilterUtil.bindComboBox(view.getSelTipoMov(), view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCaja(true, true),
+                "Sel Tipo de Movimiento", "codTipocuenta", "txtTipocuenta", "id");
         //getSelTipoMov().setEnabled(false);
         view.getSelTipoMov().addValueChangeListener(event -> {
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
@@ -529,9 +529,9 @@ class ComprobanteLogic implements Serializable {
     private void setEditorTerceroLogic(String codTercero)  {
         if (!GenUtil.strNullOrEmpty(codTercero)) {
             view.setEnableFields(true);
-            DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta",
+            DataFilterUtil.refreshComboBox(view.getSelTipoMov(),
                     view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaTercero(true, true, true),
-                    "txtTipocuenta");
+                    "codTipocuenta", "txtTipocuenta", "id");
             view.getSelFuente().setValue("");
             view.getSelFuente().setEnabled(false);
             // Reset those fields
@@ -572,9 +572,9 @@ class ComprobanteLogic implements Serializable {
                 }
 
                 // Sel Tipo Movimiento
-                DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta",
-                        view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true),
-                        "txtTipocuenta");
+                DataFilterUtil.refreshComboBox(view.getSelTipoMov(),
+                        view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaTercero(true, true, true),
+                        "codTipocuenta", "txtTipocuenta", "id");
                 // Reset those fields
                 if (!isEdit) {
                     view.getSelCtaContable().setValue("");

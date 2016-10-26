@@ -1,7 +1,7 @@
 USE [SCP]
 GO
 
-/****** Object:  Table [dbo].[vsj_configuractacajabanco]    Script Date: 09/12/2016 10:02:52 ******/
+/****** Object:  Table [dbo].[vsj_configuractacajabanco]    Script Date: 10/26/2016 14:35:05 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -12,7 +12,8 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[vsj_configuractacajabanco](
-	[cod_tipocuenta] [int] IDENTITY(1,1) NOT NULL,
+	[id] [int] IDENTITY(1,1)  NOT NULL,
+	[cod_tipocuenta] [varchar](2) NOT NULL,
 	[txt_tipocuenta] [varchar](50) NOT NULL,
 	[cod_ctacontablecaja] [varchar](14) NULL,
 	[cod_ctacontablegasto] [varchar](14) NULL,
@@ -24,7 +25,7 @@ CREATE TABLE [dbo].[vsj_configuractacajabanco](
 	[activo] [bit] NOT NULL,
  CONSTRAINT [PK_vsj_configuractacajabanco] PRIMARY KEY CLUSTERED 
 (
-	[cod_tipocuenta] ASC
+	[id] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -47,4 +48,5 @@ GO
 
 ALTER TABLE [dbo].[vsj_configuractacajabanco] ADD  DEFAULT ('TRUE') FOR [activo]
 GO
+
 

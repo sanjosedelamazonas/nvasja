@@ -37,11 +37,11 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
     public final VsjConfiguractacajabancoRep repo;
     private final ConfiguracionCtaCajaBancoLogic viewLogic = new ConfiguracionCtaCajaBancoLogic(this);
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
-            "activo", "codTipocuenta", "txtTipocuenta", "codCtacontablecaja",
+            "activo", "id", "codTipocuenta", "txtTipocuenta", "codCtacontablecaja",
             "codCtacontablegasto", "codCtaespecial", "paraCaja", "paraBanco", "paraProyecto", "paraTercero"
     };
     private final int[] FILTER_WIDTH = new int[]{
-            3, 3, 12, 6,
+            3, 3, 3, 12, 6,
             6, 6, 3, 3, 3, 3
     };
     private ScpPlancontableRep planRepo;
@@ -68,7 +68,7 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
 
         gridConfigCtaCajaBanco.getDefaultHeaderRow().getCell("codTipocuenta").setText("Codigo");
         gridConfigCtaCajaBanco.getColumn("txtTipocuenta").setWidth(120);
-        gridConfigCtaCajaBanco.getColumn("codTipocuenta").setEditable(false);
+        gridConfigCtaCajaBanco.getColumn("id").setEditable(false);
 
         gridConfigCtaCajaBanco.setSelectionMode(SelectionMode.MULTI);
         //gridConfigCtaCajaBanco.appendHeaderRow();
