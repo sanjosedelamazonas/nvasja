@@ -187,14 +187,14 @@ class BancoItemLogic implements Serializable {
                 "txtDescctaproyecto");
 
 
-        DataFilterUtil.bindComboBox(view.getSelTipoMov(), view.getService().getConfiguractacajabancoRepo().findByActivoAndParaBanco(true, true), "Tipo Movimiento",
+        DataFilterUtil.bindComboBox(view.getSelTipoMov(), view.getService().getConfiguractacajabancoRepo().findByActivoAndParaBancoAndParaProyecto(true, true, true), "Tipo Movimiento",
                 "codTipocuenta", "txtTipocuenta", "id");
 
         //getSelTipoMov().setEnabled(false);
         view.getSelTipoMov().addValueChangeListener(event -> {
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
-                VsjConfiguractacajabanco config = view.getService().getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
+                VsjConfiguractacajabanco config = view.getService().getConfiguractacajabancoRepo().findById(Integer.parseInt(tipoMov));
                 if (config != null) {
                     view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
                     view.getSelRubroInst().setValue(config.getCodCtaespecial());
@@ -429,9 +429,9 @@ class BancoItemLogic implements Serializable {
     private void setEditorTerceroLogic(String codTercero) {
         if (!GenUtil.strNullOrEmpty(codTercero)) {
             view.setEnableDetalleFields(true);
-            DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta",
+            DataFilterUtil.refreshComboBox(view.getSelTipoMov(),
                     view.getService().getConfiguractacajabancoRepo().findByActivoAndParaBancoAndParaTercero(true, true, true),
-                    "txtTipocuenta");
+                    "codTipocuenta", "txtTipocuenta", "id");
             view.getSelFuente().setValue("");
             view.getSelFuente().setEnabled(false);
             // Reset those fields
@@ -466,19 +466,6 @@ class BancoItemLogic implements Serializable {
                         financieraEfectList.add(financiera);
                     }
                 }
-
-                // Sel Tipo Movimiento
-                DataFilterUtil.refreshComboBox(view.getSelTipoMov(), "codTipocuenta",
-                        view.getService().getConfiguractacajabancoRepo().findByActivoAndParaBancoAndParaProyecto(true, true, true),
-                        "txtTipocuenta");
-                // Reset those fields
-                if (!isEdit) {
-                    view.getSelCtaContable().setValue("");
-                    view.getSelRubroInst().setValue("");
-                }
-                view.getSelTipoMov().setEnabled(true);
-                view.getSelRubroInst().setEnabled(true);
-                view.getSelCtaContable().setEnabled(true);
             } else {
                 financieraEfectList = financieraList;
             }
@@ -486,6 +473,18 @@ class BancoItemLogic implements Serializable {
                     "Sel Fuente", "txtDescfinanciera");
             if (financieraEfectList.size() == 1)
                 view.getSelFuente().select(financieraEfectList.get(0).getCodFinanciera());
+            // Sel Tipo Movimiento
+            DataFilterUtil.refreshComboBox(view.getSelTipoMov(),
+                    view.getService().getConfiguractacajabancoRepo().findByActivoAndParaBancoAndParaProyecto(true, true, true),
+                    "codTipocuenta", "txtTipocuenta", "id");
+            // Reset those fields
+            if (!isEdit) {
+                view.getSelCtaContable().setValue("");
+                view.getSelRubroInst().setValue("");
+            }
+            view.getSelTipoMov().setEnabled(true);
+            view.getSelRubroInst().setEnabled(true);
+            view.getSelCtaContable().setEnabled(true);
             setSaldos();
         } else {
             //log.info("disabling fin y planproy");
@@ -536,7 +535,7 @@ class BancoItemLogic implements Serializable {
             if (f instanceof TextField)
                 ((TextField) f).setNullRepresentation("");
             if (f instanceof ComboBox)
-                ((ComboBox) f).setPageLength(20);
+                ((ComboBox) f).setPageLength(25);
         }
         view.getSelProyecto().setEnabled(true);
         view.getSelTercero().setEnabled(true);

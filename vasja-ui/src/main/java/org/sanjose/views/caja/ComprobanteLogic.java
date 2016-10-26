@@ -278,13 +278,13 @@ class ComprobanteLogic implements Serializable {
         DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", view.getService().getFinancieraRepo().findAll(),
                 "Sel Fuente", "txtDescfinanciera");
 
-        DataFilterUtil.bindComboBox(view.getSelTipoMov(), view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCaja(true, true),
-                "Sel Tipo de Movimiento", "codTipocuenta", "txtTipocuenta", "id");
+        DataFilterUtil.bindComboBox(view.getSelTipoMov(), view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true),
+                "Tipo de Movimiento", "codTipocuenta", "txtTipocuenta", "id");
         //getSelTipoMov().setEnabled(false);
         view.getSelTipoMov().addValueChangeListener(event -> {
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
-                VsjConfiguractacajabanco config = view.getService().getConfiguractacajabancoRepo().findByCodTipocuenta(Integer.parseInt(tipoMov));
+                VsjConfiguractacajabanco config = view.getService().getConfiguractacajabancoRepo().findById(Integer.parseInt(tipoMov));
                 if (config!=null) {
                     view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
                     view.getSelRubroInst().setValue(config.getCodCtaespecial());
@@ -570,19 +570,6 @@ class ComprobanteLogic implements Serializable {
                         financieraEfectList.add(financiera);
                     }
                 }
-
-                // Sel Tipo Movimiento
-                DataFilterUtil.refreshComboBox(view.getSelTipoMov(),
-                        view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaTercero(true, true, true),
-                        "codTipocuenta", "txtTipocuenta", "id");
-                // Reset those fields
-                if (!isEdit) {
-                    view.getSelCtaContable().setValue("");
-                    view.getSelRubroInst().setValue("");
-                }
-                view.getSelTipoMov().setEnabled(true);
-                view.getSelRubroInst().setEnabled(true);
-                view.getSelCtaContable().setEnabled(true);
             } else {
                 financieraEfectList = financieraList;
             }
@@ -591,6 +578,18 @@ class ComprobanteLogic implements Serializable {
             if (financieraEfectList.size()==1)
                 view.getSelFuente().select(financieraEfectList.get(0).getCodFinanciera());
 
+            // Sel Tipo Movimiento
+            DataFilterUtil.refreshComboBox(view.getSelTipoMov(),
+                    view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true),
+                    "codTipocuenta", "txtTipocuenta", "id");
+            // Reset those fields
+            if (!isEdit) {
+                view.getSelCtaContable().setValue("");
+                view.getSelRubroInst().setValue("");
+            }
+            view.getSelTipoMov().setEnabled(true);
+            view.getSelRubroInst().setEnabled(true);
+            view.getSelCtaContable().setEnabled(true);
             setSaldos();
             setMonedaLogic(view.getSelMoneda().getValue().toString().charAt(0));
             //saldoChecker.setProyectoField(view.getSelMoneda().getValue().toString().charAt(0)==PEN ? view.getSaldoProyPEN() : view.getSaldoCajaUSD());
@@ -657,7 +656,7 @@ class ComprobanteLogic implements Serializable {
             if (f instanceof TextField)
                 ((TextField)f).setNullRepresentation("");
             if (f instanceof ComboBox)
-                ((ComboBox)f).setPageLength(20);
+                ((ComboBox) f).setPageLength(25);
         }
         view.setEnableFields(false);
         view.getSelProyecto().setEnabled(true);
