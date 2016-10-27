@@ -1263,7 +1263,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.7.10";
+	content: "7.7.13";
 }
 
 .v-widget {
@@ -1975,6 +1975,61 @@ div.v-layout.v-horizontal.v-widget {
 	content: "!";
 }
 
+.mytheme .v-errorindicator-info {
+	color: #00a7f5;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
+}
+
+.mytheme .v-errorindicator-info:before {
+	content: "!";
+}
+
+.mytheme .v-errorindicator-warning {
+	color: #fc9c00;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
+}
+
+.mytheme .v-errorindicator-warning:before {
+	content: "!";
+}
+
+.mytheme .v-errorindicator-error {
+	color: #ed473b;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
+}
+
+.mytheme .v-errorindicator-error:before {
+	content: "!";
+}
+
+.mytheme .v-errorindicator-critical {
+	color: #fa007d;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
+}
+
+.mytheme .v-errorindicator-critical:before {
+	content: "!";
+}
+
+.mytheme .v-errorindicator-system {
+	color: #bb00ff;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
+}
+
+.mytheme .v-errorindicator-system:before {
+	content: "!";
+}
+
 .mytheme .v-required-field-indicator {
 	color: #eb2977;
 	padding: 0 0.2em;
@@ -2071,6 +2126,26 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-tooltip .v-errormessage h2:only-child {
 	font: inherit;
 	line-height: inherit;
+}
+
+.mytheme .v-tooltip .v-errormessage-info {
+	color: #00a7f5;
+}
+
+.mytheme .v-tooltip .v-errormessage-warning {
+	color: #fc9c00;
+}
+
+.mytheme .v-tooltip .v-errormessage-error {
+	color: #ed473b;
+}
+
+.mytheme .v-tooltip .v-errormessage-critical {
+	color: #fa007d;
+}
+
+.mytheme .v-tooltip .v-errormessage-system {
+	color: #bb00ff;
 }
 
 .mytheme .v-tooltip .v-tooltip-text {
@@ -3352,6 +3427,61 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-filterselect-error .v-filterselect-button {
 	color: #eb2977;
 	border-color: #eb2977;
+}
+
+.mytheme .v-filterselect-error-info .v-filterselect-input {
+	border-color: #00a7f5 !important;
+	background: #fafdff;
+	color: #195774;
+}
+
+.mytheme .v-filterselect-error-info .v-filterselect-button {
+	color: #00a7f5;
+	border-color: #00a7f5;
+}
+
+.mytheme .v-filterselect-error-warning .v-filterselect-input {
+	border-color: #fc9c00 !important;
+	background: #fffdfa;
+	color: #745119;
+}
+
+.mytheme .v-filterselect-error-warning .v-filterselect-button {
+	color: #fc9c00;
+	border-color: #fc9c00;
+}
+
+.mytheme .v-filterselect-error-error .v-filterselect-input {
+	border-color: #ed473b !important;
+	background: #fffbfb;
+	color: #6c2621;
+}
+
+.mytheme .v-filterselect-error-error .v-filterselect-button {
+	color: #ed473b;
+	border-color: #ed473b;
+}
+
+.mytheme .v-filterselect-error-critical .v-filterselect-input {
+	border-color: #fa007d !important;
+	background: #fffafc;
+	color: #741947;
+}
+
+.mytheme .v-filterselect-error-critical .v-filterselect-button {
+	color: #fa007d;
+	border-color: #fa007d;
+}
+
+.mytheme .v-filterselect-error-system .v-filterselect-input {
+	border-color: #bb00ff !important;
+	background: #fefaff;
+	color: #5c1974;
+}
+
+.mytheme .v-filterselect-error-system .v-filterselect-button {
+	color: #bb00ff;
+	border-color: #bb00ff;
 }
 
 .mytheme .v-filterselect-suggestpopup {
@@ -5386,6 +5516,36 @@ div.v-layout.v-horizontal.v-widget {
 	color: #6c213f;
 }
 
+.mytheme .v-textfield-error-info {
+	border-color: #00a7f5 !important;
+	background: #fafdff;
+	color: #195774;
+}
+
+.mytheme .v-textfield-error-warning {
+	border-color: #fc9c00 !important;
+	background: #fffdfa;
+	color: #745119;
+}
+
+.mytheme .v-textfield-error-error {
+	border-color: #ed473b !important;
+	background: #fffbfb;
+	color: #6c2621;
+}
+
+.mytheme .v-textfield-error-critical {
+	border-color: #fa007d !important;
+	background: #fffafc;
+	color: #741947;
+}
+
+.mytheme .v-textfield-error-system {
+	border-color: #bb00ff !important;
+	background: #fefaff;
+	color: #5c1974;
+}
+
 .mytheme .v-textfield-borderless {
 	border: none;
 	border-radius: 0;
@@ -6222,6 +6382,61 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-datefield-error .v-datefield-button {
 	color: #eb2977;
 	border-color: #eb2977;
+}
+
+.mytheme .v-datefield-error-info .v-datefield-textfield {
+	border-color: #00a7f5 !important;
+	background: #fafdff;
+	color: #195774;
+}
+
+.mytheme .v-datefield-error-info .v-datefield-button {
+	color: #00a7f5;
+	border-color: #00a7f5;
+}
+
+.mytheme .v-datefield-error-warning .v-datefield-textfield {
+	border-color: #fc9c00 !important;
+	background: #fffdfa;
+	color: #745119;
+}
+
+.mytheme .v-datefield-error-warning .v-datefield-button {
+	color: #fc9c00;
+	border-color: #fc9c00;
+}
+
+.mytheme .v-datefield-error-error .v-datefield-textfield {
+	border-color: #ed473b !important;
+	background: #fffbfb;
+	color: #6c2621;
+}
+
+.mytheme .v-datefield-error-error .v-datefield-button {
+	color: #ed473b;
+	border-color: #ed473b;
+}
+
+.mytheme .v-datefield-error-critical .v-datefield-textfield {
+	border-color: #fa007d !important;
+	background: #fffafc;
+	color: #741947;
+}
+
+.mytheme .v-datefield-error-critical .v-datefield-button {
+	color: #fa007d;
+	border-color: #fa007d;
+}
+
+.mytheme .v-datefield-error-system .v-datefield-textfield {
+	border-color: #bb00ff !important;
+	background: #fefaff;
+	color: #5c1974;
+}
+
+.mytheme .v-datefield-error-system .v-datefield-button {
+	color: #bb00ff;
+	border-color: #bb00ff;
 }
 
 .mytheme .v-datefield-full {
@@ -11250,6 +11465,36 @@ div.v-layout.v-horizontal.v-widget {
 	color: #6c213f;
 }
 
+.mytheme .v-select-twincol-error-info .v-select-twincol-options, .mytheme .v-select-twincol-error-info .v-select-twincol-selections {
+	border-color: #00a7f5 !important;
+	background: #fafdff;
+	color: #195774;
+}
+
+.mytheme .v-select-twincol-error-warning .v-select-twincol-options, .mytheme .v-select-twincol-error-warning .v-select-twincol-selections {
+	border-color: #fc9c00 !important;
+	background: #fffdfa;
+	color: #745119;
+}
+
+.mytheme .v-select-twincol-error-error .v-select-twincol-options, .mytheme .v-select-twincol-error-error .v-select-twincol-selections {
+	border-color: #ed473b !important;
+	background: #fffbfb;
+	color: #6c2621;
+}
+
+.mytheme .v-select-twincol-error-critical .v-select-twincol-options, .mytheme .v-select-twincol-error-critical .v-select-twincol-selections {
+	border-color: #fa007d !important;
+	background: #fffafc;
+	color: #741947;
+}
+
+.mytheme .v-select-twincol-error-system .v-select-twincol-options, .mytheme .v-select-twincol-error-system .v-select-twincol-selections {
+	border-color: #bb00ff !important;
+	background: #fefaff;
+	color: #5c1974;
+}
+
 .mytheme .v-select select {
 	border: 1px solid #c5c5c5;
 	background-color: #fafafa;
@@ -13936,6 +14181,61 @@ div.v-layout.v-horizontal.v-widget {
 	content: "!";
 }
 
+.contextmenu .v-errorindicator-info {
+	color: #00a7f5;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
+}
+
+.contextmenu .v-errorindicator-info:before {
+	content: "!";
+}
+
+.contextmenu .v-errorindicator-warning {
+	color: #fc9c00;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
+}
+
+.contextmenu .v-errorindicator-warning:before {
+	content: "!";
+}
+
+.contextmenu .v-errorindicator-error {
+	color: #ed473b;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
+}
+
+.contextmenu .v-errorindicator-error:before {
+	content: "!";
+}
+
+.contextmenu .v-errorindicator-critical {
+	color: #fa007d;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
+}
+
+.contextmenu .v-errorindicator-critical:before {
+	content: "!";
+}
+
+.contextmenu .v-errorindicator-system {
+	color: #bb00ff;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
+}
+
+.contextmenu .v-errorindicator-system:before {
+	content: "!";
+}
+
 .contextmenu .v-required-field-indicator {
 	color: #eb2977;
 	padding: 0 0.2em;
@@ -14032,6 +14332,26 @@ div.v-layout.v-horizontal.v-widget {
 .contextmenu .v-tooltip .v-errormessage h2:only-child {
 	font: inherit;
 	line-height: inherit;
+}
+
+.contextmenu .v-tooltip .v-errormessage-info {
+	color: #00a7f5;
+}
+
+.contextmenu .v-tooltip .v-errormessage-warning {
+	color: #fc9c00;
+}
+
+.contextmenu .v-tooltip .v-errormessage-error {
+	color: #ed473b;
+}
+
+.contextmenu .v-tooltip .v-errormessage-critical {
+	color: #fa007d;
+}
+
+.contextmenu .v-tooltip .v-errormessage-system {
+	color: #bb00ff;
 }
 
 .contextmenu .v-tooltip .v-tooltip-text {
@@ -15313,6 +15633,61 @@ div.v-layout.v-horizontal.v-widget {
 .contextmenu .v-filterselect-error .v-filterselect-button {
 	color: #eb2977;
 	border-color: #eb2977;
+}
+
+.contextmenu .v-filterselect-error-info .v-filterselect-input {
+	border-color: #00a7f5 !important;
+	background: #fafdff;
+	color: #195774;
+}
+
+.contextmenu .v-filterselect-error-info .v-filterselect-button {
+	color: #00a7f5;
+	border-color: #00a7f5;
+}
+
+.contextmenu .v-filterselect-error-warning .v-filterselect-input {
+	border-color: #fc9c00 !important;
+	background: #fffdfa;
+	color: #745119;
+}
+
+.contextmenu .v-filterselect-error-warning .v-filterselect-button {
+	color: #fc9c00;
+	border-color: #fc9c00;
+}
+
+.contextmenu .v-filterselect-error-error .v-filterselect-input {
+	border-color: #ed473b !important;
+	background: #fffbfb;
+	color: #6c2621;
+}
+
+.contextmenu .v-filterselect-error-error .v-filterselect-button {
+	color: #ed473b;
+	border-color: #ed473b;
+}
+
+.contextmenu .v-filterselect-error-critical .v-filterselect-input {
+	border-color: #fa007d !important;
+	background: #fffafc;
+	color: #741947;
+}
+
+.contextmenu .v-filterselect-error-critical .v-filterselect-button {
+	color: #fa007d;
+	border-color: #fa007d;
+}
+
+.contextmenu .v-filterselect-error-system .v-filterselect-input {
+	border-color: #bb00ff !important;
+	background: #fefaff;
+	color: #5c1974;
+}
+
+.contextmenu .v-filterselect-error-system .v-filterselect-button {
+	color: #bb00ff;
+	border-color: #bb00ff;
 }
 
 .contextmenu .v-filterselect-suggestpopup {
@@ -17347,6 +17722,36 @@ div.v-layout.v-horizontal.v-widget {
 	color: #6c213f;
 }
 
+.contextmenu .v-textfield-error-info {
+	border-color: #00a7f5 !important;
+	background: #fafdff;
+	color: #195774;
+}
+
+.contextmenu .v-textfield-error-warning {
+	border-color: #fc9c00 !important;
+	background: #fffdfa;
+	color: #745119;
+}
+
+.contextmenu .v-textfield-error-error {
+	border-color: #ed473b !important;
+	background: #fffbfb;
+	color: #6c2621;
+}
+
+.contextmenu .v-textfield-error-critical {
+	border-color: #fa007d !important;
+	background: #fffafc;
+	color: #741947;
+}
+
+.contextmenu .v-textfield-error-system {
+	border-color: #bb00ff !important;
+	background: #fefaff;
+	color: #5c1974;
+}
+
 .contextmenu .v-textfield-borderless {
 	border: none;
 	border-radius: 0;
@@ -18183,6 +18588,61 @@ div.v-layout.v-horizontal.v-widget {
 .contextmenu .v-datefield-error .v-datefield-button {
 	color: #eb2977;
 	border-color: #eb2977;
+}
+
+.contextmenu .v-datefield-error-info .v-datefield-textfield {
+	border-color: #00a7f5 !important;
+	background: #fafdff;
+	color: #195774;
+}
+
+.contextmenu .v-datefield-error-info .v-datefield-button {
+	color: #00a7f5;
+	border-color: #00a7f5;
+}
+
+.contextmenu .v-datefield-error-warning .v-datefield-textfield {
+	border-color: #fc9c00 !important;
+	background: #fffdfa;
+	color: #745119;
+}
+
+.contextmenu .v-datefield-error-warning .v-datefield-button {
+	color: #fc9c00;
+	border-color: #fc9c00;
+}
+
+.contextmenu .v-datefield-error-error .v-datefield-textfield {
+	border-color: #ed473b !important;
+	background: #fffbfb;
+	color: #6c2621;
+}
+
+.contextmenu .v-datefield-error-error .v-datefield-button {
+	color: #ed473b;
+	border-color: #ed473b;
+}
+
+.contextmenu .v-datefield-error-critical .v-datefield-textfield {
+	border-color: #fa007d !important;
+	background: #fffafc;
+	color: #741947;
+}
+
+.contextmenu .v-datefield-error-critical .v-datefield-button {
+	color: #fa007d;
+	border-color: #fa007d;
+}
+
+.contextmenu .v-datefield-error-system .v-datefield-textfield {
+	border-color: #bb00ff !important;
+	background: #fefaff;
+	color: #5c1974;
+}
+
+.contextmenu .v-datefield-error-system .v-datefield-button {
+	color: #bb00ff;
+	border-color: #bb00ff;
 }
 
 .contextmenu .v-datefield-full {
@@ -23209,6 +23669,36 @@ div.v-layout.v-horizontal.v-widget {
 	border-color: #eb2977 !important;
 	background: #fffbfc;
 	color: #6c213f;
+}
+
+.contextmenu .v-select-twincol-error-info .v-select-twincol-options, .contextmenu .v-select-twincol-error-info .v-select-twincol-selections {
+	border-color: #00a7f5 !important;
+	background: #fafdff;
+	color: #195774;
+}
+
+.contextmenu .v-select-twincol-error-warning .v-select-twincol-options, .contextmenu .v-select-twincol-error-warning .v-select-twincol-selections {
+	border-color: #fc9c00 !important;
+	background: #fffdfa;
+	color: #745119;
+}
+
+.contextmenu .v-select-twincol-error-error .v-select-twincol-options, .contextmenu .v-select-twincol-error-error .v-select-twincol-selections {
+	border-color: #ed473b !important;
+	background: #fffbfb;
+	color: #6c2621;
+}
+
+.contextmenu .v-select-twincol-error-critical .v-select-twincol-options, .contextmenu .v-select-twincol-error-critical .v-select-twincol-selections {
+	border-color: #fa007d !important;
+	background: #fffafc;
+	color: #741947;
+}
+
+.contextmenu .v-select-twincol-error-system .v-select-twincol-options, .contextmenu .v-select-twincol-error-system .v-select-twincol-selections {
+	border-color: #bb00ff !important;
+	background: #fefaff;
+	color: #5c1974;
 }
 
 .contextmenu .v-select select {

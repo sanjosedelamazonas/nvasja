@@ -17,6 +17,7 @@ import org.sanjose.util.ViewUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -84,7 +85,7 @@ public class BancoOperacionesLogic implements Serializable {
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
                         List<Object> bancocabeceras = new ArrayList<>();
-                        List<ScpBancocabecera> vsjBancocabecerasEnviadas = null;
+                        Collection<ScpBancocabecera> vsjBancocabecerasEnviadas = null;
                         if (!view.getSelectedRows().isEmpty()) {
                             bancocabeceras.addAll(view.getSelectedRows());
                         } else {
@@ -100,8 +101,10 @@ public class BancoOperacionesLogic implements Serializable {
                                 }
                             }
                             if (cabeceraToRemove != null) {
-                                view.getGridBanco().getContainerDataSource().removeItem(cabeceraToRemove);
-                                view.getGridBanco().getContainerDataSource().addItem(vcb);
+                                view.getGridBanco().getContainerDataSource().getItem(cabeceraToRemove).getItemProperty("flgEnviado").setValue('1');
+                                view.getGridBanco().refreshAllRows();
+                                //view.getGridBanco().getContainerDataSource().removeItem(cabeceraToRemove);
+                                //view.getGridBanco().getContainerDataSource().addItem(vcb);
                             }
                         }
                         //view.refreshData();

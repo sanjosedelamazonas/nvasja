@@ -38,7 +38,7 @@ public class DestinoLogic implements Serializable {
     public ScpDestino saveDestino() {
         try {
             ScpDestino item = view.getScpDestino();
-            if (view.destinoRepo.findByCodDestinoContaining(item.getCodDestino())!=null) {
+            if (view.destinoRepo.findByCodDestino(item.getCodDestino())!=null) {
                 MessageBox
                         .createWarning()
                         .withCaption("Problema al guardar el destino")
@@ -46,7 +46,7 @@ public class DestinoLogic implements Serializable {
                         .withOkButton(
                         )
                         .open();
-                return null;
+                return item;
             }
             if (item.getCodUregistro()==null) item.setCodUregistro(CurrentUser.get());
             if (item.getFecFregistro()==null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));

@@ -83,6 +83,7 @@ public class BancoConciliacionLogic implements Serializable, SaldoDelDia {
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
                         if (!view.getSelectedRows().isEmpty()) {
+                            // TODO
                             MainUI.get().getProcUtil().enviarContabilidadBanco(view.getSelectedRows(), view.getService());
                         } else {
                             List<Object> bancocabeceras = new ArrayList<>();
