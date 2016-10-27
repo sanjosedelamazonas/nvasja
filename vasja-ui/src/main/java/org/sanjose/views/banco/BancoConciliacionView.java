@@ -165,6 +165,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
                 txtSaldoFinal.setValue("");
             }
         });
+        selFiltroCuenta.setEnabled(true);
         viewLogic.init(this);
     }
 
