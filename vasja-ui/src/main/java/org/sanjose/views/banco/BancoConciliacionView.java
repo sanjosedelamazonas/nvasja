@@ -320,6 +320,11 @@ public class BancoConciliacionView extends BancoConciliacionUI implements VsjVie
         return bancoService;
     }
 
+    @Override
+    public BancoOperView getBancoOperView() {
+        return MainUI.get().getBancoOperView();
+    }
+
     public Grid getGridBanco() {
         return gridBanco;
     }

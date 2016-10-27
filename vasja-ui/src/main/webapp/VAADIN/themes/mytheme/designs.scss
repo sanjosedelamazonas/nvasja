@@ -32,7 +32,7 @@
 	$header-bar-height: 100px;
 
 	background-color: $root-background-color;
-	padding: 20px;
+	padding: 10px;
 	
 	.v-nativebutton {
 		background: none;
@@ -155,7 +155,7 @@
 	
 	&[width-range~="769px-1426px"]{
 		.billing-formlayout{
-			margin-bottom: 30px;
+			margin-bottom: 2px;
 		}
 		
 		.order-summary-layout{
@@ -197,7 +197,8 @@
 	$header-bar-height: 100px;
 
 	background-color: $root-background-color;
-	padding: 60px;
+	padding: 20px;
+	padding-bottom: 5px;
 
 	.v-nativebutton {
 		background: none;

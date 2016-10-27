@@ -1,6 +1,6 @@
 .root-layout.form-template-vivid {
 	background-color: #fff;
-	padding: 20px;
+	padding: 10px;
 }
 
 .root-layout.form-template-vivid .v-nativebutton {
@@ -122,7 +122,7 @@
 }
 
 .root-layout.form-template-vivid[width-range~="769px-1426px"] .billing-formlayout {
-	margin-bottom: 30px;
+	margin-bottom: 2px;
 }
 
 .root-layout.form-template-vivid[width-range~="769px-1426px"] .order-summary-layout {
@@ -135,7 +135,8 @@
 
 .root-layout.form-template-vaadin {
 	background-color: #fff;
-	padding: 60px;
+	padding: 20px;
+	padding-bottom: 5px;
 }
 
 .root-layout.form-template-vaadin .v-nativebutton {
@@ -2228,19 +2229,19 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-margin-top {
-	padding-top: 15px;
+	padding-top: 7px;
 }
 
 .mytheme .v-margin-right {
-	padding-right: 15px;
+	padding-right: 7px;
 }
 
 .mytheme .v-margin-bottom {
-	padding-bottom: 15px;
+	padding-bottom: 7px;
 }
 
 .mytheme .v-margin-left {
-	padding-left: 15px;
+	padding-left: 7px;
 }
 
 .mytheme .v-spacing {
@@ -4263,27 +4264,27 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme [class*="margin-top"] > tbody > [class*="firstrow"] > td {
-	padding-top: 15px;
+	padding-top: 7px;
 }
 
 .mytheme [class*="margin-bottom"] > tbody > [class*="lastrow"] > td {
-	padding-bottom: 15px;
+	padding-bottom: 7px;
 }
 
 .mytheme [class*="margin-left"] > tbody > [class*="row"] > [class*="captioncell"] {
-	padding-left: 15px;
+	padding-left: 7px;
 }
 
 .mytheme [class*="margin-left"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h2, .mytheme [class*="margin-left"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h3, .mytheme [class*="margin-left"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h4 {
-	left: 15px;
+	left: 7px;
 }
 
 .mytheme [class*="margin-right"] > tbody > [class*="row"] > [class*="contentcell"] {
-	padding-right: 15px;
+	padding-right: 7px;
 }
 
 .mytheme [class*="margin-right"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h2, .mytheme [class*="margin-right"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h3, .mytheme [class*="margin-right"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h4 {
-	right: 15px;
+	right: 7px;
 }
 
 .mytheme .v-formlayout > table {
@@ -7350,19 +7351,19 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-gridlayout-margin-top {
-	padding-top: 15px;
+	padding-top: 7px;
 }
 
 .mytheme .v-gridlayout-margin-bottom {
-	padding-bottom: 15px;
+	padding-bottom: 7px;
 }
 
 .mytheme .v-gridlayout-margin-left {
-	padding-left: 15px;
+	padding-left: 7px;
 }
 
 .mytheme .v-gridlayout-margin-right {
-	padding-right: 15px;
+	padding-right: 7px;
 }
 
 .mytheme .v-gridlayout-spacing-on {
@@ -13189,7 +13190,7 @@ div.v-layout.v-horizontal.v-widget {
 	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
 	border: none;
-	padding: 15px 15px 15px 15px;
+	padding: 7px 7px 7px 7px;
 	-webkit-animation: valo-animate-in-fade 1s backwards;
 	-moz-animation: valo-animate-in-fade 1s backwards;
 	animation: valo-animate-in-fade 1s backwards;
@@ -13204,7 +13205,7 @@ div.v-layout.v-horizontal.v-widget {
 	height: 100%;
 	background: #60a0ea;
 	background-color: rgba(96, 160, 234, 0.7);
-	padding: 15px 15px 15px 15px;
+	padding: 7px 7px 7px 7px;
 	color: #f2f6fa;
 	-webkit-animation: valo-animate-in-fade 1s 1s backwards;
 	-moz-animation: valo-animate-in-fade 1s 1s backwards;
@@ -14172,19 +14173,19 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-margin-top {
-	padding-top: 15px;
+	padding-top: 7px;
 }
 
 .contextmenu .v-margin-right {
-	padding-right: 15px;
+	padding-right: 7px;
 }
 
 .contextmenu .v-margin-bottom {
-	padding-bottom: 15px;
+	padding-bottom: 7px;
 }
 
 .contextmenu .v-margin-left {
-	padding-left: 15px;
+	padding-left: 7px;
 }
 
 .contextmenu .v-spacing {
@@ -16207,27 +16208,27 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu [class*="margin-top"] > tbody > [class*="firstrow"] > td {
-	padding-top: 15px;
+	padding-top: 7px;
 }
 
 .contextmenu [class*="margin-bottom"] > tbody > [class*="lastrow"] > td {
-	padding-bottom: 15px;
+	padding-bottom: 7px;
 }
 
 .contextmenu [class*="margin-left"] > tbody > [class*="row"] > [class*="captioncell"] {
-	padding-left: 15px;
+	padding-left: 7px;
 }
 
 .contextmenu [class*="margin-left"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h2, .contextmenu [class*="margin-left"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h3, .contextmenu [class*="margin-left"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h4 {
-	left: 15px;
+	left: 7px;
 }
 
 .contextmenu [class*="margin-right"] > tbody > [class*="row"] > [class*="contentcell"] {
-	padding-right: 15px;
+	padding-right: 7px;
 }
 
 .contextmenu [class*="margin-right"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h2, .contextmenu [class*="margin-right"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h3, .contextmenu [class*="margin-right"] > tbody > [class*="row"] > [class*="contentcell"]  > .v-label-h4 {
-	right: 15px;
+	right: 7px;
 }
 
 .contextmenu .v-formlayout > table {
@@ -19294,19 +19295,19 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-gridlayout-margin-top {
-	padding-top: 15px;
+	padding-top: 7px;
 }
 
 .contextmenu .v-gridlayout-margin-bottom {
-	padding-bottom: 15px;
+	padding-bottom: 7px;
 }
 
 .contextmenu .v-gridlayout-margin-left {
-	padding-left: 15px;
+	padding-left: 7px;
 }
 
 .contextmenu .v-gridlayout-margin-right {
-	padding-right: 15px;
+	padding-right: 7px;
 }
 
 .contextmenu .v-gridlayout-spacing-on {

@@ -13,11 +13,9 @@ import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.MainUI;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
+import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.DataFilterUtil;
-import org.sanjose.util.DataUtil;
-import org.sanjose.util.ViewUtil;
+import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.VsjView;
 import org.vaadin.addons.CssCheckBox;
@@ -68,7 +66,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
     @Override
     public void init() {
         setSizeFull();
-        addStyleName("crud-view");
+        setHeight(102, Unit.PERCENTAGE);
 
         //noinspection unchecked
         container = new BeanItemContainer(VsjBancocabecera.class, getService().findAll());
@@ -84,7 +82,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
         gridBanco.setSelectionMode(SelectionMode.SINGLE);
 
         // Fecha Desde Hasta
-        //ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
+        //ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta);
         ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta);
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
@@ -124,7 +122,35 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
             if (e.getProperty().getValue() != null) {
                 container.removeContainerFilters("codCtacontable");
                 container.addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
+                ScpPlancontable cuenta = getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
+                        GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
+                gridBanco.getColumn("numHabersol").setHidden(true);
+                gridBanco.getColumn("numDebesol").setHidden(true);
+                gridBanco.getColumn("numHaberdolar").setHidden(true);
+                gridBanco.getColumn("numDebedolar").setHidden(true);
+                gridBanco.getColumn("numHabermo").setHidden(true);
+                gridBanco.getColumn("numDebemo").setHidden(true);
+                switch (GenUtil.getNumMoneda(cuenta.getIndTipomoneda()).charValue()) {
+                    case '0':
+                        gridBanco.getColumn("numHabersol").setHidden(false);
+                        gridBanco.getColumn("numDebesol").setHidden(false);
+                        break;
+                    case '1':
+                        gridBanco.getColumn("numHaberdolar").setHidden(false);
+                        gridBanco.getColumn("numDebedolar").setHidden(false);
+                        break;
+                    case '2':
+                        gridBanco.getColumn("numHabermo").setHidden(false);
+                        gridBanco.getColumn("numDebemo").setHidden(false);
+                        break;
+                }
             } else {
+                gridBanco.getColumn("numHabersol").setHidden(false);
+                gridBanco.getColumn("numDebesol").setHidden(false);
+                gridBanco.getColumn("numHaberdolar").setHidden(false);
+                gridBanco.getColumn("numDebedolar").setHidden(false);
+                gridBanco.getColumn("numHabermo").setHidden(false);
+                gridBanco.getColumn("numDebemo").setHidden(false);
                 container.removeContainerFilters("codCtacontable");
             }
             //viewLogic.setSaldoDelDia();
@@ -148,8 +174,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
     public void refreshData() {
         container.removeAllItems();
         container.addAll(getService().findAll());
+        gridBanco.setContainerDataSource(container);
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
-        ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
     }
 
     @Override
@@ -178,4 +204,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
         return gridBanco;
     }
 
+    public BancoOperView getBancoOperView() {
+        return bancoOperView;
+    }
 }

@@ -16,4 +16,6 @@ public interface BancoViewing extends NavigatorViewing {
     Collection<Object> getSelectedRows();
 
     BancoService getService();
+
+    BancoOperView getBancoOperView();
 }

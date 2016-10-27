@@ -450,7 +450,7 @@ class BancoItemLogic implements Serializable {
             DataFilterUtil.bindComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
                     view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
                             "N", GenUtil.getYear(view.getDataFechaComprobante().getValue()), codProyecto),
-                    "Sel Rubro proy", "txtDescctaproyecto");
+                    "Rubro proyecto", "txtDescctaproyecto");
             List<Scp_ProyectoPorFinanciera>
                     proyectoPorFinancieraList = view.getService().getProyectoPorFinancieraRepo().findById_CodProyecto(codProyecto);
 
@@ -470,7 +470,7 @@ class BancoItemLogic implements Serializable {
                 financieraEfectList = financieraList;
             }
             DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", financieraEfectList,
-                    "Sel Fuente", "txtDescfinanciera");
+                    "Fuente", "txtDescfinanciera");
             if (financieraEfectList.size() == 1)
                 view.getSelFuente().select(financieraEfectList.get(0).getCodFinanciera());
             // Sel Tipo Movimiento
