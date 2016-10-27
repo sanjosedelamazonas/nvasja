@@ -108,8 +108,8 @@ public class ProcUtil {
         query.setParameter(1, vcb.getCodCajabanco());
         query.setParameter(2, CurrentUser.get());
         query.setParameter(3, sdf.format(vcb.getFecFecha()));
-        query.setParameter(4, vcb.getCodTipomoneda().toString());
-        if (ComprobanteView.PEN.equals(vcb.getCodTipomoneda())) {
+        query.setParameter(4, vcb.getCodTipomoneda());
+        if (PEN.equals(vcb.getCodTipomoneda())) {
             query.setParameter(5, vcb.getNumDebesol());
             query.setParameter(6, vcb.getNumHabersol());
         } else {

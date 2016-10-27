@@ -282,7 +282,6 @@ class ComprobanteLogic implements Serializable {
                 "Tipo Movimiento", "codTipocuenta", "txtTipocuenta", "id");
         //getSelTipoMov().setEnabled(false);
         view.getSelTipoMov().addValueChangeListener(event -> {
-            log.info("selTipoMov: " + event.getProperty().getValue());
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
                 VsjConfiguractacajabanco config = view.getService().getConfiguractacajabancoRepo().findById(Integer.parseInt(tipoMov));
