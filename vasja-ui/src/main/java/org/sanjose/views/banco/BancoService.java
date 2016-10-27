@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -205,6 +206,11 @@ public class BancoService {
     @Transactional
     public List<VsjBancocabecera> findAll() {
         return bancocabeceraRep.findAll();
+    }
+
+    @Transactional
+    public List<VsjBancocabecera> findByFecFechaBetween(Date from, Date to) {
+        return bancocabeceraRep.findByFecFechaBetween(from, to);
     }
 
     public VsjBancocabeceraRep getBancocabeceraRep() {

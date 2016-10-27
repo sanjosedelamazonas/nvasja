@@ -107,7 +107,7 @@ public class MainScreen extends HorizontalLayout {
         else
             printHelper.init();
 
-        for (VsjView view : menu.getViews()) {
+        for (Viewing view : menu.getViews()) {
             view.init();
         }
 

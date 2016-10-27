@@ -1,9 +1,10 @@
 package org.sanjose.repo;
 
-import java.util.List;
-
 import org.sanjose.model.VsjCajabanco;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Date;
+import java.util.List;
 
 public interface VsjCajabancoRep extends JpaRepository<VsjCajabanco, Long> {
 
@@ -12,4 +13,6 @@ public interface VsjCajabancoRep extends JpaRepository<VsjCajabanco, Long> {
     VsjCajabanco findByCodCajabanco(Integer id);
 
     List<VsjCajabanco> findByCodTranscorrelativo(String s);
+
+    List<VsjCajabanco> findByFecFechaBetween(Date from, Date to);
 }

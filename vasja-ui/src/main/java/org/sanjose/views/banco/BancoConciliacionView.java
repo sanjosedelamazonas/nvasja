@@ -19,7 +19,7 @@ import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import org.vaadin.gridtree.GridTree;
 
@@ -37,7 +37,7 @@ import java.util.List;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class BancoConciliacionView extends BancoConciliacionUI implements VsjView, BancoViewing {
+public class BancoConciliacionView extends BancoConciliacionUI implements Viewing, BancoViewing {
 
     public static final String VIEW_NAME = "Conciliacion de bancos";
     private final BancoConciliacionLogic viewLogic = new BancoConciliacionLogic();

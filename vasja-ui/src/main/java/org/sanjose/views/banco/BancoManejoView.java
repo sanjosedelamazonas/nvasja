@@ -14,15 +14,14 @@ import org.sanjose.MainUI;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.DataFilterUtil;
-import org.sanjose.util.DataUtil;
-import org.sanjose.util.ViewUtil;
+import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.GridViewing;
+import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -30,7 +29,7 @@ import java.util.Collection;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class BancoManejoView extends BancoManejoUI implements VsjView, BancoViewing {
+public class BancoManejoView extends BancoManejoUI implements Viewing, BancoViewing, GridViewing {
 
     public static final String VIEW_NAME = "Manejo de Cheques";
     private final BancoManejoLogic viewLogic = new BancoManejoLogic();
@@ -59,6 +58,8 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
 
     private BeanItemContainer<VsjBancocabecera> container;
 
+    private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
+
     private BancoService bancoService;
 
     public BancoManejoView(BancoService bancoService) {
@@ -71,7 +72,7 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
         addStyleName("crud-view");
 
         //noinspection unchecked
-        container = new BeanItemContainer(VsjBancocabecera.class, getService().findAll());
+        container = new BeanItemContainer(VsjBancocabecera.class, getService().findByFecFechaBetween(filterInitialDate, new Date()));
         container.addNestedContainerBean("scpDestino");
         gridBanco.setContainerDataSource(container);
         gridBanco.setEditorEnabled(false);
@@ -85,7 +86,7 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
 
         // Fecha Desde Hasta
         //ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
-        ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta);
+        ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta, this);
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
@@ -112,8 +113,9 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
         // Add filters
         ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
 
+
         // Run date filter
-        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
+        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
         ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
 
@@ -138,14 +140,18 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
         viewLogic.init(this);
         viewLogic.setSaldos(gridSaldoInicial, true);
         viewLogic.setSaldos(gridSaldoFInal, false);
-
     }
 
     public void refreshData() {
+        filter(filterInitialDate, new Date());
+    }
+
+    @Override
+    public void filter(Date fechaDesde, Date fechaHasta) {
         container.removeAllItems();
-        container.addAll(getService().findAll());
+        setFilterInitialDate(fechaDesde);
+        container.addAll(getService().findByFecFechaBetween(fechaDesde, fechaHasta));
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
-        //log.info("Refreshing Manejo De Cheques");
     }
 
     @Override
@@ -213,5 +219,15 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
     @Override
     public BancoOperView getBancoOperView() {
         return MainUI.get().getBancoOperView();
+    }
+
+    @Override
+    public Date getFilterInitialDate() {
+        return filterInitialDate;
+    }
+
+    @Override
+    public void setFilterInitialDate(Date fecha) {
+        this.filterInitialDate = fecha;
     }
 }

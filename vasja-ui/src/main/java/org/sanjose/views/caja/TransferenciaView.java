@@ -11,7 +11,7 @@ import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
 
@@ -26,7 +26,7 @@ import static org.sanjose.util.GenUtil.PEN;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class TransferenciaView extends TransferenciaUI implements ComprobanteViewing, VsjView {
+public class TransferenciaView extends TransferenciaUI implements ComprobanteViewing, Viewing {
 
     public static final String VIEW_NAME = "Transferencia";
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"txtCorrelativo", "codProyecto", "codTercero",

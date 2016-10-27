@@ -28,8 +28,9 @@ import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.validator.TwoCombosValidator;
+import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import java.util.stream.Collectors;
  */
 @SpringComponent
 // @UIScope
-public class CajaGridView extends CajaGridUI implements NavigatorViewing, VsjView {
+public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewing, GridViewing {
 
     public static final String VIEW_NAME = "Operaciones de Caja";
     private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
@@ -75,6 +76,8 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, VsjVie
 
     private BeanItemContainer<VsjCajabanco> container;
 
+    private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
+
     private VsjCajabanco itemSeleccionado;
     private ComprobanteService comprobanteService;
 
@@ -88,7 +91,7 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, VsjVie
         setSizeFull();
         addStyleName("crud-view");
         //noinspection unchecked
-        container = new BeanItemContainer(VsjCajabanco.class, getService().getCajabancoRep().findAll());
+        container = new BeanItemContainer(VsjCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
         
         gridCaja.setContainerDataSource(container);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
@@ -206,9 +209,9 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, VsjVie
         }
 
         // Fecha Desde Hasta
-        ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta);
+        ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta, this);
         // Run date filter
-        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
+        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
         viewLogic.init(this);
     }
@@ -274,8 +277,14 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, VsjVie
     }
 
     public void refreshData() {
+        filter(filterInitialDate, new Date());
+    }
+
+    @Override
+    public void filter(Date fechaDesde, Date fechaHasta) {
         container.removeAllItems();
-        container.addAll(getService().getCajabancoRep().findAll());
+        setFilterInitialDate(fechaDesde);
+        container.addAll(getService().getCajabancoRep().findByFecFechaBetween(fechaDesde, fechaHasta));
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
     }
 
@@ -314,5 +323,15 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, VsjVie
 
     public ComprobanteService getService() {
         return comprobanteService;
+    }
+
+    @Override
+    public Date getFilterInitialDate() {
+        return filterInitialDate;
+    }
+
+    @Override
+    public void setFilterInitialDate(Date filterInitialDate) {
+        this.filterInitialDate = filterInitialDate;
     }
 }

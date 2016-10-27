@@ -13,12 +13,12 @@ import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.VsjCajabanco;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.DataFilterUtil;
-import org.sanjose.util.DataUtil;
-import org.sanjose.util.ViewUtil;
+import org.sanjose.util.*;
+import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
+
+import java.util.Date;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -26,7 +26,7 @@ import org.sanjose.views.sys.VsjView;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, VsjView {
+public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Viewing, GridViewing {
 
     public static final String VIEW_NAME = "Manejo de Caja";
     private final CajaManejoLogic viewLogic = new CajaManejoLogic();
@@ -51,6 +51,8 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vs
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"txtCorrelativo", "flgEnviado", "codOrigenenlace",
             "codComprobanteenlace"};
 
+    private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
+
     private BeanItemContainer<VsjCajabanco> container;
 
     private ComprobanteService comprobanteService;
@@ -65,7 +67,7 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vs
         addStyleName("crud-view");
 
         //noinspection unchecked
-        container = new BeanItemContainer(VsjCajabanco.class, getService().getCajabancoRep().findAll());
+        container = new BeanItemContainer(VsjCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
         gridCaja.setContainerDataSource(container);
         gridCaja.setEditorEnabled(false);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
@@ -77,7 +79,7 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vs
         gridCaja.setSelectionMode(SelectionMode.SINGLE);
 
         // Fecha Desde Hasta
-        ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
+        ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta, this);
 
         gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
@@ -104,7 +106,7 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vs
         ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
 
         // Run date filter
-        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
+        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
         ViewUtil.colorizeRows(gridCaja);
 
@@ -119,8 +121,14 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vs
     }
 
     public void refreshData() {
+        filter(filterInitialDate, new Date());
+    }
+
+    @Override
+    public void filter(Date fechaDesde, Date fechaHasta) {
         container.removeAllItems();
-        container.addAll(getService().getCajabancoRep().findAll());
+        setFilterInitialDate(fechaDesde);
+        container.addAll(getService().getCajabancoRep().findByFecFechaBetween(fechaDesde, fechaHasta));
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
     }
 
@@ -184,5 +192,15 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vs
 
     public Grid getGridCaja() {
         return gridCaja;
+    }
+
+    @Override
+    public Date getFilterInitialDate() {
+        return filterInitialDate;
+    }
+
+    @Override
+    public void setFilterInitialDate(Date filterInitialDate) {
+        this.filterInitialDate = filterInitialDate;
     }
 }

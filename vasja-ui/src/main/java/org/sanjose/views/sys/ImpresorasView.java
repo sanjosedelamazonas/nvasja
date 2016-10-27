@@ -10,7 +10,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import java.util.List;
 
-public class ImpresorasView extends VerticalLayout implements VsjView {
+public class ImpresorasView extends VerticalLayout implements Viewing {
 
     public static final String VIEW_NAME = "Impresoras";
 

@@ -9,7 +9,7 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-public class AboutView extends VerticalLayout implements VsjView {
+public class AboutView extends VerticalLayout implements Viewing {
 
     public static final String VIEW_NAME = "About";
     private final CustomLayout aboutContent;

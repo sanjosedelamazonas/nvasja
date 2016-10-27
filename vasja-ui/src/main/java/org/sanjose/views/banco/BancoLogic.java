@@ -17,7 +17,7 @@ import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.Map;
 
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.verifyNumMoneda;
-import static org.sanjose.views.sys.VsjView.Mode.*;
+import static org.sanjose.views.sys.Viewing.Mode.*;
 
 /**
  * VASJA class
@@ -293,7 +293,7 @@ public class BancoLogic extends BancoItemLogic {
         }
     }
 
-    private void switchMode(VsjView.Mode newMode) {
+    private void switchMode(Viewing.Mode newMode) {
         switch (newMode) {
             case EMPTY:
                 view.getGuardarBtn().setEnabled(false);

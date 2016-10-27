@@ -22,7 +22,7 @@ import java.util.Collection;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class PropiedadView extends PropiedadUI implements VsjView {
+public class PropiedadView extends PropiedadUI implements Viewing {
 
     public static final String VIEW_NAME = "Config del Sistema";
     private static final Logger log = LoggerFactory.getLogger(PropiedadView.class);
