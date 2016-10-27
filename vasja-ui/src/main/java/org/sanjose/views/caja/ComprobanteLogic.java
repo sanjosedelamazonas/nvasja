@@ -273,13 +273,13 @@ class ComprobanteLogic implements Serializable {
         // Rubro Proy
         DataFilterUtil.bindComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
                 view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
-                "Sel Rubro proy", "txtDescctaproyecto");
+                "Rubro proyecto", "txtDescctaproyecto");
         // Fuente
         DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", view.getService().getFinancieraRepo().findAll(),
-                "Sel Fuente", "txtDescfinanciera");
+                "Fuente", "txtDescfinanciera");
 
         DataFilterUtil.bindComboBox(view.getSelTipoMov(), view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true),
-                "Tipo de Movimiento", "codTipocuenta", "txtTipocuenta", "id");
+                "Tipo Movimiento", "codTipocuenta", "txtTipocuenta", "id");
         //getSelTipoMov().setEnabled(false);
         view.getSelTipoMov().addValueChangeListener(event -> {
             log.info("selTipoMov: " + event.getProperty().getValue());

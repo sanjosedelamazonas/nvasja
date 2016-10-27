@@ -10,6 +10,7 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
+import org.sanjose.MainUI;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.VsjBancocabecera;
@@ -209,4 +210,8 @@ public class BancoManejoView extends BancoManejoUI implements VsjView, BancoView
         return gridBanco;
     }
 
+    @Override
+    public BancoOperView getBancoOperView() {
+        return MainUI.get().getBancoOperView();
+    }
 }

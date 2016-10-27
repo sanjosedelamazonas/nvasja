@@ -20,19 +20,19 @@ public class BancoGridLogic {
 
     public BancoGridLogic(BancoViewing view) {
         this.view = view;
-        MainUI.get().getBancoOperView().getViewLogic().setNavigatorView(view);
+        view.getBancoOperView().getViewLogic().setNavigatorView(view);
     }
 
     public void nuevoCheque() {
         view.clearSelection();
-        MainUI.get().getBancoOperView().getViewLogic().nuevoCheque();
-        MainUI.get().getBancoOperView().getViewLogic().setNavigatorView(view);
+        view.getBancoOperView().getViewLogic().nuevoCheque();
+        view.getBancoOperView().getViewLogic().setNavigatorView(view);
         MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
     }
 
     public void editarCheque(VsjBancocabecera vcb) {
-        MainUI.get().getBancoOperView().getViewLogic().editarCheque(vcb);
-        MainUI.get().getBancoOperView().getViewLogic().setNavigatorView(view);
+        view.getBancoOperView().getViewLogic().editarCheque(vcb);
+        view.getBancoOperView().getViewLogic().setNavigatorView(view);
         MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
     }
 

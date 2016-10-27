@@ -81,15 +81,29 @@ public class BancoOperacionesLogic implements Serializable {
                 }
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
+                        List<Object> bancocabeceras = new ArrayList<>();
+                        List<VsjBancocabecera> vsjBancocabecerasEnviadas = null;
                         if (!view.getSelectedRows().isEmpty()) {
-                            MainUI.get().getProcUtil().enviarContabilidadBanco(view.getSelectedRows(), view.getService());
+                            bancocabeceras.addAll(view.getSelectedRows());
                         } else {
-                            List<Object> bancocabeceras = new ArrayList<>();
                             bancocabeceras.add(itemId);
-                            MainUI.get().getProcUtil().enviarContabilidadBanco(bancocabeceras, view.getService());
                         }
-                        view.refreshData();
-                        view.getGridBanco().clearSortOrder();
+                        vsjBancocabecerasEnviadas = MainUI.get().getProcUtil().enviarContabilidadBanco(bancocabeceras, view.getService());
+                        for (VsjBancocabecera vcb : vsjBancocabecerasEnviadas) {
+                            Object cabeceraToRemove = null;
+                            for (Object objVcb : bancocabeceras) {
+                                if (((VsjBancocabecera) objVcb).getCodBancocabecera().equals(vcb.getCodBancocabecera())) {
+                                    cabeceraToRemove = objVcb;
+                                    break;
+                                }
+                            }
+                            if (cabeceraToRemove != null) {
+                                view.getGridBanco().getContainerDataSource().removeItem(cabeceraToRemove);
+                                view.getGridBanco().getContainerDataSource().addItem(vcb);
+                            }
+                        }
+                        //view.refreshData();
+                        //view.getGridBanco().clearSortOrder();
                         view.getGridBanco().sort("fecFecha", SortDirection.DESCENDING);
                     });
                 }

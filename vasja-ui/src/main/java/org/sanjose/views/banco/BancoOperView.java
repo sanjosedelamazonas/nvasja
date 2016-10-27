@@ -30,7 +30,7 @@ import static org.sanjose.util.GenUtil.USD;
 
 /**
  * A view for performing create-read-update-delete operations on products.
- *
+ * <p>
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
@@ -59,12 +59,12 @@ public class BancoOperView extends BancoOperUI implements VsjView {
 
     private static final Logger log = LoggerFactory.getLogger(BancoOperView.class);
 
-    private final Field[] allFields = new Field[] { fechaDoc, selProyecto, selTercero,
+    private final Field[] allFields = new Field[]{fechaDoc, selProyecto, selTercero,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosaDetalle, serieDoc, numDoc,
-            };
+    };
     private final Field[] cabezeraFields = new Field[]{chkCobrado, dataFechaComprobante, selCuenta, selCodAuxCabeza,
-            glosaCabeza, cheque };
+            glosaCabeza, cheque};
     private BancoLogic viewLogic = null;
     private BeanItemContainer<VsjBancodetalle> container;
     private GeneratedPropertyContainer gpContainer;
@@ -105,9 +105,9 @@ public class BancoOperView extends BancoOperUI implements VsjView {
                 new PropertyValueGenerator<String>() {
                     @Override
                     public String getValue(Item item, Object itemId,
-                                            Object propertyId) {
-                        return ((VsjBancocabecera)item.getItemProperty("vsjBancocabecera").getValue()).getTxtCorrelativo() +
-                                "-" + ((VsjBancodetallePK)item.getItemProperty("id").getValue()).getNumItem();
+                                           Object propertyId) {
+                        return ((VsjBancocabecera) item.getItemProperty("vsjBancocabecera").getValue()).getTxtCorrelativo() +
+                                "-" + ((VsjBancodetallePK) item.getItemProperty("id").getValue()).getNumItem();
                     }
 
                     @Override

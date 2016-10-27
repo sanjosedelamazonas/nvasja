@@ -53,7 +53,7 @@ $editor-embed-background-color: darken($editor-background-color, 5%) !default;
 $editor-raised-background-color: lighten($editor-background-color, 10%) !default;
 $editor-caption-font-color: valo-font-color($editor-background-color, 0.5) !default;
 
-$v-layout-margin-top: round($v-unit-size / 1.5) !default;
+$v-layout-margin-top: round($v-unit-size / 3.0) !default;
 $v-layout-margin-right: $v-layout-margin-top !default;
 $v-layout-margin-bottom: $v-layout-margin-top !default;
 $v-layout-margin-left: $v-layout-margin-top !default;

@@ -178,8 +178,9 @@ public class ProcUtil {
     }
 
     @Transactional(readOnly = false)
-    public void enviarContabilidadBancoInTransaction(Collection<Object> vcbs, BancoService service) {
+    public List<VsjBancocabecera> enviarContabilidadBancoInTransaction(Collection<Object> vcbs, BancoService service) {
         List<VsjBancocabecera> vsjBancocabeceras = new ArrayList<>();
+        List<VsjBancocabecera> vsjBancocabecerasEnviados = new ArrayList<>();
         for (Object objVcb : vcbs) {
             curBancoCabecera = (VsjBancocabecera) objVcb;
             if (curBancoCabecera.isEnviado()) {
@@ -193,24 +194,29 @@ public class ProcUtil {
             if (tipocambios.isEmpty()) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 Notification.show("Falta tipo de cambio para el dia: " + sdf.format(curBancoCabecera.getFecFecha()), Notification.Type.WARNING_MESSAGE);
-                return;
+                return vsjBancocabecerasEnviados;
             }
         }
         for (VsjBancocabecera vcbS : vsjBancocabeceras) {
             curBancoCabecera = vcbS;
             log.info("Enviando: " + curBancoCabecera);
             String result = enviarContabilidadBanco(curBancoCabecera);
+            curBancoCabecera = service.getBancocabeceraRep().findByCodBancocabecera(curBancoCabecera.getCodBancocabecera());
+            service.getBancocabeceraRep().save(curBancoCabecera);
+            if (result.contains("correctamente"))
+                vsjBancocabecerasEnviados.add(curBancoCabecera);
             log.info("Resultado: " + result);
             Notification.show("Operacion: " + curBancoCabecera.getCodBancocabecera(), result, Notification.Type.TRAY_NOTIFICATION);
         }
         if (vcbs.size() != vsjBancocabeceras.size()) {
             Notification.show("!Attention!", "!Algunas operaciones eran omitidas por ya ser enviadas!", Notification.Type.TRAY_NOTIFICATION);
         }
+        return vsjBancocabecerasEnviados;
     }
 
-    public void enviarContabilidadBanco(Collection<Object> vcbs, BancoService service) {
+    public List<VsjBancocabecera> enviarContabilidadBanco(Collection<Object> vcbs, BancoService service) {
         try {
-            enviarContabilidadBancoInTransaction(vcbs, service);
+            return enviarContabilidadBancoInTransaction(vcbs, service);
         } catch (PersistenceException pe) {
             Notification.show("Problema al enviar a contabilidad operacion: " + (curBancoCabecera != null ? curBancoCabecera.getCodBancocabecera() : 0)
                             + "\n\n" + pe.getMessage() +
@@ -218,6 +224,7 @@ public class ProcUtil {
                             + (pe.getCause() != null && pe.getCause().getCause() != null ? "\n" + pe.getCause().getCause().getMessage() : "")
                     , Notification.Type.ERROR_MESSAGE);
             pe.printStackTrace();
+            return new ArrayList<>();
         }
     }
 
