@@ -7,15 +7,12 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.Grid.SelectionMode;
 import org.sanjose.model.VsjConfiguracioncaja;
-import org.sanjose.repo.*;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.Date;
@@ -32,7 +29,6 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjVie
 
     public static final String VIEW_NAME = "Cajas";
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionCajaView.class);
-    public final VsjConfiguracioncajaRep repo;
     private final ConfiguracionCajaLogic viewLogic = new ConfiguracionCajaLogic(this);
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
             "codConfiguracion", "txtConfiguracion", "indTipomoneda",
@@ -42,25 +38,16 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjVie
             6, 12, 2,
             6, 6, 6
     };
-    private ScpPlancontableRep planRepo;
-    private ScpDestinoRep destinoRepo;
-    private ScpProyectoRep proyectoRepo;
-    private ScpCategoriaproyectoRep categoriaproyectoRepo;
+    private ComprobanteService service;
 
-    @Autowired
-    public ConfiguracionCajaView(VsjConfiguracioncajaRep repo, ScpPlancontableRep planRepo,
-                                 ScpDestinoRep destinoRepo, ScpProyectoRep proyectoRepo, ScpCategoriaproyectoRep categoriaproyectoRepo) {
-        this.repo = repo;
-        this.planRepo = planRepo;
-        this.destinoRepo = destinoRepo;
-        this.proyectoRepo = proyectoRepo;
-        this.categoriaproyectoRepo = categoriaproyectoRepo;
+    public ConfiguracionCajaView(ComprobanteService comprobanteService) {
+        service = comprobanteService;
         setSizeFull();
     }
 
     @Override
     public void init() {
-        @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguracioncaja> container = new BeanItemContainer(VsjConfiguracioncaja.class, repo.findAll());
+        @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguracioncaja> container = new BeanItemContainer(VsjConfiguracioncaja.class, getService().getConfiguracioncajaRepo().findAll());
         gridConfigCaja
         	.setContainerDataSource(container);
         gridConfigCaja.setColumnOrder(VISIBLE_COLUMN_IDS);
@@ -70,27 +57,26 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjVie
         gridConfigCaja.getColumn("codConfiguracion").setEditable(false);
                
         gridConfigCaja.setSelectionMode(SelectionMode.MULTI);
-        HeaderRow filterRow = gridConfigCaja.appendHeaderRow();
-        
+
         gridConfigCaja.setEditorFieldGroup(
                 new BeanFieldGroup<>(VsjConfiguracioncaja.class));
 
         ComboBox selCategoriaproy = new ComboBox();
-        DataFilterUtil.bindComboBox(selCategoriaproy, "codCategoriaproyecto", categoriaproyectoRepo.findAll(), "Sel Cat Proyecto", "txtDescripcion");
+        DataFilterUtil.bindComboBox(selCategoriaproy, "codCategoriaproyecto", getService().getScpCategoriaproyectoRep().findAll(), "Sel Cat Proyecto", "txtDescripcion");
         gridConfigCaja.getColumn("codCategoriaproyecto").setEditorField(selCategoriaproy);
 
         ComboBox selCtacontable = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
+        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
                 '0', 'N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridConfigCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
         
 
         ComboBox selDestino = new ComboBox();
-        DataFilterUtil.bindComboBox(selDestino, "codDestino", destinoRepo.findByIndTipodestino('3'), "Sel Tercero", "txtNombredestino");
+        DataFilterUtil.bindComboBox(selDestino, "codDestino", getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero", "txtNombredestino");
         gridConfigCaja.getColumn("codDestino").setEditorField(selDestino);
 
         ComboBox selProyecto = new ComboBox();
-        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", proyectoRepo.findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
+        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", getService().getProyectoRepo().findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
         //selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
         gridConfigCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
@@ -104,10 +90,14 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjVie
         viewLogic.init();
     }
 
+    public void refreshData() {
+        gridConfigCaja.getContainerDataSource().removeAllItems();
+        ((BeanItemContainer) gridConfigCaja.getContainerDataSource()).addAll(getService().getConfiguracioncajaRepo().findAll());
+    }
 
     @Override
     public void enter(ViewChangeEvent event) {
-        viewLogic.enter(event.getParameters());
+        refreshData();
     }
 
     public void clearSelection() {
@@ -119,7 +109,11 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjVie
     }
 
     public void removeRow(VsjConfiguracioncaja vsj) {
-    	repo.delete(vsj);    	
-    	gridConfigCaja.getContainerDataSource().removeItem(vsj);
+        getService().getConfiguracioncajaRepo().delete(vsj);
+        gridConfigCaja.getContainerDataSource().removeItem(vsj);
+    }
+
+    public ComprobanteService getService() {
+        return service;
     }
 }

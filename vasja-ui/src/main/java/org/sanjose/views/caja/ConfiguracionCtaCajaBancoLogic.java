@@ -41,8 +41,8 @@ public class ConfiguracionCtaCajaBancoLogic implements Serializable {
             @Override
             public void postCommit(CommitEvent commitEvent) throws CommitException {
                 Object item = view.gridConfigCtaCajaBanco.getContainerDataSource().getItem(view.gridConfigCtaCajaBanco.getEditedItemId());
-                if (item!=null) 
-                	view.repo.save((VsjConfiguractacajabanco)((BeanItem)item).getBean());
+                if (item!=null)
+                    view.getService().getConfiguractacajabancoRepo().save((VsjConfiguractacajabanco) ((BeanItem) item).getBean());
             }
         });
         view.btnEliminar.addClickListener(e -> deleteConfiguracion());
@@ -50,7 +50,7 @@ public class ConfiguracionCtaCajaBancoLogic implements Serializable {
     
     private void newConfiguracion() {
         view.clearSelection();
-        view.gridConfigCtaCajaBanco.getContainerDataSource().addItem(new VsjConfiguractacajabanco());
+        view.gridConfigCtaCajaBanco.getContainerDataSource().addItemAt(0, new VsjConfiguractacajabanco());
     }
     
     private void deleteConfiguracion() {

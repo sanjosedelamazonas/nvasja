@@ -44,20 +44,17 @@ public class ConfiguracionCajaLogic implements Serializable {
             @Override
             public void postCommit(CommitEvent commitEvent) throws CommitException {
                 Object item = view.gridConfigCaja.getContainerDataSource().getItem(view.gridConfigCaja.getEditedItemId());
-                if (item!=null) 
-                	view.repo.save((VsjConfiguracioncaja)((BeanItem)item).getBean());
+                if (item!=null)
+                    view.getService().getConfiguracioncajaRepo().save((VsjConfiguracioncaja) ((BeanItem) item).getBean());
             }
         });
         
         view.btnEliminar.addClickListener(e -> deleteConfiguracion());
     }
-
-    public void enter(String productId) {
-    }
     
     private void newConfiguracion() {
         view.clearSelection();
-        view.gridConfigCaja.getContainerDataSource().addItem(new VsjConfiguracioncaja());
+        view.gridConfigCaja.getContainerDataSource().addItemAt(0, new VsjConfiguracioncaja());
     }
 
     private void deleteConfiguracion() {

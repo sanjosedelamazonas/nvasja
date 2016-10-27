@@ -60,18 +60,15 @@ public class MainUI extends UI {
                    ComprobanteService comprobanteService,
                    BancoService bancoService,
                    MsgUsuarioRep msgUsuarioRep,
-                   ProcUtil procUtil,
-                   //EntityManager em,
-                   ConfiguracionCajaView configuracionCajaView,
-                   ConfiguracionCtaCajaBancoView confView) {
+                   ProcUtil procUtil) {
         this.propiedadView = new PropiedadView(propiedadService);
         this.msgUsuarioRep = msgUsuarioRep;
         this.procUtil = procUtil;
-        this.confView = confView;
+        this.confView = new ConfiguracionCtaCajaBancoView(comprobanteService);
         this.cajaGridView = new CajaGridView(comprobanteService);
         this.comprobanteView = new ComprobanteView(comprobanteService);
         this.transferenciaView = new TransferenciaView(comprobanteService);
-        this.configuracionCajaView = configuracionCajaView;
+        this.configuracionCajaView = new ConfiguracionCajaView(comprobanteService);
         this.bancoOperView = new BancoOperView(bancoService);
         this.cajaManejoView = new CajaManejoView(comprobanteService);
         this.bancoManejoView = new BancoManejoView(bancoService);
