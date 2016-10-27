@@ -34,10 +34,12 @@ public class ComprobanteService {
     private final ScpCargocuartaRep cargocuartaRepo;
     private final ScpTipodocumentoRep tipodocumentoRepo;
     private final EntityManager em;
+    private ScpCategoriaproyectoRep scpCategoriaproyectoRep;
     private ScpTipocambioRep tipocambioRep;
 
     @Autowired
-    public ComprobanteService(VsjCajabancoRep cajabancoRep, VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
+    public ComprobanteService(VsjCajabancoRep cajabancoRep, VsjConfiguractacajabancoRep configuractacajabancoRepo,
+                              ScpCategoriaproyectoRep scpCategoriaproyectoRep, ScpPlancontableRep planRepo,
                               ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                               ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
                               ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
@@ -46,6 +48,7 @@ public class ComprobanteService {
                                       tipocambioRep, EntityManager em) {
         this.cajabancoRep = cajabancoRep;
         this.configuractacajabancoRepo = configuractacajabancoRepo;
+        this.scpCategoriaproyectoRep = scpCategoriaproyectoRep;
         this.planRepo = planRepo;
         this.planEspRepo = planEspRepo;
         this.proyectoRepo = proyectoRepo;
@@ -176,6 +179,10 @@ public class ComprobanteService {
 
     public ScpTipocambioRep getTipocambioRep() {
         return tipocambioRep;
+    }
+
+    public ScpCategoriaproyectoRep getScpCategoriaproyectoRep() {
+        return scpCategoriaproyectoRep;
     }
 
     public EntityManager getEm() {

@@ -11,14 +11,10 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.model.VsjConfiguractacajabanco;
-import org.sanjose.repo.ScpPlancontableRep;
-import org.sanjose.repo.ScpPlanespecialRep;
-import org.sanjose.repo.VsjConfiguractacajabancoRep;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.VsjView;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 
@@ -34,7 +30,6 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
 
     public static final String VIEW_NAME = "Movimientos";
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionCtaCajaBancoView.class);
-    public final VsjConfiguractacajabancoRep repo;
     private final ConfiguracionCtaCajaBancoLogic viewLogic = new ConfiguracionCtaCajaBancoLogic(this);
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
             "activo", "id", "codTipocuenta", "txtTipocuenta", "codCtacontablecaja",
@@ -44,24 +39,16 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
             3, 3, 3, 12, 6,
             6, 6, 3, 3, 3, 3
     };
-    private ScpPlancontableRep planRepo;
-    private ScpPlanespecialRep planEspRepo;
+    private ComprobanteService service;
 
-    @Autowired
-    public ConfiguracionCtaCajaBancoView(VsjConfiguractacajabancoRep repo, ScpPlancontableRep planRepo, ScpPlanespecialRep planEspRepo) {
-        this.repo = repo;
-        this.planRepo = planRepo;
-        this.planEspRepo = planEspRepo;
+    public ConfiguracionCtaCajaBancoView(ComprobanteService comprobanteService) {
+        this.service = comprobanteService;
         setSizeFull();
-    }
-
-    public ConfiguracionCtaCajaBancoView() {
-        this(null, null, null);
     }
 
     @Override
     public void init() {
-        @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguractacajabanco> container = new BeanItemContainer(VsjConfiguractacajabanco.class, repo.findAll());
+        @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguractacajabanco> container = new BeanItemContainer(VsjConfiguractacajabanco.class, service.getConfiguractacajabancoRepo().findAll());
         gridConfigCtaCajaBanco
         	.setContainerDataSource(container);
         gridConfigCtaCajaBanco.setColumnOrder(VISIBLE_COLUMN_IDS);
@@ -71,26 +58,25 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         gridConfigCtaCajaBanco.getColumn("id").setEditable(false);
 
         gridConfigCtaCajaBanco.setSelectionMode(SelectionMode.MULTI);
-        //gridConfigCtaCajaBanco.appendHeaderRow();
 
         gridConfigCtaCajaBanco.setEditorFieldGroup(
                 new BeanFieldGroup<>(VsjConfiguractacajabanco.class));
 
         ComboBox selCtacontablecaja = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", planRepo.
+        DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", service.getPlanRepo().
                 findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
                         '0','N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
         gridConfigCtaCajaBanco.getColumn("codCtacontablecaja").setEditorField(selCtacontablecaja);
 
         ComboBox selCtacontablegasto = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable",
-                planRepo.findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
+                service.getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
                         '0', 'N', GenUtil.getCurYear(), "101%", "102%", "104%", "106%")
                 , "Sel cta contable", "txtDescctacontable");
         gridConfigCtaCajaBanco.getColumn("codCtacontablegasto").setEditorField(selCtacontablegasto);
 
         ComboBox selCtaespecial = new ComboBox();
-        DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial", planEspRepo.findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()), "Sel cta especial", "txtDescctaespecial");
+        DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial", service.getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()), "Sel cta especial", "txtDescctaespecial");
         gridConfigCtaCajaBanco.getColumn("codCtaespecial").setEditorField(selCtaespecial);
 
         gridConfigCtaCajaBanco.getColumn("activo").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
@@ -104,8 +90,15 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         viewLogic.init();
     }
 
+
+    public void refreshData() {
+        gridConfigCtaCajaBanco.getContainerDataSource().removeAllItems();
+        ((BeanItemContainer) gridConfigCtaCajaBanco.getContainerDataSource()).addAll(service.getConfiguractacajabancoRepo().findAll());
+    }
+
     @Override
     public void enter(ViewChangeEvent event) {
+        refreshData();
     }
 
     public void clearSelection() {
@@ -117,7 +110,11 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
     }
 
     public void removeRow(VsjConfiguractacajabanco vsj) {
-    	repo.delete(vsj);    	
-    	gridConfigCtaCajaBanco.getContainerDataSource().removeItem(vsj);
+        service.getConfiguractacajabancoRepo().delete(vsj);
+        gridConfigCtaCajaBanco.getContainerDataSource().removeItem(vsj);
+    }
+
+    public ComprobanteService getService() {
+        return service;
     }
 }
