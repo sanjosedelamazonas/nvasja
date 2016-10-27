@@ -18,7 +18,7 @@ import org.sanjose.model.VsjBancodetallePK;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
 
@@ -34,7 +34,7 @@ import static org.sanjose.util.GenUtil.USD;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class BancoOperView extends BancoOperUI implements VsjView {
+public class BancoOperView extends BancoOperUI implements Viewing {
 
     public static final String VIEW_NAME = "Cheques";
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"Numero", "codProyecto", "codTercero",

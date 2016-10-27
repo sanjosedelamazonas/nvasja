@@ -13,7 +13,7 @@ import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.StateUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         tView.nuevaTransBtn.addClickListener(ev -> nuevaTrans());
         tView.finalizarTransBtn.addClickListener(ev -> saveTransferencia());
         state = new StateUtil();
-        switchMode(VsjView.Mode.VIEW);
+        switchMode(Viewing.Mode.VIEW);
     }
 
     private void nuevaTrans() {
@@ -71,7 +71,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
             super.nuevoComprobante();
             view.getSelMoneda().setEnabled(true);
         }
-        switchMode(VsjView.Mode.NEW);
+        switchMode(Viewing.Mode.NEW);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 && !tView.getSelectedRow().isAnula()) {
             state.edit();
             editarComprobante(tView.getSelectedRow());
-            switchMode(VsjView.Mode.EDIT);
+            switchMode(Viewing.Mode.EDIT);
         }
     }
 
@@ -88,7 +88,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         if (!view.getGuardarBtn().isEnabled()) {
             super.viewComprobante(tView.getSelectedRow());
             tView.setEnableFields(false);
-            switchMode(VsjView.Mode.VIEW);
+            switchMode(Viewing.Mode.VIEW);
         }
     }
 
@@ -114,7 +114,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         } else
             tView.getGridTrans().select(tView.getContainer().firstItemId());
         tView.setSaldoTrans();
-        switchMode(VsjView.Mode.VIEW);
+        switchMode(Viewing.Mode.VIEW);
         state.edit();
     }
 
@@ -166,7 +166,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 tView.gridTrans.sort("fecFregistro", SortDirection.DESCENDING);
             }
             tView.setSaldoTrans();
-            switchMode(VsjView.Mode.VIEW);
+            switchMode(Viewing.Mode.VIEW);
         } catch (FieldGroup.CommitException ce) {
             Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             log.info("Got Commit Exception: " + ce.getMessage());
@@ -180,7 +180,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         tView.getContainer().addAll(savedOperaciones);
         view.refreshData();
         state.save();
-        switchMode(VsjView.Mode.VIEW);
+        switchMode(Viewing.Mode.VIEW);
     }
 
     public void editarTransferencia(VsjCajabanco vcb) throws NonEditableException {
@@ -199,14 +199,14 @@ public class TransferenciaLogic extends ComprobanteLogic {
         for (VsjCajabanco oper : operaciones) {
             tView.getContainer().addBean(oper);
         }
-        switchMode(VsjView.Mode.VIEW);
+        switchMode(Viewing.Mode.VIEW);
         state.reset();
         if (!tView.getContainer().getItemIds().isEmpty())
             tView.getGridTrans().select(tView.getContainer().getItemIds().toArray()[0]);
     }
 
     @Override
-    protected void switchMode(VsjView.Mode newMode) {
+    protected void switchMode(Viewing.Mode newMode) {
         super.switchMode(newMode);
         switch (newMode) {
             case EMPTY:

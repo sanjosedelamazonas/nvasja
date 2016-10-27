@@ -25,7 +25,7 @@ public class Menu extends CssLayout {
     private final Map<String, Button> viewButtons = new HashMap<>();
     private final CssLayout menuItemsLayout;
     private final CssLayout menuPart;
-    private List<VsjView> viewList = new ArrayList<>();
+    private List<Viewing> viewList = new ArrayList<>();
 
     public Menu(Navigator navigator) {
         this.navigator = navigator;
@@ -94,7 +94,7 @@ public class Menu extends CssLayout {
      * @param icon
      *            view icon in the menu
      */
-    public void addView(VsjView view, final String name, String caption,
+    public void addView(Viewing view, final String name, String caption,
                         Resource icon) {
         navigator.addView(name, view);
         viewList.add(view);
@@ -123,7 +123,7 @@ public class Menu extends CssLayout {
         createViewButton(name, caption, icon);
     }
 
-    public List<VsjView> getViews() {
+    public List<Viewing> getViews() {
         return viewList;
     }
 

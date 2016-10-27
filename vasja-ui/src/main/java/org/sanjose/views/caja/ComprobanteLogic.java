@@ -25,7 +25,7 @@ import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.USD;
-import static org.sanjose.views.sys.VsjView.Mode.NEW;
+import static org.sanjose.views.sys.Viewing.Mode.NEW;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -60,7 +60,7 @@ class ComprobanteLogic implements Serializable {
     private boolean isLoading = false;
     private boolean isEdit = false;
     private ProcUtil procUtil;
-    private VsjView.Mode mode;
+    private Viewing.Mode mode;
     private SaldoChecker saldoChecker;
 
     public void init(ComprobanteViewing comprobanteView) {
@@ -81,9 +81,9 @@ class ComprobanteLogic implements Serializable {
         fieldGroup.discard();
         if (mode.equals(NEW)) {
             nuevoComprobante();
-            switchMode(VsjView.Mode.EMPTY);
+            switchMode(Viewing.Mode.EMPTY);
         } else {
-            switchMode(VsjView.Mode.VIEW);
+            switchMode(Viewing.Mode.VIEW);
         }
     }
 
@@ -103,7 +103,7 @@ class ComprobanteLogic implements Serializable {
 
             view.getNumVoucher().setValue(savedCajabanco.getTxtCorrelativo());
             view.refreshData();
-            switchMode(VsjView.Mode.VIEW);
+            switchMode(Viewing.Mode.VIEW);
             if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
                 ViewUtil.printComprobante(savedCajabanco);
             }
@@ -116,7 +116,7 @@ class ComprobanteLogic implements Serializable {
             Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage() + "\n" + sb.toString(), Notification.Type.ERROR_MESSAGE);
             log.warn("Got Commit Exception: " + ce.getMessage() + "\n" + sb.toString());
             view.setEnableFields(true);
-            switchMode(VsjView.Mode.EDIT);
+            switchMode(Viewing.Mode.EDIT);
         }
     }
 
@@ -145,9 +145,9 @@ class ComprobanteLogic implements Serializable {
         savedCajabanco = vcb;
         bindForm(vcb);
         if (vcb.isReadOnly())
-            switchMode(VsjView.Mode.VIEW);
+            switchMode(Viewing.Mode.VIEW);
         else
-            switchMode(VsjView.Mode.EDIT);
+            switchMode(Viewing.Mode.EDIT);
     }
 
     public void viewComprobante(VsjCajabanco vcb) {
@@ -173,7 +173,7 @@ class ComprobanteLogic implements Serializable {
             savedCajabanco = view.getService().getCajabancoRep().save(item);
             view.getNumVoucher().setValue(Integer.toString(savedCajabanco.getCodCajabanco()));
             savedCajabanco = null;
-            switchMode(VsjView.Mode.VIEW);
+            switchMode(Viewing.Mode.VIEW);
             view.refreshData();
         } catch (CommitException ce) {
             Notification.show("Error al anular el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
@@ -712,7 +712,7 @@ class ComprobanteLogic implements Serializable {
         return item;
     }
 
-    protected void switchMode(VsjView.Mode newMode) {
+    protected void switchMode(Viewing.Mode newMode) {
         mode = newMode;
         switch (newMode) {
             case EMPTY:

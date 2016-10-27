@@ -24,6 +24,7 @@ import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
+import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
 
 import javax.print.PrintException;
@@ -206,22 +207,22 @@ public class ViewUtil {
 
 
     public static void setupDateFilters(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta, Date defDesde, Date defHasta) {
-        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, defDesde, defHasta);
+        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, defDesde, defHasta, null);
     }
 
-    public static void setupDateFiltersThisMonth(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta) {
-        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(new Date()), GenUtil.getEndOfDay(new Date()));
+    public static void setupDateFiltersThisMonth(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta, GridViewing viewing) {
+        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(new Date()), GenUtil.getEndOfDay(new Date()), viewing);
     }
 
-    public static void setupDateFiltersPreviousMonth(Container.Filterable container, DateField fechaDesde, DateField fechaHasta) {
-        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -60)), GenUtil.getEndOfDay(new Date()));
+    public static void setupDateFiltersPreviousMonth(Container.Filterable container, DateField fechaDesde, DateField fechaHasta, GridViewing viewing) {
+        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -60)), GenUtil.getEndOfDay(new Date()), viewing);
     }
 
-    public static void setupDateFiltersThisDay(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta) {
-        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfDay(new Date()), GenUtil.getEndOfDay(new Date()));
+    public static void setupDateFiltersThisDay(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta, GridViewing viewing) {
+        setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfDay(new Date()), GenUtil.getEndOfDay(new Date()), viewing);
     }
 
-    private static void setupDateFilters(Container.Filterable container, String propertyId, DateField fechaDesde, DateField fechaHasta, Date defDesde, Date defHasta) {
+    private static void setupDateFilters(Container.Filterable container, String propertyId, DateField fechaDesde, DateField fechaHasta, Date defDesde, Date defHasta, GridViewing viewing) {
         // Fecha Desde
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         ObjectProperty<Timestamp> prop = new ObjectProperty<>(ts);
@@ -229,7 +230,7 @@ public class ViewUtil {
         fechaDesde.setConverter(DateToTimestampConverter.INSTANCE);
         fechaDesde.setResolution(Resolution.DAY);
         fechaDesde.setValue(defDesde);
-        fechaDesde.addValueChangeListener(valueChangeEvent -> ViewUtil.filterComprobantes(container, propertyId, fechaDesde, fechaHasta));
+        fechaDesde.addValueChangeListener(valueChangeEvent -> filterComprobantes(container, propertyId, fechaDesde, fechaHasta, viewing));
 
         ts = new Timestamp(System.currentTimeMillis());
         prop = new ObjectProperty<>(ts);
@@ -238,19 +239,23 @@ public class ViewUtil {
         fechaHasta.setResolution(Resolution.DAY);
 
         fechaHasta.setValue(defHasta);
-        fechaHasta.addValueChangeListener(valueChangeEvent -> filterComprobantes(container, propertyId, fechaDesde, fechaHasta));
+        fechaHasta.addValueChangeListener(valueChangeEvent -> filterComprobantes(container, propertyId, fechaDesde, fechaHasta, viewing));
     }
 
 
-    public static void filterComprobantes(Container.Filterable container, String propertyId, DateField fechaDesde, DateField fechaHasta) {
+    public static void filterComprobantes(Container.Filterable container, String propertyId, DateField fechaDesde, DateField fechaHasta, GridViewing viewing) {
         ((Container.SimpleFilterable) container).removeContainerFilters(propertyId);
         Date from, to = null;
-        if (fechaDesde.getValue()!=null || fechaHasta.getValue()!=null ) {
-            from = (fechaDesde.getValue()!=null ? fechaDesde.getValue() : new Date(0));
-            to = (fechaHasta.getValue()!=null ? fechaHasta.getValue() : new Date(Long.MAX_VALUE));
-            container.addContainerFilter(
-                    new Between(propertyId,
-                            from, to));
+        if (fechaDesde.getValue() != null && viewing != null && viewing.getFilterInitialDate().compareTo(fechaDesde.getValue()) > 0) {
+            viewing.filter(fechaDesde.getValue(), new Date());
+        } else {
+            if (fechaDesde.getValue() != null || fechaHasta.getValue() != null) {
+                from = (fechaDesde.getValue() != null ? fechaDesde.getValue() : new Date(0));
+                to = (fechaHasta.getValue() != null ? fechaHasta.getValue() : new Date(Long.MAX_VALUE));
+                container.addContainerFilter(
+                        new Between(propertyId,
+                                from, to));
+            }
         }
     }
 

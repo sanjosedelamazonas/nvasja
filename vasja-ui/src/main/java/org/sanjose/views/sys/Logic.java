@@ -7,5 +7,5 @@ import java.io.Serializable;
  */
 public interface Logic extends Serializable {
 
-    VsjView getView();
+    Viewing getView();
 }

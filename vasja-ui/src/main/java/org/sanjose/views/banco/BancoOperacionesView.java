@@ -17,10 +17,12 @@ import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.GridViewing;
+import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -28,7 +30,7 @@ import java.util.Collection;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class BancoOperacionesView extends BancoOperacionesUI implements VsjView, BancoViewing {
+public class BancoOperacionesView extends BancoOperacionesUI implements Viewing, BancoViewing, GridViewing {
 
     public static final String VIEW_NAME = "Operaciones de Cheques";
     private final BancoOperacionesLogic viewLogic = new BancoOperacionesLogic();
@@ -57,6 +59,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
 
     private BeanItemContainer<VsjBancocabecera> container;
 
+    private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
+
     private BancoService bancoService;
 
     public BancoOperacionesView(BancoService bancoService) {
@@ -69,7 +73,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
         setHeight(102, Unit.PERCENTAGE);
 
         //noinspection unchecked
-        container = new BeanItemContainer(VsjBancocabecera.class, getService().findAll());
+        container = new BeanItemContainer(VsjBancocabecera.class, getService().findByFecFechaBetween(filterInitialDate, new Date()));
         container.addNestedContainerBean("scpDestino");
         gridBanco.setContainerDataSource(container);
         gridBanco.setEditorEnabled(false);
@@ -83,7 +87,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
 
         // Fecha Desde Hasta
         //ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta);
-        ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta);
+        ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta, this);
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
@@ -110,7 +114,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
         ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, null);
 
         // Run date filter
-        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta);
+        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
         ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
 
@@ -171,10 +175,16 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
         viewLogic.init(this);
     }
 
+
     public void refreshData() {
+        filter(filterInitialDate, new Date());
+    }
+
+    @Override
+    public void filter(Date fechaDesde, Date fechaHasta) {
         container.removeAllItems();
-        container.addAll(getService().findAll());
-        gridBanco.setContainerDataSource(container);
+        setFilterInitialDate(fechaDesde);
+        container.addAll(getService().findByFecFechaBetween(fechaDesde, fechaHasta));
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
     }
 
@@ -206,5 +216,15 @@ public class BancoOperacionesView extends BancoOperacionesUI implements VsjView,
 
     public BancoOperView getBancoOperView() {
         return bancoOperView;
+    }
+
+    @Override
+    public Date getFilterInitialDate() {
+        return filterInitialDate;
+    }
+
+    @Override
+    public void setFilterInitialDate(Date filterInitialDate) {
+        this.filterInitialDate = filterInitialDate;
     }
 }

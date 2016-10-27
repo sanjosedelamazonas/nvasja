@@ -18,7 +18,7 @@ import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.views.sys.MainScreen;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 
 import javax.imageio.ImageIO;
 import javax.print.*;
@@ -41,8 +41,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
-public class PrintHelper extends VerticalLayout implements VsjView {
-	
+public class PrintHelper extends VerticalLayout implements Viewing {
+
     public static final String VIEW_NAME = "Imprimir service";
     private static final Logger logger = Logger
 			.getLogger(PrintHelper.class.getName());

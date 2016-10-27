@@ -12,7 +12,7 @@ import org.sanjose.model.VsjConfiguracioncaja;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 
 import java.util.Collection;
 import java.util.Date;
@@ -25,7 +25,7 @@ import java.util.Date;
  */
 @SpringComponent
 // @UIScope
-public class ConfiguracionCajaView extends ConfiguracionCajaUI implements VsjView {
+public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewing {
 
     public static final String VIEW_NAME = "Cajas";
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionCajaView.class);

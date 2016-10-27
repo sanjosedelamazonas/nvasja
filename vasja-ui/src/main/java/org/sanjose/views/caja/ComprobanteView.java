@@ -9,7 +9,7 @@ import org.sanjose.MainUI;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
 
@@ -23,7 +23,7 @@ import static org.sanjose.util.GenUtil.PEN;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing, VsjView {
+public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing, Viewing {
 
     public static final String VIEW_NAME = "Caja";
     private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);

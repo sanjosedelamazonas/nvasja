@@ -14,7 +14,7 @@ import org.sanjose.model.VsjConfiguractacajabanco;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.VsjView;
+import org.sanjose.views.sys.Viewing;
 
 import java.util.Collection;
 
@@ -26,7 +26,7 @@ import java.util.Collection;
  */
 @SpringComponent
 // @UIScope
-public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI implements VsjView {
+public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI implements Viewing {
 
     public static final String VIEW_NAME = "Movimientos";
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionCtaCajaBancoView.class);
