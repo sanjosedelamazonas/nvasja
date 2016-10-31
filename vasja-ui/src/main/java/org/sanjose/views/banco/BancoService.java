@@ -3,11 +3,13 @@ package org.sanjose.views.banco;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.model.ScpComprobantedetalle;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjBancodetallePK;
 import org.sanjose.repo.*;
+import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,6 +86,7 @@ public class BancoService {
             cabecera = bancocabeceraRep.save(cabecera);
         }
 
+        bancoItem.setCodTipogasto(configuractacajabancoRepo.findById(bancoItem.getCodTipomov()).getCodTipocuenta());
         bancoItem.setCodTipomoneda(moneda);
         bancoItem = bancoItem.prepareToSave();
         bancoItem.setFecFecha(cabecera.getFecFecha());
@@ -194,6 +197,9 @@ public class BancoService {
 
     @Transactional(readOnly = false)
     public void anularCheque(VsjBancocabecera vcb) throws FieldGroup.CommitException {
+        vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
+                .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
+        updateCobradoInCabecera(vcb);
         vcb.setTxtGlosa("ANULADO");
         vcb.setCodDestino("00000000");
         vcb.setFlg_Anula('1');
