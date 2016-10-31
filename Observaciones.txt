@@ -6,11 +6,16 @@ Destino:
 Banco - vsj_bancodetalle:
 
 - dodac  flg_chequecobrado y cod_mescobr y edycje tego dla Ninfa (considerar pedir a Edward que cuando modifica cheque cobrado en contabilidad tambien se modifica vsj_bancodetalle
+DONE
 =======
 -> dodac  flg_chequecobrado y cod_mescobr y edycje tego dla Ninfa
+DONE
 (considerar pedir a Edward que cuando modifica cheque cobrado en contabilidad tambien se modifica vsj_bancodetalle
 
 -> hay que anadir otro campo para codigo de configracion [SCP].[dbo].[vsj_configuractacajabanco] porque se repiten codigos entre caja y bancos para diferentes operaciones
+DONE
 -> no hay como poner valores para filtros en configuracion>movimientos por ejemplo para selecionar solo para caja proyectos
+DONE
 -> en saldos de caja deberian aparecer cajas que estan cerradas, pero tienen saldo.
 -> hay que implementar avertencia en caja cuando es cargo y 1. no tiene saldo la caja 2. cuando proyecto/tercero no tiene saldo
+DONE

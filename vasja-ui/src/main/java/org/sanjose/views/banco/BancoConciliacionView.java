@@ -123,47 +123,6 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
         selFiltroCuenta.addValueChangeListener(e -> {
             filterComprobantes();
-            if (selFiltroCuenta.getValue() != null) {
-                ScpPlancontable cuenta = getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
-                        GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
-                BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(fechaDesde.getValue(),
-                        selFiltroCuenta.getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
-                DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
-                txtSaldoInicial.setValue(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()) + " " + df.format(saldo));
-                saldo = MainUI.get().getProcUtil().getSaldoBanco(fechaHasta.getValue(),
-                        selFiltroCuenta.getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
-                txtSaldoFinal.setValue(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()) + " " + df.format(saldo));
-
-                gridBanco.getColumn("numHabersol").setHidden(true);
-                gridBanco.getColumn("numDebesol").setHidden(true);
-                gridBanco.getColumn("numHaberdolar").setHidden(true);
-                gridBanco.getColumn("numDebedolar").setHidden(true);
-                gridBanco.getColumn("numHabermo").setHidden(true);
-                gridBanco.getColumn("numDebemo").setHidden(true);
-                switch (GenUtil.getNumMoneda(cuenta.getIndTipomoneda()).charValue()) {
-                    case '0':
-                        gridBanco.getColumn("numHabersol").setHidden(false);
-                        gridBanco.getColumn("numDebesol").setHidden(false);
-                        break;
-                    case '1':
-                        gridBanco.getColumn("numHaberdolar").setHidden(false);
-                        gridBanco.getColumn("numDebedolar").setHidden(false);
-                        break;
-                    case '2':
-                        gridBanco.getColumn("numHabermo").setHidden(false);
-                        gridBanco.getColumn("numDebemo").setHidden(false);
-                        break;
-                }
-            } else {
-                gridBanco.getColumn("numHabersol").setHidden(false);
-                gridBanco.getColumn("numDebesol").setHidden(false);
-                gridBanco.getColumn("numHaberdolar").setHidden(false);
-                gridBanco.getColumn("numDebedolar").setHidden(false);
-                gridBanco.getColumn("numHabermo").setHidden(false);
-                gridBanco.getColumn("numDebemo").setHidden(false);
-                txtSaldoInicial.setValue("");
-                txtSaldoFinal.setValue("");
-            }
         });
         selFiltroCuenta.setEnabled(true);
         viewLogic.init(this);
@@ -200,6 +159,47 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
                 loadItems(getService().getBancocabeceraRep().findByFecFechaBetweenAndCodCtacontable(from, to, codCtaContable));
             else
                 loadItems(getService().getBancocabeceraRep().findByFecFechaBetween(from, to));
+        }
+        if (selFiltroCuenta.getValue() != null) {
+            ScpPlancontable cuenta = getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
+                    GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
+            BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(GenUtil.getEndOfDay(GenUtil.dateAddDays(fechaDesde.getValue(),-1)),
+                    selFiltroCuenta.getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+            txtSaldoInicial.setValue(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()) + " " + df.format(saldo));
+            saldo = MainUI.get().getProcUtil().getSaldoBanco(fechaHasta.getValue(),
+                    selFiltroCuenta.getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+            txtSaldoFinal.setValue(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()) + " " + df.format(saldo));
+
+            gridBanco.getColumn("numHabersol").setHidden(true);
+            gridBanco.getColumn("numDebesol").setHidden(true);
+            gridBanco.getColumn("numHaberdolar").setHidden(true);
+            gridBanco.getColumn("numDebedolar").setHidden(true);
+            gridBanco.getColumn("numHabermo").setHidden(true);
+            gridBanco.getColumn("numDebemo").setHidden(true);
+            switch (GenUtil.getNumMoneda(cuenta.getIndTipomoneda()).charValue()) {
+                case '0':
+                    gridBanco.getColumn("numHabersol").setHidden(false);
+                    gridBanco.getColumn("numDebesol").setHidden(false);
+                    break;
+                case '1':
+                    gridBanco.getColumn("numHaberdolar").setHidden(false);
+                    gridBanco.getColumn("numDebedolar").setHidden(false);
+                    break;
+                case '2':
+                    gridBanco.getColumn("numHabermo").setHidden(false);
+                    gridBanco.getColumn("numDebemo").setHidden(false);
+                    break;
+            }
+        } else {
+            gridBanco.getColumn("numHabersol").setHidden(false);
+            gridBanco.getColumn("numDebesol").setHidden(false);
+            gridBanco.getColumn("numHaberdolar").setHidden(false);
+            gridBanco.getColumn("numDebedolar").setHidden(false);
+            gridBanco.getColumn("numHabermo").setHidden(false);
+            gridBanco.getColumn("numDebemo").setHidden(false);
+            txtSaldoInicial.setValue("");
+            txtSaldoFinal.setValue("");
         }
     }
 

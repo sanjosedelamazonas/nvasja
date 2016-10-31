@@ -28,7 +28,7 @@ public class DataUtil {
         for (ScpPlancontable caja : allCajas) {
             Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
             BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(
-                    ano,
+                    GenUtil.getEndOfDay(GenUtil.dateAddDays(ano,-1)),
                     caja.getId().getCodCtacontable()
                     , moneda);
             // If is closed and has a saldo of "0.00" we can omit it
@@ -58,7 +58,7 @@ public class DataUtil {
         for (ScpPlancontable caja : getBancoCuentas(date, planRepo)) {
             Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
             BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(
-                    date,
+                    GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)),
                     caja.getId().getCodCtacontable()
                     , moneda);
             // If is closed and has a saldo of "0.00" we can omit it
@@ -79,7 +79,7 @@ public class DataUtil {
         for (ScpPlancontable caja : getTodasCajas(date, planRepo)) {
             Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
             BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(
-                    date,
+                    GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)),
                     caja.getId().getCodCtacontable()
                     , moneda);
             // If is closed and has a saldo of "0.00" we can omit it
@@ -102,7 +102,7 @@ public class DataUtil {
         for (ScpPlancontable caja : cajasInicial) {
             Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
             BigDecimal saldoInicial = MainUI.get().getProcUtil().getSaldoCaja(
-                    GenUtil.getBeginningOfDay(dateInicial),
+                    GenUtil.getEndOfDay(GenUtil.dateAddDays(dateInicial,-1)),
                     caja.getId().getCodCtacontable()
                     , moneda);
             BigDecimal saldoFinal = MainUI.get().getProcUtil().getSaldoCaja(
