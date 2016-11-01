@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCuentaMulti" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="14">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<parameter name="FECHA_MIN" class="java.util.Date"/>
+	<parameter name="FECHA_MAX" class="java.util.Date"/>
+	<parameter name="STR_FECHA_MIN" class="java.lang.String"/>
+	<parameter name="STR_FECHA_MAX" class="java.lang.String"/>
+	<parameter name="cuenta_IDS" class="java.util.Collection"/>
+	<queryString>
+		<![CDATA[SELECT
+     operacion.`DESCRIPCION` AS operacion_DESCRIPCION,
+     operacion.`FECHA` AS operacion_FECHA,
+     operacion.`PEN` AS operacion_PEN,
+     operacion.`SALDOPEN` AS operacion_SALDOPEN,
+     operacion.`SALDOUSD` AS operacion_SALDOUSD,
+     operacion.`TIPO` AS operacion_TIPO,
+     operacion.`USD` AS operacion_USD,
+     operacion.`cuenta_ID` AS operacion_cuenta_ID,
+     operacion.`ID` AS operacion_ID,
+     operacion.`ISPEN` AS operacion_ISPEN,
+     operacion.`ISCARGO` AS operacion_ISCARGO,
+     cuenta.`NUMERO` AS cuenta_NUMERO,
+     cuenta.`NOMBRE` AS cuenta_NOMBRE,
+     cuenta.`categoriacuenta_ID` AS cuenta_categoriacuenta_ID,
+     categoriacuenta.`ID` AS categoriacuenta_ID,
+     categoriacuenta.`NOMBRE` AS categoriacuenta_NOMBRE,
+     banco.`ID` AS banco_ID,
+     categoriacuenta.`DESCRIPCION` AS categoriacuenta_DESCRIPCION,
+     cuenta.`ISCAJA` AS cuenta_ISCAJA,
+     banco.`NOMBRE` AS banco_NOMBRE,
+     operacion.`CHEQUENUMERO` AS operacion_CHEQUENUMERO,
+     categoriacuenta.`bancoPEN_ID` AS categoriacuenta_bancoPEN_ID,
+     categoriacuenta.`bancoUSD_ID` AS categoriacuenta_bancoUSD_ID,
+     categoriacuenta.`CAJAcuenta_ID` AS categoriacuenta_CAJAcuenta_ID,
+     banco.`bancocuenta_ID` AS banco_bancocuenta_ID,
+     operacion.`operacionDETALLE_ID` AS operacion_operacionDETALLE_ID,
+     operacion.`banco_ID` AS operacion_banco_ID
+FROM
+     `operacion` operacion INNER JOIN `cuenta` cuenta ON operacion.`cuenta_ID` = cuenta.`ID`
+     LEFT OUTER JOIN `banco` banco ON operacion.`banco_ID` = banco.`ID`
+     INNER JOIN `categoriacuenta` categoriacuenta ON cuenta.`categoriacuenta_ID` = categoriacuenta.`ID`
+WHERE
+     operacion.FECHA BETWEEN $P{STR_FECHA_MIN}AND$P{STR_FECHA_MAX}
+ AND $X{ IN ,operacion.cuenta_ID,cuenta_IDS}
+ORDER BY
+     operacion.cuenta_ID ASC,
+     operacion.FECHA ASC,
+     operacion.ID ASC]]>
+	</queryString>
+	<field name="operacion_DESCRIPCION" class="java.lang.String"/>
+	<field name="operacion_FECHA" class="java.sql.Timestamp"/>
+	<field name="operacion_PEN" class="java.math.BigDecimal"/>
+	<field name="operacion_SALDOPEN" class="java.math.BigDecimal"/>
+	<field name="operacion_SALDOUSD" class="java.math.BigDecimal"/>
+	<field name="operacion_TIPO" class="java.lang.String"/>
+	<field name="operacion_USD" class="java.math.BigDecimal"/>
+	<field name="operacion_cuenta_ID" class="java.lang.Long"/>
+	<field name="operacion_ID" class="java.lang.Long"/>
+	<field name="operacion_ISPEN" class="java.lang.Boolean"/>
+	<field name="operacion_ISCARGO" class="java.lang.Boolean"/>
+	<field name="cuenta_NUMERO" class="java.lang.Long"/>
+	<field name="cuenta_NOMBRE" class="java.lang.String"/>
+	<field name="usuario" class="java.lang.String"/>
+	<field name="cuenta_categoriacuenta_ID" class="java.lang.Long"/>
+	<field name="categoriacuenta_ID" class="java.lang.Long"/>
+	<field name="categoriacuenta_NOMBRE" class="java.lang.String"/>
+	<field name="banco_ID" class="java.lang.Long"/>
+	<field name="categoriacuenta_DESCRIPCION" class="java.lang.String"/>
+	<field name="beneficiario_ID" class="java.lang.Long"/>
+	<field name="beneficiario_NOMBRE" class="java.lang.String"/>
+	<field name="cuenta_ISCAJA" class="java.lang.Boolean"/>
+	<field name="banco_NOMBRE" class="java.lang.String"/>
+	<field name="operacion_CHEQUENUMERO" class="java.lang.String"/>
+	<variable name="PEN_INGRESOS" class="java.math.BigDecimal" resetType="Group" resetGroup="Cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_ISCARGO} ? new BigDecimal(0) : $F{operacion_PEN}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="PEN_SALDO" class="java.math.BigDecimal" resetType="Group" resetGroup="Cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_PEN}]]></variableExpression>
+	</variable>
+	<variable name="PEN_EGRESOS" class="java.math.BigDecimal" resetType="Group" resetGroup="Cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_ISCARGO} ? $F{operacion_PEN} : new BigDecimal(0)]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="USD_INGRESOS" class="java.math.BigDecimal" resetType="Group" resetGroup="Cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_ISCARGO} ? new BigDecimal(0) : $F{operacion_USD}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="USD_EGRESOS" class="java.math.BigDecimal" resetType="Group" resetGroup="Cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_ISCARGO} ? $F{operacion_USD}: new BigDecimal(0)]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="USD_SALDO" class="java.math.BigDecimal" resetType="Group" resetGroup="Cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_USD}]]></variableExpression>
+	</variable>
+	<variable name="PEN_SALDO_INIT" class="java.math.BigDecimal" resetType="Group" resetGroup="Cuenta" calculation="First">
+		<variableExpression><![CDATA[$F{operacion_SALDOPEN}.subtract($F{operacion_PEN})]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="USD_SALDO_INIT" class="java.math.BigDecimal" resetType="Group" resetGroup="Cuenta" calculation="First">
+		<variableExpression><![CDATA[$F{operacion_SALDOUSD}.subtract($F{operacion_USD})]]></variableExpression>
+	</variable>
+	<group name="Cuenta" isStartNewPage="true" isResetPageNumber="true">
+		<groupExpression><![CDATA[$F{operacion_cuenta_ID}]]></groupExpression>
+		<groupHeader>
+			<band height="102">
+				<staticText>
+					<reportElement x="1" y="58" width="19" height="28"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nº]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="21" y="58" width="32" height="28"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="53" y="57" width="264" height="29"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Descripción]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="53" y="87" width="67" height="14"/>
+					<textElement>
+						<font fontName="Calibri"/>
+					</textElement>
+					<text><![CDATA[Saldo inicial]]></text>
+				</staticText>
+				<textField pattern="dd/MM" isBlankWhenNull="false">
+					<reportElement style="SubTitle" mode="Transparent" x="21" y="87" width="32" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Calibri" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{FECHA_MIN}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="Cuenta" pattern="#,##0.00" isBlankWhenNull="false">
+					<reportElement style="SubTitle" mode="Transparent" x="621" y="87" width="61" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Calibri" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{USD_SALDO_INIT}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Cuenta" pattern="#,##0.00" isBlankWhenNull="false">
+					<reportElement style="SubTitle" mode="Transparent" x="434" y="87" width="61" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Calibri" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{PEN_SALDO_INIT}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+					<reportElement style="SubTitle" x="323" y="38" width="71" height="14"/>
+					<textElement markup="none">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{FECHA_MIN}]]></textFieldExpression>
+				</textField>
+				<textField pattern="yyyy.MM.dd" isBlankWhenNull="false">
+					<reportElement style="SubTitle" x="0" y="4" width="814" height="18" forecolor="#000000"/>
+					<textElement textAlignment="Center" markup="none">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{banco_NOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+					<reportElement style="SubTitle" x="428" y="38" width="100" height="14"/>
+					<textElement markup="none">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{FECHA_MAX}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Transparent" x="400" y="38" width="24" height="14" forecolor="#666666" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Arial" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<text><![CDATA[AL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="293" y="38" width="24" height="14" forecolor="#666666" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Arial" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<text><![CDATA[DEL]]></text>
+				</staticText>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+					<reportElement mode="Transparent" x="0" y="22" width="814" height="16" forecolor="#666666" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{categoriacuenta_NOMBRE}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="1" y="56" width="813" height="1"/>
+				</line>
+				<staticText>
+					<reportElement x="319" y="72" width="56" height="14"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cta]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="376" y="72" width="58" height="14"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Monto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="434" y="72" width="61" height="14"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Saldo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="621" y="72" width="61" height="14"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Saldo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="505" y="57" width="177" height="15"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Dólares USD$]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="563" y="72" width="58" height="14"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Gastos]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="505" y="72" width="58" height="14"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ingresos]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="690" y="56" width="124" height="30"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Detalle de pago]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="86" width="814" height="1"/>
+				</line>
+				<line>
+					<reportElement positionType="FixRelativeToBottom" x="0" y="100" width="814" height="1"/>
+					<graphicElement>
+						<pen lineWidth="0.5" lineColor="#999999"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="dd/MM" isBlankWhenNull="false">
+					<reportElement style="SubTitle" mode="Transparent" x="21" y="1" width="32" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Calibri" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{FECHA_MAX}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="SubTitle" mode="Transparent" x="621" y="1" width="61" height="14" forecolor="#000000" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="SubTitle" mode="Transparent" x="434" y="1" width="61" height="14" forecolor="#000000" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="SubTitle" mode="Transparent" x="505" y="1" width="58" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{USD_INGRESOS}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="52" y="1" width="147" height="13"/>
+					<textElement>
+						<font fontName="Calibri" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Total]]></text>
+				</staticText>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="SubTitle" mode="Transparent" x="563" y="1" width="58" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{USD_EGRESOS}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="SubTitle" mode="Transparent" x="376" y="1" width="58" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{PEN_EGRESOS}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="SubTitle" mode="Transparent" x="319" y="1" width="56" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{PEN_INGRESOS}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="14" width="814" height="1"/>
+				</line>
+				<line>
+					<reportElement x="0" y="16" width="814" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="0" y="0" width="218" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Vicariato Apostólico San José del Amazonas]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="Detail" x="53" y="0" width="252" height="14"/>
+				<textElement>
+					<font fontName="Calibri" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{operacion_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM">
+				<reportElement style="Detail" x="21" y="0" width="32" height="14"/>
+				<textElement>
+					<font fontName="Calibri" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{operacion_FECHA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="1" y="0" width="21" height="15"/>
+				<textElement>
+					<font fontName="Calibri" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Cuenta_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" mode="Transparent" x="319" y="0" width="56" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Calibri" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuenta_NUMERO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" x="621" y="0" width="61" height="14"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" x="505" y="0" width="58" height="14"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{operacion_ISPEN} ? "" : ($F{operacion_ISCARGO} ? "":$F{operacion_USD})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" x="563" y="0" width="58" height="14"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{operacion_ISCARGO}&!$F{operacion_ISPEN} ? $F{operacion_USD} : "")]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" x="376" y="0" width="58" height="14"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{operacion_ISCARGO}&$F{operacion_ISPEN} ? $F{operacion_PEN} : "")]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" x="434" y="0" width="61" height="14"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{operacion_SALDOPEN}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="14" width="814" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="16" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="false">
+				<reportElement style="Column header" x="0" y="0" width="80" height="16" forecolor="#666666"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Group" evaluationGroup="Cuenta">
+				<reportElement style="Column header" x="778" y="0" width="36" height="16"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Column header" x="725" y="0" width="53" height="16"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-10-31T17:32:09 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCuentaMulti" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="10" uuid="530bc955-f80a-423b-a66e-90376ac24862">
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="393"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[($F{banco_PEN_SHOULD_BE}!=$F{banco_ID_IS}) & ($F{banco_USD_SHOULD_BE}!=$F{banco_ID_IS})]]></conditionExpression>
+			<style mode="Transparent" forecolor="#FF3333" vTextAlign="Middle" vImageAlign="Middle"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="DIARIO_FECHA_MIN" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DIARIO_ISPEN" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[true]]></defaultValueExpression>
+	</parameter>
+	<parameter name="STR_FECHA_MIN" class="java.lang.String"/>
+	<parameter name="STR_FECHA_MAX" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/d/java/workspaces/workspace_vasja/VasjaEXT/Reports/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_REVISADOR_POR" class="java.lang.String"/>
+	<parameter name="REPORTE_PREPARADO_POR" class="java.lang.String"/>
+	<parameter name="DIARIO_FECHA_MAX" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     categoriacuenta.`ID` AS categoriacuenta_ID,
+     categoriacuenta.`DESCRIPCION` AS categoriacuenta_DESCRIPCION,
+     categoriacuenta.`NOMBRE` AS categoriacuenta_NOMBRE,
+     categoriacuenta.`bancoPEN_ID` AS banco_PEN_SHOULD_BE,
+     categoriacuenta.`bancoUSD_ID` AS banco_USD_SHOULD_BE,
+     categoriacuenta.`CAJAcuenta_ID` AS categoriacuenta_CAJAcuenta_ID,
+     banco.`ID` AS banco_ID,
+     banco.`banco` AS banco_banco,
+     banco.`DESCRIPCION` AS banco_DESCRIPCION,
+     banco.`MONEDA` AS banco_MONEDA,
+     banco.`NOMBRE` AS banco_NOMBRE,
+     banco.`NUMERO` AS banco_NUMERO,
+     banco.`bancocuenta_ID` AS banco_bancocuenta_ID,
+     operacion.`DESCRIPCION` AS operacion_DESCRIPCION,
+     operacion.`FECHA` AS operacion_FECHA,
+     operacion.`PEN` AS operacion_PEN,
+     operacion.`SALDOPEN` AS operacion_SALDOPEN,
+     operacion.`SALDOUSD` AS operacion_SALDOUSD,
+     operacion.`TIPO` AS operacion_TIPO,
+     operacion.`USD` AS operacion_USD,
+     operacion.`cuenta_ID` AS operacion_cuenta_ID,
+     operacion.`ID` AS operacion_ID,
+     operacion.`ISPEN` AS operacion_ISPEN,
+     operacion.`ISCARGO` AS operacion_ISCARGO,
+     cuenta.`NUMERO` AS cuenta_NUMERO,
+     cuenta.`NOMBRE` AS cuenta_NOMBRE,
+     categoriacuenta.`NOMBRE` AS categoriacuenta_NOMBRE,
+     operacion.`operacionDETALLE_ID` AS OPDET_ID,
+     categoriacuenta.`ID` AS categoriacuenta_ID,
+     cuentaDET.`NUMERO` AS cuentaDET_NUMERO,
+     operacion.`CHEQUENUMERO` AS operacion_CHEQUENUMERO,
+     beneficiario.`ID` AS beneficiario_ID,
+     beneficiario.`NOMBRE` AS beneficiario_NOMBRE,
+     operacion.`banco_ID` AS banco_ID_IS,
+     banco.`ID` AS banco_ID,
+     banco.`banco` AS banco_banco,
+     banco.`DESCRIPCION` AS banco_DESCRIPCION,
+     banco.`MONEDA` AS banco_MONEDA,
+     banco.`NOMBRE` AS banco_NOMBRE,
+     banco.`NUMERO` AS banco_NUMERO,
+     banco.`bancocuenta_ID` AS banco_bancocuenta_ID
+FROM
+     `operacion` operacion INNER JOIN `cuenta` cuenta ON operacion.`cuenta_ID` = cuenta.`ID`
+     INNER JOIN `operacion` OPDET ON operacion.`operacionDETALLE_ID` = OPDET.`ID`
+     INNER JOIN `beneficiario` beneficiario ON operacion.`beneficiario_ID` = beneficiario.`ID`
+     INNER JOIN `banco` banco ON operacion.`banco_ID` = banco.`ID`
+     INNER JOIN `cuenta` cuentaDET ON OPDET.`cuenta_ID` = cuentaDET.`ID`
+     INNER JOIN `categoriacuenta` categoriacuenta ON cuentaDET.`categoriacuenta_ID` = categoriacuenta.`ID`
+WHERE
+     operacion.FECHA BETWEEN $P{STR_FECHA_MIN} AND $P{STR_FECHA_MAX}
+ AND operacion.ISPEN = $P{DIARIO_ISPEN}
+ AND cuenta.ISCAJA = 1
+ AND cuenta.ISbanco = 1
+ORDER BY
+     operacion.cuenta_ID ASC,
+     operacion.FECHA ASC,
+     operacion.ID ASC]]>
+	</queryString>
+	<field name="categoriacuenta_ID" class="java.lang.Long"/>
+	<field name="categoriacuenta_DESCRIPCION" class="java.lang.String"/>
+	<field name="categoriacuenta_NOMBRE" class="java.lang.String"/>
+	<field name="banco_PEN_SHOULD_BE" class="java.lang.Long"/>
+	<field name="banco_USD_SHOULD_BE" class="java.lang.Long"/>
+	<field name="categoriacuenta_CAJAcuenta_ID" class="java.lang.Long"/>
+	<field name="banco_ID" class="java.lang.Long"/>
+	<field name="banco_banco" class="java.lang.String"/>
+	<field name="banco_DESCRIPCION" class="java.lang.String"/>
+	<field name="banco_MONEDA" class="java.lang.String"/>
+	<field name="banco_NOMBRE" class="java.lang.String"/>
+	<field name="banco_NUMERO" class="java.lang.String"/>
+	<field name="banco_bancocuenta_ID" class="java.lang.Long"/>
+	<field name="operacion_DESCRIPCION" class="java.lang.String"/>
+	<field name="operacion_FECHA" class="java.sql.Timestamp"/>
+	<field name="operacion_PEN" class="java.math.BigDecimal"/>
+	<field name="operacion_SALDOPEN" class="java.math.BigDecimal"/>
+	<field name="operacion_SALDOUSD" class="java.math.BigDecimal"/>
+	<field name="operacion_TIPO" class="java.lang.String"/>
+	<field name="operacion_USD" class="java.math.BigDecimal"/>
+	<field name="operacion_cuenta_ID" class="java.lang.Long"/>
+	<field name="operacion_ID" class="java.lang.Long"/>
+	<field name="operacion_ISPEN" class="java.lang.Boolean"/>
+	<field name="operacion_ISCARGO" class="java.lang.Boolean"/>
+	<field name="cuenta_NUMERO" class="java.lang.Long"/>
+	<field name="cuenta_NOMBRE" class="java.lang.String"/>
+	<field name="OPDET_ID" class="java.lang.Long"/>
+	<field name="cuentaDET_NUMERO" class="java.lang.Long"/>
+	<field name="operacion_CHEQUENUMERO" class="java.lang.String"/>
+	<field name="beneficiario_ID" class="java.lang.Long"/>
+	<field name="beneficiario_NOMBRE" class="java.lang.String"/>
+	<field name="banco_ID_IS" class="java.lang.Long"/>
+	<variable name="PEN_INGRESOS" class="java.math.BigDecimal" resetType="Group" resetGroup="cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_ISCARGO} ? new BigDecimal(0) : $F{operacion_PEN}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="PEN_SALDO" class="java.math.BigDecimal" resetType="Group" resetGroup="cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_PEN}]]></variableExpression>
+	</variable>
+	<variable name="PEN_EGRESOS" class="java.math.BigDecimal" resetType="Group" resetGroup="cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_ISCARGO} ? $F{operacion_PEN} : new BigDecimal(0)]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="USD_INGRESOS" class="java.math.BigDecimal" resetType="Group" resetGroup="cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_ISCARGO} ? new BigDecimal(0) : $F{operacion_USD}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="USD_EGRESOS" class="java.math.BigDecimal" resetType="Group" resetGroup="cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_ISCARGO} ? $F{operacion_USD}: new BigDecimal(0)]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="USD_SALDO" class="java.math.BigDecimal" resetType="Group" resetGroup="cuenta" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_USD}]]></variableExpression>
+	</variable>
+	<variable name="PEN_SALDO_INIT" class="java.math.BigDecimal" resetType="Group" resetGroup="cuenta" calculation="First">
+		<variableExpression><![CDATA[$F{operacion_SALDOPEN}.subtract($F{operacion_PEN})]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="USD_SALDO_INIT" class="java.math.BigDecimal" resetType="Group" resetGroup="cuenta" calculation="First">
+		<variableExpression><![CDATA[$F{operacion_SALDOUSD}.subtract($F{operacion_USD})]]></variableExpression>
+	</variable>
+	<variable name="CHEQUE_SUM_PEN" class="java.math.BigDecimal" resetType="Group" resetGroup="cheque" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_PEN}]]></variableExpression>
+	</variable>
+	<variable name="CHQ_SUM_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="cheque" calculation="Sum">
+		<variableExpression><![CDATA[$F{operacion_USD}]]></variableExpression>
+	</variable>
+	<variable name="chq_no" class="java.lang.Number" resetType="Group" resetGroup="cheque" calculation="Count">
+		<variableExpression><![CDATA[$F{operacion_CHEQUENUMERO}]]></variableExpression>
+	</variable>
+	<variable name="CHQ_SALDO_MAX" class="java.math.BigDecimal" resetType="Group" resetGroup="cheque">
+		<variableExpression><![CDATA[$F{operacion_SALDOPEN}]]></variableExpression>
+	</variable>
+	<variable name="CHQ_TYPE" class="java.lang.String" resetType="Group" resetGroup="cheque">
+		<variableExpression><![CDATA[$F{operacion_TIPO}]]></variableExpression>
+	</variable>
+	<variable name="CHQ_DET" class="java.lang.String" resetType="Group" resetGroup="cheque">
+		<variableExpression><![CDATA[$F{operacion_CHEQUENUMERO}]]></variableExpression>
+	</variable>
+	<variable name="Nro" class="java.lang.Integer" resetType="Group" resetGroup="cuenta" calculation="Count">
+		<variableExpression><![CDATA[$F{operacion_ID}]]></variableExpression>
+	</variable>
+	<group name="cuenta" isStartNewPage="true" isResetPageNumber="true" keepTogether="true">
+		<groupExpression><![CDATA[$F{operacion_cuenta_ID}]]></groupExpression>
+		<groupHeader>
+			<band height="90">
+				<staticText>
+					<reportElement x="0" y="58" width="19" height="14" uuid="23db8169-2630-44eb-bc0a-873a94517d9b"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nº]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="58" width="29" height="14" uuid="e3088d78-aa2d-45ce-9828-7b6460490662"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="81" y="58" width="247" height="14" uuid="17e9bfdf-bda1-4dd9-8be9-244b8b248e29"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Descripción]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="81" y="76" width="72" height="14" uuid="1ae2cace-7dcb-46fa-8882-d8940e80f862"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Calibri"/>
+					</textElement>
+					<text><![CDATA[Saldo inicial]]></text>
+				</staticText>
+				<textField pattern="dd/MM" isBlankWhenNull="false">
+					<reportElement style="SubTitle" mode="Transparent" x="21" y="76" width="27" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="dd3cbef0-39d7-4633-a176-a14ff020b43b"/>
+					<textElement verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Calibri" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DIARIO_FECHA_MIN}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="cuenta" pattern="#,##0.00" isBlankWhenNull="false">
+					<reportElement style="SubTitle" mode="Transparent" x="751" y="76" width="61" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="5bbbdbf2-bf33-41b5-a8cd-11461ecc501c"/>
+					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Calibri" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DIARIO_ISPEN}?$V{PEN_SALDO_INIT}:$V{USD_SALDO_INIT}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+					<reportElement style="SubTitle" x="323" y="38" width="71" height="14" uuid="14aae524-0ccc-4dda-a119-48d0829037b6"/>
+					<textElement markup="none">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DIARIO_FECHA_MIN}]]></textFieldExpression>
+				</textField>
+				<textField pattern="yyyy.MM.dd" isBlankWhenNull="false">
+					<reportElement style="SubTitle" x="0" y="4" width="814" height="18" forecolor="#000000" uuid="838c8ccb-c983-496d-8214-f4e64aba7f36"/>
+					<textElement textAlignment="Center" markup="none">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Reporte de Bancos -  "+ $F{banco_MONEDA}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+					<reportElement style="SubTitle" x="428" y="38" width="100" height="14" uuid="9ce154f6-b3a1-4473-b414-da16c0a14c26"/>
+					<textElement markup="none">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DIARIO_FECHA_MAX}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Transparent" x="400" y="38" width="24" height="14" forecolor="#666666" backcolor="#FFFFFF" uuid="cb7c90ba-ad7d-45ec-bf5f-3d02a93f0336"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Arial" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<text><![CDATA[AL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="293" y="38" width="24" height="14" forecolor="#666666" backcolor="#FFFFFF" uuid="8f292ecf-497c-4072-801f-ca13c3fb64be"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Arial" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<text><![CDATA[DEL]]></text>
+				</staticText>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+					<reportElement mode="Transparent" x="0" y="22" width="814" height="16" forecolor="#666666" backcolor="#FFFFFF" uuid="de87132e-7bc3-463c-9d19-29a2a17fb2eb"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+						<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[+ $F{cuenta_NUMERO} + " " +$F{banco_NOMBRE} +" "+$F{categoriacuenta_NOMBRE}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="1" y="56" width="813" height="1" uuid="41add9c7-ad16-4766-8e94-602747411385"/>
+				</line>
+				<staticText>
+					<reportElement x="636" y="58" width="56" height="14" uuid="94259c71-ec56-4d9e-b8d1-0a81118793a9"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Debe]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="693" y="58" width="58" height="14" uuid="0fb8e106-8617-45b5-8984-cbfe4ebb029f"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Haber]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="751" y="58" width="61" height="14" uuid="7f2925dc-c6ca-446d-adc1-3ea2b34ddeb4"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Saldo]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="73" width="814" height="1" uuid="5c2d77be-afd4-494e-b0a2-efdf2f914660"/>
+				</line>
+				<staticText>
+					<reportElement x="50" y="58" width="31" height="14" uuid="61635d44-ab30-4d62-bc15-e76ff7ba19fa"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cta]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="328" y="58" width="84" height="14" uuid="0bb8178b-e2b4-47c4-808a-41a985064bfa"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tipo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="412" y="58" width="73" height="14" uuid="e142f8ba-b31f-4645-aa8c-24b6fdf69d44"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Detalle]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="483" y="58" width="151" height="15" uuid="730a4e3f-1c13-47a7-809d-c75e37677c21"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Glosa]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="152">
+				<line>
+					<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="814" height="1" uuid="676bdf11-3ed4-4b7a-b90d-29f685aa264c"/>
+					<graphicElement>
+						<pen lineWidth="0.5" lineColor="#999999"/>
+					</graphicElement>
+				</line>
+				<textField pattern="dd/MM" isBlankWhenNull="false">
+					<reportElement style="SubTitle" mode="Transparent" x="21" y="2" width="27" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="fe681e80-a04b-484e-9255-7bd05fa8bfda"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DIARIO_FECHA_MAX}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="SubTitle" mode="Transparent" x="751" y="2" width="61" height="13" forecolor="#000000" backcolor="#CCCCCC" uuid="de13e745-03e3-42a1-bdfe-2c90905748d5"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DIARIO_ISPEN}?$F{operacion_SALDOPEN}:$F{operacion_SALDOUSD}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="81" y="2" width="152" height="13" uuid="515c9ab8-d490-4361-a1b9-5c71763d539a"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Calibri" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Total]]></text>
+				</staticText>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="SubTitle" mode="Transparent" x="693" y="2" width="58" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="d32ad8e1-88ce-4c9c-b938-465e2c16e70f"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DIARIO_ISPEN}?$V{PEN_EGRESOS}:$V{USD_EGRESOS}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="SubTitle" mode="Transparent" x="636" y="2" width="56" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="db4afc41-02c2-4169-b9dc-9a6ad84bccc8"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DIARIO_ISPEN}?$V{PEN_INGRESOS}:$V{USD_INGRESOS}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="16" width="814" height="1" uuid="c652f9e5-1e73-43e0-ba70-f7e2bf6f02d5"/>
+				</line>
+				<line>
+					<reportElement x="0" y="18" width="814" height="1" uuid="52092d33-375c-4072-b0e4-ec38cc997838"/>
+				</line>
+				<staticText>
+					<reportElement style="SubTitle" x="632" y="136" width="72" height="16" forecolor="#333333" uuid="8a9c28f7-e9bd-4140-b854-95bbd01915a3"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="10"/>
+					</textElement>
+					<text><![CDATA[Punchana, ]]></text>
+				</staticText>
+				<textField pattern="dd MMMMM yyyy">
+					<reportElement style="Column header" x="709" y="136" width="88" height="16" forecolor="#333333" uuid="fb19e2f6-16a8-4a11-9d57-26847b124bda"/>
+					<textElement>
+						<font fontName="SansSerif" size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="cheque">
+		<groupExpression><![CDATA[$F{operacion_CHEQUENUMERO}]]></groupExpression>
+		<groupFooter>
+			<band height="15">
+				<printWhenExpression><![CDATA[($F{operacion_TIPO}=="CHEQUE")&($V{chq_no}>1)]]></printWhenExpression>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false">
+					<reportElement x="635" y="0" width="57" height="13" uuid="35db785f-b3d2-4ba6-be34-70da9f3a157e"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DIARIO_ISPEN}?($F{operacion_ISCARGO}?"":$V{CHEQUE_SUM_PEN}):($F{operacion_ISCARGO}?"":$V{CHQ_SUM_USD})]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="412" y="0" width="73" height="13" uuid="5832fed5-695d-4b31-8907-9312aeed2a1e"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{CHQ_DET}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="814" height="1" uuid="0329bc00-39e7-434c-8f3a-39d0424e1e22"/>
+					<graphicElement>
+						<pen lineWidth="0.5" lineColor="#999999"/>
+					</graphicElement>
+				</line>
+				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false">
+					<reportElement x="694" y="0" width="57" height="13" uuid="d8fc3621-d84a-49a3-9e13-6264a2212526"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DIARIO_ISPEN}?($F{operacion_ISCARGO}?$V{CHEQUE_SUM_PEN}:""):($F{operacion_ISCARGO}?$V{CHQ_SUM_USD}:"")]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="328" y="0" width="84" height="13" uuid="a627539c-87bf-4497-9211-3e1d376d1b40"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{CHQ_TYPE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="0" y="0" width="218" height="16" uuid="cd6ef5d4-ccfb-4f03-9e48-57d8e009948c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Vicariato Apostólico San José del Amazonas]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="false">
+				<reportElement style="Column header" x="734" y="0" width="80" height="16" forecolor="#666666" uuid="b5215209-16f3-4f0a-bd66-ec5dffeff79a"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement x="48" y="2" width="31" height="13" uuid="0b4ad8c8-7dac-4ee7-a951-f63049583924"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuentaDET_NUMERO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="Detail" x="81" y="2" width="247" height="13" uuid="d7694a11-1d5f-4c69-aef2-e5cab897289b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{operacion_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM">
+				<reportElement style="Detail" x="21" y="2" width="27" height="13" uuid="ccc4e898-48f4-4ccb-8816-d1cf24629c9b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{operacion_FECHA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="0" y="2" width="21" height="13" uuid="b7f60ad8-e290-4ee0-87d5-88887356dbd1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Nro}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" mode="Transparent" x="636" y="2" width="56" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="db00220a-685b-4635-ac95-87d79b8d7b94"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{DIARIO_ISPEN}?($F{operacion_ISCARGO}?"":$F{operacion_PEN}):($F{operacion_ISCARGO}?"":$F{operacion_USD}))]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" x="693" y="2" width="58" height="13" uuid="78338412-d228-481e-b2c3-aaf0c3fe213e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{operacion_ISCARGO}?($P{DIARIO_ISPEN}?$F{operacion_PEN}:$F{operacion_USD}) : "")]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" x="751" y="2" width="61" height="13" uuid="e3e7b7f2-afaf-4f81-884a-b9b77f2521a9"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DIARIO_ISPEN}?$F{operacion_SALDOPEN}:$F{operacion_SALDOUSD}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="814" height="1" uuid="e397ba50-850a-44ee-ad1a-5ae3dd936545">
+					<printWhenExpression><![CDATA[($F{operacion_TIPO}=="CHEQUE")?($V{chq_no}<2):1==1]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="328" y="2" width="84" height="13" uuid="8f30c60c-4cd4-4ed7-b65e-db2b4e590870"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{operacion_TIPO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="485" y="2" width="151" height="13" uuid="07103e9b-4f56-42aa-ad66-275f778a78dd"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{beneficiario_NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="412" y="2" width="73" height="13" uuid="429c8a37-f547-4fc0-bb81-ce5d46f42746"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{operacion_CHEQUENUMERO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17" splitType="Stretch">
+			<textField evaluationTime="Group" evaluationGroup="cuenta">
+				<reportElement style="Column header" x="778" y="1" width="36" height="16" uuid="ab675a06-0f03-42c0-bb50-d2f2ba341b48"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Column header" x="725" y="1" width="53" height="16" uuid="39f5117f-0f13-49c3-9392-b139bf45e3d8"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
