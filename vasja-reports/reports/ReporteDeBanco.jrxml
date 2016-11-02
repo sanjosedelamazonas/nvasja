@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-10-31T17:32:09 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-11-02T02:21:01 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCuentaMulti" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="10" uuid="530bc955-f80a-423b-a66e-90376ac24862">
 	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
@@ -27,68 +27,51 @@
 	</parameter>
 	<parameter name="REPORTE_REVISADOR_POR" class="java.lang.String"/>
 	<parameter name="REPORTE_PREPARADO_POR" class="java.lang.String"/>
-	<parameter name="DIARIO_FECHA_MAX" class="java.util.Date">
-		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	<parameter name="MONEDA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT
-     categoriacuenta.`ID` AS categoriacuenta_ID,
-     categoriacuenta.`DESCRIPCION` AS categoriacuenta_DESCRIPCION,
-     categoriacuenta.`NOMBRE` AS categoriacuenta_NOMBRE,
-     categoriacuenta.`bancoPEN_ID` AS banco_PEN_SHOULD_BE,
-     categoriacuenta.`bancoUSD_ID` AS banco_USD_SHOULD_BE,
-     categoriacuenta.`CAJAcuenta_ID` AS categoriacuenta_CAJAcuenta_ID,
-     banco.`ID` AS banco_ID,
-     banco.`banco` AS banco_banco,
-     banco.`DESCRIPCION` AS banco_DESCRIPCION,
-     banco.`MONEDA` AS banco_MONEDA,
-     banco.`NOMBRE` AS banco_NOMBRE,
-     banco.`NUMERO` AS banco_NUMERO,
-     banco.`bancocuenta_ID` AS banco_bancocuenta_ID,
-     operacion.`DESCRIPCION` AS operacion_DESCRIPCION,
-     operacion.`FECHA` AS operacion_FECHA,
-     operacion.`PEN` AS operacion_PEN,
-     operacion.`SALDOPEN` AS operacion_SALDOPEN,
-     operacion.`SALDOUSD` AS operacion_SALDOUSD,
-     operacion.`TIPO` AS operacion_TIPO,
-     operacion.`USD` AS operacion_USD,
-     operacion.`cuenta_ID` AS operacion_cuenta_ID,
-     operacion.`ID` AS operacion_ID,
-     operacion.`ISPEN` AS operacion_ISPEN,
-     operacion.`ISCARGO` AS operacion_ISCARGO,
-     cuenta.`NUMERO` AS cuenta_NUMERO,
-     cuenta.`NOMBRE` AS cuenta_NOMBRE,
-     categoriacuenta.`NOMBRE` AS categoriacuenta_NOMBRE,
-     operacion.`operacionDETALLE_ID` AS OPDET_ID,
-     categoriacuenta.`ID` AS categoriacuenta_ID,
-     cuentaDET.`NUMERO` AS cuentaDET_NUMERO,
-     operacion.`CHEQUENUMERO` AS operacion_CHEQUENUMERO,
-     beneficiario.`ID` AS beneficiario_ID,
-     beneficiario.`NOMBRE` AS beneficiario_NOMBRE,
-     operacion.`banco_ID` AS banco_ID_IS,
-     banco.`ID` AS banco_ID,
-     banco.`banco` AS banco_banco,
-     banco.`DESCRIPCION` AS banco_DESCRIPCION,
-     banco.`MONEDA` AS banco_MONEDA,
-     banco.`NOMBRE` AS banco_NOMBRE,
-     banco.`NUMERO` AS banco_NUMERO,
-     banco.`bancocuenta_ID` AS banco_bancocuenta_ID
+		<![CDATA[SELECT	
+  vsj_bancodetalle.cod_ctacontable AS cuenta_NUMERO,
+  scp_plancontable.txt_descctacontable AS cuenta_DESC,
+  fun_scp_vsj_GetSaldosAlDiaBanco.saldo AS cuenta_SALDO,
+  vsj_bancodetalle.cod_bancocabecera AS operacion_ID,
+  vsj_bancocabecera.txt_correlativo AS operacion_CORRELATIVO,
+  vsj_bancodetalle.fec_fecha AS operacion_FECHA,
+  vsj_bancocabecera.txt_cheque AS operacion_CHEQUE,
+  vsj_bancocabecera.flg_enviado AS operacion_ENVIADO,
+  vsj_bancodetalle.cod_proyecto AS operacion_PROYECTO,
+  vsj_bancodetalle.cod_tercero AS operacion_TERCERO,
+  vsj_bancodetalle.cod_financiera AS operacion_FINANCIERA,
+  vsj_bancodetalle.cod_ctaproyecto AS operacion_RUBRO_PROY,
+  vsj_bancodetalle.cod_contracta AS operacion_CTA_CONTABLE,
+  vsj_bancodetalle.cod_ctaespecial AS operacion_RUBRO_INST,
+  vsj_bancodetalle.cod_contraparte AS operacion_LUGAR_GASTO,
+  vsj_bancodetalle.txt_glosaitem AS operacion_DESC,
+  vsj_bancodetalle.num_debesol AS operacion_DEBESOL,
+  vsj_bancodetalle.num_habersol AS operacion_HABERSOL,
+  vsj_bancodetalle.num_debedolar AS operacion_DEBEDOLAR,
+  vsj_bancodetalle.num_haberdolar AS operacion_HABERDOLAR, 
+  vsj_bancodetalle.num_debemo AS operacion_DEBEMO,
+  vsj_bancodetalle.num_habermo AS operacion_HABERMO,
+  vsj_bancodetalle.cod_tipomoneda AS banco_MONEDA,
+  scp_destino.txt_nombredestino AS beneficiario_NOMBRE
 FROM
-     `operacion` operacion INNER JOIN `cuenta` cuenta ON operacion.`cuenta_ID` = cuenta.`ID`
-     INNER JOIN `operacion` OPDET ON operacion.`operacionDETALLE_ID` = OPDET.`ID`
-     INNER JOIN `beneficiario` beneficiario ON operacion.`beneficiario_ID` = beneficiario.`ID`
-     INNER JOIN `banco` banco ON operacion.`banco_ID` = banco.`ID`
-     INNER JOIN `cuenta` cuentaDET ON OPDET.`cuenta_ID` = cuentaDET.`ID`
-     INNER JOIN `categoriacuenta` categoriacuenta ON cuentaDET.`categoriacuenta_ID` = categoriacuenta.`ID`
+	vsj_bancodetalle 
+	INNER JOIN vsj_bancocabecera ON vsj_bancodetalle.cod_bancocabecera = vsj_bancocabecera.cod_bancocabecera
+	INNER JOIN scp_plancontable ON vsj_bancodetalle.cod_ctacontable = scp_plancontable.cod_ctacontable 
+	INNER JOIN scp_destino ON vsj_bancodetalle.cod_destino = scp_destino.cod_destino
+	INNER JOIN fun_scp_vsj_GetSaldosAlDiaBanco($P{STR_FECHA_MIN},$P{MONEDA}) ON vsj_bancodetalle.cod_ctacontable = fun_scp_vsj_GetSaldosAlDiaBanco.cuenta
 WHERE
-     operacion.FECHA BETWEEN $P{STR_FECHA_MIN} AND $P{STR_FECHA_MAX}
- AND operacion.ISPEN = $P{DIARIO_ISPEN}
- AND cuenta.ISCAJA = 1
- AND cuenta.ISbanco = 1
+     vsj_bancodetalle.fec_fecha BETWEEN 
+  $P{STR_FECHA_MIN} 
+AND 
+	$P{STR_FECHA_MAX}
+AND
+	vsj_bancodetalle.cod_tipomoneda = $P{MONEDA}
 ORDER BY
-     operacion.cuenta_ID ASC,
-     operacion.FECHA ASC,
-     operacion.ID ASC]]>
+     vsj_bancodetalle.cod_ctacontable,
+     vsj_bancodetalle.cod_bancocabecera ASC]]>
 	</queryString>
 	<field name="categoriacuenta_ID" class="java.lang.Long"/>
 	<field name="categoriacuenta_DESCRIPCION" class="java.lang.String"/>
@@ -232,14 +215,14 @@ ORDER BY
 					<textElement textAlignment="Center" markup="none">
 						<font size="12" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Reporte de Bancos -  "+ $F{banco_MONEDA}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Reporte de Bancos -  "+ $P{MONEDA}]]></textFieldExpression>
 				</textField>
 				<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
 					<reportElement style="SubTitle" x="428" y="38" width="100" height="14" uuid="9ce154f6-b3a1-4473-b414-da16c0a14c26"/>
 					<textElement markup="none">
 						<font size="12"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{DIARIO_FECHA_MAX}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{STR_FECHA_MAX}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Transparent" x="400" y="38" width="24" height="14" forecolor="#666666" backcolor="#FFFFFF" uuid="cb7c90ba-ad7d-45ec-bf5f-3d02a93f0336"/>
@@ -336,7 +319,7 @@ ORDER BY
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{DIARIO_FECHA_MAX}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{STR_FECHA_MAX}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement style="SubTitle" mode="Transparent" x="751" y="2" width="61" height="13" forecolor="#000000" backcolor="#CCCCCC" uuid="de13e745-03e3-42a1-bdfe-2c90905748d5"/>
