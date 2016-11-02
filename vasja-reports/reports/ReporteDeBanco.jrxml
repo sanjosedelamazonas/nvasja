@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-02T13:11:56 -->
+<!-- 2016-11-03T00:47:02 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCuentaMulti" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="10" uuid="530bc955-f80a-423b-a66e-90376ac24862">
 	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
@@ -14,6 +14,9 @@
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
 	<style name="Detail" fontName="Arial" fontSize="12"/>
 	<parameter name="DIARIO_FECHA_MIN" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date(1472729462677L)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DIARIO_FECHA_MAX" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date(1472729462677L)]]></defaultValueExpression>
 	</parameter>
 	<parameter name="DIARIO_ISPEN" class="java.lang.Boolean" isForPrompting="false">
@@ -34,16 +37,68 @@
 		<defaultValueExpression><![CDATA["0"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT * FROM [SCP].[dbo].[fun_scp_vsj_GetDetailsForBancoReport]('2016-09-01 00:00:00','2016-10-01 00:00:00','0')]]>
+		<![CDATA[SELECT	
+  vsj_bancodetalle.cod_ctacontable AS cuenta_NUMERO,
+  scp_plancontable.txt_descctacontable AS cuenta_NOMBRE,
+  vsj_bancodetalle.cod_bancocabecera AS cheque_ID,
+  vsj_bancocabecera.txt_correlativo AS cheque_CORRELATIVO,
+  vsj_bancocabecera.fec_fecha AS cheque_FECHA,
+  vsj_bancocabecera.num_debesol AS cheque_DEBESOL,
+  vsj_bancocabecera.num_habersol AS cheque_HABERSOL,
+  vsj_bancocabecera.num_debedolar AS cheque_DEBEDOLAR,
+  vsj_bancocabecera.num_haberdolar AS cheque_HABERDOLAR,
+  vsj_bancocabecera.num_debemo AS cheque_DEBEMO,
+  vsj_bancocabecera.num_habermo AS cheque_HABERMO,
+  vsj_bancocabecera.txt_cheque AS cheque_CHEQUENUMERO,
+  vsj_bancocabecera.flg_enviado AS cheque_ENVIADO,
+  vsj_bancodetalle.cod_proyecto AS operacion_PROYECTO,
+  vsj_bancodetalle.cod_tercero AS operacion_TERCERO,
+  vsj_bancodetalle.cod_financiera AS operacion_FINANCIERA,
+  vsj_bancodetalle.cod_ctaproyecto AS operacion_RUBRO_PROY,
+  vsj_bancodetalle.cod_contracta AS operacion_CTA_CONTABLE,
+  vsj_bancodetalle.cod_ctaespecial AS operacion_RUBRO_INST,
+  vsj_bancodetalle.cod_contraparte AS operacion_LUGAR_GASTO,
+  vsj_bancodetalle.txt_glosaitem AS operacion_DESCRIPCION,
+  vsj_bancodetalle.num_debesol AS operacion_DEBESOL,
+  vsj_bancodetalle.num_habersol AS operacion_HABERSOL,
+  vsj_bancodetalle.num_debedolar AS operacion_DEBEDOLAR,
+  vsj_bancodetalle.num_haberdolar AS operacion_HABERDOLAR, 
+  vsj_bancodetalle.num_debemo AS operacion_DEBEMO,
+  vsj_bancodetalle.num_habermo AS operacion_HABERMO,
+  vsj_bancodetalle.cod_tipomoneda AS banco_MONEDA,
+  scp_destino.txt_nombredestino AS beneficiario_NOMBRE,
+  fun_scp_vsj_GetSaldosAlDiaBanco.saldo AS cuenta_SALDO  
+FROM
+	vsj_bancodetalle 
+	INNER JOIN vsj_bancocabecera ON vsj_bancodetalle.cod_bancocabecera = vsj_bancocabecera.cod_bancocabecera
+	INNER JOIN scp_plancontable ON vsj_bancodetalle.cod_ctacontable = scp_plancontable.cod_ctacontable 
+	INNER JOIN scp_destino ON vsj_bancodetalle.cod_destino = scp_destino.cod_destino
+	INNER JOIN fun_scp_vsj_GetSaldosAlDiaBanco($P{STR_FECHA_MIN},'0') ON vsj_bancodetalle.cod_ctacontable = fun_scp_vsj_GetSaldosAlDiaBanco.cuenta
+WHERE
+     vsj_bancodetalle.fec_fecha BETWEEN 
+	$P{STR_FECHA_MIN} 
+AND 
+	$P{STR_FECHA_MAX}
+AND
+	vsj_bancodetalle.cod_tipomoneda = '0'
+ORDER BY
+     vsj_bancodetalle.cod_ctacontable,
+     vsj_bancodetalle.cod_bancocabecera ASC]]>
 	</queryString>
 	<field name="cuenta_NUMERO" class="java.lang.String"/>
 	<field name="cuenta_NOMBRE" class="java.lang.String"/>
 	<field name="cuenta_SALDO" class="java.math.BigDecimal"/>
-	<field name="operacion_ID" class="java.lang.Integer"/>
-	<field name="operacion_CORRELATIVO" class="java.lang.String"/>
-	<field name="operacion_FECHA" class="java.sql.Timestamp"/>
-	<field name="operacion_CHEQUENUMERO" class="java.lang.String"/>
-	<field name="operacion_ENVIADO" class="java.lang.String"/>
+	<field name="cheque_ID" class="java.lang.Integer"/>
+	<field name="cheque_CORRELATIVO" class="java.lang.String"/>
+	<field name="cheque_FECHA" class="java.sql.Timestamp"/>
+	<field name="cheque_CHEQUENUMERO" class="java.lang.String"/>
+	<field name="cheque_ENVIADO" class="java.lang.String"/>
+	<field name="cheque_DEBESOL" class="java.math.BigDecimal"/>
+	<field name="cheque_HABERSOL" class="java.math.BigDecimal"/>
+	<field name="cheque_DEBEDOLAR" class="java.math.BigDecimal"/>
+	<field name="cheque_HABERDOLAR" class="java.math.BigDecimal"/>
+	<field name="cheque_DEBEMO" class="java.math.BigDecimal"/>
+	<field name="cheque_HABERMO" class="java.math.BigDecimal"/>
 	<field name="operacion_PROYECTO" class="java.lang.String"/>
 	<field name="operacion_TERCERO" class="java.lang.String"/>
 	<field name="operacion_FINANCIERA" class="java.lang.String"/>
@@ -76,15 +131,15 @@
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="CHQ_DET" class="java.lang.String" resetType="Group" resetGroup="cheque">
-		<variableExpression><![CDATA[$F{operacion_CHEQUENUMERO}]]></variableExpression>
+		<variableExpression><![CDATA[$F{cheque_CHEQUENUMERO}]]></variableExpression>
 	</variable>
 	<variable name="Nro" class="java.lang.Integer" resetType="Group" resetGroup="cuenta" calculation="Count">
-		<variableExpression><![CDATA[$F{operacion_ID}]]></variableExpression>
+		<variableExpression><![CDATA[$F{cheque_ID}]]></variableExpression>
 	</variable>
 	<group name="cuenta" isStartNewPage="true" isResetPageNumber="true" keepTogether="true">
 		<groupExpression><![CDATA[$F{cuenta_NUMERO}]]></groupExpression>
 		<groupHeader>
-			<band height="105">
+			<band height="98">
 				<staticText>
 					<reportElement x="0" y="58" width="19" height="14" uuid="23db8169-2630-44eb-bc0a-873a94517d9b"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -107,7 +162,7 @@
 					<text><![CDATA[Descripción]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="242" y="76" width="72" height="14" uuid="1ae2cace-7dcb-46fa-8882-d8940e80f862"/>
+					<reportElement x="620" y="74" width="72" height="14" uuid="1ae2cace-7dcb-46fa-8882-d8940e80f862"/>
 					<textElement verticalAlignment="Top">
 						<font fontName="Calibri"/>
 					</textElement>
@@ -127,7 +182,7 @@
 						<font fontName="Calibri" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{PEN_SALDO_INIT}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{cuenta_SALDO}]]></textFieldExpression>
 				</textField>
 				<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
 					<reportElement style="SubTitle" x="323" y="26" width="71" height="14" uuid="14aae524-0ccc-4dda-a119-48d0829037b6"/>
@@ -148,7 +203,7 @@
 					<textElement markup="none">
 						<font size="12"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{STR_FECHA_MAX}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{DIARIO_FECHA_MAX}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Transparent" x="400" y="26" width="24" height="14" forecolor="#666666" backcolor="#FFFFFF" uuid="cb7c90ba-ad7d-45ec-bf5f-3d02a93f0336"/>
@@ -222,7 +277,7 @@
 					<text><![CDATA[Glosa]]></text>
 				</staticText>
 				<textField>
-					<reportElement key="" style="Detail" x="59" y="74" width="100" height="16" uuid="3b472341-8e72-43e8-85e1-b7bb669517d9"/>
+					<reportElement key="" style="Detail" x="48" y="73" width="231" height="16" uuid="3b472341-8e72-43e8-85e1-b7bb669517d9"/>
 					<textFieldExpression><![CDATA[$F{cuenta_NUMERO} + " " +$F{cuenta_NOMBRE} +" "]]></textFieldExpression>
 				</textField>
 			</band>
@@ -241,7 +296,6 @@
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{operacion_FECHA}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement style="SubTitle" mode="Transparent" x="751" y="2" width="61" height="13" forecolor="#000000" backcolor="#CCCCCC" uuid="de13e745-03e3-42a1-bdfe-2c90905748d5"/>
@@ -298,7 +352,25 @@
 		</groupFooter>
 	</group>
 	<group name="cheque">
-		<groupExpression><![CDATA[$F{operacion_CHEQUENUMERO}]]></groupExpression>
+		<groupExpression><![CDATA[$F{cheque_CHEQUENUMERO}]]></groupExpression>
+		<groupHeader>
+			<band height="43">
+				<textField>
+					<reportElement x="0" y="0" width="40" height="13" uuid="0b4ad8c8-7dac-4ee7-a951-f63049583924"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cheque_CHEQUENUMERO}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM">
+					<reportElement style="Detail" x="55" y="0" width="27" height="13" uuid="ccc4e898-48f4-4ccb-8816-d1cf24629c9b"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cheque_FECHA}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
 		<groupFooter>
 			<band height="13">
 				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false">
@@ -306,7 +378,6 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8" isItalic="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{operacion_HABERSOL}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="412" y="0" width="73" height="13" uuid="5832fed5-695d-4b31-8907-9312aeed2a1e"/>
@@ -326,7 +397,6 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8" isItalic="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{PEN_INGRESOS}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="328" y="0" width="84" height="13" uuid="a627539c-87bf-4497-9211-3e1d376d1b40"/>
@@ -374,33 +444,12 @@
 	</columnHeader>
 	<detail>
 		<band height="17" splitType="Stretch">
-			<textField>
-				<reportElement x="48" y="2" width="31" height="13" uuid="0b4ad8c8-7dac-4ee7-a951-f63049583924"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{operacion_CORRELATIVO}]]></textFieldExpression>
-			</textField>
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement style="Detail" x="81" y="2" width="247" height="13" uuid="d7694a11-1d5f-4c69-aef2-e5cab897289b"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{operacion_DESCRIPCION}]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM">
-				<reportElement style="Detail" x="21" y="2" width="27" height="13" uuid="ccc4e898-48f4-4ccb-8816-d1cf24629c9b"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{operacion_FECHA}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="Detail" x="0" y="2" width="21" height="13" uuid="b7f60ad8-e290-4ee0-87d5-88887356dbd1"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{Nro}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement style="Detail" mode="Transparent" x="636" y="2" width="56" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="db00220a-685b-4635-ac95-87d79b8d7b94"/>
@@ -422,7 +471,6 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cuenta_SALDO}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="814" height="1" uuid="e397ba50-850a-44ee-ad1a-5ae3dd936545">
@@ -451,7 +499,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{operacion_CHEQUENUMERO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cheque_CHEQUENUMERO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
