@@ -193,6 +193,29 @@ public class ReportHelper {
 		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
 	}
 
+	public static void generateDiarioBanco(Character moneda, final Date fechaMin, final Date fechaMax,
+									  String format) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		HashMap paramMap = new HashMap();
+		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
+		List<Caja> cajas = DataUtil.getCajasList(MainUI.get().getComprobanteView().getService().getPlanRepo(), fechaMin, fechaMax);
+		paramMap.put("MONEDA", moneda.toString());
+		paramMap.put("SALDOS_INICIAL", cajas);
+		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
+		paramMap.put("DIARIO_FECHA_MAX", fechaMax);
+		paramMap.put("DIARIO_ISPEN", true);
+		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
+		paramMap.put("STR_FECHA_MIN", sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)));
+		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
+		logger.info("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
+		logger.info("STR_FECHA_MAX=" + paramMap.get("STR_FECHA_MAX"));
+		MsgUsuario usuario = MainUI.get().getMsgUsuarioRep().findByTxtUsuario(CurrentUser.get());
+		paramMap.put("REPORTE_PREPARADO_POR", usuario.getTxtNombre());
+		paramMap.put("REPORTE_REVISADOR_POR", ConfigurationUtil.get("REPORTE_CAJA_REVISADOR_POR"));
+		//logger.info("ParamMap: " + paramMap.toString());
+		generateReport("ReporteDeBanco", "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
+	}
+
 	public static void generateLugarGasto(final Date fechaMin, final Date fechaMax,
 										  Window window, String format, String type) {
 

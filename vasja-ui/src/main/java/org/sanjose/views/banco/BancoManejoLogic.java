@@ -12,6 +12,7 @@ import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.DoubleDecimalFormatter;
+import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
@@ -58,7 +59,7 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
         view.btnVerVoucher.addClickListener(e -> gridLogic.generateComprobante());
         view.btnImprimir.addClickListener(e -> gridLogic.printComprobante());
         view.btnReporte.addClickListener(e -> {
-            //ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
+            ReportHelper.generateDiarioBanco('0', view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
         });
 
         view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
