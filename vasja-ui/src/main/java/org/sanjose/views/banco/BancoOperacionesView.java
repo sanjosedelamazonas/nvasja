@@ -162,6 +162,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
             }
             //viewLogic.setSaldoDelDia();
         });
+        selFiltroCuenta.setPageLength(20);
         bancoOperView.init(MainUI.get().getBancoManejoView().getService());
         bancoOperView.getViewLogic().nuevoCheque();
         BancoOperacionesView bancoOperacionesView = this;
@@ -176,6 +177,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         });
         DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
         selRepMoneda.select('0');
+        selRepMoneda.setNullSelectionAllowed(false);
         bancoOperView.getCerrarBtn().setVisible(false);
         viewLogic.init(this);
     }

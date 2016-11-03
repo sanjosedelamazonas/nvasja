@@ -138,6 +138,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
             }
             viewLogic.setSaldoDelDia();
         });
+        selFiltroCuenta.setPageLength(20);
 
         // Set Saldos Inicial
         fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
@@ -145,6 +146,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
         DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
         selRepMoneda.select('0');
+        selRepMoneda.setNullSelectionAllowed(false);
 
         viewLogic.init(this);
         viewLogic.setSaldos(gridSaldoInicial, true);

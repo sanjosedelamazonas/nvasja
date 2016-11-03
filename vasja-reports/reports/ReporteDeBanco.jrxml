@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-03T11:58:11 -->
+<!-- 2016-11-03T12:12:14 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCuentaMulti" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="10" uuid="530bc955-f80a-423b-a66e-90376ac24862">
 	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
@@ -308,7 +308,9 @@ ORDER BY
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="4"/>
+			<band>
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			</band>
 		</groupFooter>
 	</group>
 	<background>
@@ -418,7 +420,9 @@ ORDER BY
 				<text><![CDATA[Saldo]]></text>
 			</staticText>
 			<line>
-				<reportElement x="-1" y="40" width="814" height="1" uuid="5c2d77be-afd4-494e-b0a2-efdf2f914660"/>
+				<reportElement x="0" y="40" width="814" height="1" uuid="5c2d77be-afd4-494e-b0a2-efdf2f914660">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
 			</line>
 			<staticText>
 				<reportElement x="68" y="25" width="42" height="14" uuid="61635d44-ab30-4d62-bc15-e76ff7ba19fa"/>
@@ -489,7 +493,8 @@ ORDER BY
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="23" splitType="Stretch">
+		<band height="15" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement style="Detail" x="483" y="2" width="186" height="13" uuid="d7694a11-1d5f-4c69-aef2-e5cab897289b"/>
 				<textElement verticalAlignment="Middle">
