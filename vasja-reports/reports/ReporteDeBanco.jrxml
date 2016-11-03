@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-03T03:52:26 -->
+<!-- 2016-11-03T11:58:11 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCuentaMulti" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="10" uuid="530bc955-f80a-423b-a66e-90376ac24862">
 	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
@@ -149,7 +149,7 @@ ORDER BY
 		<groupHeader>
 			<band height="33">
 				<staticText>
-					<reportElement x="619" y="8" width="72" height="14" uuid="1ae2cace-7dcb-46fa-8882-d8940e80f862"/>
+					<reportElement x="590" y="11" width="72" height="14" uuid="1ae2cace-7dcb-46fa-8882-d8940e80f862"/>
 					<textElement verticalAlignment="Top">
 						<font fontName="SansSerif" size="9"/>
 					</textElement>
@@ -185,7 +185,7 @@ ORDER BY
 					</graphicElement>
 				</line>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement style="SubTitle" mode="Transparent" x="759" y="2" width="53" height="13" forecolor="#000000" backcolor="#CCCCCC" uuid="de13e745-03e3-42a1-bdfe-2c90905748d5"/>
+					<reportElement style="SubTitle" mode="Transparent" x="750" y="2" width="60" height="13" forecolor="#000000" backcolor="#CCCCCC" uuid="de13e745-03e3-42a1-bdfe-2c90905748d5"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 						<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
@@ -193,7 +193,7 @@ ORDER BY
 					<textFieldExpression><![CDATA[$F{cuenta_SALDO}.subtract($V{PEN_INGRESOS}).add($V{PEN_EGRESOS})]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="81" y="2" width="152" height="13" uuid="515c9ab8-d490-4361-a1b9-5c71763d539a"/>
+					<reportElement x="590" y="2" width="60" height="13" uuid="515c9ab8-d490-4361-a1b9-5c71763d539a"/>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Calibri" isBold="false"/>
 					</textElement>
@@ -243,7 +243,7 @@ ORDER BY
 		<groupHeader>
 			<band height="20">
 				<textField isBlankWhenNull="true">
-					<reportElement x="0" y="3" width="43" height="13" uuid="0b4ad8c8-7dac-4ee7-a951-f63049583924">
+					<reportElement x="0" y="3" width="50" height="13" uuid="0b4ad8c8-7dac-4ee7-a951-f63049583924">
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -261,7 +261,7 @@ ORDER BY
 					<textFieldExpression><![CDATA[$F{cheque_FECHA}]]></textFieldExpression>
 				</textField>
 				<textField pattern="dd/MM" isBlankWhenNull="true">
-					<reportElement style="Detail" x="69" y="3" width="44" height="13" uuid="e94031e4-2f02-46f7-b9dd-ef363c7c1d00">
+					<reportElement style="Detail" x="69" y="3" width="54" height="13" uuid="e94031e4-2f02-46f7-b9dd-ef363c7c1d00">
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
 					<textElement verticalAlignment="Middle">
@@ -360,8 +360,8 @@ ORDER BY
 		<band height="41" splitType="Stretch">
 			<staticText>
 				<reportElement style="Title" x="0" y="0" width="218" height="16" uuid="cd6ef5d4-ccfb-4f03-9e48-57d8e009948c"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Vicariato Apostólico San José del Amazonas]]></text>
 			</staticText>
