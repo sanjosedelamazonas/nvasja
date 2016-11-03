@@ -5,6 +5,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Label;
@@ -13,6 +14,7 @@ import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.MainUI;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
+import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
@@ -127,8 +129,12 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
             if (e.getProperty().getValue() != null) {
                 container.removeContainerFilters("codCtacontable");
                 container.addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
+                ScpPlancontable cuenta = getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
+                        GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
+                selRepMoneda.select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             } else {
                 container.removeContainerFilters("codCtacontable");
+                selRepMoneda.select('0');
             }
             viewLogic.setSaldoDelDia();
         });
@@ -136,6 +142,9 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         // Set Saldos Inicial
         fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
         fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));
+
+        DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
+        selRepMoneda.select('0');
 
         viewLogic.init(this);
         viewLogic.setSaldos(gridSaldoInicial, true);
@@ -214,6 +223,10 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
     public Grid getGridBanco() {
         return gridBanco;
+    }
+
+    public ComboBox getSelRepMoneda() {
+        return selRepMoneda;
     }
 
     @Override

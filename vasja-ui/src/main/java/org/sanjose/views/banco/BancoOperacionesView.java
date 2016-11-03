@@ -6,6 +6,7 @@ import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.SelectionEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -148,6 +149,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
                         gridBanco.getColumn("numDebemo").setHidden(false);
                         break;
                 }
+                selRepMoneda.select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             } else {
                 gridBanco.getColumn("numHabersol").setHidden(false);
                 gridBanco.getColumn("numDebesol").setHidden(false);
@@ -156,6 +158,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
                 gridBanco.getColumn("numHabermo").setHidden(false);
                 gridBanco.getColumn("numDebemo").setHidden(false);
                 container.removeContainerFilters("codCtacontable");
+                selRepMoneda.select('0');
             }
             //viewLogic.setSaldoDelDia();
         });
@@ -171,6 +174,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
                 bancoOperView.getViewLogic().editarCheque(cabeceraSelected);
             }
         });
+        DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
+        selRepMoneda.select('0');
         bancoOperView.getCerrarBtn().setVisible(false);
         viewLogic.init(this);
     }
@@ -216,6 +221,10 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
 
     public BancoOperView getBancoOperView() {
         return bancoOperView;
+    }
+
+    public ComboBox getSelRepMoneda() {
+        return selRepMoneda;
     }
 
     @Override

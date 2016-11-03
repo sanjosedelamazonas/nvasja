@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-03T03:38:20 -->
+<!-- 2016-11-03T03:52:26 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCuentaMulti" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="10" uuid="530bc955-f80a-423b-a66e-90376ac24862">
 	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
@@ -36,6 +36,7 @@
 	<parameter name="MONEDA" class="java.lang.String">
 		<defaultValueExpression><![CDATA["0"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="ANO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT 
   vsj_bancocabecera.cod_ctacontable AS cuenta_NUMERO,
@@ -77,7 +78,7 @@ FROM
 	INNER JOIN scp_destino dest2 ON vsj_bancocabecera.cod_destino = dest2.cod_destino
   	INNER JOIN fun_scp_vsj_GetSaldosAlDiaBanco($P{STR_FECHA_MIN},$P{MONEDA}) ON vsj_bancocabecera.cod_ctacontable = fun_scp_vsj_GetSaldosAlDiaBanco.cuenta
 WHERE
-	scp_plancontable.txt_anoproceso = '2016'
+	scp_plancontable.txt_anoproceso = $P{ANO}
 AND
      vsj_bancocabecera.fec_fecha BETWEEN 
      $P{STR_FECHA_MIN}
@@ -163,7 +164,7 @@ ORDER BY
 					<textFieldExpression><![CDATA[$F{cuenta_NUMERO} + " " +$F{cuenta_NOMBRE} +" "]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="cuenta" pattern="#,##0.00" isBlankWhenNull="false">
-					<reportElement style="SubTitle" mode="Transparent" x="759" y="10" width="52" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="5bbbdbf2-bf33-41b5-a8cd-11461ecc501c"/>
+					<reportElement style="SubTitle" mode="Transparent" x="750" y="10" width="60" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="5bbbdbf2-bf33-41b5-a8cd-11461ecc501c"/>
 					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
 						<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 						<paragraph lineSpacing="Single"/>
@@ -241,7 +242,7 @@ ORDER BY
 		<groupExpression><![CDATA[$F{cheque_CHEQUENUMERO}]]></groupExpression>
 		<groupHeader>
 			<band height="20">
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="3" width="43" height="13" uuid="0b4ad8c8-7dac-4ee7-a951-f63049583924">
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
@@ -250,7 +251,7 @@ ORDER BY
 					</textElement>
 					<textFieldExpression><![CDATA[$F{cheque_CORRELATIVO}]]></textFieldExpression>
 				</textField>
-				<textField pattern="dd/MM">
+				<textField pattern="dd/MM" isBlankWhenNull="true">
 					<reportElement style="Detail" x="43" y="3" width="26" height="13" uuid="ccc4e898-48f4-4ccb-8816-d1cf24629c9b">
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
@@ -259,7 +260,7 @@ ORDER BY
 					</textElement>
 					<textFieldExpression><![CDATA[$F{cheque_FECHA}]]></textFieldExpression>
 				</textField>
-				<textField pattern="dd/MM">
+				<textField pattern="dd/MM" isBlankWhenNull="true">
 					<reportElement style="Detail" x="69" y="3" width="44" height="13" uuid="e94031e4-2f02-46f7-b9dd-ef363c7c1d00">
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
@@ -268,14 +269,14 @@ ORDER BY
 					</textElement>
 					<textFieldExpression><![CDATA[$F{cheque_CHEQUENUMERO}]]></textFieldExpression>
 				</textField>
-				<textField pattern="dd/MM">
+				<textField pattern="dd/MM" isBlankWhenNull="true">
 					<reportElement style="Detail" x="113" y="3" width="10" height="13" uuid="c5546fa6-0e5b-45cf-871c-d846977dd111"/>
 					<textElement verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{cheque_ENVIADO}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="341" y="3" width="159" height="13" uuid="8d45dc6d-24f4-47b1-b6ce-bafbd321b368"/>
 					<textElement verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
@@ -517,7 +518,7 @@ ORDER BY
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="270" y="2" width="34" height="13" uuid="8f30c60c-4cd4-4ed7-b65e-db2b4e590870">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -526,14 +527,14 @@ ORDER BY
 				</textElement>
 				<textFieldExpression><![CDATA[$F{operacion_RUBRO_INST}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="340" y="2" width="140" height="13" uuid="07103e9b-4f56-42aa-ad66-275f778a78dd"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{operacion_BENEFICIARIO}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="304" y="2" width="34" height="13" uuid="429c8a37-f547-4fc0-bb81-ce5d46f42746">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -542,7 +543,7 @@ ORDER BY
 				</textElement>
 				<textFieldExpression><![CDATA[$F{operacion_LUGAR_GASTO}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="231" y="2" width="39" height="13" uuid="6a8c1935-9a29-4105-8d83-e75fe4d32d6c">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -551,7 +552,7 @@ ORDER BY
 				</textElement>
 				<textFieldExpression><![CDATA[$F{operacion_CTA_CONTABLE}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="193" y="2" width="38" height="13" uuid="e696d6ab-6369-4045-a95c-94b9269a83e1">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -560,7 +561,7 @@ ORDER BY
 				</textElement>
 				<textFieldExpression><![CDATA[$F{operacion_RUBRO_PROY}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="157" y="2" width="36" height="13" uuid="06f6fa8b-23ae-473f-8a7e-9b88fca0ab07">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
@@ -569,7 +570,7 @@ ORDER BY
 				</textElement>
 				<textFieldExpression><![CDATA[$F{operacion_FINANCIERA}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="123" y="2" width="34" height="13" uuid="b6f6369a-043d-44b7-b877-ea8313243044">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>

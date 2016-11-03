@@ -59,7 +59,8 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
         view.btnVerVoucher.addClickListener(e -> gridLogic.generateComprobante());
         view.btnImprimir.addClickListener(e -> gridLogic.printComprobante());
         view.btnReporte.addClickListener(e -> {
-            ReportHelper.generateDiarioBanco('0', view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
+            ReportHelper.generateDiarioBanco(view.getSelRepMoneda().getValue().toString().charAt(0),
+                    view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
         });
 
         view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {

@@ -145,9 +145,14 @@ public class DataFilterUtil {
 		combo.setInvalidAllowed(false);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static void bindTipoMonedaComboBox(final ComboBox combo, String column,
 											  final String prompt) {
+		bindTipoMonedaComboBox(combo, column, prompt, true);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void bindTipoMonedaComboBox(final ComboBox combo, String column,
+											  final String prompt, boolean showNum) {
 
 		Map<Character, String> valMap = new HashMap<>();
 		valMap.put('0',"S/");
@@ -164,7 +169,7 @@ public class DataFilterUtil {
 		for (Character value : keys) {
 			Item item = c.addItem(value);
 			item.getItemProperty(column)
-					.setValue(value + " " + valMap.get(value));
+					.setValue((showNum ? value + " " : "") + valMap.get(value));
 			i++;
 		}
 		combo.setContainerDataSource(c);

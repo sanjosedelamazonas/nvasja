@@ -196,10 +196,12 @@ public class ReportHelper {
 	public static void generateDiarioBanco(Character moneda, final Date fechaMin, final Date fechaMax,
 									  String format) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+		SimpleDateFormat sdfAno = new SimpleDateFormat("yyyy");
 		HashMap paramMap = new HashMap();
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
 		List<Caja> cajas = DataUtil.getCajasList(MainUI.get().getComprobanteView().getService().getPlanRepo(), fechaMin, fechaMax);
 		paramMap.put("MONEDA", moneda.toString());
+		paramMap.put("ANO", sdfAno.format(fechaMin));
 		paramMap.put("SALDOS_INICIAL", cajas);
 		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
 		paramMap.put("DIARIO_FECHA_MAX", fechaMax);
