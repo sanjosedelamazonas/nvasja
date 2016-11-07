@@ -59,7 +59,7 @@ public class ReportHelper {
 	private static String getReportFromItem(VsjItem op) {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
-		return (op instanceof VsjCajabanco ? (isTxt ? "ComprobanteTxt" : "Comprobante") : (isTxt ? "ComprobanteBancoTxt" : "ComprobanteBanco"));
+		return (op instanceof VsjCajabanco ? (isTxt ? "ComprobanteTxt" : "Comprobante") : "ComprobanteCheque");
 	}
 
 	private static Integer getIdFromItem(VsjItem op) {
@@ -70,9 +70,9 @@ public class ReportHelper {
 	@SuppressWarnings({"serial", "unchecked"})
 	public static void generateComprobante(final VsjItem op) {
 		final boolean isPdf = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
-				.equalsIgnoreCase("PDF");
+				.equalsIgnoreCase("PDF") || op instanceof VsjBancocabecera;
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
-				.equalsIgnoreCase("TXT");
+				.equalsIgnoreCase("TXT") && !(op instanceof VsjBancocabecera);
 		final String REPORT = getReportFromItem(op);
 		StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {
             byte[] b = null;
@@ -466,6 +466,8 @@ public class ReportHelper {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private static JasperPrint prepareToPrint(String reportName,
 			HashMap paramMap) throws JRException {
+		logger.info("REPORT: " + ConfigurationUtil.getReportsSourceFolder() + reportName
+				+ ".jasper" + "\n" + paramMap.toString());
 		return JasperFillManager.fillReport(
 				ConfigurationUtil.getReportsSourceFolder() + reportName
 						+ ".jasper", paramMap, get().getSqlConnection());

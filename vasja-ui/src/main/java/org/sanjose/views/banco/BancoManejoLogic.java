@@ -4,8 +4,6 @@ import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.external.org.slf4j.Logger;
-import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Grid;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
@@ -38,8 +36,6 @@ import java.util.List;
  */
 public class BancoManejoLogic implements Serializable, SaldoDelDia {
 
-
-    private static final Logger log = LoggerFactory.getLogger(BancoManejoLogic.class);
     private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
     private BancoManejoView view;
     private Grid.FooterRow saldosFooterInicial;
@@ -104,6 +100,7 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
                         view.refreshData();
                     });
                 }
+                gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));
                 gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjItem) itemId));
             }
         });

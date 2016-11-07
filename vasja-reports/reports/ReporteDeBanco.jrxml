@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
 <!-- 2016-11-03T12:12:14 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCuentaMulti" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="10" uuid="530bc955-f80a-423b-a66e-90376ac24862">
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="ReporteCuentaMulti" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814"
+              leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="10"
+              uuid="530bc955-f80a-423b-a66e-90376ac24862">
 	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="393"/>
@@ -73,7 +78,8 @@
 FROM
 	vsj_bancodetalle 
 	INNER JOIN vsj_bancocabecera ON vsj_bancodetalle.cod_bancocabecera = vsj_bancocabecera.cod_bancocabecera
-	INNER JOIN scp_plancontable ON vsj_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable 
+	INNER JOIN scp_plancontable ON vsj_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable
+	 AND vsj_bancocabecera.txt_anoproceso = scp_plancontable.txt_anoproceso
 	INNER JOIN scp_destino dest1 ON vsj_bancodetalle.cod_destino = dest1.cod_destino
 	INNER JOIN scp_destino dest2 ON vsj_bancocabecera.cod_destino = dest2.cod_destino
   	INNER JOIN fun_scp_vsj_GetSaldosAlDiaBanco($P{STR_FECHA_MIN},$P{MONEDA}) ON vsj_bancocabecera.cod_ctacontable = fun_scp_vsj_GetSaldosAlDiaBanco.cuenta

@@ -88,7 +88,8 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
         // Fecha Desde Hasta
         //ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
-        ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta, this);
+        //ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta, this);
+        ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta, this);
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());

@@ -1,52 +1,45 @@
-USE [SCP]
-GO
-
-/****** Object:  Table [dbo].[vsj_configuractacajabanco]    Script Date: 10/26/2016 14:35:05 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-SET ANSI_PADDING ON
-GO
-
-CREATE TABLE [dbo].[vsj_configuractacajabanco](
-	[id] [int] IDENTITY(1,1)  NOT NULL,
-	[cod_tipocuenta] [varchar](2) NOT NULL,
-	[txt_tipocuenta] [varchar](50) NOT NULL,
-	[cod_ctacontablecaja] [varchar](14) NULL,
-	[cod_ctacontablegasto] [varchar](14) NULL,
-	[cod_ctaespecial] [varchar](14) NULL,
-	[para_caja] [bit] NOT NULL,
-	[para_banco] [bit] NOT NULL,
-	[para_proyecto] [bit] NOT NULL,
-	[para_tercero] [bit] NOT NULL,
-	[activo] [bit] NOT NULL,
- CONSTRAINT [PK_vsj_configuractacajabanco] PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
-
-GO
-
-SET ANSI_PADDING OFF
-GO
-
-ALTER TABLE [dbo].[vsj_configuractacajabanco] ADD  DEFAULT ('TRUE') FOR [para_caja]
-GO
-
-ALTER TABLE [dbo].[vsj_configuractacajabanco] ADD  DEFAULT ('TRUE') FOR [para_banco]
-GO
-
-ALTER TABLE [dbo].[vsj_configuractacajabanco] ADD  DEFAULT ('TRUE') FOR [para_proyecto]
-GO
-
-ALTER TABLE [dbo].[vsj_configuractacajabanco] ADD  DEFAULT ('TRUE') FOR [para_tercero]
-GO
-
-ALTER TABLE [dbo].[vsj_configuractacajabanco] ADD  DEFAULT ('TRUE') FOR [activo]
-GO
-
-
+/****** Script for SelectTopNRows command from SSMS  ******/
+delete from [SCP].[dbo].[vsj_configuractacajabanco]
+insert into [SCP].[dbo].[vsj_configuractacajabanco]
+(      [cod_tipocuenta]
+      ,[txt_tipocuenta]
+      ,[cod_ctacontablecaja]
+      ,[cod_ctacontablegasto]
+      ,[cod_ctaespecial]
+      ,[para_caja]
+      ,[para_banco]
+      ,[para_proyecto]
+      ,[para_tercero]
+      ,[activo])
+SELECT [cod_tipocuenta]
+      ,[txt_tipocuenta]
+      ,[cod_ctacontablecaja]
+      ,[cod_ctacontablegasto]
+      ,[cod_ctaespecial]
+, case [ind_tipocuenta] --para caja
+			when 0 then 1
+			when 1 then 1
+			when 2 then 0
+			when 3 then 0
+end
+, case [ind_tipocuenta] --[para_banco]
+			when 0 then 0
+			when 1 then 0
+			when 2 then 1
+			when 3 then 1
+end
+, case [ind_tipocuenta] --[para_proyecto]
+			when 0 then 1
+			when 1 then 0
+			when 2 then 1
+			when 3 then 0
+end
+, case [ind_tipocuenta] --[para_tercero]
+			when 0 then 0
+			when 1 then 1
+			when 2 then 0
+			when 3 then 1
+end
+,1
+FROM [SCP].[dbo].[scp_configuractacajabanco]
+where txt_anoproceso='2016'
