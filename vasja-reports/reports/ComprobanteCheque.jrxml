@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-08T11:45:34 -->
+<!-- 2016-11-08T11:58:47 -->
 <jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			  xmlns="http://jasperreports.sourceforge.net/jasperreports"
 			  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
@@ -258,7 +258,7 @@ FROM
 				<textFieldExpression><![CDATA[$F{CHEQUE_DESCRIPCION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="50" y="97" width="228" height="35" uuid="27d89db4-1f57-40af-a250-d14d9be807b7"/>
+				<reportElement x="50" y="97" width="228" height="31" uuid="27d89db4-1f57-40af-a250-d14d9be807b7"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
@@ -312,7 +312,7 @@ FROM
 				<reportElement x="312" y="121" width="227" height="1" uuid="0cb212d9-4270-47af-897a-6829355a4bda"/>
 			</line>
 			<line>
-				<reportElement x="0" y="132" width="280" height="1" uuid="6a3868a4-2d4b-405a-aa79-fc00e2d6a1b8"/>
+				<reportElement x="0" y="130" width="280" height="1" uuid="6a3868a4-2d4b-405a-aa79-fc00e2d6a1b8"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#999999"/>
 				</graphicElement>
@@ -389,17 +389,17 @@ FROM
 				</graphicElement>
 			</line>
 			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="false">
-				<reportElement style="Column header" x="49" y="134" width="141" height="11" forecolor="#050505"
+				<reportElement style="Column header" x="49" y="133" width="141" height="11" forecolor="#050505"
 							   uuid="7f842df8-979a-4499-8ca0-8656644d72a6"/>
 				<textElement verticalAlignment="Bottom">
-					<font fontName="Arial" size="8" isBold="false"/>
+					<font fontName="Arial" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="134" width="41" height="11" uuid="6f1d70cc-e9b2-407d-8832-74c66b284822"/>
+				<reportElement x="0" y="133" width="41" height="11" uuid="6f1d70cc-e9b2-407d-8832-74c66b284822"/>
 				<textElement verticalAlignment="Bottom">
-					<font fontName="Arial" size="8" isItalic="true"/>
+					<font fontName="Arial" size="9" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[Impreso:]]></text>
 			</staticText>
@@ -720,6 +720,12 @@ FROM
 				</textElement>
 				<text><![CDATA[Contabilidad]]></text>
 			</staticText>
+			<line>
+				<reportElement x="0" y="74" width="539" height="1" uuid="834b38aa-66c6-4abf-93b5-bc97f09aefe0"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
 		</band>
 	</title>
 	<detail>
