@@ -111,7 +111,7 @@ public class ReportHelper {
 						+ (isPdf ? ".pdf" : (isTxt ? ".txt" : ".html")));
 		resource.setMIMEType((isPdf ? "application/pdf" : (isTxt ? "text/plain" : "text/html")));
 
-		logger.info("Resource: " + resource.getFilename() + " "
+		logger.debug("Resource: " + resource.getFilename() + " "
 				+ resource.getMIMEType());
 
 		Embedded emb = new Embedded();
@@ -128,14 +128,7 @@ public class ReportHelper {
 		repWindow.setModal(false);
         repWindow.setContent(emb);
 		UI.getCurrent().addWindow(repWindow);
-        //Set<Window> windows = repWindow.getChildWindows();
-        JavaScript.getCurrent().execute("window.onload = function() { window.print(); } ");
-        //repWindow.ex
-        /*for (Window win : windows) {
-			logger.info("URL: " + win.getURL());
-			win.executeJavaScript("window.onload = function() { window.print(); } ");
-		}*/
-
+        //JavaScript.getCurrent().execute("window.onload = function() { window.print(); } ");
 	}
 
 	@SuppressWarnings({ "serial", "unchecked" })
@@ -177,19 +170,19 @@ public class ReportHelper {
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
 		List<Caja> cajas = DataUtil.getCajasList(MainUI.get().getComprobanteView().getService().getPlanRepo(), fechaMin, fechaMax);
 		paramMap.put("SALDOS_INICIAL", cajas);
-		logger.info("sendin to diario INICIAL: " + cajas);
+		logger.debug("sendin to diario INICIAL: " + cajas);
 		paramMap.put("DIARIO_FECHA_MIN", fechaMin);
 		paramMap.put("DIARIO_FECHA_MAX", fechaMax);
 		paramMap.put("DIARIO_ISPEN", true);
 		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
 		paramMap.put("STR_FECHA_MIN", sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)));
 		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
-		logger.info("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
-		logger.info("STR_FECHA_MAX=" + paramMap.get("STR_FECHA_MAX"));
+		logger.debug("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
+		logger.debug("STR_FECHA_MAX=" + paramMap.get("STR_FECHA_MAX"));
 		MsgUsuario usuario = MainUI.get().getMsgUsuarioRep().findByTxtUsuario(CurrentUser.get());
 		paramMap.put("REPORTE_PREPARADO_POR", usuario.getTxtNombre());
 		paramMap.put("REPORTE_REVISADOR_POR", revisado);
-		//logger.info("ParamMap: " + paramMap.toString());
+		logger.debug("ParamMap: " + paramMap.toString());
 		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
 	}
 
@@ -209,82 +202,15 @@ public class ReportHelper {
 		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
 		paramMap.put("STR_FECHA_MIN", sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)));
 		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
-		logger.info("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
-		logger.info("STR_FECHA_MAX=" + paramMap.get("STR_FECHA_MAX"));
+		logger.debug("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
+		logger.debug("STR_FECHA_MAX=" + paramMap.get("STR_FECHA_MAX"));
 		MsgUsuario usuario = MainUI.get().getMsgUsuarioRep().findByTxtUsuario(CurrentUser.get());
 		paramMap.put("REPORTE_PREPARADO_POR", usuario.getTxtNombre());
 		paramMap.put("REPORTE_REVISADOR_POR", ConfigurationUtil.get("REPORTE_CAJA_REVISADOR_POR"));
-		//logger.info("ParamMap: " + paramMap.toString());
+		logger.debug("ParamMap: " + paramMap.toString());
 		generateReport("ReporteDeBanco", "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
 	}
 
-	public static void generateLugarGasto(final Date fechaMin, final Date fechaMax,
-										  Window window, String format, String type) {
-
-		String reportName = "ReporteLugarYFuenteDeFinancDetallado";
-
-		switch (type) {
-			case "Detallado":
-				reportName = "ReporteLugarYFuenteDeFinancDetallado";
-				break;
-			case "Sin lugar":
-				reportName = "ReporteLugarYFuenteDeFinancNoTienen";
-				break;
-			case "Informe":
-				reportName = "ReporteLugarYFuenteDeFinancInforme";
-				break;
-			case "DetalladoCuentaContable":
-				reportName = "ReporteDetalladoCuentaContable";
-				break;
-			case "Detallado por rubro institucional":
-				reportName = "ReporteDetalladoRubroInstitucional";
-				break;
-			case "Informe resumido por cuenta contable":
-				reportName = "ReporteResumidoCuentaContable";
-				break;
-			case "Informe resumido por rubro institucional":
-				reportName = "ReporteResumidoRubroInstitucional";
-				break;
-		}
-
-		generateLG(fechaMin, fechaMax, window, format, reportName);
-	}
-
-	@SuppressWarnings("unchecked")
-	public static void generateCC(final Date minfecha, final Date maxfecha, boolean isPen, Window window, String format, String grouping) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-		logger.info("jestem w generateRep. params: " + minfecha + " maxfecha " + maxfecha + " isPen " + isPen);
-		String reportName;
-		HashMap paramMap = new HashMap();
-		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
-		paramMap.put("in_isPen", isPen);
-		paramMap.put("str_fecha_min", sdf.format(ConfigurationUtil.getBeginningOfDay(minfecha)));
-		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
-		if (maxfecha != null) paramMap.put("str_fecha_max", sdf.format(ConfigurationUtil.getEndOfDay(maxfecha)));
-		if (grouping == null || grouping.equals("NO GROUPING")) reportName = "ReporteCentroDeCostosNoGrouping";
-		else if (grouping.equals("POR CATEGORIA")) reportName = "ReporteCentroDeCostosPorCategoria";
-		else reportName = "ReporteCentroDeCostosPorCuenta";
-		logger.info("ParamMap: " + paramMap.toString());
-		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
-//		generateReport("ReporteCentroDeCostosStructure", "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
-	}
-
-	@SuppressWarnings("unchecked")
-	private static void generateLG(final Date minfecha, final Date maxfecha, Window window, String format, String reportName) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-		logger.info("jestem w generateLG. params: "+minfecha+" maxfecha "+maxfecha);
-		HashMap paramMap = new HashMap();
-		paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
-		paramMap.put("str_fecha_min", sdf.format(ConfigurationUtil.getBeginningOfDay(minfecha)));
-		paramMap.put("SUBREPORT_DIR", ConfigurationUtil.getReportsSourceFolder());
-		if (maxfecha != null)
-			paramMap.put("str_fecha_max", sdf.format(ConfigurationUtil.getEndOfDay(maxfecha)));
-		else
-			paramMap.put("str_fecha_max", sdf.format(ConfigurationUtil.getEndOfDay(minfecha)));
-		logger.info("ParamMap: " + paramMap.toString());
-		generateReport(reportName, "REPORTS_DIARIO_CAJA_TYPE", paramMap, format);
-//		generateReport("ReporteCentroDeCostosStructure", "REPORTS_DIARIO_CAJA_TYPE", paramMap, window, format);
-	}
 
 	@SuppressWarnings({ "serial", "unchecked" })
 	public static JasperPrint printDiario(final Date fechaMin, final Date fechaMax,
@@ -372,14 +298,14 @@ public class ReportHelper {
 
 	private static InputStream loadReport(String reportName) {
 		InputStream rep = null;
-        logger.info("Trying to load report " + reportName);
+        logger.debug("Trying to load report " + reportName);
 		rep = (UI.getCurrent().getClass()).getResourceAsStream(ConfigurationUtil
 					.get("REPORTS_SOURCE_URL").trim() + "/" + reportName + ".jasper");
 		if (rep!=null) return rep;
 
 		if (System.getenv("VASJA_HOME")!=null) {
 			try {
-				logger.info("Trying to load from VASJA_HOME/reports");
+				logger.debug("Trying to load from VASJA_HOME/reports");
 				rep = new FileInputStream(
 						System.getenv("VASJA_HOME") + File.separator + "reports" + File.separator
 								+ reportName + ".jasper");
@@ -390,8 +316,7 @@ public class ReportHelper {
 		}
 
 		try {
-			logger.info("Reports folder: " + ConfigurationUtil.getReportsSourceFolder());
-
+			logger.debug("Reports folder: " + ConfigurationUtil.getReportsSourceFolder());
 			rep = new FileInputStream(
 					ConfigurationUtil.getReportsSourceFolder() + reportName + ".jasper");
 		} catch (FileNotFoundException e) {
@@ -487,10 +412,10 @@ public class ReportHelper {
 			e.printStackTrace();
 		}
         em=em.getEntityManagerFactory().createEntityManager();
-        logger.info("Got entity manager: " + em.getProperties().toString());
+        logger.debug("Got entity manager: " + em.getProperties().toString());
         Session session = em.unwrap(Session.class);
         session.doWork(connection -> {
-            logger.info("setting connection: " + connection);
+            logger.debug("setting connection: " + connection);
             sqlConnection = connection;
         });
 		return sqlConnection;

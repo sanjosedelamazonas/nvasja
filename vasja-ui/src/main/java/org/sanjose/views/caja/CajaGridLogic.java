@@ -91,7 +91,8 @@ public class CajaGridLogic implements Serializable {
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
             } else {
-                gridContextMenu.addItem("Ver detalle", k -> editarComprobante((VsjCajabanco) itemId));
+                gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((VsjCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
+                        k -> editarComprobante((VsjCajabanco) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
                 gridContextMenu.addItem("Enviar a contabilidad", k -> {
                     if (!view.getSelectedRows().isEmpty()) {
@@ -134,11 +135,7 @@ public class CajaGridLogic implements Serializable {
 
         destinoView.getBtnGuardar().addClickListener(event -> {
             ScpDestino editedItem = destinoView.viewLogic.saveDestino();
-            //vcb.setCodDestino(editedItem.getCodDestino());
             destinoWindow.close();
-            //refreshDestino();
-
-
         });
         destinoView.getBtnAnular().addClickListener(event -> {
             destinoView.viewLogic.anularDestino();
@@ -180,7 +177,6 @@ public class CajaGridLogic implements Serializable {
                 Notification.show("Error al eliminar el destino: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
                 log.info("Got Commit Exception: " + ce.getMessage());
             }
-            //destinoWindow.close();
         });
         UI.getCurrent().addWindow(destinoWindow);
     }
@@ -198,21 +194,19 @@ public class CajaGridLogic implements Serializable {
 
     private void editarComprobante(VsjCajabanco vcb) {
         if (vcb==null) return;
-        if (!vcb.isEnviado() && !vcb.isAnula()) {
-            // Transferencia
-            if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
-                try {
-                    MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
-                    MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
-                    MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
-                } catch (NonEditableException e) {
-                    Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-                }
-            } else {
-                MainUI.get().getComprobanteView().viewLogic.setNavigatorView(this.view);
-                MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
-                MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+        // Transferencia
+        if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
+            try {
+                MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
+                MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
+                MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
+            } catch (NonEditableException e) {
+                Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
             }
+        } else {
+            MainUI.get().getComprobanteView().viewLogic.setNavigatorView(this.view);
+            MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
+            MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
         }
     }
 }

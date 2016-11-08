@@ -61,7 +61,8 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
             } else {
-                gridContextMenu.addItem("Ver detalle",
+
+                gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((VsjCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
                         k -> editarComprobante((VsjCajabanco) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
                 gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());

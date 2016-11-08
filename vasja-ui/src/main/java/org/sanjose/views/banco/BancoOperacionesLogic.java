@@ -116,5 +116,7 @@ public class BancoOperacionesLogic implements Serializable {
         });
         view.btnImprimir.setVisible(false);
         view.btnVerVoucher.setVisible(false);
+        view.btnEditar.setVisible(false);
+        view.btnNuevoCheque.setVisible(false);
     }
 }

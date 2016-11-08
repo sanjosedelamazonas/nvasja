@@ -757,20 +757,17 @@ class ComprobanteLogic implements Serializable {
                 view.getCerrarBtn().setEnabled(true);
                 view.getGuardarBtn().setEnabled(false);
                 view.getAnularBtn().setEnabled(false);
-
-                view.getModificarBtn().setEnabled(false);
-                view.getEliminarBtn().setEnabled(true);
-
-                view.getNuevoComprobante().setEnabled(true);
                 view.getImprimirBtn().setEnabled(true);
 
                 if (beanItem != null && (beanItem.getBean().isAnula() ||
                         (beanItem.getBean().isEnviado() && !Role.isPrivileged()))) {
                     view.getModificarBtn().setEnabled(false);
                     view.getEliminarBtn().setEnabled(false);
+                    view.getNuevoComprobante().setEnabled(false);
                 } else {
                     view.getModificarBtn().setEnabled(true);
                     view.getEliminarBtn().setEnabled(true);
+                    view.getNuevoComprobante().setEnabled(true);
                 }
                 view.setEnableFields(false);
                 break;
