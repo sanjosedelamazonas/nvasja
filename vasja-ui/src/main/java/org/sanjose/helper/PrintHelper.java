@@ -56,6 +56,8 @@ public class PrintHelper extends VerticalLayout implements Viewing {
 	private PrintService printService = null;
 	private MainScreen mainScreen;
 
+	private boolean isReady = false;
+
 	public PrintHelper(MainScreen mainScreen) {
 		this.mainScreen = mainScreen;
 	}
@@ -79,17 +81,14 @@ public class PrintHelper extends VerticalLayout implements Viewing {
 		            }
 					PrintService defPrintService = selectPrintService();
 					logger.info("Selected print service for user: " + CurrentUser.get() + " - "  + defPrintService.getName());
-					if (!imprimeras.isEmpty())
+					if (!imprimeras.isEmpty()) {
 						mainScreen.printerLoaded(imprimeras, defPrintService.getName());
+						isReady = true;
+					} else {
+						isReady = false;
+					}
 					table.setContainerDataSource(c);
-					//table.setVisibleColumns(new String[] { "id", "name", "resolution" });
 					table.setColumnCollapsingAllowed(true);
-					/*table.setColumnCollapsed("ATTRIBUTES", true);
-					table.setColumnCollapsed("Attributes", true);
-					table.setColumnCollapsed("supportedAttributeCategories", true);
-					table.setColumnCollapsed("supportedAttributeCategories".toUpperCase(), true);
-					table.setColumnCollapsed("supportedDocFlavors", true);
-					table.setColumnCollapsed("supportedDocFlavors".toUpperCase(), true);*/
 				}
 		    });
 		}
@@ -249,7 +248,11 @@ public class PrintHelper extends VerticalLayout implements Viewing {
         }
     }
 
-    @Override
+	public boolean isReady() {
+		return isReady;
+	}
+
+	@Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
 
     }

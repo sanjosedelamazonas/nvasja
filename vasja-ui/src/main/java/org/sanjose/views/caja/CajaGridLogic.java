@@ -8,6 +8,7 @@ import com.vaadin.data.fieldgroup.FieldGroup.CommitHandler;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import com.vaadin.navigator.View;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.Notification;
@@ -16,8 +17,10 @@ import com.vaadin.ui.Window;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.NonEditableException;
+import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ProcUtil;
@@ -100,11 +103,10 @@ public class CajaGridLogic implements Serializable {
                     }
                     view.refreshData();
                 });
-                gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajabanco) itemId));
+                gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));
+                if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajabanco) itemId));
             }
         });
-
-               
     }
 
 

@@ -8,7 +8,9 @@ import com.vaadin.ui.Grid;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
+import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.SaldoDelDia;
@@ -32,8 +34,6 @@ public class BancoConciliacionLogic implements Serializable, SaldoDelDia {
 
     private static final Logger log = LoggerFactory.getLogger(BancoConciliacionLogic.class);
     private BancoConciliacionView view;
-    private Grid.FooterRow saldosFooterInicial;
-    private Grid.FooterRow saldosFooterFinal;
     private BancoGridLogic gridLogic;
     private boolean expandedAll = true;
 
@@ -92,7 +92,10 @@ public class BancoConciliacionLogic implements Serializable, SaldoDelDia {
                         view.refreshData();
                     });
                 }
-                gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante(getCabeceraFromItemId(itemId)));
+
+                gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante(getCabeceraFromItemId(itemId)));
+                if (ViewUtil.isPrinterReady())
+                    gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante(getCabeceraFromItemId(itemId)));
             }
         });
 

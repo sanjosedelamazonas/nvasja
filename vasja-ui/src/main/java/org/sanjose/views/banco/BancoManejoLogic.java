@@ -101,10 +101,10 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
                     });
                 }
                 gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));
-                gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjItem) itemId));
+                if (ViewUtil.isPrinterReady())
+                    gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjItem) itemId));
             }
         });
-
     }
 
     public void setSaldos(Grid grid, boolean isInicial) {

@@ -466,7 +466,7 @@ public class ReportHelper {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private static JasperPrint prepareToPrint(String reportName,
 			HashMap paramMap) throws JRException {
-		logger.info("REPORT: " + ConfigurationUtil.getReportsSourceFolder() + reportName
+		logger.debug("REPORT: " + ConfigurationUtil.getReportsSourceFolder() + reportName
 				+ ".jasper" + "\n" + paramMap.toString());
 		return JasperFillManager.fillReport(
 				ConfigurationUtil.getReportsSourceFolder() + reportName

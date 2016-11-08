@@ -109,8 +109,12 @@ public class BancoOperacionesLogic implements Serializable {
                         view.getGridBanco().sort("fecFecha", SortDirection.DESCENDING);
                     });
                 }
-                gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjItem) itemId));
+                gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));
+                if (ViewUtil.isPrinterReady())
+                    gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjItem) itemId));
             }
         });
+        view.btnImprimir.setVisible(false);
+        view.btnVerVoucher.setVisible(false);
     }
 }

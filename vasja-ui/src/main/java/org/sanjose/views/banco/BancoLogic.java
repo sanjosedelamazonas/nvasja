@@ -13,10 +13,12 @@ import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
+import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.Viewing;
 
 import java.util.ArrayList;
@@ -50,7 +52,8 @@ public class BancoLogic extends BancoItemLogic {
         view.getEliminarBtn().addClickListener(event -> eliminarComprobante());
         view.getAnularBtn().addClickListener(event -> anularComprobante());
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
-        view.getImprimirTotalBtn().addClickListener(event -> ViewUtil.printComprobante(beanItem.getBean()));
+        view.getImprimirVoucherBtn().addClickListener(event -> ViewUtil.printComprobante(beanItem.getBean()));
+        view.getVerVoucherBtn().addClickListener(event -> ReportHelper.generateComprobante(beanItem.getBean()));
         switchMode(EMPTY);
     }
 
@@ -300,7 +303,8 @@ public class BancoLogic extends BancoItemLogic {
                 view.getAnularBtn().setEnabled(false);
                 view.getEliminarBtn().setEnabled(false);
                 view.getModificarBtn().setEnabled(false);
-                view.getImprimirTotalBtn().setEnabled(false);
+                view.getImprimirVoucherBtn().setEnabled(false);
+                view.getVerVoucherBtn().setEnabled(false);
                 view.getNewItemBtn().setEnabled(false);
                 view.getNewChequeBtn().setEnabled(true);
                 view.getCerrarBtn().setEnabled(true);
@@ -313,7 +317,8 @@ public class BancoLogic extends BancoItemLogic {
                 view.getAnularBtn().setEnabled(true);
                 view.getEliminarBtn().setEnabled(false);
                 view.getModificarBtn().setEnabled(false);
-                view.getImprimirTotalBtn().setEnabled(false);
+                view.getImprimirVoucherBtn().setEnabled(false);
+                view.getVerVoucherBtn().setEnabled(false);
                 view.getNewItemBtn().setEnabled(false);
                 view.getNewChequeBtn().setEnabled(false);
                 view.getCerrarBtn().setEnabled(false);
@@ -329,7 +334,8 @@ public class BancoLogic extends BancoItemLogic {
                 if (view.getContainer().size() > 1) view.getEliminarBtn().setEnabled(true);
                 else view.getEliminarBtn().setEnabled(false);
                 view.getModificarBtn().setEnabled(false);
-                view.getImprimirTotalBtn().setEnabled(false);
+                if (ViewUtil.isPrinterReady()) view.getImprimirVoucherBtn().setEnabled(true);
+                view.getVerVoucherBtn().setEnabled(true);
                 view.getNewItemBtn().setEnabled(false);
                 view.getNewChequeBtn().setEnabled(false);
                 view.getCerrarBtn().setEnabled(false);
@@ -351,7 +357,8 @@ public class BancoLogic extends BancoItemLogic {
                     else view.getEliminarBtn().setEnabled(false);
                 }
                 view.getCerrarBtn().setEnabled(true);
-                view.getImprimirTotalBtn().setEnabled(false);
+                if (ViewUtil.isPrinterReady()) view.getImprimirVoucherBtn().setEnabled(true);
+                view.getVerVoucherBtn().setEnabled(true);
                 if (bancocabecera != null && ((bancocabecera.isEnviado() && !Role.isPrivileged())
                         || bancocabecera.isAnula())) {
                     view.getNewItemBtn().setEnabled(false);
@@ -363,5 +370,6 @@ public class BancoLogic extends BancoItemLogic {
                 view.setEnableDetalleFields(false);
                 break;
         }
+        view.getImprimirVoucherBtn().setVisible(ViewUtil.isPrinterReady());
     }
 }

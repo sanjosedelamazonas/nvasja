@@ -52,13 +52,22 @@ public class ViewUtil {
         }
     }
 
+    public static boolean isPrinterReady() {
+        return ((MainUI)MainUI.getCurrent()).getMainScreen()!=null
+                && ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper()!=null
+                && ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper().isReady();
+    }
+
     private static void printComprobanteAndThrow(VsjItem vcb) throws JRException, PrintException {
         JasperPrint jrPrint = ReportHelper.printComprobante(vcb);
         boolean isPrinted = false;
         PrintHelper ph = ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper();
-        isPrinted = ph.print(jrPrint, true);
+        isPrinted = ph.print(jrPrint, vcb instanceof VsjCajabanco);
         if (!isPrinted)
             throw new JRException("Problema al consequir un servicio de imprimir");
+        else
+            Notification.show("Impression Correcta", "El comprobante numero: " + vcb.getTxtCorrelativo() +
+                    " ha sido enviado a la impresora correctamente", Notification.Type.TRAY_NOTIFICATION);
     }
 
     private static void setColumnNames(Grid grid, String[] visible_col_names, String[] visible_col_ids) {

@@ -13,6 +13,7 @@ import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
@@ -63,8 +64,8 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
                 gridContextMenu.addItem(((VsjCajabanco) itemId).isReadOnly() ? "Ver detalles" : "Editar",
                         k -> editarComprobante((VsjCajabanco) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
-                gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
                 gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());
+                if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
 
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {

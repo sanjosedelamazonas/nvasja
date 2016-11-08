@@ -334,10 +334,6 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         return newItemBtn;
     }
 
-    public Button getImprimirTotalBtn() {
-        return imprimirTotalBtn;
-    }
-
     public PopupDateField getDataFechaComprobante() {
         return dataFechaComprobante;
     }
@@ -384,6 +380,14 @@ public class BancoOperView extends BancoOperUI implements Viewing {
 
     public CssCheckBox getChkEnviado() {
         return chkEnviado;
+    }
+
+    public Button getVerVoucherBtn() {
+        return verVoucherBtn;
+    }
+
+    public Button getImprimirVoucherBtn() {
+        return imprimirVoucherBtn;
     }
 
     @Override
