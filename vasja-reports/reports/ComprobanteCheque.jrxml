@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-08T00:54:29 -->
+<!-- 2016-11-08T11:45:34 -->
 <jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			  xmlns="http://jasperreports.sourceforge.net/jasperreports"
 			  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
@@ -71,34 +71,28 @@
   vsj_bancodetalle.cod_contraparte AS OPERACION_LUGAR_GASTO,
   vsj_bancodetalle.txt_comprobantepago AS OPERACION_DOCUMENTO,
   vsj_bancodetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
-  vsj_bancodetalle.num_debesol AS OPERACION_PEN_debe,
-  vsj_bancodetalle.num_habersol AS OPERACION_PEN_haber,
-  vsj_bancodetalle.num_debedolar AS OPERACION_USD_debe,
-  vsj_bancodetalle.num_haberdolar AS OPERACION_USD_haber,
-  vsj_bancodetalle.num_debemo AS OPERACION_EUR_debe,
-  vsj_bancodetalle.num_habermo AS OPERACION_EUR_haber,
-  vsj_bancodetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA, 
+  vsj_bancodetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
   CASE 
 		WHEN ((vsj_bancodetalle.[cod_tipomoneda] ='0' AND vsj_bancodetalle.[num_habersol] >0))
                THEN 
-					vsj_bancodetalle.[num_habersol]
+					vsj_bancodetalle.[num_habersol]*-1
 		WHEN ((vsj_bancodetalle.[cod_tipomoneda] ='0' AND vsj_bancodetalle.[num_debesol] >0))
                THEN 
 					vsj_bancodetalle.[num_debesol]		
 		WHEN ((vsj_bancodetalle.[cod_tipomoneda] ='1' AND vsj_bancodetalle.[num_haberdolar] >0))
                THEN 
-					vsj_bancodetalle.[num_haberdolar]
+					vsj_bancodetalle.[num_haberdolar]*-1
 		WHEN ((vsj_bancodetalle.[cod_tipomoneda] ='1' AND vsj_bancodetalle.[num_debedolar] >0))
                THEN 
 					vsj_bancodetalle.[num_debedolar]		
 		WHEN ((vsj_bancodetalle.[cod_tipomoneda] ='2' AND vsj_bancodetalle.[num_habermo] >0))
                THEN 
-					vsj_bancodetalle.[num_habermo]
+					vsj_bancodetalle.[num_habermo]*-1
 		WHEN ((vsj_bancodetalle.[cod_tipomoneda] ='2' AND vsj_bancodetalle.[num_debemo] >0))
                THEN 
 					vsj_bancodetalle.[num_debemo]		
                ELSE 0 
-       END as Importe
+       END as OPERACION_IMPORTE
 FROM
 	vsj_bancodetalle
 	INNER JOIN vsj_bancocabecera ON vsj_bancodetalle.cod_bancocabecera = vsj_bancocabecera.cod_bancocabecera
@@ -120,12 +114,6 @@ FROM
 		<field name="OPERACION_CTA_CONTABLE" class="java.lang.String"/>
 		<field name="OPERACION_DOCUMENTO" class="java.lang.String"/>
 		<field name="OPERACION_DESCRIPCION" class="java.lang.String"/>
-		<field name="OPERACION_PEN_debe" class="java.math.BigDecimal"/>
-		<field name="OPERACION_PEN_haber" class="java.math.BigDecimal"/>
-		<field name="OPERACION_USD_debe" class="java.math.BigDecimal"/>
-		<field name="OPERACION_USD_haber" class="java.math.BigDecimal"/>
-		<field name="OPERACION_EUR_debe" class="java.math.BigDecimal"/>
-		<field name="OPERACION_EUR_haber" class="java.math.BigDecimal"/>
 		<field name="OPERACION_TIPOMONEDA" class="java.lang.String"/>
 		<field name="OPERACION_IMPORTE" class="java.math.BigDecimal"/>
 		<variable name="V_SUM_IMPORTE" class="java.math.BigDecimal" calculation="Sum">
@@ -144,12 +132,6 @@ FROM
   vsj_bancocabecera.txt_glosa AS CHEQUE_DESCRIPCION,
   vsj_bancocabecera.txt_correlativo AS OPERACION_ID,
   vsj_bancocabecera.fec_fecha AS CHEQUE_FECHA,
-  vsj_bancocabecera.num_debesol AS CHEQUE_PEN_debe,
-  vsj_bancocabecera.num_habersol AS CHEQUE_PEN_haber,
-  vsj_bancocabecera.num_debedolar AS CHEQUE_USD_debe,
-  vsj_bancocabecera.num_haberdolar AS CHEQUE_USD_haber,
-  vsj_bancocabecera.num_debemo AS CHEQUE_EUR_debe,
-  vsj_bancocabecera.num_habermo AS CHEQUE_EUR_haber,
   vsj_bancocabecera.txt_cheque AS CHEQUE_CHEQUENUMERO,
   vsj_bancodetalle.cod_proyecto AS OPERACION_PROYECTO,
   vsj_bancodetalle.cod_tercero AS OPERACION_TERCERO,
@@ -159,12 +141,6 @@ FROM
   vsj_bancodetalle.cod_ctaespecial AS OPERACION_RUBRO_INST,
   vsj_bancodetalle.cod_contraparte AS OPERACION_LUGAR_GASTO,
   vsj_bancodetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
-  vsj_bancodetalle.num_debesol AS OPERACION_PEN_debe,
-  vsj_bancodetalle.num_habersol AS OPERACION_PEN_haber,
-  vsj_bancodetalle.num_debedolar AS OPERACION_USD_debe,
-  vsj_bancodetalle.num_haberdolar AS OPERACION_USD_haber,
-  vsj_bancodetalle.num_debemo AS OPERACION_EUR_debe,
-  vsj_bancodetalle.num_habermo AS OPERACION_EUR_haber,
   vsj_bancodetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
   vsj_bancodetalle.fec_fecha AS OPERACION_FECHA,
   firma.txt_ruc AS CHEQUE_DNI,
@@ -172,7 +148,61 @@ FROM
   dest2.txt_ruc AS OPERACION_DNI,
   dest2.txt_nombredestino AS CHEQUE_FIRMA,
   isnull(CUENTA.txt_descproyecto,tercero.txt_nombredestino) AS CUENTA_NOMBRE,
-  isnull(CUENTA.cod_proyecto,tercero.cod_destino) AS CUENTA_NUMERO
+  isnull(CUENTA.cod_proyecto,tercero.cod_destino) AS CUENTA_NUMERO,
+   CASE 
+            WHEN ((vsj_bancocabecera.[num_habersol] >0) OR (vsj_bancocabecera.num_haberdolar>0) OR (vsj_bancocabecera.num_habermo>0))
+               THEN 1 
+               ELSE 0 
+       END as CHEQUE_ISCARGO,
+            
+  CASE 
+		WHEN ((vsj_bancocabecera.cod_tipomoneda ='0' AND vsj_bancocabecera.[num_habersol] >0))
+               THEN 
+					vsj_bancocabecera.[num_habersol]*-1
+		WHEN ((vsj_bancocabecera.cod_tipomoneda ='0' AND vsj_bancocabecera.[num_debesol] >0))
+               THEN 
+					vsj_bancocabecera.[num_debesol]		
+		WHEN ((vsj_bancocabecera.cod_tipomoneda ='1' AND vsj_bancocabecera.[num_haberdolar] >0))
+               THEN 
+					vsj_bancocabecera.[num_haberdolar]*-1
+		WHEN ((vsj_bancocabecera.cod_tipomoneda ='1' AND vsj_bancocabecera.[num_debedolar] >0))
+               THEN 
+					vsj_bancocabecera.[num_debedolar]		
+		WHEN ((vsj_bancocabecera.cod_tipomoneda ='2' AND vsj_bancocabecera.[num_habermo] >0))
+               THEN 
+					vsj_bancocabecera.[num_habermo]*-1
+		WHEN ((vsj_bancocabecera.cod_tipomoneda ='2' AND vsj_bancocabecera.[num_debemo] >0))
+               THEN 
+					vsj_bancocabecera.[num_debemo]		
+               ELSE 0 
+       END as CHEQUE_IMPORTE, 
+  CASE 
+            WHEN ((vsj_bancodetalle.[num_habersol] >0) OR (vsj_bancodetalle.num_haberdolar>0) OR (vsj_bancodetalle.num_habermo>0))
+               THEN 1 
+               ELSE 0 
+       END as OPERACION_ISCARGO,
+            
+  CASE 
+		WHEN ((vsj_bancodetalle.cod_tipomoneda ='0' AND vsj_bancodetalle.[num_habersol] >0))
+               THEN 
+					vsj_bancodetalle.[num_habersol]*-1
+		WHEN ((vsj_bancodetalle.cod_tipomoneda ='0' AND vsj_bancodetalle.[num_debesol] >0))
+               THEN 
+					vsj_bancodetalle.[num_debesol]		
+		WHEN ((vsj_bancodetalle.cod_tipomoneda ='1' AND vsj_bancodetalle.[num_haberdolar] >0))
+               THEN 
+					vsj_bancodetalle.[num_haberdolar]*-1
+		WHEN ((vsj_bancodetalle.cod_tipomoneda ='1' AND vsj_bancodetalle.[num_debedolar] >0))
+               THEN 
+					vsj_bancodetalle.[num_debedolar]		
+		WHEN ((vsj_bancodetalle.cod_tipomoneda ='2' AND vsj_bancodetalle.[num_habermo] >0))
+               THEN 
+					vsj_bancodetalle.[num_habermo]*-1
+		WHEN ((vsj_bancodetalle.cod_tipomoneda ='2' AND vsj_bancodetalle.[num_debemo] >0))
+               THEN 
+					vsj_bancodetalle.[num_debemo]		
+               ELSE 0 
+       END as OPERACION_IMPORTE
 FROM
 	vsj_bancodetalle
 	INNER JOIN vsj_bancocabecera ON vsj_bancodetalle.cod_bancocabecera = vsj_bancocabecera.cod_bancocabecera
@@ -190,12 +220,8 @@ FROM
 	<field name="CHEQUE_CUENTA_NUMERO" class="java.lang.String"/>
 	<field name="CHEQUE_CUENTA_NOMBRE" class="java.lang.String"/>
 	<field name="CHEQUE_DESCRIPCION" class="java.lang.String"/>
-	<field name="CHEQUE_PEN_debe" class="java.math.BigDecimal"/>
-	<field name="CHEQUE_PEN_haber" class="java.math.BigDecimal"/>
-	<field name="CHEQUE_USD_debe" class="java.math.BigDecimal"/>
-	<field name="CHEQUE_USD_haber" class="java.math.BigDecimal"/>
-	<field name="CHEQUE_EUR_debe" class="java.math.BigDecimal"/>
-	<field name="CHEQUE_EUR_haber" class="java.math.BigDecimal"/>
+	<field name="CHEQUE_ISCARGO" class="java.lang.Integer"/>
+	<field name="CHEQUE_IMPORTE" class="java.math.BigDecimal"/>
 	<field name="CHEQUE_FECHA" class="java.sql.Timestamp"/>
 	<field name="CHEQUE_ID" class="java.lang.Integer"/>
 	<field name="CHEQUE_CHEQUENUMERO" class="java.lang.String"/>
@@ -208,12 +234,8 @@ FROM
 	<field name="OPERACION_LUGAR_GASTO" class="java.lang.String"/>
 	<field name="OPERACION_DESCRIPCION" class="java.lang.String"/>
 	<field name="OPERACION_FECHA" class="java.sql.Timestamp"/>
-	<field name="OPERACION_PEN_debe" class="java.math.BigDecimal"/>
-	<field name="OPERACION_PEN_haber" class="java.math.BigDecimal"/>
-	<field name="OPERACION_USD_debe" class="java.math.BigDecimal"/>
-	<field name="OPERACION_USD_haber" class="java.math.BigDecimal"/>
-	<field name="OPERACION_EUR_debe" class="java.math.BigDecimal"/>
-	<field name="OPERACION_EUR_haber" class="java.math.BigDecimal"/>
+	<field name="OPERACION_ISCARGO" class="java.lang.Integer"/>
+	<field name="OPERACION_IMPORTE" class="java.math.BigDecimal"/>
 	<field name="OPERACION_TIPOMONEDA" class="java.lang.String"/>
 	<field name="OPERACION_ID" class="java.lang.String"/>
 	<field name="OPERACION_FIRMA" class="java.lang.String"/>
@@ -224,10 +246,10 @@ FROM
 	<field name="CHEQUE_FIRMA" class="java.lang.String"/>
 	<variable name="operacion_ID" class="java.lang.Integer">
 		<variableExpression><![CDATA[]]></variableExpression>
-		<initialValueExpression><![CDATA[201]]></initialValueExpression>
+		<initialValueExpression><![CDATA[8963]]></initialValueExpression>
 	</variable>
 	<title>
-		<band height="431">
+		<band height="328">
 			<textField isStretchWithOverflow="true">
 				<reportElement x="50" y="77" width="488" height="14" uuid="e8f87842-221f-4600-90e8-aabf13745b72"/>
 				<textElement verticalAlignment="Middle">
@@ -290,7 +312,7 @@ FROM
 				<reportElement x="312" y="121" width="227" height="1" uuid="0cb212d9-4270-47af-897a-6829355a4bda"/>
 			</line>
 			<line>
-				<reportElement x="0" y="132" width="279" height="1" uuid="6a3868a4-2d4b-405a-aa79-fc00e2d6a1b8"/>
+				<reportElement x="0" y="132" width="280" height="1" uuid="6a3868a4-2d4b-405a-aa79-fc00e2d6a1b8"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#999999"/>
 				</graphicElement>
@@ -325,7 +347,7 @@ FROM
 					<font fontName="Arial" size="11"/>
 				</textElement>
 				<textFieldExpression>
-					<![CDATA[(($F{CHEQUE_PEN_haber}.compareTo(new BigDecimal(0))>0 || $F{CHEQUE_USD_haber}.compareTo(new BigDecimal(0))>0 || $F{CHEQUE_EUR_haber}.compareTo(new BigDecimal(0))>0) ? "--- CARGO ---" : " --- ABONO --- ")]]></textFieldExpression>
+					<![CDATA[($F{CHEQUE_ISCARGO}.compareTo(1)==0  ? "--- CARGO ---" : " --- ABONO --- ")]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="54" width="539" height="1" uuid="6e46bdb9-f118-4229-bc52-493006c8c7e2"/>
@@ -367,7 +389,7 @@ FROM
 				</graphicElement>
 			</line>
 			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="false">
-				<reportElement style="Column header" x="42" y="134" width="103" height="11" forecolor="#050505"
+				<reportElement style="Column header" x="49" y="134" width="141" height="11" forecolor="#050505"
 							   uuid="7f842df8-979a-4499-8ca0-8656644d72a6"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="8" isBold="false"/>
@@ -401,8 +423,7 @@ FROM
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression>
-					<![CDATA[($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? ($F{OPERACION_PEN_haber}.compareTo(new BigDecimal(0))>0 ? ($F{OPERACION_PEN_haber}) : $F{OPERACION_PEN_debe}) : ( $F{OPERACION_USD_haber}.compareTo(new BigDecimal(0))>0 ? $F{OPERACION_USD_haber} : $F{OPERACION_USD_debe}))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{CHEQUE_IMPORTE}]]></textFieldExpression>
 				<patternExpression><![CDATA["#,##0.00"]]></patternExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
@@ -415,7 +436,7 @@ FROM
 			<textField>
 				<reportElement x="450" y="60" width="88" height="13" uuid="f7ce9de2-575a-4b29-9f56-873d52e96ca2"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CHEQUE_CHEQUENUMERO}]]></textFieldExpression>
 			</textField>
@@ -427,7 +448,7 @@ FROM
 				<text><![CDATA[Cheque:]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement x="0" y="160" width="539" height="70" uuid="22b1a0ed-1962-4933-906f-368bc5aba501">
+				<reportElement x="0" y="160" width="539" height="55" uuid="22b1a0ed-1962-4933-906f-368bc5aba501">
 					<property name="com.jaspersoft.studio.layout"
 							  value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
@@ -448,9 +469,9 @@ FROM
 					<jr:column width="20" uuid="25bf2483-6856-4172-b372-360b6344dab1">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="20" height="30"
+								<reportElement x="0" y="0" width="20" height="25"
 											   uuid="9a11cc66-ac50-41f9-b24e-ed34ebe1e0b0"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Arial" size="9"/>
@@ -458,12 +479,12 @@ FROM
 								<text><![CDATA[N.]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="20" rowSpan="1">
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						</jr:tableFooter>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement x="0" y="0" width="20" height="20"
+								<reportElement x="0" y="0" width="20" height="15"
 											   uuid="2856b825-b980-4569-bd3a-083e7f46fcd4"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
@@ -474,9 +495,9 @@ FROM
 					</jr:column>
 					<jr:column width="40" uuid="02569495-d55c-4a45-9854-38d268ba6b60">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="40" height="30"
+								<reportElement x="0" y="0" width="40" height="25"
 											   uuid="e3de857c-3e95-4d64-aa87-701d0920ab85"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
@@ -484,10 +505,10 @@ FROM
 								<text><![CDATA[Proy]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="20" rowSpan="1"/>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement x="0" y="0" width="40" height="20"
+								<reportElement x="0" y="0" width="40" height="15"
 											   uuid="96b51c0b-5c55-4ef0-8df6-0a9ac481f74d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
@@ -498,9 +519,9 @@ FROM
 					</jr:column>
 					<jr:column width="39" uuid="decd1a81-c897-4a49-9d56-4f248c4e4b97">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
-						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="39" height="30"
+								<reportElement x="0" y="0" width="39" height="25"
 											   uuid="2aee6996-8d29-41b0-9af2-39410559f84f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
@@ -508,10 +529,10 @@ FROM
 								<text><![CDATA[Lugar Gasto]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="20" rowSpan="1"/>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement x="0" y="0" width="39" height="20"
+								<reportElement x="0" y="0" width="39" height="15"
 											   uuid="c202c540-8944-4a1b-93bd-fff7428cedd6"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
@@ -522,9 +543,9 @@ FROM
 					</jr:column>
 					<jr:column width="49" uuid="8cedaca9-5522-4e27-bdc6-3bebd9808ab7">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="49" height="30"
+								<reportElement x="0" y="0" width="49" height="25"
 											   uuid="e0680329-58a8-45b5-bcc6-3679d700b462"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
@@ -532,10 +553,10 @@ FROM
 								<text><![CDATA[Rubro Inst]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="20" rowSpan="1"/>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement x="0" y="0" width="49" height="20"
+								<reportElement x="0" y="0" width="49" height="15"
 											   uuid="36c08a43-079f-444f-a2ef-74abd8f80545"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
@@ -546,9 +567,9 @@ FROM
 					</jr:column>
 					<jr:column width="49" uuid="406c7509-fda0-4e09-850f-d32a0d7a441c">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
-						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="49" height="30"
+								<reportElement x="0" y="0" width="49" height="25"
 											   uuid="79f3a45e-15a5-4e02-b3a7-e3db6688b2cc"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
@@ -556,10 +577,10 @@ FROM
 								<text><![CDATA[Contra Cta]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="20" rowSpan="1"/>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement x="0" y="0" width="49" height="20"
+								<reportElement x="0" y="0" width="49" height="15"
 											   uuid="f0f66761-fbf2-4cfd-bb01-8df7426432af"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
@@ -570,9 +591,9 @@ FROM
 					</jr:column>
 					<jr:column width="68" uuid="938f3bd3-0eb5-4826-afab-fe7e43022ec3">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
-						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="68" height="30"
+								<reportElement x="0" y="0" width="68" height="25"
 											   uuid="3c621432-0dfa-4dff-8ddb-82b275da43a1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
@@ -580,10 +601,10 @@ FROM
 								<text><![CDATA[Documento]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="20" rowSpan="1"/>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement x="0" y="0" width="68" height="20"
+								<reportElement x="0" y="0" width="68" height="15"
 											   uuid="d36bb8b4-cc85-4174-86dd-606ab818b2bf"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
@@ -594,9 +615,9 @@ FROM
 					</jr:column>
 					<jr:column width="235" uuid="5182a92a-8514-4bc4-986b-a665cd254a09">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
-						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="235" height="30"
+								<reportElement x="0" y="0" width="235" height="25"
 											   uuid="f9beb7ea-fdaa-4e7d-b095-36a86a14cc20"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
@@ -604,23 +625,23 @@ FROM
 								<text><![CDATA[Detalle]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="20" rowSpan="1"/>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement x="0" y="0" width="235" height="20"
+								<reportElement x="0" y="0" width="235" height="15"
 											   uuid="881c86c4-3678-480a-812f-a3fc74a63e8b"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{OPERACION_DESCRIPCION}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[" " +$F{OPERACION_DESCRIPCION}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="39" uuid="13f7fd67-c200-492b-b14e-4a623bb160dc">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
-						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="39" height="30"
+								<reportElement x="0" y="0" width="39" height="25"
 											   uuid="8bd06813-06ba-47fb-9618-38e8712a0ae3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
@@ -628,21 +649,21 @@ FROM
 								<text><![CDATA[Importe]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="20" rowSpan="1">
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="39" height="20"
+								<reportElement x="0" y="0" width="39" height="15"
 											   uuid="75a328d0-805a-4c80-9eee-c9f5447f786e"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$V{V_SUM_IMPORTE}]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
-						<jr:detailCell style="Table_TD" height="20">
+						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement x="0" y="0" width="39" height="20"
+								<reportElement x="0" y="0" width="39" height="15"
 											   uuid="4b451fd5-1cd6-4c75-acd5-04a6d89f50b9"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{OPERACION_IMPORTE}]]></textFieldExpression>
@@ -651,6 +672,54 @@ FROM
 					</jr:column>
 				</jr:table>
 			</componentElement>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="381" y="263" width="100" height="16"
+							   uuid="c4479a9a-9387-46d2-9ff7-d762c5f40982"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[VºBº]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="313" y="262" width="227" height="1"
+							   uuid="d1143ed7-4604-4c84-8bfc-72fd49b995fc"/>
+			</line>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="188" y="300" width="163" height="1"
+							   uuid="60b8c5ac-9e00-4e03-909d-686dd77218c6"/>
+			</line>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="223" y="301" width="100" height="16"
+							   uuid="93cb673c-d4c5-44b1-bf98-8c11e109c44f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Aprobado]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="300" width="163" height="1"
+							   uuid="cd435441-82de-45e0-9be4-c570f5e5f5a7"/>
+			</line>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="35" y="301" width="100" height="16"
+							   uuid="2281bc17-ece6-4e65-9378-64a2b246ecef"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Realizado por]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="376" y="300" width="163" height="1"
+							   uuid="f1a670d6-2461-4c69-ae5b-261563dbdbbb"/>
+			</line>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="411" y="301" width="100" height="16"
+							   uuid="c60719d6-df19-432d-a5ce-d22cd84aa2b3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Contabilidad]]></text>
+			</staticText>
 		</band>
 	</title>
 	<detail>
@@ -683,13 +752,6 @@ FROM
 				</textElement>
 				<text><![CDATA[Entregado a:]]></text>
 			</staticText>
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="105" width="539" height="2"
-							   uuid="9b3c6c9c-20d7-469f-b9e1-5ba66487e9e1"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
 			<staticText>
 				<reportElement key="" x="0" y="34" width="108" height="14" uuid="9884ebd6-c8c0-46a7-a084-a310117bbbf6"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -784,8 +846,7 @@ FROM
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression>
-					<![CDATA[($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? ($F{OPERACION_PEN_haber}.compareTo(new BigDecimal(0))>0 ? ($F{OPERACION_PEN_haber}) : $F{OPERACION_PEN_debe}) : ( $F{OPERACION_USD_haber}.compareTo(new BigDecimal(0))>0 ? $F{OPERACION_USD_haber} : $F{OPERACION_USD_debe}))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{OPERACION_IMPORTE}]]></textFieldExpression>
 				<patternExpression><![CDATA["#,##0.00"]]></patternExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
@@ -801,7 +862,7 @@ FROM
 					<font fontName="Arial" size="11"/>
 				</textElement>
 				<textFieldExpression>
-					<![CDATA[(($F{OPERACION_PEN_haber}.compareTo(new BigDecimal(0))>0 || $F{OPERACION_USD_haber}.compareTo(new BigDecimal(0))>0 || $F{OPERACION_EUR_haber}.compareTo(new BigDecimal(0))>0) ? "--- CARGO ---" : " --- ABONO --- ")]]></textFieldExpression>
+					<![CDATA[($F{OPERACION_ISCARGO}.compareTo(1)==0  ? "--- CARGO ---" : " --- ABONO --- ")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Transparent" x="47" y="51" width="304" height="14" forecolor="#030303"
@@ -857,7 +918,7 @@ FROM
 				<text><![CDATA[Contra Cta:]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="432" y="108" width="1" height="18"
+				<reportElement positionType="FixRelativeToBottom" x="432" y="105" width="1" height="21"
 							   uuid="f7fcc8c2-7629-4e66-b9db-4018a2630692"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#999999"/>
@@ -922,6 +983,13 @@ FROM
 			<line>
 				<reportElement positionType="FixRelativeToBottom" x="0" y="12" width="539" height="1"
 							   uuid="d5ec523d-f175-43cc-8072-fe5e0a552fe0"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="105" width="539" height="1"
+							   uuid="6c5064ea-b202-433b-9a35-8e9dc58899ba"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#999999"/>
 				</graphicElement>
