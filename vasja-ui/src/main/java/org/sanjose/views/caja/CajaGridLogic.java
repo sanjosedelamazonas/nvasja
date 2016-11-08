@@ -91,7 +91,7 @@ public class CajaGridLogic implements Serializable {
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
             } else {
-                gridContextMenu.addItem("Editar", k -> editarComprobante((VsjCajabanco) itemId));
+                gridContextMenu.addItem("Ver detalle", k -> editarComprobante((VsjCajabanco) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
                 gridContextMenu.addItem("Enviar a contabilidad", k -> {
                     if (!view.getSelectedRows().isEmpty()) {

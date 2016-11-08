@@ -83,7 +83,7 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
             } else {
-                gridContextMenu.addItem("Editar", k -> gridLogic.editarCheque((VsjBancocabecera) itemId));
+                gridContextMenu.addItem("Ver detalle", k -> gridLogic.editarCheque((VsjBancocabecera) itemId));
                 gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
                 if (!((VsjBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
                     gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque((VsjBancocabecera) itemId));
