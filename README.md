@@ -21,6 +21,7 @@ Workflow
 ========
 
 Other basic workflow steps:
+- intellijIdea - git pull
 
 - compiling the whole project
   - install jars not available in public maven repository:
