@@ -17,6 +17,7 @@ import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.Viewing;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -48,6 +49,20 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
 
     @Override
     public void init() {
+        ComboBox selCtacontablecaja = new ComboBox();
+        ComboBox selCtacontablegasto = new ComboBox();
+        fechaAno.setValue(new Date());
+        fechaAno.addValueChangeListener(ev -> {
+                    DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", service.getPlanRepo().
+                            findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
+                                    '0', 'N', GenUtil.getYear(fechaAno.getValue()), "101"), "Sel cta contable", "txtDescctacontable");
+                    DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable",
+                            service.getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
+                                    '0', 'N', GenUtil.getYear(fechaAno.getValue()), "101%", "102%", "104%", "106%")
+                            , "Sel cta contable", "txtDescctacontable");
+
+                }
+        );
         @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguractacajabanco> container = new BeanItemContainer(VsjConfiguractacajabanco.class, service.getConfiguractacajabancoRepo().findAll());
         gridConfigCtaCajaBanco
         	.setContainerDataSource(container);
@@ -62,16 +77,15 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         gridConfigCtaCajaBanco.setEditorFieldGroup(
                 new BeanFieldGroup<>(VsjConfiguractacajabanco.class));
 
-        ComboBox selCtacontablecaja = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontablecaja, "id.codCtacontable", service.getPlanRepo().
                 findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
-                        '0','N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+                        '0','N', GenUtil.getYear(fechaAno.getValue()), "101"), "Sel cta contable", "txtDescctacontable");
         gridConfigCtaCajaBanco.getColumn("codCtacontablecaja").setEditorField(selCtacontablecaja);
 
-        ComboBox selCtacontablegasto = new ComboBox();
+
         DataFilterUtil.bindComboBox(selCtacontablegasto, "id.codCtacontable",
                 service.getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
-                        '0', 'N', GenUtil.getCurYear(), "101%", "102%", "104%", "106%")
+                        '0', 'N', GenUtil.getYear(fechaAno.getValue()), "101%", "102%", "104%", "106%")
                 , "Sel cta contable", "txtDescctacontable");
         gridConfigCtaCajaBanco.getColumn("codCtacontablegasto").setEditorField(selCtacontablegasto);
 

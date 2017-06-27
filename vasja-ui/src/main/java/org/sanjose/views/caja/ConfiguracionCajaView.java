@@ -47,6 +47,14 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewin
 
     @Override
     public void init() {
+        ComboBox selCtacontable = new ComboBox();
+        ComboBox selCategoriaproy = new ComboBox();
+        fechaAno.setValue(new Date());
+        fechaAno.addValueChangeListener(ev ->
+                DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", service.getPlanRepo().
+                        findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
+                                '0','N', GenUtil.getYear(fechaAno.getValue()), "101"), "Sel cta contable", "txtDescctacontable")
+        );
         @SuppressWarnings("unchecked") BeanItemContainer<VsjConfiguracioncaja> container = new BeanItemContainer(VsjConfiguracioncaja.class, getService().getConfiguracioncajaRepo().findAll());
         gridConfigCaja
         	.setContainerDataSource(container);
@@ -61,13 +69,11 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewin
         gridConfigCaja.setEditorFieldGroup(
                 new BeanFieldGroup<>(VsjConfiguracioncaja.class));
 
-        ComboBox selCategoriaproy = new ComboBox();
         DataFilterUtil.bindComboBox(selCategoriaproy, "codCategoriaproyecto", getService().getScpCategoriaproyectoRep().findAll(), "Sel Cat Proyecto", "txtDescripcion");
         gridConfigCaja.getColumn("codCategoriaproyecto").setEditorField(selCategoriaproy);
 
-        ComboBox selCtacontable = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
-                '0', 'N', GenUtil.getCurYear(), "101"), "Sel cta contable", "txtDescctacontable");
+                '0', 'N',GenUtil.getYear(fechaAno.getValue()), "101"), "Sel cta contable", "txtDescctacontable");
         gridConfigCaja.getColumn("codCtacontable").setEditorField(selCtacontable);
         
 
