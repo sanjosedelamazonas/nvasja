@@ -32,9 +32,7 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @SpringComponent
 @EnableTransactionManagement
@@ -45,8 +43,15 @@ public class ReportHelper {
 	@PersistenceContext
     private EntityManager em;
     private Connection sqlConnection = null;
+    private static final String CUSTOM_REPORT_DESC_FILE = "customReports.txt";
 
-    private ReportHelper() {
+    private List<CustomReport> customReports = new ArrayList<>();
+
+	public List<CustomReport> getCustomReports() {
+		return customReports;
+	}
+
+	private ReportHelper() {
           instance = this;
     }
 
@@ -55,6 +60,59 @@ public class ReportHelper {
             instance = new ReportHelper();
         return instance;
     }
+
+	private FileInputStream getCustomReportsFile() {
+		FileInputStream custRepFile = null;
+		if (System.getenv("VASJA_HOME")!=null) {
+			logger.debug("Trying to load from VASJA_HOME/reports");
+			try {
+				custRepFile = new FileInputStream(
+						System.getenv("VASJA_HOME") + File.separator + "reports" + File.separator
+								+ CUSTOM_REPORT_DESC_FILE);
+				return custRepFile;
+			} catch (FileNotFoundException fe) {
+				Notification.show("Custom report description file not found under: " + System.getenv("VASJA_HOME") + File.separator + "reports" + File.separator
+						+ CUSTOM_REPORT_DESC_FILE);
+			}
+		}
+		logger.debug("Reports folder: " + ConfigurationUtil.getReportsSourceFolder());
+		try {
+			custRepFile = new FileInputStream(
+				ConfigurationUtil.getReportsSourceFolder() + CUSTOM_REPORT_DESC_FILE);
+			return custRepFile;
+		} catch (FileNotFoundException fe) {
+			Notification.show("Custom report description file not found under: " + ConfigurationUtil.getReportsSourceFolder() + CUSTOM_REPORT_DESC_FILE);
+		}
+		return null;
+	}
+
+	public void loadCustomReports() {
+		Properties properties = new Properties();
+		FileInputStream custRepFile = getCustomReportsFile();
+		if (custRepFile==null) return;
+		try {
+			properties.load(custRepFile);
+		} catch (IOException e) {
+			Notification.show("Problem reading Custom Reports Desc File");
+		}
+		for (String repName : properties.stringPropertyNames()) {
+			String repConf = (String)properties.get(repName);
+			String[] repParams = repConf.split(";");
+			customReports.add(new CustomReport(
+					repName,
+					repParams[0],
+					isSetCustomReportParam(repParams[1]),
+					isSetCustomReportParam(repParams[2]),
+					isSetCustomReportParam(repParams[3])
+			));
+		}
+	}
+
+	private boolean isSetCustomReportParam(String param) {
+    	if (param==null || param.length()==0) return false;
+    	if (param.equals("1")) return true;
+    	else return false;
+	}
 
 	private static String getReportFromItem(VsjItem op) {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
@@ -152,6 +210,24 @@ public class ReportHelper {
 					logger.error("Error generating report", ex);
 				}
 			return null;
+	}
+
+	public static void generateCustomReport(String reportName, String codProyecto, String codTercero, String codCategoriaproy, final Date fechaMin, final Date fechaMax) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+		HashMap paramMap = new HashMap();
+		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
+		paramMap.put("COD_PROYECTO", codProyecto!=null ? codProyecto : "");
+		paramMap.put("COD_TERCERO", codTercero!=null ? codTercero : "");
+		paramMap.put("COD_CATEGORIA_PROYECTO", codCategoriaproy!=null ? codCategoriaproy : "");
+		paramMap.put("FECHA_MIN", fechaMin!=null ? ConfigurationUtil.getBeginningOfDay(fechaMin) : "");
+		paramMap.put("FECHA_MAX", fechaMax!=null ? ConfigurationUtil.getEndOfDay(fechaMax) : "");
+		paramMap.put("STR_FECHA_MIN", fechaMin!=null ? sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)) : "");
+		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
+		logger.debug("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
+		logger.debug("STR_FECHA_MAX=" + paramMap.get("STR_FECHA_MAX"));
+		logger.info("Generating Custom Report: " + reportName);
+		logger.info("ParamMap: " + paramMap.toString());
+		generateReport(reportName, "REPORTS_CUSTOM_TYPE", paramMap, "pdf");
 	}
 
 	public static void generateDiarioCaja(Date fechaMin, Date fechaMax, String format) {

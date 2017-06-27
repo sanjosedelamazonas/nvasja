@@ -239,6 +239,30 @@ public class DataFilterUtil {
 		combo.setFilteringMode(FilteringMode.CONTAINS);
 	}
 
+	@SuppressWarnings("unchecked")
+	public static void bindFixedStringValComboBox(final ComboBox combo, String column,
+											 final String prompt, Map<String, String> valMap) {
+
+		IndexedContainer c = new IndexedContainer();
+		c.addContainerProperty(column, String.class, "");
+
+		int i = 0;
+		String[] keys = valMap.keySet().toArray(new String[0]);
+		Arrays.sort(valMap.keySet().toArray());
+		for (String value : keys) {
+			Item item = c.addItem(value);
+			item.getItemProperty(column)
+					.setValue(valMap.get(value));
+			i++;
+		}
+		combo.setContainerDataSource(c);
+		combo.setItemCaptionPropertyId(column);
+		combo.setImmediate(true);
+		combo.setInvalidAllowed(false);
+		if (prompt!=null) combo.setInputPrompt(prompt);
+		combo.setFilteringMode(FilteringMode.CONTAINS);
+	}
+
 
 /*
 	public static void bindBooleanComboBox(final ComboBox combo, final String column,

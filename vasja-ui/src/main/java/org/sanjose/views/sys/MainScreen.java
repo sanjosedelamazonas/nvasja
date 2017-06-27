@@ -48,7 +48,7 @@ public class MainScreen extends HorizontalLayout {
     public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
                       ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView,
                       TransferenciaView transferenciaView, BancoOperView bancoOperView, BancoManejoView bancoManejoView,
-                      BancoConciliacionView bancoConciliacionView, BancoOperacionesView bancoOperacionesView) {
+                      BancoConciliacionView bancoConciliacionView, BancoOperacionesView bancoOperacionesView, ReportesView reportesView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -93,6 +93,8 @@ public class MainScreen extends HorizontalLayout {
         }
         if (Role.isAdmin()) {
             menu.addSeparator("Sistema");
+            menu.addView(reportesView, ReportesView.VIEW_NAME,
+                    ReportesView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(propiedadView, PropiedadView.VIEW_NAME,
                     PropiedadView.VIEW_NAME, FontAwesome.EDIT);
         }

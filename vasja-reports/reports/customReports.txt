@@ -1,0 +1,3 @@
+# Report File Name;Report Name;Filter by Fecha (0/1);Filter by Proyecto/Tercero (0/1);Filter by Categoria (0/1)
+ReporteCajaDiario=Reporte Caja Diario;1;1;0
+ReporteDeBanco=Reporte De Banco;0;0;1

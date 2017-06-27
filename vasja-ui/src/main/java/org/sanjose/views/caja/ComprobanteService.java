@@ -34,8 +34,8 @@ public class ComprobanteService {
     private final ScpCargocuartaRep cargocuartaRepo;
     private final ScpTipodocumentoRep tipodocumentoRepo;
     private final EntityManager em;
-    private ScpCategoriaproyectoRep scpCategoriaproyectoRep;
-    private ScpTipocambioRep tipocambioRep;
+    private final ScpCategoriaproyectoRep scpCategoriaproyectoRep;
+    private final ScpTipocambioRep tipocambioRep;
 
     @Autowired
     public ComprobanteService(VsjCajabancoRep cajabancoRep, VsjConfiguractacajabancoRep configuractacajabancoRepo,

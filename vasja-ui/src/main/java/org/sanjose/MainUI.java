@@ -22,6 +22,7 @@ import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.PropiedadService;
 import org.sanjose.views.sys.PropiedadView;
+import org.sanjose.views.sys.ReportesView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -50,6 +51,7 @@ public class MainUI extends UI {
     private final BancoManejoView bancoManejoView;
     private final BancoConciliacionView bancoConciliacionView;
     private final BancoOperacionesView bancoOperacionesView;
+    private final ReportesView reportesView;
     private final MsgUsuarioRep msgUsuarioRep;
     private ProcUtil procUtil;
     private AccessControl accessControl;
@@ -62,6 +64,7 @@ public class MainUI extends UI {
                    MsgUsuarioRep msgUsuarioRep,
                    ProcUtil procUtil) {
         this.propiedadView = new PropiedadView(propiedadService);
+        this.reportesView = new ReportesView(comprobanteService);
         this.msgUsuarioRep = msgUsuarioRep;
         this.procUtil = procUtil;
         this.confView = new ConfiguracionCtaCajaBancoView(comprobanteService);
@@ -98,7 +101,7 @@ public class MainUI extends UI {
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
         mainScreen = new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView,
-                propiedadView, comprobanteView, transferenciaView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView);
+                propiedadView, comprobanteView, transferenciaView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView, reportesView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
