@@ -111,13 +111,19 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vi
         ViewUtil.colorizeRows(gridCaja);
 
         // Set Saldos Inicial
-        fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
+        fechaDesde.addValueChangeListener(ev -> {viewLogic.setSaldos(gridSaldoInicial, true); refreshCajas();});
         fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));
 
         viewLogic.init(this);
         viewLogic.setSaldos(gridSaldoInicial, true);
         viewLogic.setSaldos(gridSaldoFInal, false);
 
+    }
+
+    private void refreshCajas() {
+        DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
+                DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), true),
+                "txtDescctacontable");
     }
 
     public void refreshData() {

@@ -142,7 +142,13 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         selFiltroCuenta.setPageLength(20);
 
         // Set Saldos Inicial
-        fechaDesde.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoInicial, true));
+        fechaDesde.addValueChangeListener(ev -> {
+            viewLogic.setSaldos(gridSaldoInicial, true);
+            DataFilterUtil.refreshComboBox(selFiltroCuenta, "id.codCtacontable",
+                    DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
+                    "txtDescctacontable");}
+
+        );
         fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));
 
         DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);

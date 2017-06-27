@@ -89,6 +89,11 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         // Fecha Desde Hasta
         //ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta);
         ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta, this);
+        fechaDesde.addValueChangeListener(ev -> {
+            DataFilterUtil.refreshComboBox(selFiltroCuenta, "id.codCtacontable",
+                    DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
+                    "txtDescctacontable");
+        });
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());

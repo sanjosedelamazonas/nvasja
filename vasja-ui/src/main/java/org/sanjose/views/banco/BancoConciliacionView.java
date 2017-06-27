@@ -138,7 +138,12 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         fechaDesde.setConverter(DateToTimestampConverter.INSTANCE);
         fechaDesde.setResolution(Resolution.DAY);
         fechaDesde.setValue(defDesde);
-        fechaDesde.addValueChangeListener(valueChangeEvent -> filterComprobantes());
+        fechaDesde.addValueChangeListener(valueChangeEvent -> {
+            filterComprobantes();
+            DataFilterUtil.refreshComboBox(selFiltroCuenta, "id.codCtacontable",
+                    DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
+                    "txtDescctacontable");
+        });
 
         ts = new Timestamp(System.currentTimeMillis());
         prop = new ObjectProperty<>(ts);

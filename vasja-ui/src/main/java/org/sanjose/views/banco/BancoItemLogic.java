@@ -76,6 +76,9 @@ class BancoItemLogic implements Serializable {
         view.getDataFechaComprobante().setConverter(DateToTimestampConverter.INSTANCE);
         view.getDataFechaComprobante().setResolution(Resolution.DAY);
         view.getDataFechaComprobante().addValueChangeListener(event -> {
+            DataFilterUtil.refreshComboBox(view.getSelCuenta(), "id.codCtacontable",
+                    DataUtil.getBancoCuentas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo()),
+                    "txtDescctacontable");
             setCuentaLogic();
             setSaldos();
         });
