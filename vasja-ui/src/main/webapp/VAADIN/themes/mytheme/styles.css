@@ -1263,7 +1263,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.7.3";
+	content: "7.7.10";
 }
 
 .v-widget {
@@ -4529,6 +4529,8 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-grid-body {
+	-ms-touch-action: none;
+	touch-action: none;
 	z-index: 0;
 	top: 0;
 }
@@ -4807,6 +4809,21 @@ div.v-layout.v-horizontal.v-widget {
 	bottom: 0px;
 	cursor: col-resize;
 	z-index: 10;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.mytheme .v-grid-column-resize-simple-indicator {
+	position: absolute;
+	width: 3px;
+	top: 0px;
+	left: 10.5px;
+	z-index: 9001;
+	background: #fff;
+	box-shadow: 0px 0px 5px #000;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: none;
@@ -16473,6 +16490,8 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-grid-body {
+	-ms-touch-action: none;
+	touch-action: none;
 	z-index: 0;
 	top: 0;
 }
@@ -16751,6 +16770,21 @@ div.v-layout.v-horizontal.v-widget {
 	bottom: 0px;
 	cursor: col-resize;
 	z-index: 10;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.contextmenu .v-grid-column-resize-simple-indicator {
+	position: absolute;
+	width: 3px;
+	top: 0px;
+	left: 10.5px;
+	z-index: 9001;
+	background: #fff;
+	box-shadow: 0px 0px 5px #000;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: none;
