@@ -82,7 +82,7 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewin
         gridConfigCaja.getColumn("codDestino").setEditorField(selDestino);
 
         ComboBox selProyecto = new ComboBox();
-        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", getService().getProyectoRepo().findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
+        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()), "Sel Proyecto", "txtDescproyecto");
         //selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
         gridConfigCaja.getColumn("codProyecto").setEditorField(selProyecto);
 

@@ -129,7 +129,7 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
         // Proyecto
         ComboBox selTercero = new ComboBox();
         ComboBox selProyecto = new ComboBox();
-        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", getService().getProyectoRepo().findByFecFinalGreaterThan(new Date()), "Sel Proyecto", "txtDescproyecto");
+        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()), "Sel Proyecto", "txtDescproyecto");
         selProyecto.addValueChangeListener(this::setProyectoLogic);
         selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
         gridCaja.getColumn("codProyecto").setEditorField(selProyecto);

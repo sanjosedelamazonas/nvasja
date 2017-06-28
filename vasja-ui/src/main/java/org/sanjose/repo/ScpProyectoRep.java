@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ScpProyectoRep extends JpaRepository<ScpProyecto, Long> {
 
-	List<ScpProyecto> findByFecFinalGreaterThan(Date fecFinal);
+	List<ScpProyecto> findByFecFinalGreaterThanOrFecFinalLessThan(Date fecFinal, Date fecFinalCent);
 
 
 	ScpProyecto findByCodProyecto(String codProyecto);

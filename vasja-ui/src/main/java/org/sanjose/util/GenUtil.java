@@ -68,6 +68,17 @@ public class GenUtil {
         return sdf.format(new Date());
     }
 
+    public static Date getBegin20thCent() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return sdf.parse("1900-01-02");
+        } catch (ParseException pe) {
+            System.out.println("Problem parsing date in getBeginning20thCentury");
+        }
+        return new Date();
+    }
+
+
     public static String getYear(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         return sdf.format(date);

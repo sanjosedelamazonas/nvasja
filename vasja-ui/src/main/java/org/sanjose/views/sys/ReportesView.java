@@ -1,23 +1,14 @@
 package org.sanjose.views.sys;
 
-import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.Property;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid.SelectionMode;
 import org.sanjose.helper.CustomReport;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.VsjPropiedad;
-import org.sanjose.repo.VsjPropiedadRep;
-import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
-import org.sanjose.util.DataUtil;
-import org.sanjose.util.ViewUtil;
+import org.sanjose.util.GenUtil;
 import org.sanjose.views.caja.ComprobanteService;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 
@@ -57,7 +48,7 @@ public class ReportesView extends ReportesUI implements Viewing {
 
 
         // Proyecto
-        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", comprobanteService.getProyectoRepo().findByFecFinalGreaterThan(new Date()),
+        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", comprobanteService.getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()),
                 "Sel Proyecto", "txtDescproyecto");
         selProyecto.addValueChangeListener(this::setProyectoLogic);
 

@@ -120,7 +120,7 @@ class BancoItemLogic implements Serializable {
         // ------------ DETALLE
 
         // Proyecto
-        DataFilterUtil.bindComboBox(view.getSelProyecto(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThan(new Date()),
+        DataFilterUtil.bindComboBox(view.getSelProyecto(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()),
                 "txtDescproyecto");
         view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
 
