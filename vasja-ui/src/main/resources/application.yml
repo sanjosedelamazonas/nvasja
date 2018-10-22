@@ -4,7 +4,7 @@ server:
     enabled: true
 spring:
   datasource:
-    url: jdbc:sqlserver://virtxpyoga:1433;databaseName=SCP
+    url: jdbc:sqlserver://virtualxp:1433;databaseName=SCP
     username: vasja
     password: vasja123
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
