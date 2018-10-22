@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2018-10-23T00:05:52 -->
+<!-- 2018-10-23T00:20:44 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Comprobante" pageWidth="430" pageHeight="212" columnWidth="414" leftMargin="8" rightMargin="8" topMargin="8" bottomMargin="8" uuid="e6e4b764-eb4a-44ec-8aa8-52e244f987a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -153,7 +153,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA["/CCta contable:" + $F{OPERACION_CODCTACONTABLE} + " | Lugar gasto: " + $F{OPERACION_LUGARGASTO} + " | Rubro inst: " + $F{OPERACION_RUBROINST} + "/c" ]]></textFieldExpression>
+				<textFieldExpression><![CDATA["/CCta ctble: " + $F{OPERACION_CODCTACONTABLE} + " | Lugar g.: " + $F{OPERACION_LUGARGASTO} + " | Rubro in.: " + $F{OPERACION_RUBROINST} + "/c" ]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
