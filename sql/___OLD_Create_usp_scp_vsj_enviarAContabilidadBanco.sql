@@ -1,6 +1,6 @@
 USE [SCP]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidadBanco]    Script Date: 09/25/2016 20:53:19 ******/
+/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidadBanco]    Script Date: 10/23/2016 16:55:48 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -33,7 +33,7 @@ set @cod_origen='02'
 set @cod_filial='01'
 set @num_tc_usd=0.00
 set @num_tc_mo=0.00
-set @num_item=0
+
 
 set @txt_ano=SUBSTRING(@fecha_operacion,7,4)
 set @txt_mes=SUBSTRING(@fecha_operacion,4,2)
@@ -117,103 +117,44 @@ BEGIN TRY
         ****************************************************************************/
       SELECT  @ErrorStep = 'Error al insertar lineas de detalle de comprobante'
 
-      select @num_item=@num_item+1
-
        if (@cod_moneda='0') -- Moneda PEN
-			begin
+		begin
 		  insert into dbo.scp_comprobantedetalle(
-		  [txt_anoproceso]
-			  ,[cod_filial]
-			  ,[cod_mes]
-			  ,[cod_origen]
-			  ,[cod_comprobante]
-			  ,[num_nroitem]
-			  ,[fec_comprobante]
-			  ,[cod_tipomoneda]
-			  ,[txt_glosaitem]
-			  ,[cod_destino]
-			  ,[txt_cheque]
-			  ,[flg_chequecobrado]
-			  ,[cod_mescobr]
-			  ,[cod_tipocomprobantepago]
-			  ,[txt_seriecomprobantepago]
-			  ,[txt_comprobantepago]
-			  ,[fec_comprobantepago]
-			  ,[fec_pagocomprobantepago]
-			  ,[cod_reftipocomprobantepago]
-			  ,[txt_refseriecomprobantepago]
-			  ,[txt_refcomprobantepago]
-			  ,[fec_refcomprobantepago]
-			  ,[cod_registrocompraventa]
-			  ,[cod_evento]
-			  ,[num_refnroitem]
-			  ,[cod_reforigen]
-			  ,[cod_refcomprobante]
-			  ,[fec_refcomprobante]
-			  ,[cod_proyecto]
-			  ,[cod_ctaproyecto]
-			  ,[cod_ctacontable]
-			  ,[cod_ctacontable9]
-			  ,[cod_ctacontable79]
-			  ,[cod_ctaarea]
-			  ,[cod_ctaactividad]
-			  ,[cod_ctaespecial]
-			  ,[cod_financiera]
-			  ,[cod_flujocaja]
-			  ,[num_tcvdolar]
-			  ,[num_debesol]
-			  ,[num_habersol]
-			  ,[num_debedolar]
-			  ,[num_haberdolar]
-			  ,[num_tcmo]
-			  ,[num_debemo]
-			  ,[num_habermo]
-			  ,[cod_monedaoriginal]
-			  ,[flg_tcreferencia]
-			  ,[flg_conversion]
-			  ,[cod_pais]
-			  ,[cod_departamento]
-			  ,[flg_recuperaigv]
-			  ,[por_igv]
-			  ,[por_ies]
-			  ,[num_nroitem2]
-			  ,[cod_contraparte]
-			  ,[txt_nroretencion]
-			  ,[fec_retencion]
-			  ,[flg_esactivo]
-			  ,[txt_NroCompSujNoDomi]
-			  ,[flg_RetieneCuarta]
-			  ,[cod_gastofijo]
-			  ,[flg_distribuir]
-			  ,[flg_distribuido]
-			  ,[cod_TipoRegistro]
-			  ,[num_tcmc]
-			  ,[num_debemc]
-			  ,[num_habermc]
-			  ,[cod_tercero]
-			  ,[flg_im]
-			  ,[fec_fregistro]
-			  ,[cod_uregistro]
-			  ,[fec_factualiza]
-			  ,[cod_uactualiza])
-		  (select
-			 [txt_anoproceso]
+		  [txt_anoproceso],[cod_filial],[cod_mes],[cod_origen],[cod_comprobante],[num_nroitem]
+			  ,[fec_comprobante],[cod_tipomoneda],[txt_glosaitem],[cod_destino],[txt_cheque]
+			  ,[flg_chequecobrado],[cod_mescobr],[cod_tipocomprobantepago],[txt_seriecomprobantepago]
+			  ,[txt_comprobantepago],[fec_comprobantepago],[fec_pagocomprobantepago],[cod_reftipocomprobantepago]
+			  ,[txt_refseriecomprobantepago],[txt_refcomprobantepago],[fec_refcomprobantepago]
+			  ,[cod_registrocompraventa],[cod_evento],[num_refnroitem],[cod_reforigen]
+			  ,[cod_refcomprobante],[fec_refcomprobante],[cod_proyecto],[cod_ctaproyecto]
+			  ,[cod_ctacontable],[cod_ctacontable9],[cod_ctacontable79],[cod_ctaarea]
+			  ,[cod_ctaactividad],[cod_ctaespecial],[cod_financiera],[cod_flujocaja]
+			  ,[num_tcvdolar],[num_debesol],[num_habersol],[num_debedolar],[num_haberdolar]
+			  ,[num_tcmo],[num_debemo],[num_habermo],[cod_monedaoriginal],[flg_tcreferencia]
+			  ,[flg_conversion],[cod_pais],[cod_departamento],[flg_recuperaigv],[por_igv]
+			  ,[por_ies],[num_nroitem2],[cod_contraparte],[txt_nroretencion],[fec_retencion]
+			  ,[flg_esactivo],[txt_NroCompSujNoDomi],[flg_RetieneCuarta],[cod_gastofijo]
+			  ,[flg_distribuir],[flg_distribuido],[cod_TipoRegistro]
+			  ,[num_tcmc],[num_debemc],[num_habermc],[cod_tercero],[flg_im]
+			  ,[fec_fregistro],[cod_uregistro],[fec_factualiza],[cod_uactualiza])
+		   (select
+			  b.[txt_anoproceso]
 			  ,@cod_filial
-			  ,[cod_mes]
+			  ,b.[cod_mes]
 			  ,@cod_origen
 			  ,@cod_comprobante
-			  ,@num_item
-			  ,fec_fecha
-			  ,[cod_tipomoneda]
-			  ,[txt_glosaitem]
-			  ,[cod_destino]
-			  ,[txt_cheque]
+			  ,b.[num_item]*2-1
+			  ,b.fec_fecha
+			  ,b.[cod_tipomoneda]
+			  ,b.[txt_glosaitem]
+			  ,b.[cod_destino]
+			  ,b.[txt_cheque]
 			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
 			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
-			  ,[cod_tipocomprobantepago]
-			  ,[txt_seriecomprobantepago]
-			  ,[txt_comprobantepago]
-			  ,[fec_comprobantepago]
+			  ,b.[cod_tipocomprobantepago]
+			  ,b.[txt_seriecomprobantepago]
+			  ,b.[txt_comprobantepago]
+			  ,b.[fec_comprobantepago]
 			  , Convert(date, '01/01/1900', 103)--[fec_pagocomprobantepago]
 			  ,''--[cod_reftipocomprobantepago]
 			  ,''--[txt_refseriecomprobantepago]
@@ -225,21 +166,21 @@ BEGIN TRY
 			  ,'' --[cod_reforigen]
 			  ,'' --[cod_refcomprobante]
 			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
-			  ,[cod_proyecto]
-			  ,[cod_ctaproyecto]
-			  ,[cod_ctacontable]
+			  ,b.[cod_proyecto]
+			  ,b.[cod_ctaproyecto]
+			  ,b.[cod_contracta] --[cod_ctacontable]
 			  ,'' --[cod_ctacontable9]
 			  ,'' --[cod_ctacontable79]
 			  ,'' --[cod_ctaarea]
 			  ,'' --[cod_ctaactividad]
-			  ,[cod_ctaespecial]
-			  ,[cod_financiera]
+			  ,b.[cod_ctaespecial]
+			  ,b.[cod_financiera]
 			  ,'' --[cod_flujocaja]
 			  ,@num_tc_usd --[num_tcvdolar]
-			  ,[num_debesol]
-			  ,[num_habersol]
-			  ,[num_debesol]/@num_tc_usd
-			  ,[num_habersol]/@num_tc_usd
+			  ,b.[num_habersol]
+			  ,b.[num_debesol]
+			  ,b.[num_habersol]/@num_tc_usd
+			  ,b.[num_debesol]/@num_tc_usd
 			  ,0 --[num_tcmo]
 			  ,0--[num_debemo]
 			  ,0--[num_habermo]
@@ -252,7 +193,7 @@ BEGIN TRY
 			  ,0--[por_igv]
 			  ,0--[por_ies]
 			  ,1--[num_nroitem2]
-			  ,[cod_contraparte]
+			  ,b.[cod_contraparte]
 			  ,'' --[txt_nroretencion]
 			  ,Convert(date, '01/01/1900', 103)--[fec_retencion]
 			  ,'0' --[flg_esactivo]
@@ -265,21 +206,22 @@ BEGIN TRY
 			  ,0--[num_tcmc]
 			  ,0--[num_debemc]
 			  ,0--[num_habermc]
-			  ,[cod_tercero]
+			  ,b.[cod_tercero]
 			  ,'2' --[flg_im]
 			  ,GETDATE()
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle
-		  where cod_bancocabecera=@cod_bancocabecera )
-		   (select --insertar linea del banco cta 104 o 106..
+		  FROM dbo.vsj_bancodetalle b
+		  where b.cod_bancocabecera=@cod_bancocabecera
+		  union all
+		  select --insertar linea del banco cta 104 o 106..
 			 bd.[txt_anoproceso]
 			  ,@cod_filial
 			  ,bd.[cod_mes]
 			  ,@cod_origen
 			  ,@cod_comprobante
-			  ,@num_item+1
+			  ,[num_item]*2
 			  ,bd.fec_fecha
 			  ,bd.[cod_tipomoneda]
 			  ,bd.[txt_glosaitem]
@@ -304,7 +246,7 @@ BEGIN TRY
 			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
 			  ,bd.[cod_proyecto]
 			  ,bd.[cod_ctaproyecto]
-			  ,bc.[cod_ctacontable]
+			  ,bc.[cod_ctacontable]  --cod_ctacontable
 			  ,'' --[cod_ctacontable9]
 			  ,'' --[cod_ctacontable79]
 			  ,'' --[cod_ctaarea]
@@ -315,8 +257,8 @@ BEGIN TRY
 			  ,@num_tc_usd --[num_tcvdolar]
 			  ,bd.[num_debesol]
 			  ,bd.[num_habersol]
-			  ,bd.[num_habersol]/@num_tc_usd --[num_debedolar]
-			  ,bd.[num_debesol]/@num_tc_usd--[num_haberdolar]
+			    ,bd.[num_debesol]/@num_tc_usd--[num_debedolar]
+			  ,bd.[num_habersol]/@num_tc_usd --[num_haberdolar]
 			  ,0--@num_tc_mo
 			  ,0--@num_haber_mo
 			  ,0-- @num_debe_mo
@@ -352,105 +294,46 @@ BEGIN TRY
 		  where bd.cod_bancocabecera=@cod_bancocabecera
 		  and bc.cod_bancocabecera =bd.cod_bancocabecera )
 
-		 select @num_item=@num_item+1
 	end
 		else if(@cod_moneda='1') --Moneda USD
 			begin
-			select @num_item=@num_item+1
 
-			insert into dbo.scp_comprobantedetalle(
-		  [txt_anoproceso]
-			  ,[cod_filial]
-			  ,[cod_mes]
-			  ,[cod_origen]
-			  ,[cod_comprobante]
-			  ,[num_nroitem]
-			  ,[fec_comprobante]
-			  ,[cod_tipomoneda]
-			  ,[txt_glosaitem]
-			  ,[cod_destino]
-			  ,[txt_cheque]
-			  ,[flg_chequecobrado]
-			  ,[cod_mescobr]
-			  ,[cod_tipocomprobantepago]
-			  ,[txt_seriecomprobantepago]
-			  ,[txt_comprobantepago]
-			  ,[fec_comprobantepago]
-			  ,[fec_pagocomprobantepago]
-			  ,[cod_reftipocomprobantepago]
-			  ,[txt_refseriecomprobantepago]
-			  ,[txt_refcomprobantepago]
-			  ,[fec_refcomprobantepago]
-			  ,[cod_registrocompraventa]
-			  ,[cod_evento]
-			  ,[num_refnroitem]
-			  ,[cod_reforigen]
-			  ,[cod_refcomprobante]
-			  ,[fec_refcomprobante]
-			  ,[cod_proyecto]
-			  ,[cod_ctaproyecto]
-			  ,[cod_ctacontable]
-			  ,[cod_ctacontable9]
-			  ,[cod_ctacontable79]
-			  ,[cod_ctaarea]
-			  ,[cod_ctaactividad]
-			  ,[cod_ctaespecial]
-			  ,[cod_financiera]
-			  ,[cod_flujocaja]
-			  ,[num_tcvdolar]
-			  ,[num_debesol]
-			  ,[num_habersol]
-			  ,[num_debedolar]
-			  ,[num_haberdolar]
-			  ,[num_tcmo]
-			  ,[num_debemo]
-			  ,[num_habermo]
-			  ,[cod_monedaoriginal]
-			  ,[flg_tcreferencia]
-			  ,[flg_conversion]
-			  ,[cod_pais]
-			  ,[cod_departamento]
-			  ,[flg_recuperaigv]
-			  ,[por_igv]
-			  ,[por_ies]
-			  ,[num_nroitem2]
-			  ,[cod_contraparte]
-			  ,[txt_nroretencion]
-			  ,[fec_retencion]
-			  ,[flg_esactivo]
-			  ,[txt_NroCompSujNoDomi]
-			  ,[flg_RetieneCuarta]
-			  ,[cod_gastofijo]
-			  ,[flg_distribuir]
-			  ,[flg_distribuido]
-			  ,[cod_TipoRegistro]
-			  ,[num_tcmc]
-			  ,[num_debemc]
-			  ,[num_habermc]
-			  ,[cod_tercero]
-			  ,[flg_im]
-			  ,[fec_fregistro]
-			  ,[cod_uregistro]
-			  ,[fec_factualiza]
-			  ,[cod_uactualiza])
-		  (select
-			 [txt_anoproceso]
+				  insert into dbo.scp_comprobantedetalle(
+		  [txt_anoproceso],[cod_filial],[cod_mes],[cod_origen],[cod_comprobante],[num_nroitem]
+			  ,[fec_comprobante],[cod_tipomoneda],[txt_glosaitem],[cod_destino],[txt_cheque]
+			  ,[flg_chequecobrado],[cod_mescobr],[cod_tipocomprobantepago],[txt_seriecomprobantepago]
+			  ,[txt_comprobantepago],[fec_comprobantepago],[fec_pagocomprobantepago],[cod_reftipocomprobantepago]
+			  ,[txt_refseriecomprobantepago],[txt_refcomprobantepago],[fec_refcomprobantepago]
+			  ,[cod_registrocompraventa],[cod_evento],[num_refnroitem],[cod_reforigen]
+			  ,[cod_refcomprobante],[fec_refcomprobante],[cod_proyecto],[cod_ctaproyecto]
+			  ,[cod_ctacontable],[cod_ctacontable9],[cod_ctacontable79],[cod_ctaarea]
+			  ,[cod_ctaactividad],[cod_ctaespecial],[cod_financiera],[cod_flujocaja]
+			  ,[num_tcvdolar],[num_debesol],[num_habersol],[num_debedolar],[num_haberdolar]
+			  ,[num_tcmo],[num_debemo],[num_habermo],[cod_monedaoriginal],[flg_tcreferencia]
+			  ,[flg_conversion],[cod_pais],[cod_departamento],[flg_recuperaigv],[por_igv]
+			  ,[por_ies],[num_nroitem2],[cod_contraparte],[txt_nroretencion],[fec_retencion]
+			  ,[flg_esactivo],[txt_NroCompSujNoDomi],[flg_RetieneCuarta],[cod_gastofijo]
+			  ,[flg_distribuir],[flg_distribuido],[cod_TipoRegistro]
+			  ,[num_tcmc],[num_debemc],[num_habermc],[cod_tercero],[flg_im]
+			  ,[fec_fregistro],[cod_uregistro],[fec_factualiza],[cod_uactualiza])
+		   (select
+			  b.[txt_anoproceso]
 			  ,@cod_filial
-			  ,[cod_mes]
+			  ,b.[cod_mes]
 			  ,@cod_origen
 			  ,@cod_comprobante
-			  ,@num_item
-			  ,fec_fecha
-			  ,[cod_tipomoneda]
-			  ,[txt_glosaitem]
-			  ,[cod_destino]
-			  ,[txt_cheque]
+			  ,b.[num_item]*2-1
+			  ,b.fec_fecha
+			  ,b.[cod_tipomoneda]
+			  ,b.[txt_glosaitem]
+			  ,b.[cod_destino]
+			  ,b.[txt_cheque]
 			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
 			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
-			  ,[cod_tipocomprobantepago]
-			  ,[txt_seriecomprobantepago]
-			  ,[txt_comprobantepago]
-			  ,[fec_comprobantepago]
+			  ,b.[cod_tipocomprobantepago]
+			  ,b.[txt_seriecomprobantepago]
+			  ,b.[txt_comprobantepago]
+			  ,b.[fec_comprobantepago]
 			  , Convert(date, '01/01/1900', 103)--[fec_pagocomprobantepago]
 			  ,''--[cod_reftipocomprobantepago]
 			  ,''--[txt_refseriecomprobantepago]
@@ -462,21 +345,21 @@ BEGIN TRY
 			  ,'' --[cod_reforigen]
 			  ,'' --[cod_refcomprobante]
 			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
-			  ,[cod_proyecto]
-			  ,[cod_ctaproyecto]
-			  ,[cod_ctacontable]
+			  ,b.[cod_proyecto]
+			  ,b.[cod_ctaproyecto]
+			  ,b.[cod_contracta] --[cod_ctacontable]
 			  ,'' --[cod_ctacontable9]
 			  ,'' --[cod_ctacontable79]
 			  ,'' --[cod_ctaarea]
 			  ,'' --[cod_ctaactividad]
-			  ,[cod_ctaespecial]
-			  ,[cod_financiera]
+			  ,b.[cod_ctaespecial]
+			  ,b.[cod_financiera]
 			  ,'' --[cod_flujocaja]
 			  ,@num_tc_usd --[num_tcvdolar]
-			  ,[num_debedolar]*@num_tc_usd
-			  ,[num_haberdolar]*@num_tc_usd
-			  ,[num_debedolar]
-			  ,[num_haberdolar]
+			  ,b.[num_haberdolar]*@num_tc_usd
+			  ,b.[num_debedolar]*@num_tc_usd
+			  ,b.[num_haberdolar]
+			  ,b.[num_debedolar]
 			  ,0 --[num_tcmo]
 			  ,0--[num_debemo]
 			  ,0--[num_habermo]
@@ -489,7 +372,7 @@ BEGIN TRY
 			  ,0--[por_igv]
 			  ,0--[por_ies]
 			  ,1--[num_nroitem2]
-			  ,[cod_contraparte]
+			  ,b.[cod_contraparte]
 			  ,'' --[txt_nroretencion]
 			  ,Convert(date, '01/01/1900', 103)--[fec_retencion]
 			  ,'0' --[flg_esactivo]
@@ -502,21 +385,22 @@ BEGIN TRY
 			  ,0--[num_tcmc]
 			  ,0--[num_debemc]
 			  ,0--[num_habermc]
-			  ,[cod_tercero]
+			  ,b.[cod_tercero]
 			  ,'2' --[flg_im]
 			  ,GETDATE()
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle
-		  where cod_bancocabecera=@cod_bancocabecera )
-		   (select --insertar linea del banco cta 104 o 106..
+		  FROM dbo.vsj_bancodetalle b
+		  where b.cod_bancocabecera=@cod_bancocabecera
+		  union all
+		  select --insertar linea del banco cta 104 o 106..
 			 bd.[txt_anoproceso]
 			  ,@cod_filial
 			  ,bd.[cod_mes]
 			  ,@cod_origen
 			  ,@cod_comprobante
-			  ,@num_item+1
+			  ,[num_item]*2
 			  ,bd.fec_fecha
 			  ,bd.[cod_tipomoneda]
 			  ,bd.[txt_glosaitem]
@@ -541,7 +425,7 @@ BEGIN TRY
 			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
 			  ,bd.[cod_proyecto]
 			  ,bd.[cod_ctaproyecto]
-			  ,bc.[cod_ctacontable]
+			  ,bc.[cod_ctacontable]  --cod_ctacontable
 			  ,'' --[cod_ctacontable9]
 			  ,'' --[cod_ctacontable79]
 			  ,'' --[cod_ctaarea]
@@ -550,10 +434,10 @@ BEGIN TRY
 			  ,bd.[cod_financiera]
 			  ,'' --[cod_flujocaja]
 			  ,@num_tc_usd --[num_tcvdolar]
-			  ,bd.[num_haberdolar]*@num_tc_usd
 			  ,bd.[num_debedolar]*@num_tc_usd
-			  ,bd.[num_haberdolar]   --[num_debedolar]
-			  ,bd.[num_debedolar] --[num_haberdolar]
+			  ,bd.[num_haberdolar]*@num_tc_usd
+			    ,bd.[num_debedolar]--[num_debedolar]
+			  ,bd.[num_haberdolar]
 			  ,0--@num_tc_mo
 			  ,0--@num_haber_mo
 			  ,0-- @num_debe_mo
@@ -588,8 +472,6 @@ BEGIN TRY
 		  FROM dbo.vsj_bancodetalle bd, dbo.vsj_bancocabecera bc
 		  where bd.cod_bancocabecera=@cod_bancocabecera
 		  and bc.cod_bancocabecera =bd.cod_bancocabecera )
-
-		 select @num_item=@num_item+1
 		end
 
 		else if(@cod_moneda='2') --Moneda EUR
@@ -597,238 +479,182 @@ BEGIN TRY
 			SELECT @ErrorStep = 'No existe tipo de cambio EUR';
 			select @test=1/@num_tc_mo
 		   SELECT  @ErrorStep = 'Error al insertar lineas de detalle de comprobante'
-		insert into dbo.scp_comprobantedetalle(
-			  [txt_anoproceso]
-				  ,[cod_filial]
-				  ,[cod_mes]
-				  ,[cod_origen]
-				  ,[cod_comprobante]
-				  ,[num_nroitem]
-				  ,[fec_comprobante]
-				  ,[cod_tipomoneda]
-				  ,[txt_glosaitem]
-				  ,[cod_destino]
-				  ,[txt_cheque]
-				  ,[flg_chequecobrado]
-				  ,[cod_mescobr]
-				  ,[cod_tipocomprobantepago]
-				  ,[txt_seriecomprobantepago]
-				  ,[txt_comprobantepago]
-				  ,[fec_comprobantepago]
-				  ,[fec_pagocomprobantepago]
-				  ,[cod_reftipocomprobantepago]
-				  ,[txt_refseriecomprobantepago]
-				  ,[txt_refcomprobantepago]
-				  ,[fec_refcomprobantepago]
-				  ,[cod_registrocompraventa]
-				  ,[cod_evento]
-				  ,[num_refnroitem]
-				  ,[cod_reforigen]
-				  ,[cod_refcomprobante]
-				  ,[fec_refcomprobante]
-				  ,[cod_proyecto]
-				  ,[cod_ctaproyecto]
-				  ,[cod_ctacontable]
-				  ,[cod_ctacontable9]
-				  ,[cod_ctacontable79]
-				  ,[cod_ctaarea]
-				  ,[cod_ctaactividad]
-				  ,[cod_ctaespecial]
-				  ,[cod_financiera]
-				  ,[cod_flujocaja]
-				  ,[num_tcvdolar]
-				  ,[num_debesol]
-				  ,[num_habersol]
-				  ,[num_debedolar]
-				  ,[num_haberdolar]
-				  ,[num_tcmo]
-				  ,[num_debemo]
-				  ,[num_habermo]
-				  ,[cod_monedaoriginal]
-				  ,[flg_tcreferencia]
-				  ,[flg_conversion]
-				  ,[cod_pais]
-				  ,[cod_departamento]
-				  ,[flg_recuperaigv]
-				  ,[por_igv]
-				  ,[por_ies]
-				  ,[num_nroitem2]
-				  ,[cod_contraparte]
-				  ,[txt_nroretencion]
-				  ,[fec_retencion]
-				  ,[flg_esactivo]
-				  ,[txt_NroCompSujNoDomi]
-				  ,[flg_RetieneCuarta]
-				  ,[cod_gastofijo]
-				  ,[flg_distribuir]
-				  ,[flg_distribuido]
-				  ,[cod_TipoRegistro]
-				  ,[num_tcmc]
-				  ,[num_debemc]
-				  ,[num_habermc]
-				  ,[cod_tercero]
-				  ,[flg_im]
-				  ,[fec_fregistro]
-				  ,[cod_uregistro]
-				  ,[fec_factualiza]
-				  ,[cod_uactualiza])
-			  (select
-				 [txt_anoproceso]
-				  ,@cod_filial
-				  ,[cod_mes]
-				  ,@cod_origen
-				  ,@cod_comprobante
-				  ,@num_item
-				  ,fec_fecha
-				  ,[cod_tipomoneda]
-				  ,[txt_glosaitem]
-				  ,[cod_destino]
-				  ,[txt_cheque]
-				  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-				  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
-				  ,[cod_tipocomprobantepago]
-				  ,[txt_seriecomprobantepago]
-				  ,[txt_comprobantepago]
-				  ,[fec_comprobantepago]
-				  , Convert(date, '01/01/1900', 103)--[fec_pagocomprobantepago]
-				  ,''--[cod_reftipocomprobantepago]
-				  ,''--[txt_refseriecomprobantepago]
-				  ,''--[txt_refcomprobantepago]
-				  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobantepago]
-				  ,''--[cod_registrocompraventa]
-				  ,''--[cod_evento]
-				  ,0 --[num_refnroitem]
-				  ,'' --[cod_reforigen]
-				  ,'' --[cod_refcomprobante]
-				  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
-				  ,[cod_proyecto]
-				  ,[cod_ctaproyecto]
-				  ,[cod_ctacontable]
-				  ,'' --[cod_ctacontable9]
-				  ,'' --[cod_ctacontable79]
-				  ,'' --[cod_ctaarea]
-				  ,'' --[cod_ctaactividad]
-				  ,[cod_ctaespecial]
-				  ,[cod_financiera]
-				  ,'' --[cod_flujocaja]
-				  ,@num_tc_usd --[num_tcvdolar]
-				  ,([num_debemo]*@num_tc_mo)
-				  ,([num_habermo]*@num_tc_mo)
-				  ,([num_debemo]*@num_tc_mo)/@num_tc_usd
+
+				  insert into dbo.scp_comprobantedetalle(
+		  [txt_anoproceso],[cod_filial],[cod_mes],[cod_origen],[cod_comprobante],[num_nroitem]
+			  ,[fec_comprobante],[cod_tipomoneda],[txt_glosaitem],[cod_destino],[txt_cheque]
+			  ,[flg_chequecobrado],[cod_mescobr],[cod_tipocomprobantepago],[txt_seriecomprobantepago]
+			  ,[txt_comprobantepago],[fec_comprobantepago],[fec_pagocomprobantepago],[cod_reftipocomprobantepago]
+			  ,[txt_refseriecomprobantepago],[txt_refcomprobantepago],[fec_refcomprobantepago]
+			  ,[cod_registrocompraventa],[cod_evento],[num_refnroitem],[cod_reforigen]
+			  ,[cod_refcomprobante],[fec_refcomprobante],[cod_proyecto],[cod_ctaproyecto]
+			  ,[cod_ctacontable],[cod_ctacontable9],[cod_ctacontable79],[cod_ctaarea]
+			  ,[cod_ctaactividad],[cod_ctaespecial],[cod_financiera],[cod_flujocaja]
+			  ,[num_tcvdolar],[num_debesol],[num_habersol],[num_debedolar],[num_haberdolar]
+			  ,[num_tcmo],[num_debemo],[num_habermo],[cod_monedaoriginal],[flg_tcreferencia]
+			  ,[flg_conversion],[cod_pais],[cod_departamento],[flg_recuperaigv],[por_igv]
+			  ,[por_ies],[num_nroitem2],[cod_contraparte],[txt_nroretencion],[fec_retencion]
+			  ,[flg_esactivo],[txt_NroCompSujNoDomi],[flg_RetieneCuarta],[cod_gastofijo]
+			  ,[flg_distribuir],[flg_distribuido],[cod_TipoRegistro]
+			  ,[num_tcmc],[num_debemc],[num_habermc],[cod_tercero],[flg_im]
+			  ,[fec_fregistro],[cod_uregistro],[fec_factualiza],[cod_uactualiza])
+		   (select
+			  b.[txt_anoproceso]
+			  ,@cod_filial
+			  ,b.[cod_mes]
+			  ,@cod_origen
+			  ,@cod_comprobante
+			  ,b.[num_item]*2-1
+			  ,b.fec_fecha
+			  ,b.[cod_tipomoneda]
+			  ,b.[txt_glosaitem]
+			  ,b.[cod_destino]
+			  ,b.[txt_cheque]
+			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,b.[cod_tipocomprobantepago]
+			  ,b.[txt_seriecomprobantepago]
+			  ,b.[txt_comprobantepago]
+			  ,b.[fec_comprobantepago]
+			  , Convert(date, '01/01/1900', 103)--[fec_pagocomprobantepago]
+			  ,''--[cod_reftipocomprobantepago]
+			  ,''--[txt_refseriecomprobantepago]
+			  ,''--[txt_refcomprobantepago]
+			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobantepago]
+			  ,''--[cod_registrocompraventa]
+			  ,''--[cod_evento]
+			  ,0 --[num_refnroitem]
+			  ,'' --[cod_reforigen]
+			  ,'' --[cod_refcomprobante]
+			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
+			  ,b.[cod_proyecto]
+			  ,b.[cod_ctaproyecto]
+			  ,b.[cod_contracta] --[cod_ctacontable]
+			  ,'' --[cod_ctacontable9]
+			  ,'' --[cod_ctacontable79]
+			  ,'' --[cod_ctaarea]
+			  ,'' --[cod_ctaactividad]
+			  ,b.[cod_ctaespecial]
+			  ,b.[cod_financiera]
+			  ,'' --[cod_flujocaja]
+			  ,@num_tc_usd --[num_tcvdolar]
+			,([num_debemo]*@num_tc_mo)
+			  ,([num_habermo]*@num_tc_mo)
+			  ,([num_debemo]*@num_tc_mo)/@num_tc_usd
 				  ,([num_habermo]*@num_tc_mo)/@num_tc_usd
 				  ,@num_tc_mo
 				  ,[num_debemo]
 				  ,[num_habermo]
-				  ,'' --[cod_monedaoriginal]
-				  ,0--[flg_tcreferencia]
-				  ,0--[flg_conversion]
-				  ,'' --[cod_pais]
-				  ,'' --[cod_departamento]
-				  ,'1'--[flg_recuperaigv]
-				  ,0--[por_igv]
-				  ,0--[por_ies]
-				  ,1--[num_nroitem2]
-				  ,[cod_contraparte]
-				  ,'' --[txt_nroretencion]
-				  ,Convert(date, '01/01/1900', 103)--[fec_retencion]
-				  ,'0' --[flg_esactivo]
-				  ,'' --[txt_NroCompSujNoDomi]
-				  ,'1' --[flg_RetieneCuarta]
-				  ,'' --[cod_gastofijo]
-				  ,'' --[flg_distribuir]
-				  ,'' --[flg_distribuido]
-				  ,'' --[cod_TipoRegistro]
-				  ,0--[num_tcmc]
-				  ,0--[num_debemc]
-				  ,0--[num_habermc]
-				  ,[cod_tercero]
-				  ,'2' --[flg_im]
-				  ,GETDATE()
-				  ,@user
-				  ,GETDATE()
-				  ,@user
-			  FROM dbo.vsj_bancodetalle
-			  where cod_bancocabecera=@cod_bancocabecera )
-			   (select --insertar linea del banco cta 104 o 106..
-				 bd.[txt_anoproceso]
-				  ,@cod_filial
-				  ,bd.[cod_mes]
-				  ,@cod_origen
-				  ,@cod_comprobante
-				  ,@num_item+1
-				  ,bd.fec_fecha
-				  ,bd.[cod_tipomoneda]
-				  ,bd.[txt_glosaitem]
-				  ,bd.[cod_destino]
-				  ,bd.[txt_cheque]
-				  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-				  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
-				  ,bd.[cod_tipocomprobantepago]
-				  ,bd.[txt_seriecomprobantepago]
-				  ,bd.[txt_comprobantepago]
-				  ,bd.[fec_comprobantepago]
-				  , Convert(date, '01/01/1900', 103)--[fec_pagocomprobantepago]
-				  ,''--[cod_reftipocomprobantepago]
-				  ,''--[txt_refseriecomprobantepago]
-				  ,''--[txt_refcomprobantepago]
-				  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobantepago]
-				  ,''--[cod_registrocompraventa]
-				  ,''--[cod_evento]
-				  ,0 --[num_refnroitem]
-				  ,'' --[cod_reforigen]
-				  ,'' --[cod_refcomprobante]
-				  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
-				  ,bd.[cod_proyecto]
-				  ,bd.[cod_ctaproyecto]
-				  ,bc.[cod_ctacontable]
-				  ,'' --[cod_ctacontable9]
-				  ,'' --[cod_ctacontable79]
-				  ,'' --[cod_ctaarea]
-				  ,'' --[cod_ctaactividad]
-				  ,bd.[cod_ctaespecial]
-				  ,bd.[cod_financiera]
-				  ,'' --[cod_flujocaja]
-				  ,@num_tc_usd --[num_tcvdolar]
+			  ,'' --[cod_monedaoriginal]
+			  ,0--[flg_tcreferencia]
+			  ,0--[flg_conversion]
+			  ,'' --[cod_pais]
+			  ,'' --[cod_departamento]
+			  ,'1'--[flg_recuperaigv]
+			  ,0--[por_igv]
+			  ,0--[por_ies]
+			  ,1--[num_nroitem2]
+			  ,b.[cod_contraparte]
+			  ,'' --[txt_nroretencion]
+			  ,Convert(date, '01/01/1900', 103)--[fec_retencion]
+			  ,'0' --[flg_esactivo]
+			  ,'' --[txt_NroCompSujNoDomi]
+			  ,'1' --[flg_RetieneCuarta]
+			  ,'' --[cod_gastofijo]
+			  ,'' --[flg_distribuir]
+			  ,'' --[flg_distribuido]
+			  ,'' --[cod_TipoRegistro]
+			  ,0--[num_tcmc]
+			  ,0--[num_debemc]
+			  ,0--[num_habermc]
+			  ,b.[cod_tercero]
+			  ,'2' --[flg_im]
+			  ,GETDATE()
+			  ,@user
+			  ,GETDATE()
+			  ,@user
+		  FROM dbo.vsj_bancodetalle b
+		  where b.cod_bancocabecera=@cod_bancocabecera
+		  union all
+		  select --insertar linea del banco cta 104 o 106..
+			 bd.[txt_anoproceso]
+			  ,@cod_filial
+			  ,bd.[cod_mes]
+			  ,@cod_origen
+			  ,@cod_comprobante
+			  ,[num_item]*2
+			  ,bd.fec_fecha
+			  ,bd.[cod_tipomoneda]
+			  ,bd.[txt_glosaitem]
+			  ,bd.[cod_destino]
+			  ,bd.[txt_cheque]
+			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,bd.[cod_tipocomprobantepago]
+			  ,bd.[txt_seriecomprobantepago]
+			  ,bd.[txt_comprobantepago]
+			  ,bd.[fec_comprobantepago]
+			  , Convert(date, '01/01/1900', 103)--[fec_pagocomprobantepago]
+			  ,''--[cod_reftipocomprobantepago]
+			  ,''--[txt_refseriecomprobantepago]
+			  ,''--[txt_refcomprobantepago]
+			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobantepago]
+			  ,''--[cod_registrocompraventa]
+			  ,''--[cod_evento]
+			  ,0 --[num_refnroitem]
+			  ,'' --[cod_reforigen]
+			  ,'' --[cod_refcomprobante]
+			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
+			  ,bd.[cod_proyecto]
+			  ,bd.[cod_ctaproyecto]
+			  ,bc.[cod_ctacontable]  --cod_ctacontable
+			  ,'' --[cod_ctacontable9]
+			  ,'' --[cod_ctacontable79]
+			  ,'' --[cod_ctaarea]
+			  ,'' --[cod_ctaactividad]
+			  ,bd.[cod_ctaespecial]
+			  ,bd.[cod_financiera]
+			  ,'' --[cod_flujocaja]
+			  ,@num_tc_usd --[num_tcvdolar]
 				  ,(bd.[num_habermo]*@num_tc_mo)
 				  ,(bd.[num_debemo]*@num_tc_mo)
-				  ,(bd.[num_habermo]*@num_tc_mo)/@num_tc_usd --[num_debedolar]
-				  ,(bd.[num_debemo]*@num_tc_mo)/@num_tc_usd--[num_haberdolar]
+				  ,(bd.[num_habermo]*@num_tc_mo)/@num_tc_usd
+				  ,(bd.[num_debemo]*@num_tc_mo)/@num_tc_usd
 				  ,@num_tc_mo
 				  ,bd.[num_habermo]
 				  ,bd.[num_debemo]
-				  ,'' --[cod_monedaoriginal]
-				  ,0--[flg_tcreferencia]
-				  ,0--[flg_conversion]
-				  ,'' --[cod_pais]
-				  ,'' --[cod_departamento]
-				  ,'1'--[flg_recuperaigv]
-				  ,0--[por_igv]
-				  ,0--[por_ies]
-				  ,1--[num_nroitem2]
-				  ,bd.[cod_contraparte]
-				  ,'' --[txt_nroretencion]
-				  ,Convert(date, '01/01/1900', 103)--[fec_retencion]
-				  ,'0' --[flg_esactivo]
-				  ,'' --[txt_NroCompSujNoDomi]
-				  ,'1' --[flg_RetieneCuarta]
-				  ,'' --[cod_gastofijo]
-				  ,'' --[flg_distribuir]
-				  ,'' --[flg_distribuido]
-				  ,'' --[cod_TipoRegistro]
-				  ,0--[num_tcmc]
-				  ,0--[num_debemc]
-				  ,0--[num_habermc]
-				  ,bd.[cod_tercero]
-				  ,'2' --[flg_im]
-				  ,GETDATE()
-				  ,@user
-				  ,GETDATE()
-				  ,@user
-			  FROM dbo.vsj_bancodetalle bd, dbo.vsj_bancocabecera bc
-			  where bd.cod_bancocabecera=@cod_bancocabecera
-			  and bc.cod_bancocabecera =bd.cod_bancocabecera )
+			  ,'' --[cod_monedaoriginal]
+			  ,0--[flg_tcreferencia]
+			  ,0--[flg_conversion]
+			  ,'' --[cod_pais]
+			  ,'' --[cod_departamento]
+			  ,'1'--[flg_recuperaigv]
+			  ,0--[por_igv]
+			  ,0--[por_ies]
+			  ,1--[num_nroitem2]
+			  ,bd.[cod_contraparte]
+			  ,'' --[txt_nroretencion]
+			  ,Convert(date, '01/01/1900', 103)--[fec_retencion]
+			  ,'0' --[flg_esactivo]
+			  ,'' --[txt_NroCompSujNoDomi]
+			  ,'1' --[flg_RetieneCuarta]
+			  ,'' --[cod_gastofijo]
+			  ,'' --[flg_distribuir]
+			  ,'' --[flg_distribuido]
+			  ,'' --[cod_TipoRegistro]
+			  ,0--[num_tcmc]
+			  ,0--[num_debemc]
+			  ,0--[num_habermc]
+			  ,bd.[cod_tercero]
+			  ,'2' --[flg_im]
+			  ,GETDATE()
+			  ,@user
+			  ,GETDATE()
+			  ,@user
+		  FROM dbo.vsj_bancodetalle bd, dbo.vsj_bancocabecera bc
+		  where bd.cod_bancocabecera=@cod_bancocabecera
+		  and bc.cod_bancocabecera =bd.cod_bancocabecera )
 
-			 select @num_item=@num_item+1
 		end
 
 
@@ -880,5 +706,5 @@ END CATCH
 
 
 /*
-Exec usp_scp_vsj_enviarAContabilidadBanco 10437,'abork','01/09/2016','0',0
+Exec usp_scp_vsj_enviarAContabilidadBanco 10442,'abork','01/09/2016','0',0
 */

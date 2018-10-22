@@ -12,7 +12,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER FUNCTION [dbo].[fun_scp_vsj_GetSaldosAlDiaBanco] (
+CREATE FUNCTION [dbo].[fun_scp_vsj_GetSaldosAlDiaBanco] (
 	@Fecha varchar(19), -- Fecha para saldo formato yyyy-dd-mm hh:mi:ss(24h)
 	@Moneda varchar(1)  -- 0 PEN, 1 USD, 2 EUR
 	)
