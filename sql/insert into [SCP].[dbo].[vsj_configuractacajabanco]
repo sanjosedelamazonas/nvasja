@@ -42,4 +42,4 @@ end
 end
 ,1
 FROM [SCP].[dbo].[scp_configuractacajabanco]
-where txt_anoproceso='2016'
+where txt_anoproceso='2018'

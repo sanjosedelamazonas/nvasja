@@ -57,6 +57,10 @@ public class DataUtil {
         List<Caja> cajas = new ArrayList<>();
         for (ScpPlancontable caja : getBancoCuentas(date, planRepo)) {
             Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
+            if (moneda.equals('9')) {
+                // Problem - TipoMoneda not set
+                System.out.println("ERROR: TipoMoneda not set for BancoCuenta: " + caja.getCodCta4() + " " + caja.getTxtDescctacontable());
+            }
             BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(
                     GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)),
                     caja.getId().getCodCtacontable()
