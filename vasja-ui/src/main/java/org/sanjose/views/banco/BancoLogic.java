@@ -273,18 +273,10 @@ public class BancoLogic extends BancoItemLogic {
             switchMode(VIEW);
         } catch (Validator.InvalidValueException e) {
             Notification.show("Error al guardar: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
-            e.printStackTrace();
             view.setEnableCabezeraFields(true);
             view.setEnableDetalleFields(true);
         } catch (FieldGroup.CommitException ce) {
-            StringBuilder sb = new StringBuilder();
-            Map<Field<?>, Validator.InvalidValueException> fieldMap = ce.getInvalidFields();
-            for (Field f : fieldMap.keySet()) {
-                sb.append(f.getConnectorId()).append(" ").append(fieldMap.get(f).getHtmlMessage()).append("\n");
-            }
-            Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage() + "\n" + sb.toString(), Notification.Type.ERROR_MESSAGE);
-            log.warn("Error al guardar: " + ce.getMessage() + "\n" + sb.toString());
-            ce.printStackTrace();
+            Notification.show("Error al guardar el cheque: \n" + GenUtil.genErrorMessage(ce.getInvalidFields()), Notification.Type.ERROR_MESSAGE);
             view.setEnableCabezeraFields(true);
             view.setEnableDetalleFields(true);
         } catch (RuntimeException re) {

@@ -39,7 +39,7 @@ public class TwoNumberfieldsValidator implements Validator {
         if (!isPermitEmpty && ((GenUtil.objNullOrEmpty(value)
                 && GenUtil.objNullOrEmpty(field.getValue())))) {
             field.markAsDirty();
-            throw new InvalidValueException("Uno de los dos tiene que ser rellenado");
+            throw new InvalidValueException("Uno de los dos tiene que estar rellenado");
         }
 
         if (!isPermitEmpty && isZero(value) && isZero(field.getValue())) {

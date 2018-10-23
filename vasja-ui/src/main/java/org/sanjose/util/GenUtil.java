@@ -2,6 +2,9 @@ package org.sanjose.util;
 
 //import org.vaadin.ui.NumberField;
 
+import com.vaadin.data.Validator;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
 import org.sanjose.model.VsjBancoItem;
 import org.sanjose.model.VsjCajabanco;
@@ -194,6 +197,25 @@ public class GenUtil {
 
     public static boolean verifyNumMoneda(Character moneda) {
         return !getLitMoneda(moneda).equals('U');
+    }
+
+    public static String validIsNull(String in) {
+        if (in==null || in.equalsIgnoreCase("null"))
+            return "no puede estar vacío";
+        else
+            return in;
+    }
+
+    public static String genErrorMessage(Map<Field<?>, Validator.InvalidValueException> fieldMap) {
+        StringBuilder sb = new StringBuilder();
+        for (Field f : fieldMap.keySet()) {
+            if (f instanceof ComboBox) {
+                sb.append(((ComboBox) f).getInputPrompt()).append(" - ").append(GenUtil.validIsNull(fieldMap.get(f).getMessage())).append("\n");
+            } else {
+                sb.append(f.getDescription() != "" ? f.getDescription() : "Campo desconocido").append(" - ").append(GenUtil.validIsNull(fieldMap.get(f).getMessage())).append("\n");
+            }
+        }
+        return sb.toString();
     }
 
 }

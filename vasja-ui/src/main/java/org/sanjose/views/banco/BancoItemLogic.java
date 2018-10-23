@@ -17,6 +17,7 @@ import org.sanjose.MainUI;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
+import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.validator.SaldoChecker;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
@@ -76,7 +77,8 @@ class BancoItemLogic implements Serializable {
         view.getDataFechaComprobante().setConverter(DateToTimestampConverter.INSTANCE);
         view.getDataFechaComprobante().setResolution(Resolution.DAY);
         view.getDataFechaComprobante().addValueChangeListener(event -> {
-            DataFilterUtil.refreshComboBox(view.getSelCuenta(), "id.codCtacontable",
+            if (view.getDataFechaComprobante().getValue()!=null)
+                DataFilterUtil.refreshComboBox(view.getSelCuenta(), "id.codCtacontable",
                     DataUtil.getBancoCuentas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo()),
                     "txtDescctacontable");
             setCuentaLogic();
@@ -107,10 +109,9 @@ class BancoItemLogic implements Serializable {
                 view.getSelResponsable().setValue(valueChangeEvent.getProperty().getValue());
         });
 
-        view.getGlosaCabeza().addTextChangeListener(event -> {
-            log.info("Text in cabeza: " + event.getText());
-            if (event.getText() != null && GenUtil.strNullOrEmpty(view.getGlosaDetalle().getValue())) {
-                view.getGlosaDetalle().setValue(event.getText());
+        view.getGlosaCabeza().addBlurListener(event -> {
+           if (view.getGlosaCabeza().getValue() != null && GenUtil.strNullOrEmpty(view.getGlosaDetalle().getValue())) {
+                view.getGlosaDetalle().setValue(view.getGlosaCabeza().getValue());
             }
         });
         view.getSaldoCuenta().setNullRepresentation("0.00");
@@ -217,20 +218,25 @@ class BancoItemLogic implements Serializable {
 
     public void addValidators() {
         // Validators
-        view.getDataFechaComprobante().addValidator(new BeanValidator(VsjBancodetalle.class, "fecFecha"));
-        view.getFechaDoc().addValidator(new BeanValidator(VsjBancodetalle.class, "fecComprobantepago"));
+        view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "fecFecha"));
+        view.getFechaDoc().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "fecComprobantepago"));
         view.getSelProyecto().addValidator(new TwoCombosValidator(view.getSelTercero(), true, null));
         view.getSelTercero().addValidator(new TwoCombosValidator(view.getSelProyecto(), true, null));
+        view.getNumIngreso().setDescription("Ingreso");
+        view.getNumEgreso().setDescription("Egreso");
         view.getNumIngreso().addValidator(new TwoNumberfieldsValidator(view.getNumEgreso(), false, "Ingreso o egreso debe ser rellenado"));
         view.getNumEgreso().addValidator(new TwoNumberfieldsValidator(view.getNumIngreso(), false, "Ingreso o egreso debe ser rellenado"));
-        view.getSelResponsable().addValidator(new BeanValidator(VsjBancodetalle.class, "codDestino"));
-        view.getSelLugarGasto().addValidator(new BeanValidator(VsjBancodetalle.class, "codContraparte"));
-        view.getSelCodAuxiliar().addValidator(new BeanValidator(VsjBancodetalle.class, "codDestinoitem"));
-        view.getGlosaDetalle().addValidator(new BeanValidator(VsjBancodetalle.class, "txtGlosaitem"));
-        view.getSerieDoc().addValidator(new BeanValidator(VsjBancodetalle.class, "txtSeriecomprobantepago"));
-        view.getNumDoc().addValidator(new BeanValidator(VsjBancodetalle.class, "txtComprobantepago"));
-        view.getSelCtaContable().addValidator(new BeanValidator(VsjBancodetalle.class, "codContracta"));
-        view.getSelTipoMov().addValidator(new BeanValidator(VsjBancodetalle.class, "codTipomov"));
+        view.getSelResponsable().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "codDestino"));
+        view.getSelLugarGasto().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "codContraparte"));
+        view.getSelCodAuxiliar().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "codDestinoitem"));
+        view.getGlosaCabeza().setDescription("Glosa Cabeza");
+        view.getGlosaCabeza().addValidator(new LocalizedBeanValidator(VsjBancocabecera.class, "txtGlosa"));
+        view.getGlosaDetalle().setDescription("Glosa Detalle");
+        view.getGlosaDetalle().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "txtGlosaitem"));
+        view.getSerieDoc().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "txtSeriecomprobantepago"));
+        view.getNumDoc().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "txtComprobantepago"));
+        view.getSelCtaContable().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "codContracta"));
+        view.getSelTipoMov().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "codTipomov"));
         // Check saldos and warn
         saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN());
         view.getNumEgreso().addBlurListener(event -> saldoChecker.check());
@@ -615,6 +621,8 @@ class BancoItemLogic implements Serializable {
     }
 
     VsjBancodetalle getVsjBancodetalle() throws CommitException {
+        if (fieldGroup==null || beanItem==null || beanItem.getBean()==null)
+            throw new CommitException("El cheque debe tener operaciones rellenadas");
         fieldGroup.commit();
         VsjBancodetalle item = beanItem.getBean();
         log.debug("got from getDetalle " + item);

@@ -80,7 +80,10 @@ public class PrintHelper extends VerticalLayout implements Viewing {
 						c.addBean(ps);
 		            }
 					PrintService defPrintService = selectPrintService();
-					logger.info("Selected print service for user: " + CurrentUser.get() + " - "  + defPrintService.getName());
+					if (defPrintService!=null)
+						logger.info("Selected print service for user: " + CurrentUser.get() + " - "  + defPrintService.getName());
+					else
+						logger.info("No default printer for user: " + CurrentUser.get());
 					if (!imprimeras.isEmpty()) {
 						mainScreen.printerLoaded(imprimeras, defPrintService.getName());
 						isReady = true;

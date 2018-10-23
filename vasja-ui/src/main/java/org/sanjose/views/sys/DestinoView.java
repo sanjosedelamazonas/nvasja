@@ -16,6 +16,7 @@ import org.sanjose.repo.ScpDestinoRep;
 import org.sanjose.repo.ScpTipodocumentoRep;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
+import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -68,10 +69,10 @@ public class DestinoView extends DestinoUI implements View {
         DataFilterUtil.bindTipoPersonaComboBox(tipoDePersona, "indTipopersona", "Sel Tipo de persona");
 
         // Validators
-        codigo.addValidator(new BeanValidator(ScpDestino.class, "codDestino"));
-        clasificacion.addValidator(new BeanValidator(ScpDestino.class, "indTipodestino"));
-        nombreCompleta.addValidator(new BeanValidator(ScpDestino.class, "txtNombredestino"));
-        tipoDePersona.addValidator(new BeanValidator(ScpDestino.class, "indTipopersona"));
+        codigo.addValidator(new LocalizedBeanValidator(ScpDestino.class, "codDestino"));
+        clasificacion.addValidator(new LocalizedBeanValidator(ScpDestino.class, "indTipodestino"));
+        nombreCompleta.addValidator(new LocalizedBeanValidator(ScpDestino.class, "txtNombredestino"));
+        tipoDePersona.addValidator(new LocalizedBeanValidator(ScpDestino.class, "indTipopersona"));
         viewLogic.init();
     }
 

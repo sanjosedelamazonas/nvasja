@@ -58,7 +58,7 @@ SELECT [txt_anoproceso]
       ,[fec_factualiza]
       ,[cod_uactualiza]
   FROM [SCP].[dbo].[scp_bancocabecera]
-  where txt_anoproceso in ('2015','2016')
+  where txt_anoproceso in ('2015','2016','2017','2018')
   order by fec_fecha
 
   insert into scp.dbo.vsj_bancodetalle(
@@ -160,5 +160,5 @@ bc.cod_bancocabecera
       and bd.[ind_tipocuenta]=bc.ind_tipocuenta
       and bd.[flg_saldo]=bc.flg_saldo
       and bd.[txt_correlativo]=bc.txt_correlativo
-	where bd.txt_anoproceso in ('2015','2016')
+	where bd.txt_anoproceso in ('2015','2016','2017','2018')
   order by bc.cod_bancocabecera,bd.num_item

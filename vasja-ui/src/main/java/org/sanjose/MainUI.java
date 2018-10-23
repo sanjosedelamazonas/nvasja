@@ -90,7 +90,7 @@ public class MainUI extends UI {
         accessControl = new MsgAccessControl(msgUsuarioRep, ConfigurationUtil.is("DEV_MODE"));
         Responsive.makeResponsive(this);
         setLocale(ConfigurationUtil.getLocale());
-        getPage().setTitle("Main");
+        getPage().setTitle("Vicariato San Jose del Amazonas - Sistema de Gestion de Caja y Bancos");
         if (!accessControl.isUserSignedIn()) {
             setContent(new LoginScreen(accessControl, (LoginListener) () -> showMainView()));
         } else {
