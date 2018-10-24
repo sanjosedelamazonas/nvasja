@@ -1,22 +1,22 @@
 USE [SCP]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarContabilidad]    Script Date: 09/20/2016 15:35:37 ******/
+/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidad]    Script Date: 10/25/2018 00:02:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidad]
+ALTER PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidad]
 	@cod_cajabanco int, --id de operacion de vsj_cajabanco
 	@user varchar(15), -- nombre del usuario segun SCP
 	@fecha_operacion varchar(10),-- fecha de operacion en formato 'dd/mm/yyyy'
 	@cod_moneda char(1), -- 0 pen, 1 usd
-	@num_debe_input decimal(12,2), -- el monto de debe en la moneda original 
+	@num_debe_input decimal(12,2), -- el monto de debe en la moneda original
 	@num_haber_input decimal(12,2), -- el monto de haber en la moneda original
 	@codigo varchar(6), -- codigo de proyecto o de tercero
 	@Return_Message VARCHAR(1024) = ''  OUT
 AS
   SET NOCOUNT ON;
-  
+
 declare @cod_comprobante varchar(6)
 declare @cod_origen varchar(6)
 declare @cod_filial varchar(2)
@@ -30,7 +30,7 @@ declare @txt_mes varchar(2)
 declare @txt_ano varchar(4)
 declare @txt_anadir varchar(6)
 
-DECLARE @ErrorCode  int  
+DECLARE @ErrorCode  int
 DECLARE @ErrorStep  varchar(200)
 
 
@@ -49,7 +49,7 @@ select @ErrorCode = @@ERROR
 
 BEGIN TRY
 
-    BEGIN TRANSACTION                     
+--    BEGIN TRANSACTION
         /****************************************************************************
         * Step 1
         * Busca tipo de cambio para el dia de la operacion
@@ -58,35 +58,38 @@ BEGIN TRY
         SELECT @ErrorStep = 'Error en buscar tipo de cambio USD';
         select @num_tc_usd=isnull(num_tcvdolar,0) from dbo.scp_tipocambio
 		where fec_fechacambio= Convert(date, @fecha_operacion, 103)
-		select @test=1/@num_tc_usd 
-        
+		select @test=1/@num_tc_usd
+
 		if (@cod_moneda='0') -- Moneda PEN
 			begin
 			SELECT  @ErrorStep = 'Error al calcular los montos en USD'
-			select @num_debe_pen=@num_debe_input, 
-				@num_haber_pen=@num_haber_input, 
-				@num_debe_usd=(@num_debe_input/@num_tc_usd), 
+			select @num_debe_pen=@num_debe_input,
+				@num_haber_pen=@num_haber_input,
+				@num_debe_usd=(@num_debe_input/@num_tc_usd),
 				@num_haber_usd=(@num_haber_input/@num_tc_usd)
 			end
 		else if(@cod_moneda='1') --Moneda USD
 			begin
 			SELECT  @ErrorStep = 'Error al calcular los montos en PEN'
-			select @num_debe_pen=(@num_debe_input*@num_tc_usd), 
+			select @num_debe_pen=(@num_debe_input*@num_tc_usd),
 				@num_haber_pen=(@num_haber_input*@num_tc_usd),
 				@num_debe_usd= @num_debe_input,
 				@num_haber_usd=@num_haber_input
 			end
-	
+
 	    /****************************************************************************
         * Step 2
         * Busca el numero para nuevo comprobante contable y codigo para anadir en glosa
         ****************************************************************************/
-		Select @cod_comprobante=(REPLICATE('0',6-LEN(RTRIM(Isnull(Max(cod_comprobante),0)+1))) + RTRIM(Isnull(Max(cod_comprobante),0)+1))
-  		From scp_comprobantecabecera
-				Where Ltrim(txt_anoproceso) = @txt_ano And
-				Ltrim(cod_mes) = @txt_mes And
-				Ltrim(cod_origen) = @cod_origen
-				
+
+		Select @cod_comprobante=(REPLICATE('0',6-LEN(RTRIM(@cod_cajabanco)))) + RTRIM(Isnull((@cod_cajabanco),0))
+
+-- 		Select @cod_comprobante=(REPLICATE('0',6-LEN(RTRIM(Isnull(Max(cod_comprobante),0)+1))) + RTRIM(Isnull(Max(cod_comprobante),0)+1))
+--   		From scp_comprobantecabecera
+-- 				Where Ltrim(txt_anoproceso) = @txt_ano And
+-- 				Ltrim(cod_mes) = @txt_mes And
+-- 				Ltrim(cod_origen) = @cod_origen
+--
 		/****************************************************************************
         * Step 3
         * Inserta cabezera del comprobante
@@ -110,20 +113,20 @@ BEGIN TRY
 			  ,[fec_fregistro]
 			  ,[cod_uregistro]
 			  ,[fec_factualiza]
-			  ,[cod_uactualiza])  
+			  ,[cod_uactualiza])
 		(SELECT [txt_anoproceso]
-			  ,@cod_filial
-			  ,[cod_mes]
-			  ,@cod_origen
+			  ,isnull(@cod_filial,'')
+			  ,isnull([cod_mes],'')
+			  ,isnull(@cod_origen,'')
 			  ,@cod_comprobante
-			  ,fec_fecha
+			  , Convert(date, fec_fecha, 103)
 			  ,''--[cod_tipooperacion]
 			  ,''--[cod_mediopago]
 			  ,[cod_tipomoneda]
 			  ,left(@codigo+' - '+[txt_glosaitem],70)
-			  ,[cod_destino]
+			  ,isnull([cod_destino],'')
 			  ,''--[cod_banco]
-			  ,[cod_ctacontable]
+			  ,isnull([cod_ctacontable],'')
 			  ,'1'--[flg_im]
 			  ,GETDATE()
 			  ,@user
@@ -131,12 +134,12 @@ BEGIN TRY
 			  ,@user
 		  FROM dbo.vsj_cajabanco
 		  where cod_cajabanco=@cod_cajabanco)
-		  
+
 		/****************************************************************************
         * Step 4
         * Inserta la primera fila linia del comprobante - para cuenta de caja (101..)
         ****************************************************************************/
-        SELECT  @ErrorStep = 'Error al insertar linea 1 de detalle de comprobante'		  
+        SELECT  @ErrorStep = 'Error al insertar linea 1 de detalle de comprobante'
 		  insert into dbo.scp_comprobantedetalle(
 		  [txt_anoproceso]
 			  ,[cod_filial]
@@ -221,15 +224,15 @@ BEGIN TRY
 			  ,1 --[num_nroitem]
 			  ,fec_fecha
 			  ,[cod_tipomoneda]
-			  ,[txt_glosaitem]
-			  ,[cod_destino]
+			  ,isnull([txt_glosaitem],'')
+			  ,isnull([cod_destino],'')
 			  ,'' --[txt_cheque]
 			  ,'0' --[flg_chequecobrado]
 			  ,'' --[cod_mescobr]
-			  ,[cod_tipocomprobantepago]
-			  ,[txt_seriecomprobantepago]
-			  ,[txt_comprobantepago]
-			  ,[fec_comprobantepago]
+			  ,isnull([cod_tipocomprobantepago],'')
+			  ,isnull([txt_seriecomprobantepago],'')
+			  ,isnull([txt_comprobantepago],'')
+			  ,isnull([fec_comprobantepago],'')
 			  , Convert(date, '01/01/1900', 103)--[fec_pagocomprobantepago]
 			  ,''--[cod_reftipocomprobantepago]
 			  ,''--[txt_refseriecomprobantepago]
@@ -241,21 +244,21 @@ BEGIN TRY
 			  ,'' --[cod_reforigen]
 			  ,'' --[cod_refcomprobante]
 			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
-			  ,[cod_proyecto]
-			  ,[cod_ctaproyecto]
-			  ,[cod_ctacontable]
+			  ,isnull([cod_proyecto],'')
+			  ,isnull([cod_ctaproyecto],'')
+			  ,isnull([cod_ctacontable],'')
 			  ,'' --[cod_ctacontable9]
 			  ,'' --[cod_ctacontable79]
 			  ,'' --[cod_ctaarea]
 			  ,'' --[cod_ctaactividad]
-			  ,[cod_ctaespecial]
-			  ,[cod_financiera]
+			  ,isnull([cod_ctaespecial],'')
+			  ,isnull([cod_financiera],'')
 			  ,'' --[cod_flujocaja]
 			  ,@num_tc_usd --[num_tcvdolar]
 			  ,@num_debe_pen --[num_debesol]
 			  ,@num_haber_pen --[num_habersol]
 			  ,@num_debe_usd --[num_debedolar]
-			  ,@num_haber_usd --[num_haberdolar] 
+			  ,@num_haber_usd --[num_haberdolar]
 			  ,0 --[num_tcmo]
 			  ,0--[num_debemo]
 			  ,0--[num_habermo]
@@ -268,7 +271,7 @@ BEGIN TRY
 			  ,0--[por_igv]
 			  ,0--[por_ies]
 			  ,1--[num_nroitem2]
-			  ,[cod_contraparte]
+			  ,isnull([cod_contraparte],'')
 			  ,'' --[txt_nroretencion]
 			  ,Convert(date, '01/01/1900', 103)--[fec_retencion]
 			  ,'0' --[flg_esactivo]
@@ -281,7 +284,7 @@ BEGIN TRY
 			  ,0--[num_tcmc]
 			  ,0--[num_debemc]
 			  ,0--[num_habermc]
-			  ,[cod_tercero]
+			  ,isnull([cod_tercero],'')
 			  ,'2' --[flg_im]
 			  ,GETDATE()
 			  ,@user
@@ -293,7 +296,7 @@ BEGIN TRY
         * Step 5
         * Inserta la segunda fila linia del comprobante - hay que invvertir debe y haber
         ****************************************************************************/
-        SELECT  @ErrorStep = 'Error al insertar linea 2 de detalle de comprobante'	
+        SELECT  @ErrorStep = 'Error al insertar linea 2 de detalle de comprobante'
 		insert into dbo.scp_comprobantedetalle(
 		  [txt_anoproceso]
 			  ,[cod_filial]
@@ -371,23 +374,23 @@ BEGIN TRY
 			  ,[cod_uactualiza])
 		  (select
 			 [txt_anoproceso]
-			  ,@cod_filial
+			 	,@cod_filial
 			  ,[cod_mes]
 			  ,@cod_origen
 			  ,@cod_comprobante
-			  ,2 --[num_nroitem]
+			  ,1 --[num_nroitem]
 			  ,fec_fecha
 			  ,[cod_tipomoneda]
-			  ,[txt_glosaitem]
-			  ,[cod_destino]
+			  ,isnull([txt_glosaitem],'')
+			  ,isnull([cod_destino],'')
 			  ,'' --[txt_cheque]
 			  ,'0' --[flg_chequecobrado]
 			  ,'' --[cod_mescobr]
-			  ,[cod_tipocomprobantepago]
-			  ,[txt_seriecomprobantepago]
-			  ,[txt_comprobantepago]
-			  ,[fec_comprobantepago]
-			  ,Convert(date, '01/01/1900', 103)--[fec_pagocomprobantepago]
+			  ,isnull([cod_tipocomprobantepago],'')
+			  ,isnull([txt_seriecomprobantepago],'')
+			  ,isnull([txt_comprobantepago],'')
+			  ,isnull([fec_comprobantepago],'')
+			  , Convert(date, '01/01/1900', 103)--[fec_pagocomprobantepago]
 			  ,''--[cod_reftipocomprobantepago]
 			  ,''--[txt_refseriecomprobantepago]
 			  ,''--[txt_refcomprobantepago]
@@ -398,21 +401,21 @@ BEGIN TRY
 			  ,'' --[cod_reforigen]
 			  ,'' --[cod_refcomprobante]
 			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
-			  ,[cod_proyecto]
-			  ,[cod_ctaproyecto]
+			  ,isnull([cod_proyecto],'')
+			  ,isnull([cod_ctaproyecto],'')
 			  ,[cod_contracta]--[cod_ctacontable]
 			  ,'' --[cod_ctacontable9]
 			  ,'' --[cod_ctacontable79]
 			  ,'' --[cod_ctaarea]
 			  ,'' --[cod_ctaactividad]
-			  ,[cod_ctaespecial]
-			  ,[cod_financiera]
+			  ,isnull([cod_ctaespecial],'')
+			  ,isnull([cod_financiera],'')
 			  ,'' --[cod_flujocaja]
 			  ,@num_tc_usd --[num_tcvdolar]
 			  ,@num_haber_pen--[num_debesol]
 			  ,@num_debe_pen  --[num_habersol]
 			  ,@num_haber_usd  --[num_debedolar]
-			  ,@num_debe_usd--[num_haberdolar] 
+			  ,@num_debe_usd--[num_haberdolar]
 			  ,0 --[num_tcmo]
 			  ,0--[num_debemo]
 			  ,0--[num_habermo]
@@ -424,8 +427,8 @@ BEGIN TRY
 			  ,'1'--[flg_recuperaigv]
 			  ,0--[por_igv]
 			  ,0--[por_ies]
-			  ,2--[num_nroitem2]
-			  ,[cod_contraparte]
+			  ,1--[num_nroitem2]
+			  ,isnull([cod_contraparte],'')
 			  ,'' --[txt_nroretencion]
 			  ,Convert(date, '01/01/1900', 103)--[fec_retencion]
 			  ,'0' --[flg_esactivo]
@@ -438,7 +441,7 @@ BEGIN TRY
 			  ,0--[num_tcmc]
 			  ,0--[num_debemc]
 			  ,0--[num_habermc]
-			  ,[cod_tercero]
+			  ,isnull([cod_tercero],'')
 			  ,'2' --[flg_im]
 			  ,GETDATE()
 			  ,@user
@@ -450,7 +453,7 @@ BEGIN TRY
         * Step 6
         * Actualiza vsj_cajabanco cuando ya esta en contabilidad la operacion
         ****************************************************************************/
-        SELECT  @ErrorStep = 'Error al actualizar el registro de caja'	
+        SELECT  @ErrorStep = 'Error al actualizar el registro de caja'
 		 update dbo.vsj_cajabanco
 		 set [flg_enviado]='1'
 			  ,[cod_origenenlace]=@cod_origen
@@ -458,8 +461,8 @@ BEGIN TRY
 			  ,[fec_factualiza]=GETDATE()
 			  ,[cod_uactualiza]=@user
 		 where cod_cajabanco=@cod_cajabanco
-		 
- COMMIT TRANSACTION
+
+-- COMMIT TRANSACTION
 
     SELECT  @ErrorCode  = 0, @Return_Message = 'La operacion ha sido enviada a contabilidad correctamente'
 
