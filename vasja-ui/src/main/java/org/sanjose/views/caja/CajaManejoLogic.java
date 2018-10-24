@@ -39,7 +39,7 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
 
 
 	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);
-    private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares"};
+    private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
     private CajaManejoView view;
     private Grid.FooterRow saldosFooterInicial;
     private Grid.FooterRow saldosFooterFinal;
@@ -122,20 +122,25 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
         grid.setColumns(COL_VIS_SALDO);
         BigDecimal totalSoles = new BigDecimal(0.00);
         BigDecimal totalUsd = new BigDecimal(0.00);
+        BigDecimal totalEur = new BigDecimal(0.00);
         for (Caja caja : DataUtil.getCajasList(view.getService().getPlanRepo(),
                 (isInicial ? GenUtil.getBeginningOfDay(view.fechaDesde.getValue())
                         : GenUtil.getEndOfDay(view.fechaHasta.getValue())))) {
             c.addItem(caja);
             totalSoles = totalSoles.add(caja.getSoles());
             totalUsd = totalUsd.add(caja.getDolares());
+            totalEur = totalEur.add(caja.getEuros());
         }
         grid.getColumn("soles").setRenderer(new EmptyZeroNumberRendrer(
                 "%02.2f", ConfigurationUtil.getLocale()));
         grid.getColumn("dolares").setRenderer(new EmptyZeroNumberRendrer(
                 "%02.2f", ConfigurationUtil.getLocale()));
+        grid.getColumn("euros").setRenderer(new EmptyZeroNumberRendrer(
+                "%02.2f", ConfigurationUtil.getLocale()));
         grid.setCellStyleGenerator(( Grid.CellReference cellReference ) -> {
             if ( "soles".equals( cellReference.getPropertyId() ) ||
-                    "dolares".equals( cellReference.getPropertyId())) {
+                    "dolares".equals( cellReference.getPropertyId()) ||
+                    "euros".equals( cellReference.getPropertyId())) {
                 return "v-align-right";
             } else {
                 return "v-align-left";
@@ -152,6 +157,8 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
             saldosFooterInicial.getCell("soles").setStyleName("v-align-right");
             saldosFooterInicial.getCell("dolares").setText(dpf.format(totalUsd.doubleValue()));
             saldosFooterInicial.getCell("dolares").setStyleName("v-align-right");
+            saldosFooterInicial.getCell("euros").setText(dpf.format(totalEur.doubleValue()));
+            saldosFooterInicial.getCell("euros").setStyleName("v-align-right");
         } else {
             if (saldosFooterFinal == null) saldosFooterFinal = grid.addFooterRowAt(0);
             DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
@@ -161,6 +168,8 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
             saldosFooterFinal.getCell("soles").setText(dpf.format(totalSoles.doubleValue()));
             saldosFooterFinal.getCell("dolares").setStyleName("v-align-right");
             saldosFooterFinal.getCell("dolares").setText(dpf.format(totalUsd.doubleValue()));
+            saldosFooterFinal.getCell("euros").setText(dpf.format(totalEur.doubleValue()));
+            saldosFooterFinal.getCell("euros").setStyleName("v-align-right");
         }
         setSaldoDelDia();
     }
@@ -171,6 +180,8 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
         BigDecimal totalSolesDiaEgr = new BigDecimal(0.00);
         BigDecimal totalUsdDiaIng = new BigDecimal(0.00);
         BigDecimal totalUsdDiaEgr = new BigDecimal(0.00);
+        BigDecimal totalEurDiaIng = new BigDecimal(0.00);
+        BigDecimal totalEurDiaEgr = new BigDecimal(0.00);
 
         for (Object item : view.gridCaja.getContainerDataSource().getItemIds()) {
             VsjCajabanco cajabanco = (VsjCajabanco) item;
@@ -180,6 +191,9 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
             // USD
             totalUsdDiaEgr = totalUsdDiaEgr.add(cajabanco.getNumHaberdolar());
             totalUsdDiaIng = totalUsdDiaIng.add(cajabanco.getNumDebedolar());
+            // EUR
+            totalEurDiaEgr = totalEurDiaEgr.add(cajabanco.getNumHabermo());
+            totalEurDiaIng = totalEurDiaIng.add(cajabanco.getNumDebemo());
         }
         DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
                 null, ConfigurationUtil.get("DECIMAL_FORMAT"));
@@ -192,6 +206,10 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
         view.getValDolEgr().setValue(dpf.format(totalUsdDiaEgr.doubleValue()));
         view.getValDolIng().setValue(dpf.format(totalUsdDiaIng.doubleValue()));
         view.getValDolSaldo().setValue(dpf.format(totalUsdDiaIng.subtract(totalUsdDiaEgr).doubleValue()));
+        // EUR
+        view.getValEurEgr().setValue(dpf.format(totalEurDiaEgr.doubleValue()));
+        view.getValEurIng().setValue(dpf.format(totalEurDiaIng.doubleValue()));
+        view.getValEurSaldo().setValue(dpf.format(totalEurDiaIng.subtract(totalEurDiaEgr).doubleValue()));
 
         view.gridSaldoDelDia.setColumnExpandRatio(0, 0);
     }

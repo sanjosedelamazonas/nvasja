@@ -13,7 +13,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import static org.sanjose.util.GenUtil.EUR;
 import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
 
 
 /**
@@ -78,6 +80,10 @@ public class VsjCajabanco extends VsjItem implements Serializable {
 	private BigDecimal numDebesol;
 	@Column(name="num_haberdolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numHaberdolar;
+	@Column(name="num_debemo", columnDefinition="decimal(12,2)")
+	private BigDecimal numDebemo;
+	@Column(name="num_habermo", columnDefinition="decimal(12,2)")
+	private BigDecimal numHabermo;
 	@Column(name="num_habersol", columnDefinition="decimal(12,2)")
 	private BigDecimal numHabersol;
 	@Column(name="txt_comprobantepago")
@@ -112,15 +118,34 @@ public class VsjCajabanco extends VsjItem implements Serializable {
 				throw new FieldGroup.CommitException("Selected SOL but values are zeros or nulls");
 			if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
 				throw new FieldGroup.CommitException("Selected SOL but values for Dolar are not zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
+				throw new FieldGroup.CommitException("Selected SOL but values for EUR are not zeros or nulls");
 			item.setNumHaberdolar(new BigDecimal(0.00));
 			item.setNumDebedolar(new BigDecimal(0.00));
-		} else {
+			item.setNumHabermo(new BigDecimal(0.00));
+			item.setNumDebemo(new BigDecimal(0.00));
+		} else if (USD.equals(item.getCodTipomoneda())) {
 			if (GenUtil.isNullOrZero(item.getNumHaberdolar()) && GenUtil.isNullOrZero(item.getNumDebedolar()))
 				throw new FieldGroup.CommitException("Selected USD but values are zeros or nulls");
 			if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
 				throw new FieldGroup.CommitException("Selected USD but values for SOL are not zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHabermo()) || !GenUtil.isNullOrZero(item.getNumDebemo()))
+				throw new FieldGroup.CommitException("Selected USD but values for EUR are not zeros or nulls");
 			item.setNumHabersol(new BigDecimal(0.00));
 			item.setNumDebesol(new BigDecimal(0.00));
+			item.setNumHabermo(new BigDecimal(0.00));
+			item.setNumDebemo(new BigDecimal(0.00));
+		} else if (EUR.equals(item.getCodTipomoneda())) {
+			if (GenUtil.isNullOrZero(item.getNumHabermo()) && GenUtil.isNullOrZero(item.getNumDebemo()))
+				throw new FieldGroup.CommitException("Selected EUR but values are zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHabersol()) || !GenUtil.isNullOrZero(item.getNumDebesol()))
+				throw new FieldGroup.CommitException("Selected EUR but values for SOL are not zeros or nulls");
+			if (!GenUtil.isNullOrZero(item.getNumHaberdolar()) || !GenUtil.isNullOrZero(item.getNumDebedolar()))
+				throw new FieldGroup.CommitException("Selected EUR but values for Dolar are not zeros or nulls");
+			item.setNumHabersol(new BigDecimal(0.00));
+			item.setNumDebesol(new BigDecimal(0.00));
+			item.setNumHaberdolar(new BigDecimal(0.00));
+			item.setNumDebedolar(new BigDecimal(0.00));
 		}
 		return item;
 	}
@@ -137,6 +162,8 @@ public class VsjCajabanco extends VsjItem implements Serializable {
 		setNumDebesol(new BigDecimal(0.00));
 		setNumHaberdolar(new BigDecimal(0.00));
 		setNumDebedolar(new BigDecimal(0.00));
+		setNumHabermo(new BigDecimal(0.00));
+		setNumDebemo(new BigDecimal(0.00));
 
 		setTxtGlosaitem("ANULADO - " + (getTxtGlosaitem().length() > 60 ?
 				getTxtGlosaitem().substring(0, 60) : getTxtGlosaitem()));
@@ -342,7 +369,26 @@ public class VsjCajabanco extends VsjItem implements Serializable {
 	public void setNumHabersol(BigDecimal numHabersol) {
 		this.numHabersol = numHabersol;
 	}
-/*
+
+	public BigDecimal getNumDebemo() {
+		if (numDebemo==null) return new BigDecimal(0);
+		else return numDebemo;
+	}
+
+	public void setNumDebemo(BigDecimal numDebemo) {
+		this.numDebemo = numDebemo;
+	}
+
+	public BigDecimal getNumHabermo() {
+		if (numHabermo==null) return new BigDecimal(0);
+		else return numHabermo;
+	}
+
+	public void setNumHabermo(BigDecimal numHabermo) {
+		this.numHabermo = numHabermo;
+	}
+
+	/*
 	public String getTxtAnoproceso() {
 		return this.txtAnoproceso;
 	}
@@ -407,6 +453,8 @@ public class VsjCajabanco extends VsjItem implements Serializable {
 				", flgEnviado=" + flgEnviado +
 				", numDebedolar=" + numDebedolar +
 				", numDebesol=" + numDebesol +
+				", numDebemo=" + numDebemo+
+				", numHabermo=" + numHabermo +
 				", numHaberdolar=" + numHaberdolar +
 				", numHabersol=" + numHabersol +
 				", txtComprobantepago='" + txtComprobantepago + '\'' +

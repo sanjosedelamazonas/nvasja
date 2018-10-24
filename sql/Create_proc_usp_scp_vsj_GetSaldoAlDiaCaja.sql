@@ -8,7 +8,7 @@ GO
 CREATE PROCEDURE [dbo].[usp_scp_vsj_GetSaldoAlDiaCaja]
 	@Fecha varchar(19), -- Fecha para saldo formato yyyy-mm-dd hh:mi:ss(24h)
 	@Cuenta varchar(7), -- Cuenta de caja por ejemplo '1011101'
-	@Moneda varchar(1),  -- 0 PEN, 1 USD
+	@Moneda varchar(1),  -- 0 PEN, 1 USD, 2 EUR
 	@Saldo decimal(12,2) OUTPUT
 
 AS
@@ -56,6 +56,24 @@ BEGIN
 	--Print 'Inicial: '+CONVERT(char(14),@SaldoInicial,14)
 
 	Select @SaldoCaja = Sum(A.num_haberdolar)-Sum(A.num_debedolar)
+	From vsj_cajabanco A
+	Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha < Convert(datetime, @Fecha, 20))
+	And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
+	Group By A.cod_ctacontable, a.cod_tipomoneda
+END
+ELse if (@Moneda='2')
+BEGIN
+	select @SaldoInicial = Sum(A.num_habermo)-Sum(A.num_debemo)
+	From scp_comprobantedetalle a
+	Where a.txt_anoproceso=@Ano
+	And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
+	and a.cod_mes='00'
+	Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes
+
+	--Print 'Fechas '+@Ano+'fecha inicial '+@FechaInicial+'fecha input: '+@Fecha
+	--Print 'Inicial: '+CONVERT(char(14),@SaldoInicial,14)
+
+	Select @SaldoCaja = Sum(A.num_habermo)-Sum(A.num_debemo)
 	From vsj_cajabanco A
 	Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha < Convert(datetime, @Fecha, 20))
 	And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda

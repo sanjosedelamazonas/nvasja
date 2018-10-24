@@ -45,6 +45,10 @@ public class CajaManejoUI extends VerticalLayout {
 	protected Label valDolIng;
 	protected Label valDolEgr;
 	protected Label valDolSaldo;
+	protected Label lblEur;
+	protected Label valEurIng;
+	protected Label valEurEgr;
+	protected Label valEurSaldo;
 
 	public CajaManejoUI() {
 		Design.read(this);
