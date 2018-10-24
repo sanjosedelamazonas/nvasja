@@ -1,7 +1,7 @@
 package org.sanjose.model;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.util.GenUtil;
 import org.springframework.transaction.annotation.EnableTransactionManagement;

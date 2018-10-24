@@ -1,15 +1,15 @@
 package org.sanjose.views.sys;
 
-import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.v7.data.fieldgroup.FieldGroup;
+import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.v7.data.validator.BeanValidator;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.TextField;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.repo.ScpCargocuartaRep;
 import org.sanjose.repo.ScpDestinoRep;

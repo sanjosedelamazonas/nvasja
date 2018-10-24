@@ -1,6 +1,6 @@
 package org.sanjose.converter;
 
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 
 import java.sql.Timestamp;
 import java.util.Date;

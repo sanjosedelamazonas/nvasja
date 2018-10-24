@@ -1,6 +1,6 @@
 package org.sanjose.model;
 
-import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;

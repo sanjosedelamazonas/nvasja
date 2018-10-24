@@ -1,14 +1,14 @@
 package org.sanjose.views.caja;
 
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.renderers.HtmlRenderer;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.Grid.SelectionMode;
+import com.vaadin.v7.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.model.VsjConfiguractacajabanco;
 import org.sanjose.util.DataFilterUtil;

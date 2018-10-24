@@ -1,6 +1,6 @@
 package org.sanjose.validator;
 
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.TextField;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 

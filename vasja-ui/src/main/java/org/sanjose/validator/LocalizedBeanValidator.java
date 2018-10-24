@@ -1,6 +1,6 @@
 package org.sanjose.validator;
 
-import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.v7.data.validator.BeanValidator;
 import org.sanjose.util.ConfigurationUtil;
 
 public class LocalizedBeanValidator extends BeanValidator

@@ -1,6 +1,6 @@
 package org.sanjose.converter;
 
-import com.vaadin.data.util.converter.StringToBooleanConverter;
+import com.vaadin.v7.data.util.converter.StringToBooleanConverter;
 import com.vaadin.server.FontAwesome;
 
 import java.util.Locale;
@@ -10,7 +10,7 @@ public class BooleanTrafficLightConverter extends StringToBooleanConverter {
 	@Override
 	public String convertToPresentation(Boolean value,
 			Class<? extends String> targetType, Locale locale)
-					throws com.vaadin.data.util.converter.Converter.ConversionException {
+					throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
 		String color;
 		if (value == null) return "";
 		if (value == null || !value) {

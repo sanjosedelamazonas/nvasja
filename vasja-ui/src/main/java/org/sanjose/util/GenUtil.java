@@ -2,9 +2,9 @@ package org.sanjose.util;
 
 //import org.vaadin.ui.NumberField;
 
-import com.vaadin.data.Validator;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Field;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.Field;
 import com.vaadin.ui.Notification;
 import org.sanjose.model.VsjBancoItem;
 import org.sanjose.model.VsjCajabanco;

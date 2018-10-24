@@ -1,9 +1,9 @@
 package org.sanjose.validator;
 
-import com.vaadin.data.Validator;
+import com.vaadin.v7.data.Validator;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.AbstractSelect;
+import com.vaadin.v7.ui.AbstractSelect;
 import org.sanjose.util.GenUtil;
 
 

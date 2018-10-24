@@ -3,7 +3,7 @@ package org.sanjose.validator;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
-import com.vaadin.data.Validator;
+import com.vaadin.v7.data.Validator;
 import org.sanjose.util.ConfigurationUtil;
 
 public class AmountValidator implements Validator {

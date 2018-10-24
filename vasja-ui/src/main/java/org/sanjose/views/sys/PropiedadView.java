@@ -1,13 +1,13 @@
 package org.sanjose.views.sys;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.v7.ui.Grid.SelectionMode;
 import org.sanjose.model.VsjPropiedad;
 import org.sanjose.repo.VsjPropiedadRep;
 import org.sanjose.util.ConfigurationUtil;

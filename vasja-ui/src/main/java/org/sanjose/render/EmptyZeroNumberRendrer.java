@@ -1,6 +1,6 @@
 package org.sanjose.render;
 
-import com.vaadin.ui.renderers.NumberRenderer;
+import com.vaadin.v7.ui.renderers.NumberRenderer;
 import elemental.json.JsonValue;
 
 import java.util.Locale;

@@ -1,12 +1,12 @@
 package org.sanjose.helper;
 
-import com.vaadin.data.util.BeanContainer;
+import com.vaadin.v7.data.util.BeanContainer;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Label;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.*;
-import com.vaadin.ui.TextArea;
+import com.vaadin.v7.ui.TextArea;
 import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedEvent;
 import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedListener;
 import dk.apaq.vaadin.addon.printservice.RemotePrintService;

@@ -1,8 +1,8 @@
 package com.vaadin.data.util;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property;
 import org.vaadin.gridtree.GridTreeContainer;
 
 import java.util.*;

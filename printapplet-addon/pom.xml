@@ -152,7 +152,7 @@
                     <compileReport>false</compileReport>
                     <style>OBF</style>
                     <strict>true</strict>
-                    <runTarget>http://localhost:8080/</runTarget>
+                    <runTarget>http://192.168.1.106:8000/</runTarget>
                 </configuration>
                 <executions>
                     <execution>

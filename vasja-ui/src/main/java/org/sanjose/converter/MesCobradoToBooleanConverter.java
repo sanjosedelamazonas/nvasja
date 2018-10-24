@@ -1,7 +1,7 @@
 package org.sanjose.converter;
 
-import com.vaadin.data.util.converter.Converter;
-import com.vaadin.ui.Grid;
+import com.vaadin.v7.data.util.converter.Converter;
+import com.vaadin.v7.ui.Grid;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.util.GenUtil;
 

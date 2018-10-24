@@ -1,12 +1,12 @@
 package org.sanjose.views.caja;
 
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.SelectionEvent;
+import com.vaadin.v7.data.util.BeanItemContainer;
+import com.vaadin.v7.event.SelectionEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.model.VsjCajabanco;

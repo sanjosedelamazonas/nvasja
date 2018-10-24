@@ -1,6 +1,6 @@
 package org.sanjose.validator;
 
-import com.vaadin.data.Validator;
+import com.vaadin.v7.data.Validator;
 
 @SuppressWarnings("serial")
 public class IntegerValidator implements Validator {

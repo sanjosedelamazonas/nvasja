@@ -1,9 +1,9 @@
 package org.sanjose.validator;
 
-import com.vaadin.data.Validator;
+import com.vaadin.v7.data.Validator;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.AbstractField;
+import com.vaadin.v7.ui.AbstractField;
 import org.sanjose.util.GenUtil;
 import tm.kod.widgets.numberfield.NumberField;
 

@@ -1,8 +1,8 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
-import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.BeanItem;
+import com.vaadin.v7.data.fieldgroup.FieldGroup;
+import com.vaadin.v7.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.shared.data.sort.SortDirection;

@@ -16,10 +16,10 @@
 package org.sanjose.client.renderer;
 
 import com.google.gwt.core.client.GWT;
-import com.vaadin.client.renderers.ClickableRenderer;
-import com.vaadin.client.ui.VCheckBox;
-import com.vaadin.client.widget.grid.RendererCellReference;
-import com.vaadin.client.widgets.Grid;
+import com.vaadin.v7.client.renderers.ClickableRenderer;
+import com.vaadin.v7.client.ui.VCheckBox;
+import com.vaadin.v7.client.widget.grid.RendererCellReference;
+import com.vaadin.v7.client.widgets.Grid;
 
 /**
  * Provides various helper methods for connectors. Meant for internal use.

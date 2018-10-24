@@ -1,10 +1,10 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
-import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.Grid;
+import com.vaadin.v7.ui.Grid;
 import com.vaadin.ui.Notification;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;

@@ -1,11 +1,11 @@
 package org.sanjose.renderer;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Property;
-import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.TransactionalPropertyWrapper;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.renderers.ClickableRenderer;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.data.fieldgroup.FieldGroup;
+import com.vaadin.v7.data.util.TransactionalPropertyWrapper;
+import com.vaadin.v7.ui.Grid;
+import com.vaadin.v7.ui.renderers.ClickableRenderer;
 
 /*
 * Copyright Paweł Rubach 2016

@@ -4,8 +4,8 @@ package org.sanjose.helper;
 import java.text.DecimalFormat;
 import java.util.logging.Logger;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.util.PropertyFormatter;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.data.util.PropertyFormatter;
 
 public class DoubleDecimalFormatter extends PropertyFormatter {
     private static final long serialVersionUID = -8487454652016030363L;

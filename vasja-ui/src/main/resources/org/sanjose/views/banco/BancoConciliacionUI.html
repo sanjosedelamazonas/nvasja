@@ -5,36 +5,36 @@
           content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
 </head>
 <body>
-<vaadin-vertical-layout id="verticalMain" size-full margin>
-    <vaadin-horizontal-layout spacing width-full height="40px" margin _id="horizontalFechas" :bottom :right>
-        <vaadin-horizontal-layout spacing>
+<vaadin7-vertical-layout id="verticalMain" size-full margin>
+    <vaadin7-horizontal-layout spacing width-full height="40px" margin _id="horizontalFechas" :bottom :right>
+        <vaadin7-horizontal-layout spacing>
             <vaadin-button plain-text _id="expandirContraerBtn">
                 Contraer todo
             </vaadin-button>
-            <vaadin-date-field _id="fechaDesde"></vaadin-date-field>
-            <vaadin-label width="10px" plain-text :middle :center>
+            <vaadin7-date-field _id="fechaDesde"></vaadin7-date-field>
+            <vaadin7-label width="10px" plain-text :middle :center>
                 -
-            </vaadin-label>
-            <vaadin-date-field _id="fechaHasta"></vaadin-date-field>
-            <vaadin-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" item-caption-mode="id"
+            </vaadin7-label>
+            <vaadin7-date-field _id="fechaHasta"></vaadin7-date-field>
+            <vaadin7-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" item-caption-mode="id"
                               width="400px" height="20px" _id="selFiltroCuenta">
                 <option>Option 1</option>
                 <option>Option 2</option>
                 <option>Option 3</option>
-            </vaadin-combo-box>
-        </vaadin-horizontal-layout>
-        <vaadin-label width="100px" plain-text :bottom :right :expand>
+            </vaadin7-combo-box>
+        </vaadin7-horizontal-layout>
+        <vaadin7-label width="100px" plain-text :bottom :right :expand>
             Saldo Inicial
-        </vaadin-label>
-        <vaadin-text-field enabled="false" _id="txtSaldoInicial" :bottom :right></vaadin-text-field>
-    </vaadin-horizontal-layout>
-    <vaadin-vertical-layout size-full _id="verticalGrid" :middle :center :expand></vaadin-vertical-layout>
-    <vaadin-horizontal-layout spacing :bottom :right>
-        <vaadin-label size-auto plain-text>
+        </vaadin7-label>
+        <vaadin7-text-field enabled="false" _id="txtSaldoInicial" :bottom :right></vaadin7-text-field>
+    </vaadin7-horizontal-layout>
+    <vaadin7-vertical-layout size-full _id="verticalGrid" :middle :center :expand></vaadin7-vertical-layout>
+    <vaadin7-horizontal-layout spacing :bottom :right>
+        <vaadin7-label size-auto plain-text>
             Saldo en Libro
-        </vaadin-label>
-        <vaadin-text-field enabled="false" _id="txtSaldoFinal"></vaadin-text-field>
-    </vaadin-horizontal-layout>
-</vaadin-vertical-layout>
+        </vaadin7-label>
+        <vaadin7-text-field enabled="false" _id="txtSaldoFinal"></vaadin7-text-field>
+    </vaadin7-horizontal-layout>
+</vaadin7-vertical-layout>
 </body>
 </html>

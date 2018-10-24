@@ -1,13 +1,13 @@
 package org.sanjose.views.caja;
 
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.Grid.SelectionMode;
 import org.sanjose.model.VsjConfiguracioncaja;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;

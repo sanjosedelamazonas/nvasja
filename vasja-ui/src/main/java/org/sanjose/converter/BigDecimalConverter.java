@@ -1,6 +1,6 @@
 package org.sanjose.converter;
 
-import com.vaadin.data.util.converter.StringToBigDecimalConverter;
+import com.vaadin.v7.data.util.converter.StringToBigDecimalConverter;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

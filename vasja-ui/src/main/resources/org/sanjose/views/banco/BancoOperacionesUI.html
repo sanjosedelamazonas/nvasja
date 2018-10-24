@@ -5,18 +5,18 @@
   <meta charset="UTF-8" name="package-mapping" content="org_sanjose_views_banco:org.sanjose.views.banco">
  </head> 
  <body> 
-  <vaadin-vertical-layout id="verticalTopMain" size-full margin> 
-   <vaadin-horizontal-layout spacing height="50px" margin _id="horizontalFechasLayout" :middle :center> 
-    <vaadin-date-field _id="fechaDesde"></vaadin-date-field> 
-    <vaadin-label size-auto plain-text>
+  <vaadin7-vertical-layout id="verticalTopMain" size-full margin> 
+   <vaadin7-horizontal-layout spacing height="50px" margin _id="horizontalFechasLayout" :middle :center> 
+    <vaadin7-date-field _id="fechaDesde"></vaadin7-date-field> 
+    <vaadin7-label size-auto plain-text>
       - 
-    </vaadin-label> 
-    <vaadin-date-field _id="fechaHasta"></vaadin-date-field> 
-    <vaadin-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" item-caption-mode="id" width="300px" _id="selFiltroCuenta"> 
+    </vaadin7-label> 
+    <vaadin7-date-field _id="fechaHasta"></vaadin7-date-field> 
+    <vaadin7-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" item-caption-mode="id" width="300px" _id="selFiltroCuenta"> 
      <option>Option 1</option> 
      <option>Option 2</option> 
      <option>Option 3</option> 
-    </vaadin-combo-box> 
+    </vaadin7-combo-box> 
     <vaadin-button plain-text _id="btnNuevoCheque">
       Nuevo cheque 
     </vaadin-button> 
@@ -29,18 +29,18 @@
     <vaadin-button plain-text _id="btnVerVoucher">
       Ver Voucher 
     </vaadin-button> 
-    <vaadin-combo-box invalid-allowed="false" item-caption-mode="id" width="46px" _id="selRepMoneda"> 
+    <vaadin7-combo-box invalid-allowed="false" item-caption-mode="id" width="46px" _id="selRepMoneda"> 
      <option>Option 1</option> 
      <option>Option 2</option> 
      <option>Option 3</option> 
-    </vaadin-combo-box> 
+    </vaadin7-combo-box> 
     <vaadin-button plain-text _id="btnReporte">
       Imprimir Reporte 
     </vaadin-button> 
-   </vaadin-horizontal-layout> 
-   <vaadin-grid editor-cancel-caption="Anular" size-full _id="gridBanco" :middle :center :expand></vaadin-grid> 
-   <vaadin-vertical-layout size-full></vaadin-vertical-layout> 
+   </vaadin7-horizontal-layout> 
+   <vaadin7-grid editor-cancel-caption="Anular" size-full _id="gridBanco" :middle :center :expand></vaadin7-grid> 
+   <vaadin7-vertical-layout size-full></vaadin7-vertical-layout> 
    <org_sanjose_views_banco-banco-oper-view width-full _id="bancoOperView"></org_sanjose_views_banco-banco-oper-view> 
-  </vaadin-vertical-layout>  
+  </vaadin7-vertical-layout>  
  </body>
 </html>

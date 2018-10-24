@@ -15,9 +15,9 @@ package org.sanjose.helper;
  * "type would have references for the children as well, the task would become much lighter.</p>";
  */
 
-import com.vaadin.data.Container;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.v7.data.util.BeanItemContainer;
 
 import java.util.Collection;
 import java.util.LinkedList;

@@ -3,7 +3,7 @@ package org.sanjose.validator;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.vaadin.data.Validator;
+import com.vaadin.v7.data.Validator;
 
 @SuppressWarnings("serial")
 public class DateValidator implements Validator {
