@@ -49,6 +49,17 @@ public class Caja {
         this.dolaresFinal = dolaresFinal;
     }
 
+    public Caja(String codigo, String descripcion, BigDecimal soles, BigDecimal dolares, BigDecimal solesFinal, BigDecimal dolaresFinal, BigDecimal euros, BigDecimal eurosFinal) {
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+        this.soles = soles;
+        this.dolares = dolares;
+        this.solesFinal = solesFinal;
+        this.dolaresFinal = dolaresFinal;
+        this.euros = euros;
+        this.eurosFinal = eurosFinal;
+    }
+
     public BigDecimal getSolesFinal() {
         return solesFinal;
     }

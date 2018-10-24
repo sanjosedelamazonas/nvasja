@@ -222,6 +222,10 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
         return saldoCajaUSD;
     }
 
+    public TextField getSaldoCajaEUR() {
+        return saldoCajaEUR;
+    }
+
     public TextField getGlosa() {
         return glosa;
     }

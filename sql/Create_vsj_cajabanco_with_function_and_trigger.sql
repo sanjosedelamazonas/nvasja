@@ -46,6 +46,8 @@ CREATE TABLE [dbo].[vsj_cajabanco](
 	[num_debesol] [decimal](12, 2) NULL,
 	[num_haberdolar] [decimal](12, 2) NULL,
 	[num_habersol] [decimal](12, 2) NULL,
+	[num_debemo] [decimal](12, 2) NULL,
+	[num_habermo] [decimal](12, 2) NULL,
 	[txt_comprobantepago] [varchar](255) NULL,
 	[txt_glosaitem] [varchar](255) NOT NULL,
 	[txt_seriecomprobantepago] [varchar](255) NULL,

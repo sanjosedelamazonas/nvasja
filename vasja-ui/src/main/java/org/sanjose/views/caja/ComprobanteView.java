@@ -17,6 +17,7 @@ import tm.kod.widgets.numberfield.NumberField;
 import java.math.BigDecimal;
 
 import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -67,13 +68,18 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
     public void setSaldoDeCajas() {
         if (isPEN()) {
             order_summary_layout.removeStyleName("order-summary-layout-usd");
-        } else  {
+            order_summary_layout.removeStyleName("order-summary-layout-eur");
+        } else if (isUSD()) {
             order_summary_layout.addStyleName("order-summary-layout-usd");
+            order_summary_layout.removeStyleName("order-summary-layout-eur");
+        } else {
+            order_summary_layout.addStyleName("order-summary-layout-eur");
+            order_summary_layout.removeStyleName("order-summary-layout-usd");
         }
         cajaSaldosLayout.removeAllComponents();
         if (dataFechaComprobante.getValue() != null && selMoneda.getValue() != null) {
             BigDecimal total = new BigDecimal(0.00);
-            for (ScpPlancontable caja : DataUtil.getCajas(getDataFechaComprobante().getValue(), getService().getPlanRepo(), PEN.equals(selMoneda.getValue().toString().charAt(0)))) {
+            for (ScpPlancontable caja : DataUtil.getCajas(getDataFechaComprobante().getValue(), getService().getPlanRepo(), selMoneda.getValue().toString().charAt(0))) {
 
                 BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(
                         GenUtil.getEndOfDay(GenUtil.dateAddDays(dataFechaComprobante.getValue(),-1)),
@@ -89,12 +95,16 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
             }
             saldoTotal.setContentMode(ContentMode.HTML);
             saldoTotal.setValue("Total :" +
-                    "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : "$ ") + total.toString() + "</span>");
+                    "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : isUSD() ? "$ " : "€") + total.toString() + "</span>");
         }
     }
 
     private boolean isPEN() {
         return PEN.equals(selMoneda.getValue().toString().charAt(0));
+    }
+
+    private boolean isUSD() {
+        return USD.equals(selMoneda.getValue().toString().charAt(0));
     }
 
     @Override
@@ -161,6 +171,10 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
 
     public TextField getSaldoCajaUSD() {
         return saldoCajaUSD;
+    }
+
+    public TextField getSaldoCajaEUR() {
+        return saldoCajaEUR;
     }
 
     public TextField getGlosa() {
