@@ -1,5 +1,10 @@
 package org.sanjose.views.caja;
 
+import com.vaadin.data.sort.Sort;
+import com.vaadin.data.sort.SortOrder;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.filter.Compare;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.filter.Compare;
 import com.vaadin.v7.event.ItemClickEvent;
@@ -72,7 +77,7 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vi
         container = new BeanItemContainer(VsjCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
         gridCaja.setContainerDataSource(container);
         gridCaja.setEditorEnabled(false);
-        gridCaja.sort("fecFecha", SortDirection.DESCENDING);
+        gridCaja.setSortOrder(Sort.by("fecFecha", SortDirection.DESCENDING).then("txtCorrelativo", SortDirection.DESCENDING).build());
 
         ViewUtil.setColumnNames(gridCaja, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
@@ -137,7 +142,7 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vi
         container.removeAllItems();
         setFilterInitialDate(fechaDesde);
         container.addAll(getService().getCajabancoRep().findByFecFechaBetween(fechaDesde, fechaHasta));
-        gridCaja.sort("fecFecha", SortDirection.DESCENDING);
+        gridCaja.setSortOrder(Sort.by("fecFecha", SortDirection.DESCENDING).then("txtCorrelativo", SortDirection.DESCENDING).build());
     }
 
     private void setItemLogic(ItemClickEvent event) {

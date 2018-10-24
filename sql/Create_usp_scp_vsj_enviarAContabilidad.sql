@@ -378,7 +378,7 @@ BEGIN TRY
 			  ,[cod_mes]
 			  ,@cod_origen
 			  ,@cod_comprobante
-			  ,1 --[num_nroitem]
+			  ,2 --[num_nroitem]
 			  ,fec_fecha
 			  ,[cod_tipomoneda]
 			  ,isnull([txt_glosaitem],'')
@@ -427,7 +427,7 @@ BEGIN TRY
 			  ,'1'--[flg_recuperaigv]
 			  ,0--[por_igv]
 			  ,0--[por_ies]
-			  ,1--[num_nroitem2]
+			  ,2--[num_nroitem2]
 			  ,isnull([cod_contraparte],'')
 			  ,'' --[txt_nroretencion]
 			  ,Convert(date, '01/01/1900', 103)--[fec_retencion]
