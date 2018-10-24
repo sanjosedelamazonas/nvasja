@@ -82,7 +82,9 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
             for (ScpPlancontable caja : DataUtil.getCajas(getDataFechaComprobante().getValue(), getService().getPlanRepo(), selMoneda.getValue().toString().charAt(0))) {
 
                 BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(
-                        GenUtil.getEndOfDay(GenUtil.dateAddDays(dataFechaComprobante.getValue(),-1)),
+                        //TODO - change to saldo final del dia!!!
+                        //GenUtil.getEndOfDay(GenUtil.dateAddDays(dataFechaComprobante.getValue(),-1)),
+                        GenUtil.getEndOfDay(dataFechaComprobante.getValue()),
                         caja.getId().getCodCtacontable()
                         , selMoneda.getValue().toString().charAt(0));
                 Label salLbl = new Label();
