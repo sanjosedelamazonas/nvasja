@@ -451,7 +451,7 @@ class ComprobanteLogic implements Serializable {
                 saldoChecker.setSaldoField(view.getSaldoCajaEUR());
                 saldoChecker.setProyectoField(view.getSaldoProyEUR());
             }
-            if (savedCajabanco != null && !GenUtil.objNullOrEmpty(savedCajabanco.getCodCtacontable())) {
+            if (savedCajabanco != null && !GenUtil.objNullOrEmpty(savedCajabanco.getCodCtacontable()) && moneda.equals(savedCajabanco.getCodTipomoneda())) {
                 view.getSelCaja().select(savedCajabanco.getCodCtacontable());
             } else {
                 setCajaLogic(moneda);
