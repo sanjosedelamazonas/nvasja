@@ -69,7 +69,7 @@ public class ProcUtil {
         return new Saldos(pen, usd, eur);
     }
 
-    // moneda { 0, 1 }
+    // moneda { 0, 1, 2 }
     @Transactional
     public BigDecimal getSaldoCaja(Date fecha, String codCtacaja, Character moneda) {
         StoredProcedureQuery getSaldoAlDiaCajaQuery = em.createNamedStoredProcedureQuery("getSaldoAlDiaCaja");

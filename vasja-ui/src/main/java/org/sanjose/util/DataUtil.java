@@ -20,13 +20,13 @@ import static org.sanjose.util.GenUtil.*;
 public class DataUtil {
 
 
-    public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo, boolean isPEN) {
+    public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo, Character moneda) {
         List<ScpPlancontable> allCajas = planRepo.
                 findByFlgMovimientoAndId_TxtAnoprocesoAndIndTipomonedaAndId_CodCtacontableStartingWith(
-                        'N', GenUtil.getYear(ano), (isPEN ? _PEN : _USD), "101");
+                        'N', GenUtil.getYear(ano), getLitMoneda(moneda), "101");
         List<ScpPlancontable> cajas = new ArrayList<>();
         for (ScpPlancontable caja : allCajas) {
-            Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
+            moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
             BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(
                     GenUtil.getEndOfDay(GenUtil.dateAddDays(ano,-1)),
                     caja.getId().getCodCtacontable()
@@ -92,7 +92,8 @@ public class DataUtil {
 
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
                     (caja.getIndTipomoneda().equals(_PEN) ? saldo : new BigDecimal(0.00)),
-                    (caja.getIndTipomoneda().equals(_USD) ? saldo : new BigDecimal(0.00))
+                    (caja.getIndTipomoneda().equals(_USD) ? saldo : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals(_EUR) ? saldo : new BigDecimal(0.00))
             ));
         }
         return cajas;
@@ -122,8 +123,10 @@ public class DataUtil {
                     (caja.getIndTipomoneda().equals(_PEN) ? saldoInicial : new BigDecimal(0.00)),
                     (caja.getIndTipomoneda().equals(_USD) ? saldoInicial : new BigDecimal(0.00)),
                     (caja.getIndTipomoneda().equals(_PEN) ? saldoFinal : new BigDecimal(0.00)),
-                    (caja.getIndTipomoneda().equals(_USD) ? saldoFinal : new BigDecimal(0.00))
-            ));
+                    (caja.getIndTipomoneda().equals(_USD) ? saldoFinal : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals(_EUR) ? saldoInicial : new BigDecimal(0.00)),
+                    (caja.getIndTipomoneda().equals(_EUR) ? saldoFinal : new BigDecimal(0.00))
+                    ));
         }
         return cajas;
     }

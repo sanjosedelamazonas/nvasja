@@ -42,6 +42,15 @@ BEGIN
 	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and 
 	a.cod_tipomoneda=1 and 
 	a.flg_enviado=0
+
+  --EUR
+	Select @SaldoEUR_caja=isnull((Sum(a.num_habermo)-Sum(a.num_debemo)),0)
+	From scp_cajabanco a
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 103)) And
+	Ltrim(Rtrim(a.cod_proyecto)) = @Codigo and
+	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
+	a.cod_tipomoneda=2 and
+	a.flg_enviado=0
 END
 
 else if(@Tipo=2)-- TERCERO
@@ -64,6 +73,15 @@ BEGIN
 	isnull(Ltrim(Rtrim(a.cod_tercero)),0) = @Codigo and 
 	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4)  
 	and a.cod_tipomoneda=1
+	and a.flg_enviado=0
+
+  --EUR
+	Select @SaldoEUR_caja=isnull((Sum(a.num_habermo)-Sum(a.num_debemo)),0)
+	From scp_cajabanco a
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 103)) And
+	isnull(Ltrim(Rtrim(a.cod_tercero)),0) = @Codigo and
+	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4)
+	and a.cod_tipomoneda=2
 	and a.flg_enviado=0
 END
 Print 'Caja PEN:'+CONVERT(char(14),@SaldoPEN_caja ,121)+' USD:'+CONVERT(char(14),@SaldoUSD_caja ,121)+' EUR:'+CONVERT(char(14),@SaldoEUR_caja,121)

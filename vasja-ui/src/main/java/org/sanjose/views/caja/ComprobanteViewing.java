@@ -43,6 +43,8 @@ interface ComprobanteViewing {
 
     TextField getSaldoCajaUSD();
 
+    TextField getSaldoCajaEUR();
+
     TextField getGlosa();
 
     ComboBox getSelResponsable();

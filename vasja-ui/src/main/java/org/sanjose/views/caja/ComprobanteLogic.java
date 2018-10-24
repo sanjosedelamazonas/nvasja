@@ -36,6 +36,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.sanjose.util.GenUtil.EUR;
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.USD;
 import static org.sanjose.views.sys.Viewing.Mode.NEW;
@@ -230,7 +231,7 @@ class ComprobanteLogic implements Serializable {
                 }
         );
 
-        DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(new Date(), view.getService().getPlanRepo(), true), "Sel Caja", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(new Date(), view.getService().getPlanRepo(), PEN), "Sel Caja", "txtDescctacontable");
         view.getSelCaja().addValueChangeListener(e -> setSaldoCaja());
 
         // Responsable
@@ -418,21 +419,37 @@ class ComprobanteLogic implements Serializable {
                 // Cta Caja
                 beanItem.getBean().setNumHaberdolar(new BigDecimal(0));
                 beanItem.getBean().setNumDebedolar(new BigDecimal(0));
-                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), true), "txtDescctacontable");
+                beanItem.getBean().setNumHabermo(new BigDecimal(0));
+                beanItem.getBean().setNumDebemo(new BigDecimal(0));
+                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
                 saldoChecker.setSaldoField(view.getSaldoCajaPEN());
                 saldoChecker.setProyectoField(view.getSaldoProyPEN());
-            } else {
+            } else if (moneda.equals(USD)) {
                 // Dolares
                 // Cta Caja
                 beanItem.getBean().setNumHabersol(new BigDecimal(0));
                 beanItem.getBean().setNumDebesol(new BigDecimal(0));
-                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), false), "txtDescctacontable");
+                beanItem.getBean().setNumHabermo(new BigDecimal(0));
+                beanItem.getBean().setNumDebemo(new BigDecimal(0));
+                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
                 saldoChecker.setSaldoField(view.getSaldoCajaUSD());
                 saldoChecker.setProyectoField(view.getSaldoProyUSD());
+            } else {
+                // Euro
+                // Cta Caja
+                beanItem.getBean().setNumHabersol(new BigDecimal(0));
+                beanItem.getBean().setNumDebesol(new BigDecimal(0));
+                beanItem.getBean().setNumHaberdolar(new BigDecimal(0));
+                beanItem.getBean().setNumDebedolar(new BigDecimal(0));
+                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
+                fieldGroup.bind(view.getNumEgreso(), "numHabermo");
+                fieldGroup.bind(view.getNumIngreso(), "numDebemo");
+                saldoChecker.setSaldoField(view.getSaldoCajaEUR());
+                saldoChecker.setProyectoField(view.getSaldoProyEUR());
             }
             if (savedCajabanco != null && !GenUtil.objNullOrEmpty(savedCajabanco.getCodCtacontable())) {
                 view.getSelCaja().select(savedCajabanco.getCodCtacontable());
@@ -474,11 +491,18 @@ class ComprobanteLogic implements Serializable {
             if (PEN.equals(view.getSelMoneda().getValue().toString().charAt(0))) {
                 view.getSaldoCajaPEN().setValue(saldo.toString());
                 view.getSaldoCajaUSD().setValue("");
+                view.getSaldoCajaEUR().setValue("");
                 saldoChecker.setSaldoField(view.getSaldoCajaPEN());
-            } else {
+            } else if (USD.equals(view.getSelMoneda().getValue().toString().charAt(0))) {
                 view.getSaldoCajaUSD().setValue(saldo.toString());
                 view.getSaldoCajaPEN().setValue("");
+                view.getSaldoCajaEUR().setValue("");
                 saldoChecker.setSaldoField(view.getSaldoCajaUSD());
+            } else {
+                view.getSaldoCajaEUR().setValue(saldo.toString());
+                view.getSaldoCajaPEN().setValue("");
+                view.getSaldoCajaUSD().setValue("");
+                saldoChecker.setSaldoField(view.getSaldoCajaEUR());
             }
         }
     }
@@ -635,6 +659,9 @@ class ComprobanteLogic implements Serializable {
         } else if (isEdit && USD.equals(item.getCodTipomoneda())) {
             fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
             fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
+        } else if (isEdit && EUR.equals(item.getCodTipomoneda())) {
+            fieldGroup.bind(view.getNumEgreso(), "numHabermo");
+            fieldGroup.bind(view.getNumIngreso(), "numDebemo");
         }
         ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
         ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
@@ -701,7 +728,7 @@ class ComprobanteLogic implements Serializable {
 
     private void clearSaldos() {
         //noinspection unchecked
-        Arrays.stream(new Field[]{view.getSaldoCajaPEN(), view.getSaldoCajaUSD(), view.getSaldoProyPEN(), view.getSaldoProyUSD(), view.getSaldoProyEUR()})
+        Arrays.stream(new Field[]{view.getSaldoCajaPEN(), view.getSaldoCajaUSD(), view.getSaldoCajaEUR(), view.getSaldoProyPEN(), view.getSaldoProyUSD(), view.getSaldoProyEUR()})
                 .forEach(f -> f.setValue(""));
     }
 
