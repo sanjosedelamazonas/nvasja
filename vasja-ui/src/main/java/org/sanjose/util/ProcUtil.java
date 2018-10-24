@@ -125,7 +125,7 @@ public class ProcUtil {
         return (String)query.getOutputParameterValue(8);
     }
 
-
+    @Transactional(readOnly = false)
     public void enviarContabilidad(Collection<Object> vcbs, ComprobanteService service) {
         VsjCajabanco vcb = null;
         try {
