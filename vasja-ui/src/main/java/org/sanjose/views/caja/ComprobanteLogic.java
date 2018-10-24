@@ -508,30 +508,36 @@ class ComprobanteLogic implements Serializable {
     }
 
     private void setCajaLogic(Character tipomoneda) {
+        VsjConfiguracioncaja config = null;
         if (isProyecto()) {
             List<VsjConfiguracioncaja> configs = view.getService().getConfiguracioncajaRepo().findByCodProyectoAndIndTipomoneda(
                     view.getSelProyecto().getValue().toString(), tipomoneda);
             if (!configs.isEmpty()) {
-                VsjConfiguracioncaja config = configs.get(0);
-                view.getSelCaja().setValue(config.getCodCtacontable());
+                config = configs.get(0);
             } else {
                 String catProy = view.getService().getProyectoRepo().findByCodProyecto(view.getSelProyecto().getValue().toString())
                         .getCodCategoriaproyecto();
                 configs = view.getService().getConfiguracioncajaRepo().findByCodCategoriaproyectoAndIndTipomoneda(
                         catProy, tipomoneda);
                 if (!configs.isEmpty()) {
-                    VsjConfiguracioncaja config = configs.get(0);
-                    view.getSelCaja().setValue(config.getCodCtacontable());
+                    config = configs.get(0);
                 }
             }
         } else if (isTercero()) {
             List<VsjConfiguracioncaja> configs = view.getService().getConfiguracioncajaRepo().findByCodDestinoAndIndTipomoneda(
                     view.getSelTercero().getValue().toString(), tipomoneda);
             if (!configs.isEmpty()) {
-                VsjConfiguracioncaja config = configs.get(0);
-                view.getSelCaja().setValue(config.getCodCtacontable());
+                config = configs.get(0);
             }
         }
+        if (config==null) {
+            List<VsjConfiguracioncaja> configs = view.getService().getConfiguracioncajaRepo().
+                    findByIndTipomonedaAndCodDestinoAndCodProyectoAndCodCategoriaproyecto(tipomoneda,null,null,null);
+            if (!configs.isEmpty()) {
+                config = configs.get(0);
+            }
+        }
+        if (config!=null) view.getSelCaja().setValue(config.getCodCtacontable());
         setSaldoCaja();
     }
 

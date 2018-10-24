@@ -62,7 +62,7 @@ public class ConfiguracionCajaLogic implements Serializable {
     	
         for (Object vsj : view.getSelectedRow()) {
         	log.info("Got selected: " + vsj);
-        	if (vsj instanceof VsjConfiguractacajabanco)
+        	if (vsj instanceof VsjConfiguracioncaja)
         		rows.add((VsjConfiguracioncaja)vsj);
         }
         view.clearSelection();
