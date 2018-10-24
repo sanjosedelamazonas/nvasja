@@ -82,8 +82,10 @@ public class DataUtil {
         List<Caja> cajas = new ArrayList<>();
         for (ScpPlancontable caja : getTodasCajas(date, planRepo)) {
             Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
+            //TODO Why are we asking for previous day!!
             BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(
-                    GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)),
+                    //GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)),
+                    date,
                     caja.getId().getCodCtacontable()
                     , moneda);
             // If is closed and has a saldo of "0.00" we can omit it
