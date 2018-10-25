@@ -30,7 +30,7 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
     public static final String VIEW_NAME = "Caja";
     private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);
 
-    private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
+    private final AbstractComponent[] allFields = new AbstractComponent[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
     ComprobanteLogic viewLogic;
@@ -60,7 +60,7 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
     }
 
     public void setEnableFields(boolean enabled) {
-        for (Field f : allFields) {
+        for (AbstractComponent f : allFields) {
             f.setEnabled(enabled);
         }
         btnResponsable.setEnabled(enabled);
@@ -124,7 +124,7 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
         return selProyecto;
     }
 
-    public PopupDateField getDataFechaComprobante() {
+    public DateField getDataFechaComprobante() {
         return dataFechaComprobante;
     }
 
@@ -152,7 +152,7 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
         return saldoProyEUR;
     }
 
-    public OptionGroup getSelMoneda() {
+    public RadioButtonGroup getSelMoneda() {
         return selMoneda;
     }
 
@@ -220,7 +220,7 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
         return btnDestino;
     }
 
-    public PopupDateField getFechaDoc() {
+    public DateField getFechaDoc() {
         return fechaDoc;
     }
 

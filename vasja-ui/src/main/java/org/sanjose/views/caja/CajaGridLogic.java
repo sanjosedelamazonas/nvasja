@@ -1,6 +1,6 @@
 package org.sanjose.views.caja;
 
-import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitEvent;
 import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitException;
@@ -55,17 +55,18 @@ public class CajaGridLogic implements Serializable {
         view.enviarBtn.addClickListener(e -> procUtil.enviarContabilidad(view.getSelectedRows(), view.getService()));
         view.editarBtn.addClickListener(e -> editarComprobante(view.getSelectedRow()));
         view.imprimirBtn.addClickListener(event -> {
-                    if (view.getSelectedRow()!=null) ViewUtil.printComprobante(view.getSelectedRow());
-                });
+            if (view.getSelectedRow() != null) ViewUtil.printComprobante(view.getSelectedRow());
+        });
 
         view.gridCaja.getEditorFieldGroup().addCommitHandler(new CommitHandler() {
             @Override
             public void preCommit(CommitEvent commitEvent) throws CommitException {
             }
+
             @Override
             public void postCommit(CommitEvent commitEvent) throws CommitException {
                 Object item = view.gridCaja.getContainerDataSource().getItem(view.gridCaja.getEditedItemId());
-                if (item!=null) {
+                if (item != null) {
                     ScpCajabanco vcb = (ScpCajabanco) ((BeanItem) item).getBean();
                     final ScpCajabanco vcbToSave = vcb.prepareToSave();
                     if (vcb.isEnviado()) {
@@ -83,10 +84,15 @@ public class CajaGridLogic implements Serializable {
             }
         });
 
-        GridContextMenu gridContextMenu = new GridContextMenu(view.gridCaja);
-        gridContextMenu.addGridBodyContextMenuListener(e -> {
+
+// Create a context menu for 'someComponent'
+        ContextMenu gridContextMenu = new ContextMenu(view.gridCaja, true);
+        gridContextMenu.addContextMenuOpenListener(e -> {
             gridContextMenu.removeItems();
-            final Object itemId = e.getItemId();
+            // TODO
+            final Object itemId = null;
+            //final Object itemId = e.getContextClickEvent().
+            //.getItemId();
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
             } else {
@@ -104,11 +110,11 @@ public class CajaGridLogic implements Serializable {
                     view.refreshData();
                 });
                 gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));
-                if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((ScpCajabanco) itemId));
+                if (ViewUtil.isPrinterReady())
+                    gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((ScpCajabanco) itemId));
             }
         });
     }
-
 
     private void editDestino(ScpCajabanco vcb) {
         Window destinoWindow = new Window();

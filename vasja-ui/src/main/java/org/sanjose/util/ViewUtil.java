@@ -8,7 +8,6 @@ import com.vaadin.v7.data.util.filter.Between;
 import com.vaadin.v7.data.util.filter.Compare;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.server.Sizeable;
-import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
@@ -90,10 +89,13 @@ public class ViewUtil {
         }
         grid.setColumnReorderingAllowed(true);
 
+        //TODO 8
         // Allow column hiding
+/*
         for (Grid.Column c : grid.getColumns()) {
             c.setHidable(true);
         }
+*/
 
     }
 
@@ -120,6 +122,8 @@ public class ViewUtil {
 
 
     public static void alignMontosInGrid(Grid grid) {
+        // TODO 8
+/*
         if (grid.getColumn("numHabersol")!=null)
             grid.getColumn("numHabersol").setRenderer(new EmptyZeroNumberRendrer(
                 "%02.2f", ConfigurationUtil.getLocale()));
@@ -151,6 +155,7 @@ public class ViewUtil {
                 return "v-align-left";
             }
         });
+*/
     }
 
 
@@ -278,6 +283,8 @@ public class ViewUtil {
     }
 
     public static void colorizeRows(Grid grid, Class clas) {
+        //TODO 8
+/*
         grid.setRowStyleGenerator(rowReference -> {
             if (clas.equals(VsjBancocabecera.class) && ((VsjBancocabecera)rowReference.getItemId()).isEnviado()) {
                 return "enviado";
@@ -301,9 +308,12 @@ public class ViewUtil {
             }
             return "";
         });
+*/
     }
 
     public static void colorizeRows(Grid grid) {
+        //TODO 8
+/*
         grid.setRowStyleGenerator(rowReference -> {
             if (((ScpCajabanco)rowReference.getItemId()).isEnviado()) {
                 return "enviado";
@@ -312,6 +322,7 @@ public class ViewUtil {
                 return "anulado";
             return "";
         });
+*/
     }
 
 

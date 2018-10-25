@@ -31,7 +31,7 @@ public interface ComprobanteViewing {
 
     TextField getSaldoProyEUR();
 
-    OptionGroup getSelMoneda();
+    RadioButtonGroup getSelMoneda();
 
     NumberField getNumIngreso();
 
@@ -65,7 +65,7 @@ public interface ComprobanteViewing {
 
     Button getBtnDestino();
 
-    PopupDateField getFechaDoc();
+    DateField getFechaDoc();
 
     ComboBox getSelTipoDoc();
 
@@ -99,7 +99,7 @@ public interface ComprobanteViewing {
 
     TextField getTxtNumCombrobante();
 
-    PopupDateField getDataFechaComprobante();
+    DateField getDataFechaComprobante();
 
     // Repos
 

@@ -1,5 +1,10 @@
 package org.sanjose.views.caja;
 
+import com.vaadin.data.Binder;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.renderers.NumberRenderer;
 import com.vaadin.v7.data.Property;
 import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.v7.data.util.BeanItemContainer;
@@ -12,7 +17,7 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.v7.ui.Grid.SelectionMode;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.v7.ui.PopupDateField;
 import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.renderers.DateRenderer;
@@ -91,9 +96,12 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
         setSizeFull();
         addStyleName("crud-view");
         //noinspection unchecked
-        container = new BeanItemContainer(ScpCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
-        
-        gridCaja.setContainerDataSource(container);
+        //container = new BeanItemContainer(ScpCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
+
+        ListDataProvider<ScpCajabanco> dataProvider =
+                DataProvider.ofCollection(getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
+
+        gridCaja.setDataProvider(dataProvider);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
 
         ViewUtil.setColumnNames(gridCaja, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
@@ -116,6 +124,17 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
         pdf.setResolution(Resolution.MINUTE);
         gridCaja.getColumn("fecFecha").setEditorField(pdf);
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+
+
+        Binder<ScpCajabanco> binder = gridCaja.getEditor().getBinder();
+        gridCaja.addColumn(ScpCajabanco::getDoubleValue, new NumberRenderer())
+                .setEditorBinding(binder
+                        .forField(new TextField())
+                        .withConverter(new StringToDoubleConverter("Not a double"))
+                        .bind(MyType::getDoubleValue, MyType::setDoubleValue)
+                );
+
+
 
         // Fecha Doc
         pdf = new PopupDateField();
@@ -228,7 +247,7 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
         selTercero.getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
 
-    private void setItemLogic(ItemClickEvent event) {
+    private void setItemLogic(Grid.ItemClick event) {
         String proyecto = null;
         Object objProyecto = event.getItem().getItemProperty("codProyecto").getValue();
         if (objProyecto !=null && !objProyecto.toString().isEmpty())

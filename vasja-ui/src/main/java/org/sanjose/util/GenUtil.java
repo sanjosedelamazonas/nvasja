@@ -13,6 +13,7 @@ import org.sanjose.model.VsjItem;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 public class GenUtil {
@@ -85,6 +86,10 @@ public class GenUtil {
     public static String getYear(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         return sdf.format(date);
+    }
+
+    public static String getYear(LocalDate date) {
+        return String.valueOf(date.getYear());
     }
 
 

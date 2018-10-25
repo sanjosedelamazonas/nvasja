@@ -1,5 +1,6 @@
 package org.sanjose.views.caja;
 
+import com.vaadin.data.Binder;
 import com.vaadin.v7.data.Property;
 import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
@@ -660,14 +661,18 @@ class ComprobanteLogic implements Serializable {
     }
 
     private void bindForm(ScpCajabanco item) {
+        Binder<ScpCajabanco> binder = new Binder<>();
+
+        binder.bind(view.getSelProyecto(),cb -> cb.getCodProyecto(),(cb, cp) -> cb.setCodProyecto(cp));
+
         isLoading = true;
         isEdit = !GenUtil.strNullOrEmpty(item.getCodUregistro());
         clearSaldos();
         beanItem = new BeanItem<>(item);
         if (fieldGroup != null) {
             fieldGroup.discard();
-            List<Field<?>> fieldList = new ArrayList<>(fieldGroup.getFields());
-            for (Field f : fieldList) {
+            List<AbstractField<?>> fieldList = new ArrayList<>(fieldGroup.getFields());
+            for (AbstractComponent f : fieldList) {
                 fieldGroup.unbind(f);
             }
             fieldGroup.setItemDataSource(beanItem);

@@ -1,11 +1,11 @@
 package org.sanjose.views.caja;
 
-import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.Grid.SelectionMode;
 import org.sanjose.model.VsjConfiguracioncaja;
@@ -14,6 +14,7 @@ import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.Viewing;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 
@@ -49,7 +50,7 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewin
     public void init() {
         ComboBox selCtacontable = new ComboBox();
         ComboBox selCategoriaproy = new ComboBox();
-        fechaAno.setValue(new Date());
+        fechaAno.setValue(LocalDate.now());
         fechaAno.addValueChangeListener(ev ->
                 DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable", service.getPlanRepo().
                         findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
