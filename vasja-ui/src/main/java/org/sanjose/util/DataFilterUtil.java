@@ -458,7 +458,7 @@ public class DataFilterUtil {
 				}
 				logger.fine("Got value: " + value);
 			} else {				
-				if (bItem.getItemProperty(column)!=null)
+				if (bItem.getItemProperty(column)!=null && !GenUtil.objNullOrEmpty(bItem.getItemProperty(column).getValue()))
 					value = bItem.getItemProperty(column).getValue();
 			}			
 			Item item = c.addItem(value);
