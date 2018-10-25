@@ -12,8 +12,7 @@ import org.sanjose.bean.Caja;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.VsjCajabanco;
-import org.sanjose.model.VsjItem;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
@@ -66,8 +65,8 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
             } else {
 
-                gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((VsjCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
-                        k -> editarComprobante((VsjCajabanco) itemId));
+                gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((ScpCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
+                        k -> editarComprobante((ScpCajabanco) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
                 gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());
                 if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
@@ -102,7 +101,7 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
         //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
-    public void editarComprobante(VsjCajabanco vcb) {
+    public void editarComprobante(ScpCajabanco vcb) {
         if (vcb==null) return;
         // Transferencia
         if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
@@ -202,7 +201,7 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
         BigDecimal totalEurDiaEgr = new BigDecimal(0.00);
 
         for (Object item : view.gridCaja.getContainerDataSource().getItemIds()) {
-            VsjCajabanco cajabanco = (VsjCajabanco) item;
+            ScpCajabanco cajabanco = (ScpCajabanco) item;
             // PEN
             totalSolesDiaEgr = totalSolesDiaEgr.add(cajabanco.getNumHabersol());
             totalSolesDiaIng = totalSolesDiaIng.add(cajabanco.getNumDebesol());

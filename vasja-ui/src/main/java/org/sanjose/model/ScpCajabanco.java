@@ -23,9 +23,9 @@ import static org.sanjose.util.GenUtil.USD;
  * 
  */
 @Entity
-@Table(name="vsj_cajabanco")
-@NamedQuery(name="VsjCajabanco.findAll", query="SELECT v FROM VsjCajabanco v")
-public class VsjCajabanco extends VsjItem implements Serializable {
+@Table(name="scp_cajabanco")
+@NamedQuery(name="ScpCajabanco.findAll", query="SELECT v FROM ScpCajabanco v")
+public class ScpCajabanco extends VsjItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -59,7 +59,7 @@ public class VsjCajabanco extends VsjItem implements Serializable {
 	@Column(name="cod_origenenlace")
 	private String codOrigenenlace;
 	@Column(name="cod_proyecto")
-	private String codProyecto;
+	private String codProyecto="";
 	@Column(name="cod_tercero")
 	private String codTercero;
 	@Column(name="cod_tipocomprobantepago")
@@ -93,18 +93,20 @@ public class VsjCajabanco extends VsjItem implements Serializable {
 	private String txtGlosaitem;
 	@Column(name="txt_seriecomprobantepago")
 	private String txtSeriecomprobantepago;
+	@Column(name="flg_saldo")
+	private Character flgSaldo='0';
 /*
 
 	@Column(name="txt_anoproceso")
 	private String txtAnoproceso;
 */
 
-	public VsjCajabanco() {
+	public ScpCajabanco() {
 	}
 
 	@Override
-	public VsjCajabanco prepareToSave() throws FieldGroup.CommitException {
-		VsjCajabanco item = (VsjCajabanco) super.prepareToSave();
+	public ScpCajabanco prepareToSave() throws FieldGroup.CommitException {
+		ScpCajabanco item = (ScpCajabanco) super.prepareToSave();
 		if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
 			throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
 		if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
@@ -150,7 +152,7 @@ public class VsjCajabanco extends VsjItem implements Serializable {
 		return item;
 	}
 
-	public VsjCajabanco prepareToEliminar() {
+	public ScpCajabanco prepareToEliminar() {
 		if (GenUtil.strNullOrEmpty(getCodProyecto()) && GenUtil.strNullOrEmpty(getCodTercero()))
 			throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
 
@@ -429,9 +431,17 @@ public class VsjCajabanco extends VsjItem implements Serializable {
 		return flgEnviado!=null && flgEnviado.equals('1');
 	}
 
+	public Character getFlgSaldo() {
+		return flgSaldo;
+	}
+
+	public void setFlgSaldo(Character flgSaldo) {
+		this.flgSaldo = flgSaldo;
+	}
+
 	@Override
 	public String toString() {
-		return "VsjCajabanco{" +
+		return "ScpCajabanco{" +
 				"codCajabanco=" + codCajabanco +
 				", codComprobanteenlace='" + codComprobanteenlace + '\'' +
 				", codContracta='" + codContracta + '\'' +

@@ -8,7 +8,6 @@ import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitHandler;
 import com.vaadin.v7.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.navigator.View;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.Notification;
@@ -18,8 +17,8 @@ import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.helper.ReportHelper;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpDestino;
-import org.sanjose.model.VsjCajabanco;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
@@ -67,8 +66,8 @@ public class CajaGridLogic implements Serializable {
             public void postCommit(CommitEvent commitEvent) throws CommitException {
                 Object item = view.gridCaja.getContainerDataSource().getItem(view.gridCaja.getEditedItemId());
                 if (item!=null) {
-                    VsjCajabanco vcb = (VsjCajabanco) ((BeanItem) item).getBean();
-                    final VsjCajabanco vcbToSave = vcb.prepareToSave();
+                    ScpCajabanco vcb = (ScpCajabanco) ((BeanItem) item).getBean();
+                    final ScpCajabanco vcbToSave = vcb.prepareToSave();
                     if (vcb.isEnviado()) {
                         MessageBox
                                 .createQuestion()
@@ -91,8 +90,8 @@ public class CajaGridLogic implements Serializable {
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
             } else {
-                gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((VsjCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
-                        k -> editarComprobante((VsjCajabanco) itemId));
+                gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((ScpCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
+                        k -> editarComprobante((ScpCajabanco) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
                 gridContextMenu.addItem("Enviar a contabilidad", k -> {
                     if (!view.getSelectedRows().isEmpty()) {
@@ -105,13 +104,13 @@ public class CajaGridLogic implements Serializable {
                     view.refreshData();
                 });
                 gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));
-                if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajabanco) itemId));
+                if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((ScpCajabanco) itemId));
             }
         });
     }
 
 
-    private void editDestino(VsjCajabanco vcb) {
+    private void editDestino(ScpCajabanco vcb) {
         Window destinoWindow = new Window();
 
         destinoWindow.setWindowMode(WindowMode.NORMAL);
@@ -154,14 +153,14 @@ public class CajaGridLogic implements Serializable {
                         .withYesButton(() -> {
                             log.debug("To delete: " + item);
 
-                            List<VsjCajabanco> comprobantes = view.getService().getCajabancoRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
+                            List<ScpCajabanco> comprobantes = view.getService().getCajabancoRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
                             if (comprobantes.isEmpty()) {
                                 destinoView.destinoRepo.delete(item);
                                 //refreshDestino();
                                 destinoWindow.close();
                             } else {
                                 StringBuilder sb = new StringBuilder();
-                                for (VsjCajabanco vacb : comprobantes) {
+                                for (ScpCajabanco vacb : comprobantes) {
                                     sb.append("\n").append(vacb.getTxtCorrelativo()).append(" ").append(vacb.getFecFecha()).append(" ").append(vacb.getTxtGlosaitem());
                                 }
                                 MessageBox
@@ -193,7 +192,7 @@ public class CajaGridLogic implements Serializable {
         ViewUtil.openInNewWindow(MainUI.get().getComprobanteView());
     }
 
-    private void editarComprobante(VsjCajabanco vcb) {
+    private void editarComprobante(ScpCajabanco vcb) {
         if (vcb==null) return;
         // Transferencia
         if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {

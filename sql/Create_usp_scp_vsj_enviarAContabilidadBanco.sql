@@ -834,7 +834,7 @@ BEGIN TRY
 
 		/****************************************************************************
         * Step 6
-        * Actualiza vsj_cajabanco cuando ya esta en contabilidad la operacion
+        * Actualiza scp_cajabanco cuando ya esta en contabilidad la operacion
         ****************************************************************************/
         SELECT  @ErrorStep = 'Error al actualizar el registro de caja'
 		 update dbo.vsj_bancocabecera

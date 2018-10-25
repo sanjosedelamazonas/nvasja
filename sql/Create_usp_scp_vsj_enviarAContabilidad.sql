@@ -6,7 +6,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidad]
-	@cod_cajabanco int, --id de operacion de vsj_cajabanco
+	@cod_cajabanco int, --id de operacion de scp_cajabanco
 	@user varchar(15), -- nombre del usuario segun SCP
 	@fecha_operacion varchar(10),-- fecha de operacion en formato 'dd/mm/yyyy'
 	@cod_moneda char(1), -- 0 pen, 1 usd, 2 eur
@@ -171,7 +171,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_cajabanco
+		  FROM dbo.scp_cajabanco
 		  where cod_cajabanco=@cod_cajabanco)
 
 		/****************************************************************************
@@ -329,7 +329,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_cajabanco
+		  FROM dbo.scp_cajabanco
 		  where cod_cajabanco=@cod_cajabanco)
 		/****************************************************************************
         * Step 5
@@ -486,14 +486,14 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_cajabanco
+		  FROM dbo.scp_cajabanco
 		  where cod_cajabanco=@cod_cajabanco )
 		/****************************************************************************
         * Step 6
-        * Actualiza vsj_cajabanco cuando ya esta en contabilidad la operacion
+        * Actualiza scp_cajabanco cuando ya esta en contabilidad la operacion
         ****************************************************************************/
         SELECT  @ErrorStep = 'Error al actualizar el registro de caja'
-		 update dbo.vsj_cajabanco
+		 update dbo.scp_cajabanco
 		 set [flg_enviado]='1'
 			  ,[cod_origenenlace]=@cod_origen
 			  ,[cod_comprobanteenlace]=@cod_comprobante

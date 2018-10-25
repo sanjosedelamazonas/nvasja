@@ -9,7 +9,7 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
-import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
@@ -55,7 +55,7 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
     TransferenciaLogic viewLogic = null;
-    private BeanItemContainer<VsjCajabanco> container;
+    private BeanItemContainer<ScpCajabanco> container;
     private ComprobanteService comprobanteService;
 
     private Window subWindow;
@@ -83,7 +83,7 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
 
         // Grid
         //noinspection unchecked
-        container = new BeanItemContainer(VsjCajabanco.class, new ArrayList());
+        container = new BeanItemContainer(ScpCajabanco.class, new ArrayList());
         gridTrans.setContainerDataSource(container);
         gridTrans.setEditorEnabled(false);
         gridTrans.sort("fecFregistro", SortDirection.DESCENDING);
@@ -109,8 +109,8 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
         setSaldoTrans();
     }
 
-    public VsjCajabanco getSelectedRow() {
-        return (VsjCajabanco) gridTrans.getSelectedRow();
+    public ScpCajabanco getSelectedRow() {
+        return (ScpCajabanco) gridTrans.getSelectedRow();
     }
 
     @Override
@@ -122,14 +122,14 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
         btnDestino.setEnabled(enabled);
     }
 
-    public BeanItemContainer<VsjCajabanco> getContainer() {
+    public BeanItemContainer<ScpCajabanco> getContainer() {
         return container;
     }
 
     private BigDecimal calcDifference() {
         BigDecimal total = new BigDecimal(0.00);
         if (container != null) {
-            for (VsjCajabanco cajabanco : container.getItemIds()) {
+            for (ScpCajabanco cajabanco : container.getItemIds()) {
                 if (isPEN())
                     total = total.add(cajabanco.getNumDebesol()).subtract(cajabanco.getNumHabersol());
                 else if (isUSD())

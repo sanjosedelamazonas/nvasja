@@ -9,7 +9,7 @@ import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.helper.NonEditableException;
-import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.StateUtil;
 import org.sanjose.util.ViewUtil;
@@ -98,9 +98,9 @@ public class TransferenciaLogic extends ComprobanteLogic {
         if (GenUtil.strNullOrEmpty(tView.getSelectedRow().getCodTranscorrelativo()))
             tView.getContainer().removeItem(tView.getSelectedRow());
         else {
-            VsjCajabanco anuladoVcb = tView.getSelectedRow().prepareToEliminar();
-            VsjCajabanco vcbOld = null;
-            for (VsjCajabanco vcb : tView.getContainer().getItemIds()) {
+            ScpCajabanco anuladoVcb = tView.getSelectedRow().prepareToEliminar();
+            ScpCajabanco vcbOld = null;
+            for (ScpCajabanco vcb : tView.getContainer().getItemIds()) {
                 if (anuladoVcb .getFecFregistro().equals(vcb.getFecFregistro())) {
                     vcbOld = anuladoVcb ;
                     break;
@@ -158,15 +158,15 @@ public class TransferenciaLogic extends ComprobanteLogic {
     public void saveComprobante() {
         try {
             boolean isNew = getVsjCajabanco().getFecFregistro()==null;
-            VsjCajabanco item = getVsjCajabanco().prepareToSave();
+            ScpCajabanco item = getVsjCajabanco().prepareToSave();
             moneda = item.getCodTipomoneda();
             if (isNew) {
                 tView.getContainer().addBean(item);
                 setColumnsForMoneda(moneda);
             }
             else {
-                VsjCajabanco vcbOld = null;
-                for (VsjCajabanco vcb : tView.getContainer().getItemIds()) {
+                ScpCajabanco vcbOld = null;
+                for (ScpCajabanco vcb : tView.getContainer().getItemIds()) {
                     if (item.getFecFregistro().equals(vcb.getFecFregistro())) {
                         vcbOld = item;
                         break;
@@ -187,7 +187,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     private void saveTransferencia() {
         if (state.isSaved()) log.error("Called Finalizar but is already SAVED");
-        List<VsjCajabanco> savedOperaciones = view.getService().saveVsjCajabancos(tView.getContainer().getItemIds());
+        List<ScpCajabanco> savedOperaciones = view.getService().saveVsjCajabancos(tView.getContainer().getItemIds());
         tView.getContainer().removeAllItems();
         tView.getContainer().addAll(savedOperaciones);
         view.refreshData();
@@ -195,15 +195,15 @@ public class TransferenciaLogic extends ComprobanteLogic {
         switchMode(Viewing.Mode.VIEW);
     }
 
-    public void editarTransferencia(VsjCajabanco vcb) throws NonEditableException {
+    public void editarTransferencia(ScpCajabanco vcb) throws NonEditableException {
         if (vcb.getCodTranscorrelativo()==null) return;
         tView.getContainer().removeAllItems();
         setColumnsForMoneda(moneda);
         ViewUtil.alignMontosInGrid(tView.gridTrans);
 
-        List<VsjCajabanco> operaciones = tView.getService().getCajabancoRep().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());
+        List<ScpCajabanco> operaciones = tView.getService().getCajabancoRep().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());
 
-        for (VsjCajabanco oper : operaciones) {
+        for (ScpCajabanco oper : operaciones) {
             tView.getContainer().addBean(oper);
         }
         switchMode(Viewing.Mode.VIEW);

@@ -19,10 +19,10 @@ import com.vaadin.v7.ui.renderers.DateRenderer;
 import com.vaadin.v7.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpFinanciera;
 import org.sanjose.model.ScpPlanproyecto;
 import org.sanjose.model.Scp_ProyectoPorFinanciera;
-import org.sanjose.model.VsjCajabanco;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
@@ -74,11 +74,11 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"txtCorrelativo", "flgEnviado", "flg_Anula",
             "codOrigenenlace", "codComprobanteenlace"};
 
-    private BeanItemContainer<VsjCajabanco> container;
+    private BeanItemContainer<ScpCajabanco> container;
 
     private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
 
-    private VsjCajabanco itemSeleccionado;
+    private ScpCajabanco itemSeleccionado;
     private ComprobanteService comprobanteService;
 
     public CajaGridView(ComprobanteService comprobanteService) {
@@ -91,7 +91,7 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
         setSizeFull();
         addStyleName("crud-view");
         //noinspection unchecked
-        container = new BeanItemContainer(VsjCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
+        container = new BeanItemContainer(ScpCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
         
         gridCaja.setContainerDataSource(container);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
@@ -105,7 +105,7 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
         gridCaja.setSelectionMode(SelectionMode.MULTI);
 
         gridCaja.setEditorFieldGroup(
-                new BeanFieldGroup<>(VsjCajabanco.class));
+                new BeanFieldGroup<>(ScpCajabanco.class));
 
         // Fecha
         PopupDateField pdf = new PopupDateField();
@@ -301,18 +301,18 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
         return gridCaja.getSelectedRows();
     }
 
-    public VsjCajabanco getSelectedRow() {
+    public ScpCajabanco getSelectedRow() {
         if (getSelectedRows().isEmpty())
             return itemSeleccionado;
         for (Object obj : gridCaja.getSelectedRows()) {
             log.info("selected: " + obj);
-            return (VsjCajabanco) obj;
+            return (ScpCajabanco) obj;
         }
         return null;
     }
 
 
-    public VsjCajabanco getItemSeleccionado() {
+    public ScpCajabanco getItemSeleccionado() {
         return itemSeleccionado;
     }
 

@@ -41,7 +41,7 @@
 	isnull(OPERACION.cod_ctacontable,'') AS OPERACION_CODCTACONTABLE,
 	isnull(OPERACION.cod_contraparte,'') AS OPERACION_LUGARGASTO,
 	isnull(OPERACION.cod_ctaespecial,'') AS OPERACION_RUBROINST
-FROM   dbo.vsj_cajabanco OPERACION
+FROM   dbo.scp_cajabanco OPERACION
 LEFT JOIN dbo.scp_proyecto CUENTA ON OPERACION.cod_proyecto = CUENTA.cod_proyecto
 LEFT JOIN dbo.scp_destino tercero ON OPERACION.cod_tercero= tercero.cod_destino
 LEFT JOIN dbo.scp_destino firma ON OPERACION.cod_destino= firma.cod_destino
