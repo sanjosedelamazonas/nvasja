@@ -9,6 +9,7 @@ import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.datefield.Resolution;
+import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.*;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -24,6 +25,9 @@ import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.model.VsjCajabanco;
 import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
+import org.sanjose.views.caja.ComprobanteView;
+import org.sanjose.views.caja.ComprobanteViewing;
+import org.sanjose.views.caja.TransferenciaView;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
 
@@ -307,5 +311,27 @@ public class ViewUtil {
                 return "anulado";
             return "";
         });
+    }
+
+
+    public static void openInNewWindow(ComprobanteViewing component) {
+        Window subWindow = new Window();
+        subWindow.setWindowMode(WindowMode.NORMAL);
+        int width = component instanceof TransferenciaView ? 1280 : 900;
+        subWindow.setWidth(width, Sizeable.Unit.PIXELS);
+        subWindow.setHeight(600, Sizeable.Unit.PIXELS);
+        subWindow.setModal(false);
+        subWindow.setContent((Component)component);
+        component.setSubWindow(subWindow);
+        subWindow.setClosable(false);
+        // Don't show navigation buttons if opened in subwindow Nuevo Comprobante
+        if (component instanceof ComprobanteView) {
+            component.getNuevoComprobante().setVisible(false);
+            component.getModificarBtn().setVisible(false);
+            component.getCerrarBtn().setVisible(false);
+        } else {
+            ((TransferenciaView)component).getNuevaTransBtn().setVisible(false);
+        }
+        UI.getCurrent().addWindow(subWindow);
     }
 }

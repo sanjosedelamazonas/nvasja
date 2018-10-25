@@ -53,20 +53,20 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
     private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
     private final CajaGridLogic viewLogic;
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
-            "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar",
+            "codContracta", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "codDestino", "codContraparte", "codDestinoitem", "codCtacontable", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
             "flg_Anula", "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
 
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
-            "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $",
+            "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
             "Responsable", "Lug. Gasto", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
             "Anl", "Env", "Orig.", "Comprob."
     };
     private final int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
-            5, 10, 6, 6, 6, 6, // S/$
+            5, 10, 6, 6, 6, 6, 6, 6, // S/$
             6, 4, 6, 5, 5, 2, // Tipo Doc
             4, 5, 5, 5, 4, // Fuente
             2, 2, 2, 4

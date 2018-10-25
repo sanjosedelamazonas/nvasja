@@ -18,6 +18,7 @@ import org.sanjose.views.sys.Viewing;
 import java.util.List;
 
 import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
 
 /**
  * VASJA class
@@ -41,7 +42,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         switchMode(Viewing.Mode.VIEW);
     }
 
-    private void nuevaTrans() {
+    public void nuevaTrans() {
         if (!tView.getContainer().getItemIds().isEmpty() && state.isEdited())
             MessageBox
                 .createQuestion()
@@ -135,8 +136,23 @@ public class TransferenciaLogic extends ComprobanteLogic {
         else {
             if (navigatorView == null) navigatorView = MainUI.get().getCajaManejoView();
             MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
+            if (view.getSubWindow()!=null)
+                view.getSubWindow().close();
         }
     }
+
+    private void setColumnsForMoneda(Character moneda) {
+        if (PEN.equals(moneda))
+            ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_PEN,
+                    TransferenciaView.VISIBLE_COLUMN_IDS_PEN, TransferenciaView.NONEDITABLE_COLUMN_IDS);
+        else if (USD.equals(moneda))
+            ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_USD,
+                    TransferenciaView.VISIBLE_COLUMN_IDS_USD, TransferenciaView.NONEDITABLE_COLUMN_IDS);
+        else
+            ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_EUR,
+                    TransferenciaView.VISIBLE_COLUMN_IDS_EUR, TransferenciaView.NONEDITABLE_COLUMN_IDS);
+    }
+
 
     @Override
     public void saveComprobante() {
@@ -146,12 +162,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
             moneda = item.getCodTipomoneda();
             if (isNew) {
                 tView.getContainer().addBean(item);
-                if (PEN.equals(moneda))
-                    ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_PEN,
-                        TransferenciaView.VISIBLE_COLUMN_IDS_PEN, TransferenciaView.NONEDITABLE_COLUMN_IDS);
-                else
-                    ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_USD,
-                            TransferenciaView.VISIBLE_COLUMN_IDS_USD, TransferenciaView.NONEDITABLE_COLUMN_IDS);
+                setColumnsForMoneda(moneda);
             }
             else {
                 VsjCajabanco vcbOld = null;
@@ -168,7 +179,8 @@ public class TransferenciaLogic extends ComprobanteLogic {
             tView.setSaldoTrans();
             switchMode(Viewing.Mode.VIEW);
         } catch (FieldGroup.CommitException ce) {
-            Notification.show("Error al guardar el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+            String errMsg = GenUtil.genErrorMessage(ce.getInvalidFields());
+            Notification.show("Error al guardar el comprobante: \n" + errMsg, Notification.Type.ERROR_MESSAGE);
             log.info("Got Commit Exception: " + ce.getMessage());
         }
     }
@@ -186,12 +198,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     public void editarTransferencia(VsjCajabanco vcb) throws NonEditableException {
         if (vcb.getCodTranscorrelativo()==null) return;
         tView.getContainer().removeAllItems();
-        if (PEN.equals(vcb.getCodTipomoneda()))
-            ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_PEN,
-                    TransferenciaView.VISIBLE_COLUMN_IDS_PEN, TransferenciaView.NONEDITABLE_COLUMN_IDS);
-        else
-            ViewUtil.setColumnNames(tView.gridTrans, TransferenciaView.VISIBLE_COLUMN_NAMES_USD,
-                    TransferenciaView.VISIBLE_COLUMN_IDS_USD, TransferenciaView.NONEDITABLE_COLUMN_IDS);
+        setColumnsForMoneda(moneda);
         ViewUtil.alignMontosInGrid(tView.gridTrans);
 
         List<VsjCajabanco> operaciones = tView.getService().getCajabancoRep().findByCodTranscorrelativo(vcb.getCodTranscorrelativo());

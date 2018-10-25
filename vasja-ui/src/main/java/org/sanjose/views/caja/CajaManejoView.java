@@ -162,7 +162,10 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vi
     }
 
     public VsjCajabanco getSelectedRow() {
-        return (VsjCajabanco) gridCaja.getSelectedRows().toArray()[0];
+        if (gridCaja.getSelectedRows().toArray().length>0)
+            return (VsjCajabanco) gridCaja.getSelectedRows().toArray()[0];
+        else
+            return null;
     }
 
     @Override

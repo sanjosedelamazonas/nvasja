@@ -9,7 +9,7 @@ import tm.kod.widgets.numberfield.NumberField;
  * User: prubach
  * Date: 20.09.16
  */
-interface ComprobanteViewing {
+public interface ComprobanteViewing {
 
     void setSaldoDeCajas();
 
@@ -73,7 +73,7 @@ interface ComprobanteViewing {
 
     TextField getNumDoc();
 
-    Label getSaldoTotal();
+/*    Label getSaldoTotal();*/
 
     Button getCerrarBtn();
 
@@ -104,4 +104,10 @@ interface ComprobanteViewing {
     // Repos
 
     ComprobanteService getService();
+
+    // Sub Window
+
+    Window getSubWindow();
+
+    void setSubWindow(Window window);
 }

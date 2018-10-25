@@ -112,8 +112,12 @@ public class MainScreen extends HorizontalLayout {
         for (Viewing view : menu.getViews()) {
             view.init();
         }
-
         addComponent(menu);
+        // Disable Menu for "Gilmer" and open Caja Manejo
+        if (Role.isOnlyCaja()) {
+            menu.setShowMenu(false);
+            MainUI.get().getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
+        }
         addComponent(viewContainer);
         setExpandRatio(viewContainer, 1);
         setSizeFull();
