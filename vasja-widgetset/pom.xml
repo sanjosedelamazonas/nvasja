@@ -52,7 +52,7 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-context-menu</artifactId>
-            <version>2.1.0</version>
+            <version>3.0.0.beta1</version>
         </dependency>
 
         <dependency>
