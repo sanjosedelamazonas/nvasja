@@ -74,11 +74,11 @@ public class ComprobanteUI extends CssLayout {
 	protected Button eliminarBtn;
 	protected Button nuevoComprobante;
 	protected Button imprimirBtn;
-	protected FormLayout order_summary_layout;
-	protected Label order_heading;
+//	protected FormLayout order_summary_layout;
+/*	protected Label order_heading;
 	protected CssLayout cajaSaldosLayout;
 	protected Label saldoLabel1;
-	protected Label saldoTotal;
+	protected Label saldoTotal;*/
 
 	public ComprobanteUI() {
 		Design.read(this);

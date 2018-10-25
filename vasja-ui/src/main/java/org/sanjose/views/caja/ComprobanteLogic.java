@@ -77,6 +77,14 @@ class ComprobanteLogic implements Serializable {
         view.getModificarBtn().addClickListener(event -> editarComprobante());
         view.getEliminarBtn().addClickListener(event -> eliminarComprobante());
         procUtil = MainUI.get().getProcUtil();
+        // Don't show navigation buttons if opened in subwindow Nuevo Comprobante
+        if (view.getSubWindow()!=null && view instanceof ComprobanteView) {
+            view.getNuevoComprobante().setVisible(false);
+            view.getModificarBtn().setVisible(false);
+            view.getCerrarBtn().setVisible(false);
+        } else if (view.getSubWindow()!=null && view instanceof TransferenciaView) {
+            ((TransferenciaView) view).getNuevaTransBtn().setVisible(false);
+        }
     }
 
     void anular() {
@@ -87,6 +95,8 @@ class ComprobanteLogic implements Serializable {
         } else {
             switchMode(Viewing.Mode.VIEW);
         }
+        if (view.getSubWindow()!=null)
+            view.getSubWindow().close();
     }
 
     // Buttons
@@ -109,10 +119,12 @@ class ComprobanteLogic implements Serializable {
             if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
                 ViewUtil.printComprobante(savedCajabanco);
             }
+            if (view.getSubWindow()!=null)
+                view.getSubWindow().close();
         } catch (CommitException ce) {
             String errMsg = GenUtil.genErrorMessage(ce.getInvalidFields());
             Notification.show("Error al guardar el comprobante: \n" + errMsg, Notification.Type.ERROR_MESSAGE);
-            log.warn("Got Commit Exception: " + ce.getMessage() + "\n" + errMsg);
+            //log.warn("Got Commit Exception: " + ce.getMessage() + "\n" + errMsg);
             view.setEnableFields(true);
             switchMode(Viewing.Mode.EDIT);
         }
@@ -408,6 +420,8 @@ class ComprobanteLogic implements Serializable {
 
     private void setMonedaLogic(Character moneda) {
         if (!isLoading) {
+            String oldNumEgreso = view.getNumEgreso().getValue();
+            String oldNumIngreso = view.getNumIngreso().getValue();
             try {
                 fieldGroup.unbind(view.getNumEgreso());
                 fieldGroup.unbind(view.getNumIngreso());
@@ -451,6 +465,10 @@ class ComprobanteLogic implements Serializable {
                 saldoChecker.setSaldoField(view.getSaldoCajaEUR());
                 saldoChecker.setProyectoField(view.getSaldoProyEUR());
             }
+            // copy values to new field
+            view.getNumEgreso().setValue(oldNumEgreso);
+            view.getNumIngreso().setValue(oldNumIngreso);
+            //
             if (savedCajabanco != null && !GenUtil.objNullOrEmpty(savedCajabanco.getCodCtacontable()) && moneda.equals(savedCajabanco.getCodTipomoneda())) {
                 view.getSelCaja().select(savedCajabanco.getCodCtacontable());
             } else {

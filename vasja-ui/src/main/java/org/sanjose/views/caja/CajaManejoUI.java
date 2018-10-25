@@ -22,6 +22,7 @@ public class CajaManejoUI extends VerticalLayout {
 	protected DateField fechaHasta;
 	protected ComboBox selFiltroCaja;
 	protected Button nuevoComprobante;
+	protected Button nuevaTransferencia;
 	protected Button btnEditar;
 	protected Button btnImprimir;
 	protected Button btnVerVoucher;
