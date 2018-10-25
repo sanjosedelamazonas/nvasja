@@ -91,6 +91,11 @@ class ComprobanteLogic implements Serializable {
         }
     }
 
+    void closeWindow() {
+        if (view.getSubWindow()!=null)
+            view.getSubWindow().close();
+    }
+
     void anular() {
         try {
             fieldGroup.discard();
@@ -103,8 +108,7 @@ class ComprobanteLogic implements Serializable {
         } else {
             switchMode(Viewing.Mode.VIEW);
         }
-        if (view.getSubWindow()!=null)
-            view.getSubWindow().close();
+        closeWindow();
     }
 
     // Buttons
@@ -124,11 +128,8 @@ class ComprobanteLogic implements Serializable {
             view.getNumVoucher().setValue(savedCajabanco.getTxtCorrelativo());
             view.refreshData();
             switchMode(Viewing.Mode.VIEW);
-            if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
-                ViewUtil.printComprobante(savedCajabanco);
-            }
-            if (view.getSubWindow()!=null)
-                view.getSubWindow().close();
+            ViewUtil.printComprobante(savedCajabanco);
+            closeWindow();
         } catch (CommitException ce) {
             String errMsg = GenUtil.genErrorMessage(ce.getInvalidFields());
             Notification.show("Error al guardar el comprobante: \n" + errMsg, Notification.Type.ERROR_MESSAGE);
@@ -174,18 +175,29 @@ class ComprobanteLogic implements Serializable {
     }
 
     void eliminarComprobante() {
-        try {
-            if (savedCajabanco == null) {
-                log.info("no se puede eliminar si no esta ya guardado");
-                return;
-            }
-            if (savedCajabanco.isEnviado()) {
-                Notification.show("Problema al eliminar", "No se puede eliminar porque ya esta enviado a la contabilidad",
-                        Notification.Type.WARNING_MESSAGE);
-                return;
-            }
-            ScpCajabanco item = getVsjCajabanco().prepareToEliminar();
+        if (savedCajabanco == null)
+            return;
+        if (savedCajabanco.isEnviado()) {
+            MessageBox
+                    .createInfo()
+                    .withCaption("Ya enviado a contabilidad")
+                    .withMessage("No se puede eliminar porque ya esta enviado a la contabilidad.")
+                    .withOkButton()
+                    .open();
+            return;
+        }
+        MessageBox
+                .createQuestion()
+                .withCaption("Eliminar")
+                .withMessage("?Esta seguro que quiere eliminar este comprobante?")
+                .withYesButton(this::doEliminarComprobante)
+                .withNoButton()
+                .open();
+    }
 
+    void doEliminarComprobante() {
+        try {
+            ScpCajabanco item = getVsjCajabanco().prepareToEliminar();
             view.getGlosa().setValue(item.getTxtGlosaitem());
             log.info("Ready to ANULAR: " + item);
             savedCajabanco = view.getService().getCajabancoRep().save(item);
@@ -193,9 +205,20 @@ class ComprobanteLogic implements Serializable {
             savedCajabanco = null;
             switchMode(Viewing.Mode.VIEW);
             view.refreshData();
+            MessageBox
+                    .createInfo()
+                    .withCaption("Elminado correctamente")
+                    .withMessage("El comprobante ha sido eliminado.")
+                    .withOkButton(this::closeWindow)
+                    .open();
         } catch (CommitException ce) {
-            Notification.show("Error al anular el comprobante: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
-            log.info("Got Commit Exception: " + ce.getMessage());
+            log.info("Got Commit Exception al eliminar comprobante: " + ce.getMessage());
+            MessageBox
+                    .createError()
+                    .withCaption("Error al anular el comprobante:")
+                    .withMessage(ce.getLocalizedMessage())
+                    .withOkButton(this::closeWindow)
+                    .open();
         }
     }
 

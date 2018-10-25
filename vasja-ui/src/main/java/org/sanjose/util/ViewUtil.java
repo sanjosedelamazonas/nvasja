@@ -45,6 +45,14 @@ import java.util.Map;
 public class ViewUtil {
 
     public static void printComprobante(VsjItem vcb) {
+        if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
+            ViewUtil.doPrintComprobante(vcb);
+        } else if (ConfigurationUtil.is("REPORTS_COMPROBANTE_OPEN")) {
+            ReportHelper.generateComprobante(vcb);
+        }
+    }
+
+    public static void doPrintComprobante(VsjItem vcb) {
         try {
             printComprobanteAndThrow(vcb);
         } catch (JRException | PrintException e) {
