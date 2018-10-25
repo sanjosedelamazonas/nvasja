@@ -1,2 +1,3 @@
 1. sortowanie CajaManejo po fecha i correlativo
 2. Reporte Transferencia
+3. Confirma si no hay tipo de cambio al enviar

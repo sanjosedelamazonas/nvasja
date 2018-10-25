@@ -127,6 +127,8 @@ public class ReportHelper {
 
 	@SuppressWarnings({"serial", "unchecked"})
 	public static void generateComprobante(final VsjItem op) {
+		// Skip when nothing selected
+		if (op==null) return;
 		final boolean isPdf = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("PDF") || op instanceof VsjBancocabecera;
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")

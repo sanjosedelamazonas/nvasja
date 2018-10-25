@@ -18,6 +18,7 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.converter.ZeroOneToBooleanConverter;
+import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.validator.LocalizedBeanValidator;
@@ -71,7 +72,12 @@ class ComprobanteLogic implements Serializable {
         view.getNuevoComprobante().addClickListener(event -> nuevoComprobante());
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
         view.getImprimirBtn().addClickListener(event -> {
-            if (savedCajabanco!=null) ViewUtil.printComprobante(savedCajabanco);
+            if (savedCajabanco!=null) {
+                if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"))
+                    ViewUtil.printComprobante(savedCajabanco);
+                else
+                    ReportHelper.generateComprobante(savedCajabanco);
+            }
         });
         view.getAnularBtn().addClickListener(event -> anular());
         view.getModificarBtn().addClickListener(event -> editarComprobante());
@@ -88,7 +94,11 @@ class ComprobanteLogic implements Serializable {
     }
 
     void anular() {
-        fieldGroup.discard();
+        try {
+            fieldGroup.discard();
+        } catch (ConcurrentModificationException e) {
+            log.error("Error in Comprobante Anular: " + e.getMessage());
+        }
         if (mode.equals(NEW)) {
             nuevoComprobante();
             switchMode(Viewing.Mode.EMPTY);
@@ -504,7 +514,7 @@ class ComprobanteLogic implements Serializable {
 
     private void setSaldoCaja() {
         if (view.getDataFechaComprobante().getValue()!=null && view.getSelCaja().getValue()!=null && view.getSelMoneda().getValue()!=null) {
-            BigDecimal saldo = procUtil.getSaldoCaja(GenUtil.getEndOfDay(GenUtil.dateAddDays(view.getDataFechaComprobante().getValue(),-1)),
+            BigDecimal saldo = procUtil.getSaldoCaja(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()),
                     view.getSelCaja().getValue().toString(), view.getSelMoneda().getValue().toString().charAt(0));
             if (PEN.equals(view.getSelMoneda().getValue().toString().charAt(0))) {
                 view.getSaldoCajaPEN().setValue(saldo.toString());
@@ -664,6 +674,8 @@ class ComprobanteLogic implements Serializable {
         } else {
             fieldGroup = new FieldGroup(beanItem);
         }
+        view.getNumEgreso().setValue(null);
+        view.getNumIngreso().setValue(null);
         fieldGroup.bind(view.getSelProyecto(), "codProyecto");
         fieldGroup.bind(view.getSelTercero(), "codTercero");
         fieldGroup.bind(view.getSelMoneda(), "codTipomoneda");
