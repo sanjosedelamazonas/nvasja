@@ -4,7 +4,6 @@ Destino:
 -> sprawdzenie czy istnieje juz taki przy zapisywaniu
 -> codigo jak nie wpisany to generuje
 
-
 Banco - vsj_bancodetalle:
 - dodac  flg_chequecobrado y cod_mescobr y edycje tego dla Ninfa (considerar pedir a Edward que cuando modifica cheque cobrado en contabilidad tambien se modifica vsj_bancodetalle
 DONE
@@ -22,3 +21,9 @@ DONE
 DONE
 
 -> id z contabilidad powinno sie pojawic na comprobante z caja/banco
+
+-> gui caja  y bancos:
+ - jezeli data operacji/wyszukania jest z innego roku niz biezacy to lista z tabeli plan_contable (nro e caja, cta contable etc) powinna uwzgledniac rok wyszukiwania/operacji
+- na wyszukiwaniu proyectos powinno pokazywac tez projekty ktore nie maja daty zakonczenia, albo uwzgledniac date operacji/wyszukiwania wzgledem daty zakonczenia proyecto
+
+
