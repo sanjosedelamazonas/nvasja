@@ -1,7 +1,6 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.data.sort.Sort;
-import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.ItemClickEvent;
@@ -14,15 +13,13 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
-import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.util.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.Viewing;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static org.sanjose.util.GenUtil.PEN;
 
@@ -59,7 +56,7 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vi
 
     private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
 
-    private BeanItemContainer<VsjCajabanco> container;
+    private BeanItemContainer<ScpCajabanco> container;
 
     private ComprobanteService comprobanteService;
 
@@ -73,7 +70,7 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vi
         addStyleName("crud-view");
 
         //noinspection unchecked
-        container = new BeanItemContainer(VsjCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
+        container = new BeanItemContainer(ScpCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
         gridCaja.setContainerDataSource(container);
         gridCaja.setEditorEnabled(false);
         gridCaja.setSortOrder(Sort.by("fecFecha", SortDirection.DESCENDING).then("txtCorrelativo", SortDirection.DESCENDING).build());
@@ -147,7 +144,7 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vi
     private void setItemLogic(ItemClickEvent event) {
         if (event.isDoubleClick()) {
             Object id = event.getItem().getItemProperty("codCajabanco").getValue();
-            VsjCajabanco vcb = getService().getCajabancoRep().findByCodCajabanco((Integer) id);
+            ScpCajabanco vcb = getService().getCajabancoRep().findByCodCajabanco((Integer) id);
             viewLogic.editarComprobante(vcb);
         }
     }
@@ -161,9 +158,9 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vi
         gridCaja.getSelectionModel().reset();
     }
 
-    public VsjCajabanco getSelectedRow() {
+    public ScpCajabanco getSelectedRow() {
         if (gridCaja.getSelectedRows().toArray().length>0)
-            return (VsjCajabanco) gridCaja.getSelectedRows().toArray()[0];
+            return (ScpCajabanco) gridCaja.getSelectedRows().toArray()[0];
         else
             return null;
     }

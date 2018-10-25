@@ -1,12 +1,10 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.data.Property;
-import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Sizeable;
@@ -58,8 +56,8 @@ class ComprobanteLogic implements Serializable {
     protected ComprobanteViewing view;
     protected NavigatorViewing navigatorView;
     protected FieldGroup fieldGroup;
-    protected BeanItem<VsjCajabanco> beanItem;
-    private VsjCajabanco savedCajabanco;
+    protected BeanItem<ScpCajabanco> beanItem;
+    private ScpCajabanco savedCajabanco;
     private boolean isLoading = false;
     private boolean isEdit = false;
     private ProcUtil procUtil;
@@ -119,7 +117,7 @@ class ComprobanteLogic implements Serializable {
 
     void saveComprobante() {
         try {
-            VsjCajabanco item = getVsjCajabanco().prepareToSave();
+            ScpCajabanco item = getVsjCajabanco().prepareToSave();
 
             savedCajabanco = view.getService().save(item);
 
@@ -142,7 +140,7 @@ class ComprobanteLogic implements Serializable {
 
     void nuevoComprobante(char moneda) {
         savedCajabanco = null;
-        VsjCajabanco vcb = new VsjCajabanco();
+        ScpCajabanco vcb = new ScpCajabanco();
         vcb.setFlgEnviado('0');
         vcb.setFlg_Anula('0');
         vcb.setIndTipocuenta('0');
@@ -161,7 +159,7 @@ class ComprobanteLogic implements Serializable {
         editarComprobante(savedCajabanco);
     }
 
-    public void editarComprobante(VsjCajabanco vcb) {
+    public void editarComprobante(ScpCajabanco vcb) {
         savedCajabanco = vcb;
         bindForm(vcb);
         if (vcb.isReadOnly())
@@ -170,7 +168,7 @@ class ComprobanteLogic implements Serializable {
             switchMode(Viewing.Mode.EDIT);
     }
 
-    public void viewComprobante(VsjCajabanco vcb) {
+    public void viewComprobante(ScpCajabanco vcb) {
         savedCajabanco = vcb;
         bindForm(vcb);
     }
@@ -186,7 +184,7 @@ class ComprobanteLogic implements Serializable {
                         Notification.Type.WARNING_MESSAGE);
                 return;
             }
-            VsjCajabanco item = getVsjCajabanco().prepareToEliminar();
+            ScpCajabanco item = getVsjCajabanco().prepareToEliminar();
 
             view.getGlosa().setValue(item.getTxtGlosaitem());
             log.info("Ready to ANULAR: " + item);
@@ -317,24 +315,24 @@ class ComprobanteLogic implements Serializable {
         view.getSerieDoc().setMaxLength(5);
 
         // Validators
-        view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "fecFecha"));
-        view.getFechaDoc().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "fecComprobantepago"));
+        view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "fecFecha"));
+        view.getFechaDoc().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "fecComprobantepago"));
         view.getSelProyecto().addValidator(new TwoCombosValidator(view.getSelTercero(), true, null));
         view.getSelTercero().addValidator(new TwoCombosValidator(view.getSelProyecto(), true, null));
-        view.getSelMoneda().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "codTipomoneda"));
+        view.getSelMoneda().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codTipomoneda"));
         view.getNumIngreso().setDescription("Ingreso");
         view.getNumEgreso().setDescription("Egreso");
         view.getNumIngreso().addValidator(new TwoNumberfieldsValidator(view.getNumEgreso(), false, "Ingreso o egreso debe ser rellenado"));
         view.getNumEgreso().addValidator(new TwoNumberfieldsValidator(view.getNumIngreso(), false, "Ingreso o egreso debe ser rellenado"));
-        view.getSelResponsable().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "codDestino"));
-        view.getSelLugarGasto().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "codContraparte"));
-        view.getSelCodAuxiliar().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "codDestinoitem"));
+        view.getSelResponsable().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codDestino"));
+        view.getSelLugarGasto().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codContraparte"));
+        view.getSelCodAuxiliar().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codDestinoitem"));
         view.getGlosa().setDescription("Glosa");
-        view.getGlosa().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "txtGlosaitem"));
-        view.getSerieDoc().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "txtSeriecomprobantepago"));
-        view.getNumDoc().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "txtComprobantepago"));
-        view.getSelCtaContable().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "codContracta"));
-        view.getSelTipoMov().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "codTipomov"));
+        view.getGlosa().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "txtGlosaitem"));
+        view.getSerieDoc().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "txtSeriecomprobantepago"));
+        view.getNumDoc().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "txtComprobantepago"));
+        view.getSelCtaContable().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codContracta"));
+        view.getSelTipoMov().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codTipomov"));
 
         // Check saldos and warn
         saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCajaPEN(), view.getSaldoProyPEN());
@@ -392,14 +390,14 @@ class ComprobanteLogic implements Serializable {
                         .withYesButton(() -> {
                             log.debug("To delete: " + item);
 
-                            List<VsjCajabanco> comprobantes = view.getService().getCajabancoRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
+                            List<ScpCajabanco> comprobantes = view.getService().getCajabancoRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
                             if (comprobantes.isEmpty()) {
                                 destinoView.destinoRepo.delete(item);
                                 refreshDestino();
                                 destinoWindow.close();
                             } else {
                                 StringBuilder sb = new StringBuilder();
-                                for (VsjCajabanco vcb : comprobantes) {
+                                for (ScpCajabanco vcb : comprobantes) {
                                     sb.append("\n").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosaitem());
                                 }
                                 MessageBox
@@ -484,7 +482,7 @@ class ComprobanteLogic implements Serializable {
             } else {
                 setCajaLogic(moneda);
             }
-            view.getSelCaja().addValidator(new LocalizedBeanValidator(VsjCajabanco.class, "codCtacontable"));
+            view.getSelCaja().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codCtacontable"));
             ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
             ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
             view.setSaldoDeCajas();
@@ -659,7 +657,7 @@ class ComprobanteLogic implements Serializable {
         }
     }
 
-    private void bindForm(VsjCajabanco item) {
+    private void bindForm(ScpCajabanco item) {
         isLoading = true;
         isEdit = !GenUtil.strNullOrEmpty(item.getCodUregistro());
         clearSaldos();
@@ -768,9 +766,9 @@ class ComprobanteLogic implements Serializable {
                 .forEach(f -> f.setValue(""));
     }
 
-    VsjCajabanco getVsjCajabanco() throws FieldGroup.CommitException {
+    ScpCajabanco getVsjCajabanco() throws FieldGroup.CommitException {
         fieldGroup.commit();
-        VsjCajabanco item = beanItem.getBean();
+        ScpCajabanco item = beanItem.getBean();
         view.setEnableFields(false);
         return item;
     }

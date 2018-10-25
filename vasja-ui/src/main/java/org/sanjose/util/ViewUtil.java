@@ -20,9 +20,9 @@ import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.helper.ReportHelper;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
-import org.sanjose.model.VsjCajabanco;
 import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.views.caja.ComprobanteView;
@@ -66,7 +66,7 @@ public class ViewUtil {
         JasperPrint jrPrint = ReportHelper.printComprobante(vcb);
         boolean isPrinted = false;
         PrintHelper ph = ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper();
-        isPrinted = ph.print(jrPrint, vcb instanceof VsjCajabanco);
+        isPrinted = ph.print(jrPrint, vcb instanceof ScpCajabanco);
         if (!isPrinted)
             throw new JRException("Problema al consequir un servicio de imprimir");
         else
@@ -304,10 +304,10 @@ public class ViewUtil {
 
     public static void colorizeRows(Grid grid) {
         grid.setRowStyleGenerator(rowReference -> {
-            if (((VsjCajabanco)rowReference.getItemId()).isEnviado()) {
+            if (((ScpCajabanco)rowReference.getItemId()).isEnviado()) {
                 return "enviado";
             }
-            if (((VsjCajabanco) rowReference.getItemId()).isAnula())
+            if (((ScpCajabanco) rowReference.getItemId()).isAnula())
                 return "anulado";
             return "";
         });

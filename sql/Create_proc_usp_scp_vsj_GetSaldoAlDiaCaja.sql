@@ -38,7 +38,7 @@ BEGIN
 --	Print 'Inicial: '+CONVERT(char(14),@SaldoInicial,14)
 
 	Select @SaldoCaja = Sum(A.num_habersol)-Sum(A.num_debesol)
-	From vsj_cajabanco A
+	From scp_cajabanco A
 	Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha < Convert(datetime, @Fecha, 20))
 	And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 	Group By A.cod_ctacontable, a.cod_tipomoneda
@@ -56,7 +56,7 @@ BEGIN
 	--Print 'Inicial: '+CONVERT(char(14),@SaldoInicial,14)
 
 	Select @SaldoCaja = Sum(A.num_haberdolar)-Sum(A.num_debedolar)
-	From vsj_cajabanco A
+	From scp_cajabanco A
 	Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha < Convert(datetime, @Fecha, 20))
 	And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 	Group By A.cod_ctacontable, a.cod_tipomoneda
@@ -74,7 +74,7 @@ BEGIN
 	--Print 'Inicial: '+CONVERT(char(14),@SaldoInicial,14)
 
 	Select @SaldoCaja = Sum(A.num_habermo)-Sum(A.num_debemo)
-	From vsj_cajabanco A
+	From scp_cajabanco A
 	Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha < Convert(datetime, @Fecha, 20))
 	And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 	Group By A.cod_ctacontable, a.cod_tipomoneda

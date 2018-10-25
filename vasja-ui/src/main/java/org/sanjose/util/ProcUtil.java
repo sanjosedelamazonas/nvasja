@@ -3,11 +3,10 @@ package org.sanjose.util;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
-import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.authentication.CurrentUser;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpTipocambio;
 import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.model.VsjCajabanco;
 import org.sanjose.views.banco.BancoService;
 import org.sanjose.views.caja.ComprobanteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +106,7 @@ public class ProcUtil {
     }
 
     @Transactional(readOnly = false)
-    public String enviarContabilidad(VsjCajabanco vcb) {
+    public String enviarContabilidad(ScpCajabanco vcb) {
         StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarContabilidad");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         query.setParameter(1, vcb.getCodCajabanco());
@@ -135,15 +134,15 @@ public class ProcUtil {
 
     @Transactional(readOnly = false)
     public void enviarContabilidad(Collection<Object> vcbs, ComprobanteService service) {
-        VsjCajabanco vcb = null;
+        ScpCajabanco vcb = null;
         try {
-            List<VsjCajabanco> vsjCajabancoList = new ArrayList<>();
+            List<ScpCajabanco> scpCajabancoList = new ArrayList<>();
             for (Object objVcb : vcbs) {
-                vcb = (VsjCajabanco) objVcb;
+                vcb = (ScpCajabanco) objVcb;
                 if (vcb.isEnviado()) {
                     continue;
                 }
-                vsjCajabancoList.add(vcb);
+                scpCajabancoList.add(vcb);
                 // Check TipoDeCambio
                 log.info("Check tipoDeCambio: " + vcb);
                 List<ScpTipocambio> tipocambios = service.getTipocambioRep().findById_FecFechacambio(
@@ -158,7 +157,7 @@ public class ProcUtil {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     Notification.show("Falta tipo de cambio para el dia: " + sdf.format(vcb.getFecFecha()), Notification.Type.WARNING_MESSAGE);
                     final ProcUtil pu = this;
-                    final VsjCajabanco tmpVcb = vcb;
+                    final ScpCajabanco tmpVcb = vcb;
 /*
                     MessageBox
                             .createQuestion()
@@ -176,17 +175,15 @@ public class ProcUtil {
 */
                 }
                 if (!isContinueEnviar) return;
-                System.out.println("Not interrupted enviar");
-                if (true) return;
             }
-            for (VsjCajabanco vcbS : vsjCajabancoList) {
+            for (ScpCajabanco vcbS : scpCajabancoList) {
                 vcb = vcbS;
                 log.info("Enviando: " + vcb);
                 String result = enviarContabilidad(vcb);
                 log.info("Resultado: " + result);
                 Notification.show("Operacion: " + vcb.getCodCajabanco(), result, Notification.Type.TRAY_NOTIFICATION);
             }
-            if (vcbs.size() != vsjCajabancoList.size()) {
+            if (vcbs.size() != scpCajabancoList.size()) {
                 Notification.show("!Attention!", "!Algunas operaciones eran omitidas por ya ser enviadas!", Notification.Type.TRAY_NOTIFICATION);
             }
         } catch (PersistenceException pe) {

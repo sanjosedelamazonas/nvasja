@@ -1,6 +1,6 @@
 package org.sanjose.helper;
 
-import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.ScpCajabanco;
 
 /**
  * VASJA class
@@ -9,14 +9,14 @@ import org.sanjose.model.VsjCajabanco;
  */
 public class EnviarException extends Exception {
 
-    private final VsjCajabanco cajabanco;
+    private final ScpCajabanco cajabanco;
 
-    public EnviarException(String message, VsjCajabanco cajabanco) {
+    public EnviarException(String message, ScpCajabanco cajabanco) {
         super(message);
         this.cajabanco = cajabanco;
     }
 
-    public VsjCajabanco getCajabanco() {
+    public ScpCajabanco getCajabanco() {
         return cajabanco;
     }
 }

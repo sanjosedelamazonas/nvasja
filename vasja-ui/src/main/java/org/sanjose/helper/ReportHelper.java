@@ -16,8 +16,8 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.Caja;
 import org.sanjose.model.MsgUsuario;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.model.VsjCajabanco;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
@@ -117,11 +117,11 @@ public class ReportHelper {
 	private static String getReportFromItem(VsjItem op) {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
-		return (op instanceof VsjCajabanco ? (isTxt ? "ComprobanteTxt" : "Comprobante") : "ComprobanteCheque");
+		return (op instanceof ScpCajabanco ? (isTxt ? "ComprobanteTxt" : "Comprobante") : "ComprobanteCheque");
 	}
 
 	private static Integer getIdFromItem(VsjItem op) {
-		return (op instanceof VsjCajabanco ? ((VsjCajabanco) op).getCodCajabanco()
+		return (op instanceof ScpCajabanco ? ((ScpCajabanco) op).getCodCajabanco()
 				: ((VsjBancocabecera) op).getCodBancocabecera());
 	}
 

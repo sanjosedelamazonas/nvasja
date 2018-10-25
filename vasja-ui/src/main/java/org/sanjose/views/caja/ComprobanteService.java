@@ -1,6 +1,6 @@
 package org.sanjose.views.caja;
 
-import org.sanjose.model.VsjCajabanco;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.repo.*;
 import org.sanjose.util.GenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
 @Transactional
 public class ComprobanteService {
 
-    private final VsjCajabancoRep cajabancoRep;
+    private final ScpCajabancoRep cajabancoRep;
     private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
     private final ScpPlancontableRep planRepo;
     private final ScpPlanespecialRep planEspRepo;
@@ -38,7 +38,7 @@ public class ComprobanteService {
     private final ScpTipocambioRep tipocambioRep;
 
     @Autowired
-    public ComprobanteService(VsjCajabancoRep cajabancoRep, VsjConfiguractacajabancoRep configuractacajabancoRepo,
+    public ComprobanteService(ScpCajabancoRep cajabancoRep, VsjConfiguractacajabancoRep configuractacajabancoRepo,
                               ScpCategoriaproyectoRep scpCategoriaproyectoRep, ScpPlancontableRep planRepo,
                               ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                               ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
@@ -66,9 +66,9 @@ public class ComprobanteService {
     }
 
     @Transactional(readOnly = false)
-    public VsjCajabanco save(VsjCajabanco cajabanco) {
+    public ScpCajabanco save(ScpCajabanco cajabanco) {
         // You can persist your data here
-        VsjCajabanco savedCajabanco = cajabancoRep.save(cajabanco);
+        ScpCajabanco savedCajabanco = cajabancoRep.save(cajabanco);
 
         if (GenUtil.strNullOrEmpty(savedCajabanco.getTxtCorrelativo())) {
             savedCajabanco.setTxtCorrelativo(GenUtil.getTxtCorrelativo(savedCajabanco.getCodCajabanco()));
@@ -81,29 +81,29 @@ public class ComprobanteService {
     }
 
     @Transactional(readOnly = false)
-    public List<VsjCajabanco> saveVsjCajabancos(List<VsjCajabanco> cajabancos) {
+    public List<ScpCajabanco> saveVsjCajabancos(List<ScpCajabanco> cajabancos) {
         assert TransactionSynchronizationManager.isActualTransactionActive();
-        List<VsjCajabanco> savedOperaciones = new ArrayList<>();
+        List<ScpCajabanco> savedOperaciones = new ArrayList<>();
 
         String transCorrelativo = null;
         // Find at least one operation with transCorrelativo set
-        for (VsjCajabanco oper : cajabancos) {
+        for (ScpCajabanco oper : cajabancos) {
             if (!GenUtil.strNullOrEmpty(oper.getCodTranscorrelativo())) {
                 transCorrelativo = oper.getCodTranscorrelativo();
                 break;
             }
         }
         if (transCorrelativo == null) transCorrelativo = GenUtil.getUuid();
-        for (VsjCajabanco oper : cajabancos) {
+        for (ScpCajabanco oper : cajabancos) {
             if (GenUtil.strNullOrEmpty(oper.getCodTranscorrelativo()))
                 oper.setCodTranscorrelativo(transCorrelativo);
         }
-        for (VsjCajabanco oper : cajabancoRep.save(cajabancos)) {
+        for (ScpCajabanco oper : cajabancoRep.save(cajabancos)) {
             // Tested saving each element using entityManager directly but then an Exception is raised:
             // javax.persistence.TransactionRequiredException: No EntityManager with actual transaction available for
             // current thread - cannot reliably process 'merge' call
             //
-//            VsjCajabanco savedCajabanco = em.merge(oper);
+//            ScpCajabanco savedCajabanco = em.merge(oper);
             if (GenUtil.strNullOrEmpty(oper.getTxtCorrelativo())) {
                 oper.setTxtCorrelativo(GenUtil.getTxtCorrelativo(oper.getCodCajabanco()));
                 // TEST transactionality - causes org.springframework.dao.DataIntegrityViolationException
@@ -121,7 +121,7 @@ public class ComprobanteService {
         return savedOperaciones;
     }
 
-    public VsjCajabancoRep getCajabancoRep() {
+    public ScpCajabancoRep getCajabancoRep() {
         return cajabancoRep;
     }
 

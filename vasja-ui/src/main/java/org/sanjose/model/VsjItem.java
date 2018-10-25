@@ -51,7 +51,7 @@ public abstract class VsjItem {
     private Timestamp fecFregistro;
 
     @Column(name="txt_correlativo")
-    private String txtCorrelativo;
+    private String txtCorrelativo="";
 
     @Column(name="ind_tipocuenta")
     private Character indTipocuenta;

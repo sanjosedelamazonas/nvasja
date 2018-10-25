@@ -6,8 +6,8 @@ import com.vaadin.data.Validator;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.VsjBancoItem;
-import org.sanjose.model.VsjCajabanco;
 import org.sanjose.model.VsjItem;
 
 import java.math.BigDecimal;
@@ -45,9 +45,9 @@ public class GenUtil {
     }
 
     public static boolean isIngreso(VsjItem vcb) {
-        if (vcb instanceof VsjCajabanco)
-            return ((VsjCajabanco) vcb).getNumDebesol().compareTo(new BigDecimal(0)) > 0
-                    || ((VsjCajabanco) vcb).getNumDebedolar().compareTo(new BigDecimal(0)) > 0;
+        if (vcb instanceof ScpCajabanco)
+            return ((ScpCajabanco) vcb).getNumDebesol().compareTo(new BigDecimal(0)) > 0
+                    || ((ScpCajabanco) vcb).getNumDebedolar().compareTo(new BigDecimal(0)) > 0;
         if (vcb instanceof VsjBancoItem)
             return ((VsjBancoItem) vcb).getNumDebesol().compareTo(new BigDecimal(0)) > 0
                     || ((VsjBancoItem) vcb).getNumDebedolar().compareTo(new BigDecimal(0)) > 0
