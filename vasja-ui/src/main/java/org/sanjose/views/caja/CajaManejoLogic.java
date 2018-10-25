@@ -51,6 +51,8 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
         view.nuevaTransferencia.addClickListener(e -> newTransferencia());
         view.btnEditar.addClickListener(e -> editarComprobante(view.getSelectedRow()));
         view.btnVerVoucher.addClickListener(e -> generateComprobante());
+        //
+        view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
         view.btnImprimir.addClickListener(e -> printComprobante());
         view.btnReporteCaja.addClickListener(e -> {
             ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
