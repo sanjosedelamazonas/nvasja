@@ -27,3 +27,13 @@ DONE
 - na wyszukiwaniu proyectos powinno pokazywac tez projekty ktore nie maja daty zakonczenia, albo uwzgledniac date operacji/wyszukiwania wzgledem daty zakonczenia proyecto
 
 
+- raport caja diario
+- nie usuwa z konfiguracji caja predeterminada
+- ustawienie caja domyslna dla dolares
+- nro de comprobane 01-000001 en la impresion y en el reporte
+- nuevo comprobante o edycja w oknie emergente
+- cta contable cerrada - no conciderar
+- przenosi do contabilidad z numero de comprobante z caja/bancos y prefix 01/02
+- okno na saldos osobne - zalezne od periodo w ktorym wybrana caja
+- jak zmienia moneda soles/dolares/euro no debe borrar el monto
+- sortowanie w caja y manejo de caja por fecha, nro de comprobante
