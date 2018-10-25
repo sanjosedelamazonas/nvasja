@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.17.RELEASE")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+jar {
+    baseName = 'vaadin-ui'
+    version =  '0.1.1'
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://repository.jboss.org/nexus/content/repositories/releases" }
+    maven { url "http://oss.sonatype.org/content/repositories/vaadin-snapshots/" }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencyManagement {
+    imports {
+        mavenBom 'com.vaadin:vaadin-bom:8.6.0.rc1'
+    }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("com.vaadin:vaadin-spring-boot-starter:3.1.1")
+    compile("com.h2database:h2")
+    testCompile("junit:junit")
+}

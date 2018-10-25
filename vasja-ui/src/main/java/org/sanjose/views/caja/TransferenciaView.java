@@ -1,5 +1,8 @@
 package org.sanjose.views.caja;
 
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.event.SelectionEvent;
 import com.vaadin.external.org.slf4j.Logger;
@@ -7,7 +10,7 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.ui.*;
+import com.vaadin.v7.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.util.ViewUtil;
@@ -52,8 +55,11 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
     private static final Logger log = LoggerFactory.getLogger(TransferenciaView.class);
 
     private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
-            numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
+            selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
+    private final AbstractComponent[] allNewFiels = new AbstractComponent[] {
+            numIngreso, numEgreso
+    };
     TransferenciaLogic viewLogic = null;
     private BeanItemContainer<ScpCajabanco> container;
     private ComprobanteService comprobanteService;
@@ -117,6 +123,9 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
     public void setEnableFields(boolean enabled) {
         for (Field f : allFields) {
             if (f!=selMoneda || !enabled) f.setEnabled(enabled);
+        }
+        for (AbstractComponent f : allNewFiels) {
+            f.setEnabled(enabled);
         }
         btnResponsable.setEnabled(enabled);
         btnDestino.setEnabled(enabled);

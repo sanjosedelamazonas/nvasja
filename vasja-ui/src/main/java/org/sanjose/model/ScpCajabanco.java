@@ -431,6 +431,11 @@ public class ScpCajabanco extends VsjItem implements Serializable {
 		return flgEnviado!=null && flgEnviado.equals('1');
 	}
 
+	public void setEnviado(boolean val) {
+		if (val) setFlgEnviado('1');
+		else setFlgEnviado('0');
+	}
+
 	public Character getFlgSaldo() {
 		return flgSaldo;
 	}

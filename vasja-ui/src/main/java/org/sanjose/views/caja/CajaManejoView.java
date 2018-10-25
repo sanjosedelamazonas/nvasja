@@ -1,9 +1,6 @@
 package org.sanjose.views.caja;
 
-import com.vaadin.data.sort.Sort;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.filter.Compare;
-import com.vaadin.event.ItemClickEvent;
+import com.vaadin.v7.data.sort.Sort;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.filter.Compare;
 import com.vaadin.v7.event.ItemClickEvent;

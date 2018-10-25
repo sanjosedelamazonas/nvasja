@@ -1,6 +1,6 @@
 package org.sanjose.views.banco;
 
-import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import com.vaadin.v7.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
@@ -10,9 +10,11 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 
 import java.io.Serializable;
@@ -68,11 +70,12 @@ public class BancoOperacionesLogic implements Serializable {
             }
         });
 
-        GridContextMenu gridContextMenu = new GridContextMenu(view.getGridBanco());
-
-        gridContextMenu.addGridBodyContextMenuListener(e -> {
+        ContextMenu gridContextMenu = new ContextMenu(view.getGridBanco(), true);
+        gridContextMenu.addContextMenuOpenListener(e -> {
             gridContextMenu.removeItems();
-            final Object itemId = e.getItemId();
+            // TODO 8
+            final Object itemId = null;
+            //final Object itemId = e.getItemId();
             if (itemId == null) {
                 //  gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
             } else {

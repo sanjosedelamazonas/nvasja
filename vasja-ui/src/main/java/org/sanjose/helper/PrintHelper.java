@@ -6,6 +6,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.*;
+import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.TextArea;
 import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedEvent;
 import dk.apaq.vaadin.addon.printservice.PrintServiceListChangedListener;
@@ -121,8 +122,9 @@ public class PrintHelper extends VerticalLayout implements Viewing {
 
 	private void drawPrinterTable() {
 	    setCaption("Imprimir");
+	    //TODO 8
 	    Button button = new Button("Imprimir");
-	    button.addListener(new Button.ClickListener() {
+	   /* button.addListener(new Button.ClickListener() {
 	        public void buttonClick(ClickEvent event) {
 	            try {
 	            	if (printService==null) Notification.show("Seleccione la impresora", Notification.Type.ERROR_MESSAGE);
@@ -163,11 +165,12 @@ public class PrintHelper extends VerticalLayout implements Viewing {
 					e.printStackTrace();
 				}
 			}
-	    });
+	    });*/
 	    printOptions.setImmediate(true);
 	    addComponent(table);
 	    addComponent(button);
-	    addComponent(buttonText);
+	    //addComponent(buttonText);
+
 	    addComponent(printOptions);
 	    table.setSelectable(true);
 	    table.setMultiSelect(false);

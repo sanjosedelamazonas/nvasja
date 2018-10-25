@@ -109,7 +109,8 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
         gridBanco.setEditorSaveCaption("Guardar");
 
-        gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
+        // TODO 8
+        //gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
         gridBanco.getColumn("flgCobrado").setEditable(true);
         gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
@@ -120,7 +121,8 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
-        ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
+        //TODO 8
+        //ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
 
         DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),

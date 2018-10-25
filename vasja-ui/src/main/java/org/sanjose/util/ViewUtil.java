@@ -1,17 +1,19 @@
 package org.sanjose.util;
 
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.data.util.FilterableSortableGridTreeContainer;
 import com.vaadin.v7.data.util.ObjectProperty;
 import com.vaadin.v7.data.util.filter.Between;
 import com.vaadin.v7.data.util.filter.Compare;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.server.Sizeable;
-import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
-import com.vaadin.ui.*;
+import com.vaadin.v7.ui.*;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
@@ -108,12 +110,14 @@ public class ViewUtil {
     }
 
     public static void setDefaultsForNumberField(tm.kod.widgets.numberfield.NumberField numberField) {
-        numberField.setConverter(new BigDecimalConverter());
+        //TODO 8
+        //numberField.
+        //numberField.setConverter(new BigDecimalConverter());
         numberField.setLocale(ConfigurationUtil.getLocale());
         numberField.setDecimalLength(2);
         numberField.setUseGrouping(true);
         numberField.setDecimalSeparator(',');               // e.g. 1,5
-        numberField.setNullRepresentation("");
+        //numberField.setNullRepresentation("");
         numberField.setGroupingSeparator('.');              // use '.' as grouping separator
         numberField.setSigned(false);
     }
@@ -273,7 +277,9 @@ public class ViewUtil {
         }
     }
 
-    public static boolean isParent(Grid.RowReference rowReference) {
+    //TODO 8
+
+    /*public static boolean isParent(Grid.RowReference rowReference) {
         return ((FilterableSortableGridTreeContainer) rowReference.getGrid().getContainerDataSource()).getHierachical().getParent(rowReference.getItemId()) == null;
     }
 
@@ -302,7 +308,7 @@ public class ViewUtil {
             return "";
         });
     }
-
+*/
     public static void colorizeRows(Grid grid) {
         grid.setRowStyleGenerator(rowReference -> {
             if (((ScpCajabanco)rowReference.getItemId()).isEnviado()) {
@@ -322,7 +328,7 @@ public class ViewUtil {
         subWindow.setWidth(width, Sizeable.Unit.PIXELS);
         subWindow.setHeight(600, Sizeable.Unit.PIXELS);
         subWindow.setModal(false);
-        subWindow.setContent((Component)component);
+        subWindow.setContent((AbstractComponent)component);
         component.setSubWindow(subWindow);
         subWindow.setClosable(false);
         // Don't show navigation buttons if opened in subwindow Nuevo Comprobante

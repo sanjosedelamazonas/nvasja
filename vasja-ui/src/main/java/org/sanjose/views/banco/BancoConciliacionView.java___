@@ -1,5 +1,8 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.data.provider.HierarchicalDataProvider;
+import com.vaadin.data.provider.TreeDataProvider;
+import com.vaadin.ui.TreeGrid;
 import com.vaadin.v7.data.Item;
 import com.vaadin.data.util.FilterableSortableGridTreeContainer;
 import com.vaadin.v7.data.util.HierarchicalContainer;
@@ -209,6 +212,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
     }
 
     private void loadItems(List<VsjBancocabecera> vsjBancocabeceras) {
+        TreeDataProvider indContainer = new TreeDataProvider();
         HierarchicalContainer indContainer = new HierarchicalContainer();
         indContainer.addContainerProperty("id", Integer.class, "");
         indContainer.addContainerProperty("txtCorrelativo", String.class, "");
@@ -260,7 +264,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         container = new FilterableSortableGridTreeContainer(indContainer);
         container.expandAll();
         if (gridBanco == null)
-            gridBanco = new GridTree(container, "id");
+            gridBanco = new TreeGrid<VsjBancocabecera>(container, "id");
         else
             gridBanco.setContainerDataSource(container);
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);

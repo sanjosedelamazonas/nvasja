@@ -1,6 +1,9 @@
 package org.sanjose.views.caja;
 
-import com.vaadin.ui.*;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Window;
+import com.vaadin.v7.ui.*;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
 

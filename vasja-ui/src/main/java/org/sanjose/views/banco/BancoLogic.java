@@ -1,5 +1,6 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.data.Binder;
 import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import com.vaadin.v7.data.util.BeanItem;
@@ -14,6 +15,7 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
 import org.sanjose.util.GenUtil;
@@ -157,6 +159,8 @@ public class BancoLogic extends BancoItemLogic {
     private void bindForm(VsjBancocabecera item) {
         isLoading = true;
         clearSaldos();
+
+        Binder<VsjBancocabecera> binder = new Binder<>();
         beanItem = new BeanItem<>(item);
         fieldGroupCabezera = new FieldGroup(beanItem);
         fieldGroupCabezera.setItemDataSource(beanItem);
@@ -169,9 +173,16 @@ public class BancoLogic extends BancoItemLogic {
         view.getTxtOrigen().setEnabled(false);
         fieldGroupCabezera.bind(view.getTxtNumCombrobante(), "codComprobanteenlace");
         view.getTxtNumCombrobante().setEnabled(false);
-        fieldGroupCabezera.bind(view.getChkEnviado(), "flgEnviado");
-        view.getChkCobrado().setConverter(new MesCobradoToBooleanConverter(item));
-        fieldGroupCabezera.bind(view.getChkCobrado(), "codMescobrado");
+
+        binder.forField(view.getChkEnviado())
+                .bind(VsjBancocabecera::isEnviado,VsjBancocabecera::setEnviado);
+        ///fieldGroupCabezera.bind(view.getChkEnviado(), "flgEnviado");
+        // TODO 8
+        //view.getChkCobrado().setConverter(new MesCobradoToBooleanConverter(item));
+
+        binder.forField(view.getChkCobrado())
+                .bind(VsjBancocabecera::isMesCobrado,VsjBancocabecera::setMesCobrado);
+        //fieldGroupCabezera.bind(view.getChkCobrado(), "codMescobrado");
         view.getChkEnviado().setEnabled(false);
 
         for (Field f : fieldGroupCabezera.getFields()) {

@@ -112,7 +112,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         gridBanco.setEditorEnabled(true);
         gridBanco.setEditorBuffered(true);
 
-        gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
+        //TODO 8
+        //gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
         gridBanco.getColumn("flgCobrado").setEditable(true);
         gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
@@ -122,7 +123,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
-        ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
+        //TODO 8
+        //ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
 
         DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),

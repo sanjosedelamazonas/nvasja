@@ -7,6 +7,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -214,6 +216,21 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 
 	public boolean isEnviado() {
 		return flgEnviado!=null && flgEnviado.equals('1');
+	}
+
+	public void setEnviado(boolean val) {
+		if (val) setFlgEnviado('1');
+		else setFlgEnviado('0');
+	}
+
+	public boolean isMesCobrado() {
+		return codMescobrado!=null && codMescobrado.length()>0;
+	}
+
+	public void setMesCobrado(boolean val) {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM");
+		if (val) setCodMescobrado(sdf.format(System.currentTimeMillis()));
+		else setCodMescobrado("");
 	}
 
 	@Override

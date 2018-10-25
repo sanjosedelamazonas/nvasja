@@ -1,6 +1,6 @@
 package org.sanjose.views.sys;
 
-import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
@@ -15,6 +15,7 @@ import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 
 import java.util.Collection;
+
 
 /**          A
  * A view for performing create-read-update-delete operations on products.
@@ -32,7 +33,7 @@ public class PropiedadView extends PropiedadUI implements Viewing {
     private final int[] FILTER_WIDTH = new int[]{16, 16};
     private PropiedadService propiedadService;
 
-    public PropiedadView(PropiedadService propiedadService) {
+     public PropiedadView(PropiedadService propiedadService) {
         this.propiedadService = propiedadService;
         this.repo = propiedadService.getPropiedadRep();
         this.viewLogic = new PropiedadLogic(this);
@@ -64,11 +65,12 @@ public class PropiedadView extends PropiedadUI implements Viewing {
 
         ViewUtil.setupColumnFilters(gridPropiedad, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
-        GridContextMenu gridContextMenu = new GridContextMenu(gridPropiedad);
-
-        gridContextMenu.addGridBodyContextMenuListener(e -> {
+        ContextMenu gridContextMenu = new ContextMenu(gridPropiedad, true);
+        gridContextMenu.addContextMenuOpenListener(e -> {
             gridContextMenu.removeItems();
-            final Object itemId = e.getItemId();
+            // TODO 8
+            final Object itemId = null;
+            //final Object itemId = e.getItemId();
             if (itemId == null) {
                 gridContextMenu.addItem("Nueva propiedad", k -> {
                     viewLogic.newPropiedad();

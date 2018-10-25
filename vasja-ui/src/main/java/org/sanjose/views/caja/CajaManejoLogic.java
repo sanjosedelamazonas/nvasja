@@ -1,6 +1,6 @@
 package org.sanjose.views.caja;
 
-import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -13,6 +13,7 @@ import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.NonEditableException;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpCajabanco;
+import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
@@ -56,11 +57,13 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
         view.btnReporteCaja.addClickListener(e -> {
             ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
         });
-
-        GridContextMenu gridContextMenu = new GridContextMenu(view.getGridCaja());
-        gridContextMenu.addGridBodyContextMenuListener(e -> {
+        ContextMenu gridContextMenu = new ContextMenu(view.gridCaja, true);
+        gridContextMenu.addContextMenuOpenListener(e -> {
             gridContextMenu.removeItems();
-            final Object itemId = e.getItemId();
+            // TODO 8
+            final Object itemId = null;
+            //final Object itemId = e.getContextClickEvent().
+            //.getItemId();
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
             } else {

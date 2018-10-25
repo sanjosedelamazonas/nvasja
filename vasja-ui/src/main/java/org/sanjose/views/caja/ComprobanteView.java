@@ -3,8 +3,11 @@ package org.sanjose.views.caja;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.ui.*;
+import com.vaadin.v7.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.util.DataUtil;
@@ -31,8 +34,11 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
     private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);
 
     private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
-            numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
+            selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
+    private final AbstractComponent[] allNewFiels = new AbstractComponent[] {
+            numIngreso, numEgreso
+    };
     ComprobanteLogic viewLogic;
     private ComprobanteService comprobanteService;
     private Window subWindow;
@@ -61,6 +67,9 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
 
     public void setEnableFields(boolean enabled) {
         for (Field f : allFields) {
+            f.setEnabled(enabled);
+        }
+        for (AbstractComponent f : allNewFiels) {
             f.setEnabled(enabled);
         }
         btnResponsable.setEnabled(enabled);

@@ -1,0 +1,77 @@
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+group = 'org.sanjosedelamazonas'
+version = '1.0-SNAPSHOT'
+
+description = """vasja-ui"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.17.RELEASE")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE"
+    }
+}
+
+
+jar {
+    baseName = 'vaadin-ui'
+    version =  '0.1.1'
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://repository.jboss.org/nexus/content/repositories/releases" }
+    maven { url "http://oss.sonatype.org/content/repositories/vaadin-snapshots/" }
+    maven { url "http://maven.vaadin.com/vaadin-addons" }
+    maven { url "https://maven.vaadin.com/vaadin-prereleases" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'com.vaadin:vaadin-bom:8.6.0.rc1'
+    }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("com.vaadin:vaadin-spring-boot-starter:3.1.1")
+    compile("com.h2database:h2")
+    testCompile("junit:junit")
+}
+
+/*
+dependencies {
+    compile group: 'org.sanjosedelamazonas', name: 'vasja-widgetset', version:'1.0-SNAPSHOT'
+    compile group: 'org.sanjosedelamazonas', name: 'vasja-fonts', version:'1.0-SNAPSHOT'
+    compile group: 'org.sanjosedelamazonas', name: 'vasja-reports', version:'1.0-SNAPSHOT'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:'1.5.17.RELEASE'
+    compile group: 'com.vaadin', name: 'vaadin-spring-boot-starter', version:'3.1.1'
+    compile group: 'com.microsoft.sqlserver', name: 'sqljdbc4', version:'4.2'
+    compile group: 'com.vaadin', name: 'vaadin-shared', version:'8.6.0.rc1'
+    compile group: 'com.vaadin', name: 'vaadin-server', version:'8.6.0.rc1'
+    compile group: 'com.vaadin', name: 'vaadin-compatibility-server', version:'8.6.0.rc1'
+    compile group: 'com.vaadin', name: 'vaadin-push', version:'8.6.0.rc1'
+    compile group: 'com.vaadin', name: 'vaadin-themes', version:'8.6.0.rc1'
+    compile group: 'com.vaadin', name: 'vaadin-spring', version:'3.1.1'
+    compile(group: 'net.sf.jasperreports', name: 'jasperreports', version:'6.3.1') {
+exclude(module: 'javax.inject')
+    }
+    compile group: 'org.sanjosedelamazonas', name: 'printapplet-addon', version:'0.0.5'
+    compile group: 'org.hibernate', name: 'hibernate-validator', version:'5.2.4.Final'
+    testCompile group: 'junit', name: 'junit', version:'4.11'
+}
+*/

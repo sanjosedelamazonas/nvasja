@@ -1,5 +1,10 @@
 package org.sanjose.views.caja;
 
+import com.vaadin.data.Binder;
+import com.vaadin.data.converter.StringToBigDecimalConverter;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.Property;
 import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
@@ -12,7 +17,7 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Sizeable;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
-import com.vaadin.ui.*;
+import com.vaadin.v7.ui.*;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
@@ -237,16 +242,16 @@ class ComprobanteLogic implements Serializable {
         view.getSelMoneda().addValueChangeListener(event -> setMonedaLogic(event.getProperty().getValue().toString().charAt(0)));
 
         view.getNumIngreso().addValueChangeListener(event -> {
-                    if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                        if (GenUtil.isInvertedZero(event.getProperty().getValue())) {
+                    if (!GenUtil.objNullOrEmpty(event.getValue())) {
+                        if (GenUtil.isInvertedZero(event.getValue())) {
                             view.getNumEgreso().setValue("");
                         }
                     }
                 }
         );
         view.getNumEgreso().addValueChangeListener(event -> {
-                    if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
-                        if (GenUtil.isInvertedZero(event.getProperty().getValue())) {
+                    if (!GenUtil.objNullOrEmpty(event.getValue())) {
+                        if (GenUtil.isInvertedZero(event.getValue())) {
                             view.getNumIngreso().setValue("");
                         }
                     }
@@ -324,8 +329,9 @@ class ComprobanteLogic implements Serializable {
         view.getSelMoneda().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codTipomoneda"));
         view.getNumIngreso().setDescription("Ingreso");
         view.getNumEgreso().setDescription("Egreso");
-        view.getNumIngreso().addValidator(new TwoNumberfieldsValidator(view.getNumEgreso(), false, "Ingreso o egreso debe ser rellenado"));
-        view.getNumEgreso().addValidator(new TwoNumberfieldsValidator(view.getNumIngreso(), false, "Ingreso o egreso debe ser rellenado"));
+        //TODO 8
+        //view.getNumIngreso().addValidator(new TwoNumberfieldsValidator(view.getNumEgreso(), false, "Ingreso o egreso debe ser rellenado"));
+        //view.getNumEgreso().addValidator(new TwoNumberfieldsValidator(view.getNumIngreso(), false, "Ingreso o egreso debe ser rellenado"));
         view.getSelResponsable().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codDestino"));
         view.getSelLugarGasto().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codContraparte"));
         view.getSelCodAuxiliar().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codDestinoitem"));
@@ -432,9 +438,14 @@ class ComprobanteLogic implements Serializable {
         if (!isLoading) {
             String oldNumEgreso = view.getNumEgreso().getValue();
             String oldNumIngreso = view.getNumIngreso().getValue();
+            Binder<ScpCajabanco> binder = new Binder<>();
+
+            //binder.bind(view.getSelProyecto(),cb -> cb.getCodProyecto(),(cb, cp) -> cb.setCodProyecto(cp));
+
             try {
-                fieldGroup.unbind(view.getNumEgreso());
-                fieldGroup.unbind(view.getNumIngreso());
+                // TODO 8
+                //fieldGroup.unbind(view.getNumEgreso());
+                //fieldGroup.unbind(view.getNumIngreso());
             } catch (FieldGroup.BindException be) {
             }
             view.getSelCaja().removeAllValidators();
@@ -446,8 +457,12 @@ class ComprobanteLogic implements Serializable {
                 beanItem.getBean().setNumHabermo(new BigDecimal(0));
                 beanItem.getBean().setNumDebemo(new BigDecimal(0));
                 DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
-                fieldGroup.bind(view.getNumEgreso(), "numHabersol");
-                fieldGroup.bind(view.getNumIngreso(), "numDebesol");
+                binder.forField(view.getNumEgreso()).withConverter(new StringToBigDecimalConverter(new BigDecimal("0"), "Must be an amount"))
+                        .bind(ScpCajabanco::getNumHabersol,ScpCajabanco::setNumHabersol);
+                binder.forField(view.getNumIngreso()).withConverter(new StringToBigDecimalConverter(new BigDecimal("0"), "Must be an amount"))
+                        .bind(ScpCajabanco::getNumDebesol,ScpCajabanco::setNumDebesol);
+                //fieldGroup.bind(view.getNumEgreso(), "numHabersol");
+                //fieldGroup.bind(view.getNumIngreso(), "numDebesol");
                 saldoChecker.setSaldoField(view.getSaldoCajaPEN());
                 saldoChecker.setProyectoField(view.getSaldoProyPEN());
             } else if (moneda.equals(USD)) {
@@ -458,8 +473,9 @@ class ComprobanteLogic implements Serializable {
                 beanItem.getBean().setNumHabermo(new BigDecimal(0));
                 beanItem.getBean().setNumDebemo(new BigDecimal(0));
                 DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
-                fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
-                fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
+                //TODO 8
+                //fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
+                //fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
                 saldoChecker.setSaldoField(view.getSaldoCajaUSD());
                 saldoChecker.setProyectoField(view.getSaldoProyUSD());
             } else {
@@ -470,8 +486,9 @@ class ComprobanteLogic implements Serializable {
                 beanItem.getBean().setNumHaberdolar(new BigDecimal(0));
                 beanItem.getBean().setNumDebedolar(new BigDecimal(0));
                 DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
-                fieldGroup.bind(view.getNumEgreso(), "numHabermo");
-                fieldGroup.bind(view.getNumIngreso(), "numDebemo");
+                //TODO 8
+                //fieldGroup.bind(view.getNumEgreso(), "numHabermo");
+                //fieldGroup.bind(view.getNumIngreso(), "numDebemo");
                 saldoChecker.setSaldoField(view.getSaldoCajaEUR());
                 saldoChecker.setProyectoField(view.getSaldoProyEUR());
             }
@@ -664,6 +681,9 @@ class ComprobanteLogic implements Serializable {
         isEdit = !GenUtil.strNullOrEmpty(item.getCodUregistro());
         clearSaldos();
         beanItem = new BeanItem<>(item);
+
+        Binder<ScpCajabanco> binder = new Binder<>();
+
         if (fieldGroup != null) {
             fieldGroup.discard();
             List<Field<?>> fieldList = new ArrayList<>(fieldGroup.getFields());
@@ -681,8 +701,13 @@ class ComprobanteLogic implements Serializable {
         fieldGroup.bind(view.getSelMoneda(), "codTipomoneda");
         fieldGroup.bind(view.getDataFechaComprobante(), "fecFecha");
         fieldGroup.bind(view.getSelCaja(), "codCtacontable");
-        view.getChkEnviado().setConverter(new ZeroOneToBooleanConverter());
-        fieldGroup.bind(view.getChkEnviado(), "flgEnviado");
+        //TODO 8
+        //view.getChkEnviado().setConverter(new ZeroOneToBooleanConverter());
+        //.withConverter(new ZeroOneToBooleanConverter()
+        binder.forField(view.getChkEnviado())
+                .bind(ScpCajabanco::isEnviado,ScpCajabanco::setEnviado);
+
+//        fieldGroup.bind(view.getChkEnviado(), "flgEnviado");
         view.getChkEnviado().setEnabled(false);
         fieldGroup.bind(view.getTxtOrigen(), "codOrigenenlace");
         view.getTxtOrigen().setEnabled(false);
@@ -690,14 +715,19 @@ class ComprobanteLogic implements Serializable {
         view.getTxtNumCombrobante().setEnabled(false);
 
         if (isEdit && PEN.equals(item.getCodTipomoneda())) {
-            fieldGroup.bind(view.getNumEgreso(), "numHabersol");
-            fieldGroup.bind(view.getNumIngreso(), "numDebesol");
+            binder.forField(view.getNumEgreso()).withConverter(new StringToBigDecimalConverter(new BigDecimal("0"), "Must be an amount"))
+                    .bind(ScpCajabanco::getNumHabersol,ScpCajabanco::setNumHabersol);
+            binder.forField(view.getNumIngreso()).withConverter(new StringToBigDecimalConverter(new BigDecimal("0"), "Must be an amount"))
+                    .bind(ScpCajabanco::getNumDebesol,ScpCajabanco::setNumDebesol);
+            // TODO 8
+  //          fieldGroup.bind(view.getNumEgreso(), "numHabersol");
+  //          fieldGroup.bind(view.getNumIngreso(), "numDebesol");
         } else if (isEdit && USD.equals(item.getCodTipomoneda())) {
-            fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
-            fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
+   //         fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
+   //         fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
         } else if (isEdit && EUR.equals(item.getCodTipomoneda())) {
-            fieldGroup.bind(view.getNumEgreso(), "numHabermo");
-            fieldGroup.bind(view.getNumIngreso(), "numDebemo");
+    //        fieldGroup.bind(view.getNumEgreso(), "numHabermo");
+    //        fieldGroup.bind(view.getNumIngreso(), "numDebemo");
         }
         ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
         ViewUtil.setDefaultsForNumberField(view.getNumEgreso());

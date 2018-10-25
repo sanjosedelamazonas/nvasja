@@ -1,6 +1,6 @@
 package org.sanjose.validator;
 
-import com.vaadin.v7.ui.TextField;
+import com.vaadin.ui.TextField;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 
@@ -15,10 +15,10 @@ import java.util.Locale;
 public class SaldoChecker {
 
     private final TextField egresoField;
-    private TextField saldoField;
-    private TextField proyectoField;
+    private com.vaadin.v7.ui.TextField saldoField;
+    private com.vaadin.v7.ui.TextField proyectoField;
 
-    public SaldoChecker(TextField egresoField, TextField saldoField, TextField proyectoField) {
+    public SaldoChecker(TextField egresoField, com.vaadin.v7.ui.TextField saldoField, com.vaadin.v7.ui.TextField proyectoField) {
         this.egresoField = egresoField;
         this.saldoField = saldoField;
         this.proyectoField = proyectoField;
@@ -49,20 +49,20 @@ public class SaldoChecker {
         }
     }
 
-    public TextField getSaldoField() {
+    public com.vaadin.v7.ui.TextField getSaldoField() {
         return saldoField;
     }
 
-    public void setSaldoField(TextField saldoField) {
+    public void setSaldoField(com.vaadin.v7.ui.TextField saldoField) {
         this.saldoField = saldoField;
         check();
     }
 
-    public TextField getProyectoField() {
+    public com.vaadin.v7.ui.TextField getProyectoField() {
         return proyectoField;
     }
 
-    public void setProyectoField(TextField proyectoField) {
+    public void setProyectoField(com.vaadin.v7.ui.TextField proyectoField) {
         this.proyectoField = proyectoField;
         check();
     }

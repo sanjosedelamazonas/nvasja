@@ -1,5 +1,6 @@
 package org.sanjose.validator;
 
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.v7.data.Validator;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ public class TwoNumberfieldsValidator implements Validator {
 
     private static final Logger log = LoggerFactory.getLogger(TwoNumberfieldsValidator.class);
 
-    private final AbstractField field;
+    private final AbstractComponent field;
 
     private final String message;
 
@@ -37,12 +38,12 @@ public class TwoNumberfieldsValidator implements Validator {
     @Override
     public void validate(Object value) throws InvalidValueException {
         if (!isPermitEmpty && ((GenUtil.objNullOrEmpty(value)
-                && GenUtil.objNullOrEmpty(field.getValue())))) {
+                && GenUtil.objNullOrEmpty(field.getData())))) {
             field.markAsDirty();
             throw new InvalidValueException("Uno de los dos tiene que estar rellenado");
         }
 
-        if (!isPermitEmpty && isZero(value) && isZero(field.getValue())) {
+        if (!isPermitEmpty && isZero(value) && isZero(field.getData())) {
             field.markAsDirty();
             throw new InvalidValueException("Los dos no pueden tener zeros");
         }

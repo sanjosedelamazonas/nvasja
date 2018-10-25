@@ -1,5 +1,7 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Button;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.data.util.GeneratedPropertyContainer;
@@ -10,7 +12,8 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.ui.*;
+import com.vaadin.v7.ui.*;
+import com.vaadin.v7.ui.PopupDateField;
 import org.sanjose.converter.ZeroOneToBooleanConverter;
 import org.sanjose.model.VsjBancocabecera;
 import org.sanjose.model.VsjBancodetalle;
@@ -60,11 +63,18 @@ public class BancoOperView extends BancoOperUI implements Viewing {
     private static final Logger log = LoggerFactory.getLogger(BancoOperView.class);
 
     private final Field[] allFields = new Field[]{fechaDoc, selProyecto, selTercero,
-            numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
+            selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosaDetalle, serieDoc, numDoc,
     };
-    private final Field[] cabezeraFields = new Field[]{chkCobrado, dataFechaComprobante, selCuenta, selCodAuxCabeza,
+
+    private final AbstractComponent[] allNewFiels = new AbstractComponent[] {
+            numIngreso, numEgreso
+    };
+    private final Field[] cabezeraFields = new Field[]{dataFechaComprobante, selCuenta, selCodAuxCabeza,
             glosaCabeza, cheque};
+    private final AbstractComponent[] cabezeraNewFields = new AbstractComponent[] {
+            chkCobrado
+    };
     private BancoLogic viewLogic = null;
     private BeanItemContainer<VsjBancodetalle> container;
     private GeneratedPropertyContainer gpContainer;
@@ -96,7 +106,8 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         chkCobrado.setAnimated(true);
         chkCobrado.setSimpleMode(false);
         chkEnviado.setSimpleMode(false);
-        chkEnviado.setConverter(new ZeroOneToBooleanConverter());
+        //TODO 8
+        //chkEnviado.setConverter(new ZeroOneToBooleanConverter());
         // Grid
         //noinspection unchecked
         container = new BeanItemContainer(VsjBancodetalle.class, new ArrayList());
@@ -132,7 +143,8 @@ public class BancoOperView extends BancoOperUI implements Viewing {
 
         ViewUtil.alignMontosInGrid(gridBanco);
 
-        ViewUtil.colorizeRows(gridBanco, VsjBancodetalle.class);
+        //TODO 8
+        //ViewUtil.colorizeRows(gridBanco, VsjBancodetalle.class);
 
         gridBanco.setSelectionMode(Grid.SelectionMode.SINGLE);
         setTotal(null);
@@ -146,6 +158,7 @@ public class BancoOperView extends BancoOperUI implements Viewing {
     public void setEnableDetalleFields(boolean enabled) {
         log.debug("enabling detalle fields");
         for (Field f : allFields) f.setEnabled(enabled);
+        for (AbstractComponent f : allNewFiels) f.setEnabled(enabled);
         btnResponsable.setEnabled(enabled);
         btnDestino.setEnabled(enabled);
     }
@@ -153,6 +166,7 @@ public class BancoOperView extends BancoOperUI implements Viewing {
 
     public void setEnableCabezeraFields(boolean enabled) {
         for (Field f : cabezeraFields) f.setEnabled(enabled);
+        for (AbstractComponent f : cabezeraNewFields) f.setEnabled(enabled);
         btnAuxiliar.setEnabled(enabled);
     }
 
@@ -398,3 +412,4 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         return viewLogic;
     }
 }
+

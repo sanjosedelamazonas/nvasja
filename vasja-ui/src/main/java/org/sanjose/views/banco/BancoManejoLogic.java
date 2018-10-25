@@ -1,6 +1,6 @@
 package org.sanjose.views.banco;
 
-import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.v7.data.fieldgroup.FieldGroup;
 import com.vaadin.v7.data.util.BeanItem;
 import com.vaadin.v7.data.util.BeanItemContainer;
@@ -76,10 +76,12 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
             }
         });
 
-        GridContextMenu gridContextMenu = new GridContextMenu(view.getGridBanco());
-        gridContextMenu.addGridBodyContextMenuListener(e -> {
+        ContextMenu gridContextMenu = new ContextMenu(view.getGridBanco(), true);
+        gridContextMenu.addContextMenuOpenListener(e -> {
             gridContextMenu.removeItems();
-            final Object itemId = e.getItemId();
+            // TODO 8
+            final Object itemId = null;
+            //final Object itemId = e.getItemId();
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
             } else {
