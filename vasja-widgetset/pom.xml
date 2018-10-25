@@ -68,16 +68,27 @@
             <version>3.0.18</version>
         </dependency>
 
-<!--        <dependency>
-            <groupId>tm.kod</groupId>
-            <artifactId>numberfield7</artifactId>
-            <version>0.0.6</version>
-        </dependency>-->
-
+        <dependency>
+                <groupId>tm.kod</groupId>
+                <artifactId>numberfield7</artifactId>
+                <version>0.0.5</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>org.vaadin.ui</groupId>
+            <artifactId>numberfield</artifactId>
+            <version>0.2.0</version>
+        </dependency>
+-->
         <dependency>
             <groupId>com.vaadin</groupId>
                 <artifactId>grid-renderers-collection-addon</artifactId>
             <version>2.2.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.vaadin.crudui</groupId>
+            <artifactId>crudui</artifactId>
+            <version>2.3.0</version>
         </dependency>
 
 <!--        <dependency>
