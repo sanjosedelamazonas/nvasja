@@ -189,7 +189,8 @@ public class CajaGridLogic implements Serializable {
         view.clearSelection();
         MainUI.get().getComprobanteView().viewLogic.setNavigatorView(this.view);
         MainUI.get().getComprobanteView().viewLogic.nuevoComprobante();
-        MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+        //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+        ViewUtil.openInNewWindow(MainUI.get().getComprobanteView());
     }
 
     private void editarComprobante(VsjCajabanco vcb) {
@@ -199,14 +200,16 @@ public class CajaGridLogic implements Serializable {
             try {
                 MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
                 MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
-                MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
+                //MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
+                ViewUtil.openInNewWindow(MainUI.get().getTransferenciaView());
             } catch (NonEditableException e) {
                 Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
             }
         } else {
             MainUI.get().getComprobanteView().viewLogic.setNavigatorView(this.view);
             MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
-            MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+            //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+            ViewUtil.openInNewWindow(MainUI.get().getComprobanteView());
         }
     }
 }

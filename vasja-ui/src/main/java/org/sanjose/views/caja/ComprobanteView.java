@@ -35,6 +35,8 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
     ComprobanteLogic viewLogic;
     private ComprobanteService comprobanteService;
+    private Window subWindow;
+
 
     public ComprobanteView(ComprobanteService comprobanteService) {
         this.comprobanteService = comprobanteService;
@@ -66,6 +68,12 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
     }
 
     public void setSaldoDeCajas() {
+        //TODO DISABLED Saldos in Comprobante View
+        boolean disable = true;
+        if (disable) return;
+        //
+
+/*
         if (isPEN()) {
             order_summary_layout.removeStyleName("order-summary-layout-usd");
             order_summary_layout.removeStyleName("order-summary-layout-eur");
@@ -99,14 +107,7 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
             saldoTotal.setValue("Total :" +
                     "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : isUSD() ? "$ " : "€") + total.toString() + "</span>");
         }
-    }
-
-    private boolean isPEN() {
-        return PEN.equals(selMoneda.getValue().toString().charAt(0));
-    }
-
-    private boolean isUSD() {
-        return USD.equals(selMoneda.getValue().toString().charAt(0));
+*/
     }
 
     @Override
@@ -234,14 +235,14 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
     public TextField getNumDoc() {
         return numDoc;
     }
-
+/*
     public CssLayout getCajaSaldosLayout() {
         return cajaSaldosLayout;
     }
 
     public Label getSaldoTotal() {
         return saldoTotal;
-    }
+    }*/
 
     public Button getCerrarBtn() {
         return cerrarBtn;
@@ -296,5 +297,15 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
 
     public ComprobanteService getService() {
         return comprobanteService;
+    }
+
+    @Override
+    public Window getSubWindow() {
+        return subWindow;
+    }
+
+    @Override
+    public void setSubWindow(Window subWindow) {
+        this.subWindow = subWindow;
     }
 }

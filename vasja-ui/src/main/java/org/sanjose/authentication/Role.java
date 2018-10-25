@@ -32,4 +32,9 @@ public class Role {
     public static boolean isCaja() {
         return isPrivileged() || MainUI.get().getAccessControl().isUserInRole(Role.CAJA);
     }
+
+    public static boolean isOnlyCaja() {
+        return MainUI.get().getAccessControl().isUserInRole(Role.CAJA);
+    }
+
 }

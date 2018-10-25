@@ -21,6 +21,7 @@ import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.SaldoDelDia;
 
+import javax.swing.text.View;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
     public void init(CajaManejoView cajaManejoView) {
         view = cajaManejoView;
         view.nuevoComprobante.addClickListener(e -> newComprobante());
+        view.nuevaTransferencia.addClickListener(e -> newTransferencia());
         view.btnEditar.addClickListener(e -> editarComprobante(view.getSelectedRow()));
         view.btnVerVoucher.addClickListener(e -> generateComprobante());
         view.btnImprimir.addClickListener(e -> printComprobante());
@@ -80,27 +82,41 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
         });
     }
 
+
+
     private void newComprobante() {
         view.clearSelection();
         MainUI.get().getComprobanteView().viewLogic.nuevoComprobante();
         MainUI.get().getComprobanteView().viewLogic.setNavigatorView(view);
-        MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+        ViewUtil.openInNewWindow(MainUI.get().getComprobanteView());
+        //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+    }
+
+    private void newTransferencia() {
+        view.clearSelection();
+        MainUI.get().getTransferenciaView().viewLogic.nuevaTrans();
+        MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
+        ViewUtil.openInNewWindow(MainUI.get().getTransferenciaView());
+        //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
     public void editarComprobante(VsjCajabanco vcb) {
+        if (vcb==null) return;
         // Transferencia
         if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
             try {
                 MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
                 MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
-                MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
+                ViewUtil.openInNewWindow(MainUI.get().getTransferenciaView());
+                //MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
             } catch (NonEditableException e) {
                 Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
             }
         } else {
             MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
             MainUI.get().getComprobanteView().viewLogic.setNavigatorView(view);
-            MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+            ViewUtil.openInNewWindow(MainUI.get().getComprobanteView());
+            //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
         }
     }
 

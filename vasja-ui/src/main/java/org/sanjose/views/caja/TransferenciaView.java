@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -41,6 +42,12 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
     static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Numero", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing $", "Egr $"
     };
+    static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
+            "codContracta", "txtGlosaitem", "numDebemo", "numHabermo"
+    };
+    static final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{"Numero", "Proyecto", "Tercero",
+            "Cuenta", "Glosa", "Ing €", "Egr €"
+    };
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
     private static final Logger log = LoggerFactory.getLogger(TransferenciaView.class);
 
@@ -50,6 +57,8 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
     TransferenciaLogic viewLogic = null;
     private BeanItemContainer<VsjCajabanco> container;
     private ComprobanteService comprobanteService;
+
+    private Window subWindow;
 
     public TransferenciaView(ComprobanteService comprobanteService) {
         this.comprobanteService = comprobanteService;
@@ -123,8 +132,10 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
             for (VsjCajabanco cajabanco : container.getItemIds()) {
                 if (isPEN())
                     total = total.add(cajabanco.getNumDebesol()).subtract(cajabanco.getNumHabersol());
-                else
+                else if (isUSD())
                     total = total.add(cajabanco.getNumDebedolar()).subtract(cajabanco.getNumHaberdolar());
+                else
+                    total = total.add(cajabanco.getNumDebemo()).subtract(cajabanco.getNumHabermo());
             }
         }
         return total;
@@ -133,13 +144,17 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
     public void setSaldoTrans() {
         if (isPEN()) {
             order_summary_layout.removeStyleName("order-summary-layout-usd");
-        } else  {
+            order_summary_layout.removeStyleName("order-summary-layout-eur");
+        } else if (isUSD()) {
             order_summary_layout.addStyleName("order-summary-layout-usd");
+            order_summary_layout.removeStyleName("order-summary-layout-eur");
+        } else {
+            order_summary_layout.addStyleName("order-summary-layout-eur");
+            order_summary_layout.removeStyleName("order-summary-layout-usd");
         }
-
         saldoTotal.setContentMode(ContentMode.HTML);
         saldoTotal.setValue("Differencia:" +
-                "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : "$ ") + calcDifference().toString() + "</span>");
+                "<span class=\"order-sum\"> " + (isPEN() ? "S/. " : isUSD() ? "$ " : "€") + calcDifference().toString() + "</span>");
 
         if (container != null && !container.getItemIds().isEmpty() && calcDifference().compareTo(new BigDecimal(0.00)) == 0
                 && !guardarBtn.isEnabled() && viewLogic.getState().isEdited())
@@ -159,13 +174,22 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
     public void setSaldoDeCajas() {
     }
 
-    private boolean isPEN() {
-        if (selMoneda.getValue() == null && (container == null || container.getItemIds().isEmpty())) return true;
+
+    private Character getMonedaActiva() {
+        if (selMoneda.getValue() == null && (container == null || container.getItemIds().isEmpty())) return PEN;
         if (selMoneda.getValue() == null) {
-            return PEN.equals(container.getItemIds().get(0).getCodTipomoneda());
+            return container.getItemIds().get(0).getCodTipomoneda();
         } else {
-            return PEN.equals(selMoneda.getValue().toString().charAt(0));
+            return selMoneda.getValue().toString().charAt(0);
         }
+    }
+
+    private boolean isPEN() {
+        return PEN.equals(getMonedaActiva());
+    }
+
+    private boolean isUSD() {
+        return USD.equals(getMonedaActiva());
     }
 
     @Override
@@ -354,5 +378,15 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
 
     @Override
     public void enter(ViewChangeEvent event) {
+    }
+
+    @Override
+    public Window getSubWindow() {
+        return subWindow;
+    }
+
+    @Override
+    public void setSubWindow(Window subWindow) {
+        this.subWindow = subWindow;
     }
 }

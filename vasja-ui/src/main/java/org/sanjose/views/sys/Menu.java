@@ -26,6 +26,7 @@ public class Menu extends CssLayout {
     private final CssLayout menuItemsLayout;
     private final CssLayout menuPart;
     private List<Viewing> viewList = new ArrayList<>();
+    private Button menuBtn;
 
     public Menu(Navigator navigator) {
         this.navigator = navigator;
@@ -65,6 +66,7 @@ public class Menu extends CssLayout {
                 menuPart.addStyleName(VALO_MENU_VISIBLE);
             }
         });
+        menuBtn = showMenu;
         showMenu.addStyleName(ValoTheme.BUTTON_PRIMARY);
         showMenu.addStyleName(ValoTheme.BUTTON_SMALL);
         showMenu.addStyleName(VALO_MENU_TOGGLE);
@@ -75,7 +77,6 @@ public class Menu extends CssLayout {
         menuItemsLayout = new CssLayout();
         menuItemsLayout.setPrimaryStyleName(VALO_MENUITEMS);
         menuPart.addComponent(menuItemsLayout);
-
         addComponent(menuPart);
     }
 
@@ -159,5 +160,9 @@ public class Menu extends CssLayout {
             selected.addStyleName("selected");
         }
         menuPart.removeStyleName(VALO_MENU_VISIBLE);
+    }
+
+    public void setShowMenu(boolean showMenu) {
+        menuBtn.setVisible(showMenu);
     }
 }
