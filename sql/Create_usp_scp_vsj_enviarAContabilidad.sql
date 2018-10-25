@@ -1,15 +1,15 @@
 USE [SCP]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidad]    Script Date: 10/25/2018 00:02:01 ******/
+/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidad]    Script Date: 10/25/2018 07:52:37 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidad]
+CREATE PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidad]
 	@cod_cajabanco int, --id de operacion de vsj_cajabanco
 	@user varchar(15), -- nombre del usuario segun SCP
 	@fecha_operacion varchar(10),-- fecha de operacion en formato 'dd/mm/yyyy'
-	@cod_moneda char(1), -- 0 pen, 1 usd
+	@cod_moneda char(1), -- 0 pen, 1 usd, 2 eur
 	@num_debe_input decimal(12,2), -- el monto de debe en la moneda original
 	@num_haber_input decimal(12,2), -- el monto de haber en la moneda original
 	@codigo varchar(6), -- codigo de proyecto o de tercero
@@ -24,7 +24,10 @@ declare @num_debe_pen decimal(12,2)
 declare @num_haber_pen decimal(12,2)
 declare @num_debe_usd decimal(12,2)
 declare @num_haber_usd decimal(12,2)
+declare @num_debe_mo decimal(12,2)
+declare @num_haber_mo decimal(12,2)
 declare @num_tc_usd float
+declare @num_tc_mo float
 declare @test float
 declare @txt_mes varchar(2)
 declare @txt_ano varchar(4)
@@ -40,7 +43,11 @@ set @num_debe_pen=0.00
 set @num_haber_pen=0.00
 set @num_debe_usd=0.00
 set @num_haber_usd=0.00
+set @num_debe_mo=0.00
+set @num_haber_mo=0.00
 set @num_tc_usd=0.00
+set @num_tc_mo=0.00
+
 
 set @txt_ano=SUBSTRING(@fecha_operacion,7,4)
 set @txt_mes=SUBSTRING(@fecha_operacion,4,2)
@@ -49,7 +56,7 @@ select @ErrorCode = @@ERROR
 
 BEGIN TRY
 
---    BEGIN TRANSACTION
+    BEGIN TRANSACTION
         /****************************************************************************
         * Step 1
         * Busca tipo de cambio para el dia de la operacion
@@ -57,26 +64,58 @@ BEGIN TRY
         ****************************************************************************/
         SELECT @ErrorStep = 'Error en buscar tipo de cambio USD';
         select @num_tc_usd=isnull(num_tcvdolar,0) from dbo.scp_tipocambio
-		where fec_fechacambio= Convert(date, @fecha_operacion, 103)
-		select @test=1/@num_tc_usd
+		where fec_fechacambio= Convert(date, @fecha_operacion, 103);
+		--select @test=1/@num_tc_usd
+
+		SELECT @ErrorStep = 'Error en buscar tipo de cambio EUR';
+		select @num_tc_mo=isnull(num_tcveuro,0) from dbo.scp_tipocambio
+		where fec_fechacambio= Convert(date, @fecha_operacion, 103);
 
 		if (@cod_moneda='0') -- Moneda PEN
 			begin
-			SELECT  @ErrorStep = 'Error al calcular los montos en USD'
+			SELECT  @ErrorStep = 'Error al calcular los montos en PEN'
 			select @num_debe_pen=@num_debe_input,
 				@num_haber_pen=@num_haber_input,
-				@num_debe_usd=(@num_debe_input/@num_tc_usd),
-				@num_haber_usd=(@num_haber_input/@num_tc_usd)
+				@num_debe_mo=0,
+				@num_haber_mo=0
+				if(@num_tc_usd>0)
+					begin
+					select @num_debe_usd=(@num_debe_input/@num_tc_usd),
+					@num_haber_usd=(@num_haber_input/@num_tc_usd)
+					end
+				else
+				select @num_debe_usd=0,
+					@num_haber_usd=0
 			end
-		else if(@cod_moneda='1') --Moneda USD
+		else
+			if(@cod_moneda='1') --Moneda USD
 			begin
-			SELECT  @ErrorStep = 'Error al calcular los montos en PEN'
-			select @num_debe_pen=(@num_debe_input*@num_tc_usd),
-				@num_haber_pen=(@num_haber_input*@num_tc_usd),
-				@num_debe_usd= @num_debe_input,
-				@num_haber_usd=@num_haber_input
+			SELECT  @ErrorStep = 'Error al calcular los montos en USD'
+			select @num_debe_usd= @num_debe_input,
+				@num_haber_usd=@num_haber_input,
+				@num_debe_mo=0,
+				@num_haber_mo=0
+				if (@num_tc_usd>0)
+				select  @num_debe_pen=(@num_debe_input*@num_tc_usd),
+				@num_haber_pen=(@num_haber_input*@num_tc_usd)
+				else
+				select @num_debe_pen=0,
+				@num_haber_pen=0
 			end
-
+		else if(@cod_moneda='2') --Moneda EUR
+			begin
+			SELECT  @ErrorStep = 'Error al calcular los montos en EUR'
+			select @num_debe_mo= @num_debe_input,
+				@num_haber_mo=@num_haber_input,
+				@num_debe_usd=0,
+				@num_haber_usd=0
+				if (@num_tc_mo>0)
+				select  @num_debe_pen=(@num_debe_input*@num_tc_mo),
+				@num_haber_pen=(@num_haber_input*@num_tc_mo)
+				else
+				select @num_debe_pen=0,
+				@num_haber_pen=0
+			end
 	    /****************************************************************************
         * Step 2
         * Busca el numero para nuevo comprobante contable y codigo para anadir en glosa
@@ -259,9 +298,9 @@ BEGIN TRY
 			  ,@num_haber_pen --[num_habersol]
 			  ,@num_debe_usd --[num_debedolar]
 			  ,@num_haber_usd --[num_haberdolar]
-			  ,0 --[num_tcmo]
-			  ,0--[num_debemo]
-			  ,0--[num_habermo]
+			  ,@num_tc_mo
+			  ,@num_debe_mo
+			  ,@num_haber_mo
 			  ,'' --[cod_monedaoriginal]
 			  ,0--[flg_tcreferencia]
 			  ,0--[flg_conversion]
@@ -416,9 +455,9 @@ BEGIN TRY
 			  ,@num_debe_pen  --[num_habersol]
 			  ,@num_haber_usd  --[num_debedolar]
 			  ,@num_debe_usd--[num_haberdolar]
-			  ,0 --[num_tcmo]
-			  ,0--[num_debemo]
-			  ,0--[num_habermo]
+			  ,@num_tc_mo
+			  ,@num_haber_mo
+			  ,@num_debe_mo
 			  ,'' --[cod_monedaoriginal]
 			  ,0--[flg_tcreferencia]
 			  ,0--[flg_conversion]
@@ -462,7 +501,7 @@ BEGIN TRY
 			  ,[cod_uactualiza]=@user
 		 where cod_cajabanco=@cod_cajabanco
 
--- COMMIT TRANSACTION
+COMMIT TRANSACTION
 
     SELECT  @ErrorCode  = 0, @Return_Message = 'La operacion ha sido enviada a contabilidad correctamente'
 

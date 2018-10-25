@@ -3,6 +3,7 @@ package org.sanjose.util;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
+import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpTipocambio;
 import org.sanjose.model.VsjBancocabecera;
@@ -23,7 +24,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import static org.sanjose.util.GenUtil.EUR;
 import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
 
 /**
  * VASJA class
@@ -38,6 +41,8 @@ public class ProcUtil {
     private EntityManager em;
 
     private VsjBancocabecera curBancoCabecera = null;
+
+    private boolean isContinueEnviar = true;
 
     @Autowired
     public ProcUtil(EntityManager em) {
@@ -112,9 +117,12 @@ public class ProcUtil {
         if (PEN.equals(vcb.getCodTipomoneda())) {
             query.setParameter(5, vcb.getNumDebesol());
             query.setParameter(6, vcb.getNumHabersol());
-        } else {
+        } else if (USD.equals(vcb.getCodTipomoneda())) {
             query.setParameter(5, vcb.getNumDebedolar());
             query.setParameter(6, vcb.getNumHaberdolar());
+        } else {
+            query.setParameter(5, vcb.getNumDebemo());
+            query.setParameter(6, vcb.getNumHabermo());
         }
         if (!GenUtil.strNullOrEmpty(vcb.getCodProyecto())) {
             query.setParameter(7, vcb.getCodProyecto());
@@ -140,11 +148,36 @@ public class ProcUtil {
                 log.info("Check tipoDeCambio: " + vcb);
                 List<ScpTipocambio> tipocambios = service.getTipocambioRep().findById_FecFechacambio(
                         GenUtil.getBeginningOfDay(vcb.getFecFecha()));
-                if (tipocambios.isEmpty()) {
+                BigDecimal tcval = new BigDecimal(0);
+                if (!tipocambios.isEmpty()) {
+                    ScpTipocambio tipocambio = tipocambios.get(0);
+                    tcval = EUR.equals(vcb.getCodTipomoneda()) ? tipocambio.getNumTcveuro() : tipocambio.getNumTcvdolar();
+                }
+                System.out.println("got tcval: " + tcval + " " + tcval.compareTo(new BigDecimal(0)));
+                if (tcval.compareTo(new BigDecimal(0))==0) {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     Notification.show("Falta tipo de cambio para el dia: " + sdf.format(vcb.getFecFecha()), Notification.Type.WARNING_MESSAGE);
-                    return;
+                    final ProcUtil pu = this;
+                    final VsjCajabanco tmpVcb = vcb;
+/*
+                    MessageBox
+                            .createQuestion()
+                            .withCaption("Falta tipo de cambio")
+                            .withMessage("Falta tipo de cambio para el dia: " + sdf.format(vcb.getFecFecha()) +"\n?Continuar?\n")
+                            .withYesButton(() -> {
+                                pu.setContinueEnviar(true);
+                                System.out.println("Continue");
+                            })
+                            .withNoButton(() -> {
+                                pu.setContinueEnviar(false);
+                                System.out.println("No continue");
+                            })
+                            .open();
+*/
                 }
+                if (!isContinueEnviar) return;
+                System.out.println("Not interrupted enviar");
+                if (true) return;
             }
             for (VsjCajabanco vcbS : vsjCajabancoList) {
                 vcb = vcbS;
@@ -228,6 +261,9 @@ public class ProcUtil {
         }
     }
 
+    public void setContinueEnviar(boolean is) {
+        isContinueEnviar = is;
+    }
 
     public class Saldos {
 
