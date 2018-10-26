@@ -1,6 +1,3 @@
-USE [SCP]
-GO
-
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]    Script Date: 09/12/2016 10:06:13 ******/
 SET ANSI_NULLS ON
 GO

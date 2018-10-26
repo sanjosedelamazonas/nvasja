@@ -40,3 +40,13 @@ Other basic workflow steps:
 - editing printapplet-addon module
   - when making changes to the server part it is enough to run "mvn install"
   - if you modify the applet part you need to recompile and sign the jar. The exact steps are described in printapplet-addon/README.txt
+
+PRODUCTION MODE:
+- mvn -Pproduction clean install
+Output will be:
+vasja-ui/target/vasja-ui-1.0-SNAPSHOT.jar
+- start it in production mode:
+java -jar -Dspring.profiles.active=production vasja-ui/target/vasja-ui-1.0-SNAPSHOT.jar
+
+JAVA Security problem connecting to SQL Server:
+java -jar -Djava.security.properties="%BASE%\java.security" -Dspring.profiles.active=production vasja-ui/target/vasja-ui-1.0-SNAPSHOT.jar

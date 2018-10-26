@@ -1,4 +1,4 @@
-USE [SCP]
+
 GO
 IF EXISTS ( SELECT *
             FROM   sysobjects

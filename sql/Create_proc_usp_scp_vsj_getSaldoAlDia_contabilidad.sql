@@ -1,6 +1,3 @@
-USE [SCP]
-GO
-
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]    Script Date: 09/12/2016 10:05:54 ******/
 SET ANSI_NULLS ON
 GO
@@ -132,8 +129,6 @@ Print 'Contabilidad  PEN:'+CONVERT(char(14),@SaldoPEN_contabilidad ,121)
 +' EUR:'+CONVERT(char(14),@SaldoEUR_contabilidad ,121)
 
 /*
-
-
 
 Exec usp_scp_vsj_getSaldoProyectoAlDia_contabilidad 1,'01/01/2016','09/09/2016','023017',0,0,0
 

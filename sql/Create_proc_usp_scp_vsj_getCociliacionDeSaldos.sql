@@ -1,6 +1,3 @@
-USE [SCP]
-GO
-
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getCociliacionDeSaldos]    Script Date: 09/12/2016 10:05:09 ******/
 SET ANSI_NULLS ON
 GO

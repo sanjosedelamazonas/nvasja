@@ -1,4 +1,4 @@
-USE [SCP]
+
 GO
 
 /****** Object:  Table [dbo].[vsj_configuractacajabanco]    Script Date: 09/12/2016 10:02:52 ******/

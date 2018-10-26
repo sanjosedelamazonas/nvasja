@@ -1,4 +1,4 @@
-USE [SCP]
+
 GO
 IF EXISTS ( SELECT *
             FROM   sysobjects
@@ -14,7 +14,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-USE [SCP]
+
 GO
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]    Script Date: 10/30/2016 21:21:26 ******/
 SET ANSI_NULLS ON

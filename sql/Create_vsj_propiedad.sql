@@ -1,4 +1,4 @@
-USE [SCP]
+
 GO
 
 /****** Object:  Table [dbo].[vsj_propiedad]    Script Date: 09/08/2016 18:48:05 ******/

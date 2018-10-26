@@ -1,4 +1,4 @@
-USE [SCP]
+
 GO
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaCaja]    Script Date: 09/22/2016 23:08:53 ******/
 SET ANSI_NULLS ON
