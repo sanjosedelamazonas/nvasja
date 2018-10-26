@@ -232,9 +232,12 @@ class ComprobanteLogic implements Serializable {
         view.getDataFechaComprobante().setConverter(DateToTimestampConverter.INSTANCE);
         view.getDataFechaComprobante().setResolution(Resolution.DAY);
         view.getDataFechaComprobante().addValueChangeListener(event -> {
+            Date newFecha = (Date)event.getProperty().getValue();
             setSaldoCaja();
             setSaldos();
             view.setSaldoDeCajas();
+            // Reload cajas depending on the Year of comprobante
+            refreshProyectoYcuentaPorFecha(newFecha);
         });
 
         // Fecha Doc
@@ -448,6 +451,20 @@ class ComprobanteLogic implements Serializable {
                 "txtNombredestino");
     }
 
+    private void refreshProyectoYcuentaPorFecha(Date newFecha) {
+        if (newFecha==null || view.getService().getPlanRepo()==null) return;
+        if (view.getSelCaja()!=null)
+            DataFilterUtil.refreshComboBox(
+                    view.getSelCaja(), DataUtil.getCajas(newFecha, view.getService().getPlanRepo(), PEN),
+                    "id.codCtacontable", "txtDescctacontable", null);
+        if (view.getSelCtaContable()!=null)
+        DataFilterUtil.refreshComboBox(view.getSelCtaContable(),view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
+                '0', 'N', GenUtil.getYear(newFecha), "101%", "102%", "104%", "106%"),
+                "id.codCtacontable", "txtDescctacontable", null);
+        DataFilterUtil.refreshComboBox(view.getSelProyecto(), view.getService().getProyectoRepo().findByFecFinalGreaterThanAndFecInicioLessThan(newFecha, newFecha),
+                "codProyecto", "txtDescproyecto", null);
+        view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
+    }
 
     private void setMonedaLogic(Character moneda) {
         if (!isLoading) {
@@ -747,12 +764,15 @@ class ComprobanteLogic implements Serializable {
         view.getSelTercero().setEnabled(true);
         view.getDataFechaComprobante().setEnabled(true);
 
+
         isLoading = false;
         if (isEdit) {
             // EDITING
             if (!GenUtil.strNullOrEmpty(item.getTxtCorrelativo())) {
                 view.getNumVoucher().setValue(item.getTxtCorrelativo());
             }
+            // Refresh CtaContable for actual year
+            refreshProyectoYcuentaPorFecha(item.getFecFecha());
             view.setEnableFields(true);
             setSaldos();
             setSaldoCaja();

@@ -29,16 +29,23 @@ DONE
 
 - raport caja diario
 - nie usuwa z konfiguracji caja predeterminada
+DONE
 - nro de comprobane 01-000001 en la impresion y en el reporte
+?
 - nuevo comprobante o edycja w oknie emergente
+?
 - cta contable cerrada - no conciderar
 - przenosi do contabilidad z numero de comprobante z caja/bancos y prefix 01/02
+DONE
 - okno na saldos osobne - zalezne od periodo w ktorym wybrana caja
+?
 - sortowanie w caja y manejo de caja por fecha, nro de comprobante
 - zamyka okno po dodaniu operacji bez wydrukowania
+DONE
 - dodanie nowego Auxiliar y Responsable nie sprawdza czy istnieje juz taki record o danym numerz dokumnetu
 - na ekranie manejo caja limitowac kolumny w tabeli po EUR wylaczyc, poszerzyc pole glosa, zamienic miejscami cta contable i contracta
 - na ekranie operacion po nacisnieciu Eliminar ni mozna zamknac okna, dobrze by bylo gdyby pytal czy estas seguro que quieres eliminar y powiedzial ze operacja zostala anulada
+DONE
 - przy envio a contabilidad jak nie ma tipo de cambio to powinno pytac czy chcesz proceder para enviar o no
 
 - bancos - lista cuentas nie powinna uwzgledniac cuentas cerradas

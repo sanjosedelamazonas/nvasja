@@ -82,6 +82,7 @@ class BancoItemLogic implements Serializable {
                     "txtDescctacontable");
             setCuentaLogic();
             setSaldos();
+            refreshProyectoYcuentaPorFecha((Date)event.getProperty().getValue());
         });
 
         //--------- CABEZA
@@ -326,6 +327,21 @@ class BancoItemLogic implements Serializable {
                 "txtNombredestino");
         DataFilterUtil.refreshComboBox(view.getSelCodAuxCabeza(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
+    }
+
+
+    private void refreshProyectoYcuentaPorFecha(Date newFecha) {
+        if (newFecha==null || view.getService().getPlanRepo()==null) return;
+        DataFilterUtil.refreshComboBox(view.getSelCuenta(),
+                DataUtil.getBancoCuentas(newFecha, view.getService().getPlanRepo()),
+                "id.codCtacontable","txtDescctacontable", null);
+        if (view.getSelCtaContable()!=null)
+            DataFilterUtil.refreshComboBox(view.getSelCtaContable(),view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
+                    '0', 'N', GenUtil.getYear(newFecha), "101%", "102%", "104%", "106%"),
+                    "id.codCtacontable", "txtDescctacontable", null);
+        DataFilterUtil.refreshComboBox(view.getSelProyecto(), view.getService().getProyectoRepo().findByFecFinalGreaterThanAndFecInicioLessThan(newFecha, newFecha),
+                "codProyecto", "txtDescproyecto", null);
+        view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
     }
 
     protected void setCuentaLogic() {

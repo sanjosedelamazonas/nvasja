@@ -54,7 +54,7 @@ select @ErrorCode = @@ERROR
 
 BEGIN TRY
 
-    BEGIN TRANSACTION
+ --   BEGIN TRANSACTION
         /****************************************************************************
         * Step 1
         * Busca tipo de cambio para el dia de la operacion
@@ -1112,7 +1112,7 @@ BEGIN TRY
 			  ,[cod_uactualiza]=@user
 		 where cod_bancocabecera =@cod_bancocabecera
 
- COMMIT TRANSACTION
+ --COMMIT TRANSACTION
 
     SELECT  @ErrorCode  = 0, @Return_Message = 'La operacion ha sido enviada a contabilidad correctamente'
 
