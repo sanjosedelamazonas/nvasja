@@ -203,8 +203,11 @@ public class ProcUtil {
         query.setParameter(2, CurrentUser.get());
         query.setParameter(3, sdf.format(vcb.getFecFecha()));
         query.setParameter(4, vcb.getCodTipomoneda());
-        query.execute();
-        return (String) query.getOutputParameterValue(5);
+        boolean res = query.execute();
+        if (res)
+            return "La operacion ha sido enviada a contabilidad correctamente";
+        else
+            return "Problema al enviar la operacion a contabilidad";
     }
 
     @Transactional(readOnly = false)

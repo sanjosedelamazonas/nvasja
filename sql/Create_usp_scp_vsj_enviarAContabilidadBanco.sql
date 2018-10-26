@@ -72,7 +72,6 @@ BEGIN TRY
           @cod_mescobr=isnull(cod_mescobrado,''),
           @flg_chequecobrado=case when isnull(ind_cobrado,0)=1 then '1' else '0' end
         FROM dbo.scp_bancocabecera where cod_bancocabecera=@cod_bancocabecera;
-	   --PRINT 'No existe tipo de cambio USDsghget';
 		/****************************************************************************
         * Step 2
         * Busca el numero para nuevo comprobante contable
@@ -705,9 +704,9 @@ BEGIN TRY
 			  ,[num_item]+1000
 			  ,bd.fec_fecha
 			  ,bd.[cod_tipomoneda]
-			  ,bd.[txt_glosaitem]
-			  ,bd.[cod_destino]
-			  ,bd.[txt_cheque]
+			  ,isnull(bd.[txt_glosaitem],'')
+			  ,isnull(bd.[cod_destino],'')
+			  ,isnull(bd.[txt_cheque],'')
 			  ,@flg_chequecobrado
 			  ,@cod_mescobr
 			  ,isnull(bd.[cod_tipocomprobantepago],'')
@@ -1120,7 +1119,7 @@ BEGIN TRY
     /*************************************
     *  Return from the Stored Procedure
     *************************************/
-    RETURN @ErrorCode                               -- =0 if success,  <>0 if failure
+    RETURN @ErrorCode                         -- =0 if success,  <>0 if failure
 
 END TRY
 

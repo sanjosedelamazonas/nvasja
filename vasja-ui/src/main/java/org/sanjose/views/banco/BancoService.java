@@ -126,7 +126,7 @@ public class BancoService {
         cabecera.setNumDebedolar(saldoDebedolar);
         cabecera.setNumHaberdolar(saldoHaberdolar);
         cabecera.setNumDebemo(saldoDebemo);
-        cabecera.setNumDebemo(saldoHabermo);
+        cabecera.setNumHabermo(saldoHabermo);
         cabecera = bancocabeceraRep.save(cabecera);
         bancoItem.setScpBancocabecera(cabecera);
         return bancoItem;
