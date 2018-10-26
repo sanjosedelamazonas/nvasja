@@ -1,6 +1,6 @@
 #!/bin/bash
 cat Alter_*.sql > all.sql
-cat Create_vsj_*.sql > all.sql
+cat Create_vsj_*.sql >> all.sql
 #cat Create_function_*.sql >> all.sql
 #cat Create_trigger_*.sql >> all.sql
 

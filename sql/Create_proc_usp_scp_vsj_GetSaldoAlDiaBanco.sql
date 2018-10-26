@@ -1,5 +1,3 @@
-
-GO
 IF EXISTS ( SELECT *
             FROM   sysobjects
             WHERE  id = object_id(N'[dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]')
@@ -26,7 +24,6 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]
 	@Cuenta varchar(7), -- Cuenta de banco por ejemplo '1040103'
 	@Moneda varchar(1),  -- 0 PEN, 1 USD
 	@Saldo decimal(12,2) OUTPUT
-
 AS
 
 Declare @Ano varchar(4)

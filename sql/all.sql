@@ -1,3 +1,148 @@
+/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.scp_bancocabecera
+	DROP CONSTRAINT PK_scp_bancocabecera
+GO
+ALTER TABLE dbo.scp_bancocabecera SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+
+/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.scp_bancocabecera ADD
+	cod_bancocabecera [int] IDENTITY(1,1) NOT NULL ,
+	ind_cobrado bit NULL DEFAULT 0,
+	flg_Anula char(1) NULL DEFAULT '0',
+	cod_mescobrado char(2) NULL
+GO
+ALTER TABLE dbo.scp_bancocabecera ADD CONSTRAINT
+	PK_scp_bancocabecera PRIMARY KEY CLUSTERED
+	(
+	cod_bancocabecera
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+ALTER TABLE dbo.scp_bancocabecera SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+update [dbo].[scp_bancocabecera] set
+	[ind_cobrado ] = 0,
+	[flg_Anula] =0,
+	[cod_mescobrado]=''
+	where 1=1
+
+-- BANCO DETALLE
+
+/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.scp_bancodetalle ADD
+	cod_tipomov int NULL,
+	cod_bancocabecera int NOT NULL DEFAULT 0
+GO
+ALTER TABLE dbo.scp_bancodetalle
+	DROP CONSTRAINT PK_scp_bancodetalle
+GO
+
+UPDATE bd SET bd.cod_bancocabecera = cb.cod_bancocabecera FROM  scp_bancodetalle AS bd INNER JOIN scp_bancocabecera AS cb ON
+cb.txt_anoproceso = bd.txt_anoproceso AND cb.flg_saldo=bd.flg_saldo AND
+cb.ind_tipocuenta=bd.ind_tipocuenta AND cb.txt_correlativo=bd.txt_correlativo
+
+ALTER TABLE dbo.scp_bancodetalle ADD CONSTRAINT
+	PK_scp_bancodetalle PRIMARY KEY CLUSTERED
+	(
+	num_item,
+	cod_bancocabecera
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+ALTER TABLE dbo.scp_bancodetalle SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+;
+update [dbo].[scp_bancodetalle] set
+	[cod_tipomov] =0
+	where 1=1;Alter TABLE [dbo].[scp_cajabanco] add
+	[cod_cajabanco] [int] IDENTITY(1,1) NOT NULL ,
+	[cod_transcorrelativo] [varchar](255) NULL DEFAULT '',
+	[cod_tipomov] [int] NULL DEFAULT 0
+;
+	/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.scp_cajabanco ADD CONSTRAINT
+	PK_scp_cajabanco PRIMARY KEY CLUSTERED
+	(
+	cod_cajabanco
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+ALTER TABLE dbo.scp_cajabanco SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+;
+update [dbo].[scp_cajabanco] set
+	[cod_transcorrelativo] ='',
+	[cod_tipomov] =0
+	where 1=1;
+;
+create function [dbo].[usp_vsj_cajabanco_gen_correlativo](@id int)
+returns char(8)
+as
+begin
+return right('00000000' + convert(varchar(10), @id), 8)
+end
+GO
+;
+create trigger [dbo].[vsj_scp_cajabanco_insert] on [dbo].[scp_cajabanco]
+after insert as
+update
+    scp_cajabanco
+set
+    scp_cajabanco.txt_correlativo = dbo.usp_vsj_cajabanco_gen_correlativo(scp_cajabanco.cod_cajabanco)
+from
+    scp_cajabanco
+inner join
+    inserted on scp_cajabanco.cod_cajabanco = inserted.cod_cajabanco
+GO
 GO
 
 /****** Object:  Table [dbo].[vsj_configuracioncaja]    Script Date: 09/12/2016 10:02:43 ******/
@@ -1953,8 +2098,6 @@ Exec usp_scp_vsj_getCociliacionDeSaldos 1,'31/12/2015','005013',0,0,0
 */
 GO
 
-
-GO
 IF EXISTS ( SELECT *
             FROM   sysobjects
             WHERE  id = object_id(N'[dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]')
@@ -1981,7 +2124,6 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]
 	@Cuenta varchar(7), -- Cuenta de banco por ejemplo '1040103'
 	@Moneda varchar(1),  -- 0 PEN, 1 USD
 	@Saldo decimal(12,2) OUTPUT
-
 AS
 
 Declare @Ano varchar(4)
@@ -2488,12 +2630,11 @@ Exec usp_scp_vsj_getSaldoProyectoAlDia_NoEnviadosCaja 2,'01/01/2016','09/09/2016
 */
 GO
 
-IF EXISTS ( SELECT *
+IF EXISTS (SELECT *
             FROM   sysobjects
-            WHERE  id = object_id(N'[dbo].[usp_scp_vsj_GetSaldosAlDiaBanco]')
-                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+            WHERE  id = object_id(N'[dbo].[fun_scp_vsj_GetSaldosAlDiaBanco]'))
 BEGIN
-    DROP PROCEDURE [dbo].[usp_scp_vsj_GetSaldosAlDiaBanco]
+    DROP FUNCTION [dbo].[fun_scp_vsj_GetSaldosAlDiaBanco]
 END
 
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]    Script Date: 10/14/2016 03:30:47 ******/
@@ -2509,11 +2650,10 @@ GO
 CREATE FUNCTION [dbo].[fun_scp_vsj_GetSaldosAlDiaBanco] (
 	@Fecha varchar(19), -- Fecha para saldo formato yyyy-dd-mm hh:mi:ss(24h)
 	@Moneda varchar(1)  -- 0 PEN, 1 USD, 2 EUR
-	)
-RETURNS @SaldosTable TABLE (
+	) RETURNS @SaldosTable TABLE (
 		item		int identity(1,1),
 		cuenta		varchar(20),
-        saldo		numeric(10,2)
+    saldo		numeric(10,2)
 )
 AS
 BEGIN
@@ -2605,6 +2745,14 @@ BEGIN
 RETURN	
 END
 -- SELECT * FROM [fun_scp_vsj_GetSaldoAlDiaBanco]('2016-08-18 23:59:59','N')
+IF EXISTS (SELECT *
+            FROM   sysobjects
+            WHERE  id = object_id(N'[dbo].[fun_scp_vsj_getLetraDeNumero]'))
+BEGIN
+    DROP FUNCTION [dbo].[fun_scp_vsj_getLetraDeNumero]
+END
+
+
 CREATE FUNCTION [fun_scp_vsj_getLetraDeNumero] (@Numero NUMERIC(20,2)) RETURNS Varchar(200) AS
 BEGIN
 --SET NOCOUNT ON

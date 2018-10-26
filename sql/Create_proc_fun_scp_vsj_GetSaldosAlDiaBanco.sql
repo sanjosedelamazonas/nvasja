@@ -1,9 +1,8 @@
-IF EXISTS ( SELECT *
+IF EXISTS (SELECT *
             FROM   sysobjects
-            WHERE  id = object_id(N'[dbo].[usp_scp_vsj_GetSaldosAlDiaBanco]')
-                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+            WHERE  id = object_id(N'[dbo].[fun_scp_vsj_GetSaldosAlDiaBanco]'))
 BEGIN
-    DROP PROCEDURE [dbo].[usp_scp_vsj_GetSaldosAlDiaBanco]
+    DROP FUNCTION [dbo].[fun_scp_vsj_GetSaldosAlDiaBanco]
 END
 
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]    Script Date: 10/14/2016 03:30:47 ******/
@@ -19,11 +18,10 @@ GO
 CREATE FUNCTION [dbo].[fun_scp_vsj_GetSaldosAlDiaBanco] (
 	@Fecha varchar(19), -- Fecha para saldo formato yyyy-dd-mm hh:mi:ss(24h)
 	@Moneda varchar(1)  -- 0 PEN, 1 USD, 2 EUR
-	)
-RETURNS @SaldosTable TABLE (
+	) RETURNS @SaldosTable TABLE (
 		item		int identity(1,1),
 		cuenta		varchar(20),
-        saldo		numeric(10,2)
+    saldo		numeric(10,2)
 )
 AS
 BEGIN
