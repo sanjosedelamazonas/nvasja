@@ -11,7 +11,7 @@ import org.sanjose.bean.Caja;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.ConfigurationUtil;
@@ -48,7 +48,7 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
         view.btnNuevoCheque.addClickListener(e -> gridLogic.nuevoCheque());
         view.btnEditar.addClickListener(e -> {
             for (Object obj : view.getSelectedRows()) {
-                gridLogic.editarCheque((VsjBancocabecera) obj);
+                gridLogic.editarCheque((ScpBancocabecera) obj);
                 break;
             }
         });
@@ -68,7 +68,7 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
                 Object item = view.gridBanco.getContainerDataSource().getItem(view.gridBanco.getEditedItemId());
                 if (item != null) {
-                    VsjBancocabecera vcb = (VsjBancocabecera) ((BeanItem) item).getBean();
+                    ScpBancocabecera vcb = (ScpBancocabecera) ((BeanItem) item).getBean();
                     vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
                             .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
                     view.getService().updateCobradoInCabecera(vcb);
@@ -83,10 +83,10 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
             } else {
-                gridContextMenu.addItem("Ver detalle", k -> gridLogic.editarCheque((VsjBancocabecera) itemId));
+                gridContextMenu.addItem("Ver detalle", k -> gridLogic.editarCheque((ScpBancocabecera) itemId));
                 gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
-                if (!((VsjBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
-                    gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque((VsjBancocabecera) itemId));
+                if (!((ScpBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
+                    gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque((ScpBancocabecera) itemId));
                 }
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
@@ -178,7 +178,7 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
         BigDecimal totalEurosDiaEgr = new BigDecimal(0.00);
 
         for (Object item : view.getGridBanco().getContainerDataSource().getItemIds()) {
-            VsjBancocabecera bancocabecera = (VsjBancocabecera) item;
+            ScpBancocabecera bancocabecera = (ScpBancocabecera) item;
             // PEN
             totalSolesDiaEgr = totalSolesDiaEgr.add(bancocabecera.getNumHabersol());
             totalSolesDiaIng = totalSolesDiaIng.add(bancocabecera.getNumDebesol());

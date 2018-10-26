@@ -6,7 +6,7 @@ import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.util.ViewUtil;
 
 /**
@@ -30,13 +30,13 @@ public class BancoGridLogic {
         MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
     }
 
-    public void editarCheque(VsjBancocabecera vcb) {
+    public void editarCheque(ScpBancocabecera vcb) {
         view.getBancoOperView().getViewLogic().editarCheque(vcb);
         view.getBancoOperView().getViewLogic().setNavigatorView(view);
         MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
     }
 
-    public void anularCheque(VsjBancocabecera cabeceraToAnular) {
+    public void anularCheque(ScpBancocabecera cabeceraToAnular) {
         if (cabeceraToAnular.isEnviado() && !Role.isPrivileged()) {
             Notification.show("!No se puede eliminar este cheque porque ya esta enviado a contabilidad!", Notification.Type.WARNING_MESSAGE);
             return;
@@ -62,14 +62,14 @@ public class BancoGridLogic {
 
     public void generateComprobante() {
         for (Object obj : view.getSelectedRows()) {
-            VsjBancocabecera vcb = (VsjBancocabecera) obj;
+            ScpBancocabecera vcb = (ScpBancocabecera) obj;
             ReportHelper.generateComprobante(vcb);
         }
     }
 
     public void printComprobante() {
         for (Object obj : view.getSelectedRows()) {
-            VsjBancocabecera vcb = (VsjBancocabecera) obj;
+            ScpBancocabecera vcb = (ScpBancocabecera) obj;
             ViewUtil.printComprobante(vcb);
         }
     }

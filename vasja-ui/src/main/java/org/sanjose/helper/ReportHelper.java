@@ -17,7 +17,7 @@ import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.Caja;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.ScpCajabanco;
-import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
@@ -122,7 +122,7 @@ public class ReportHelper {
 
 	private static Integer getIdFromItem(VsjItem op) {
 		return (op instanceof ScpCajabanco ? ((ScpCajabanco) op).getCodCajabanco()
-				: ((VsjBancocabecera) op).getCodBancocabecera());
+				: ((ScpBancocabecera) op).getCodBancocabecera());
 	}
 
 	@SuppressWarnings({"serial", "unchecked"})
@@ -130,9 +130,9 @@ public class ReportHelper {
 		// Skip when nothing selected
 		if (op==null) return;
 		final boolean isPdf = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
-				.equalsIgnoreCase("PDF") || op instanceof VsjBancocabecera;
+				.equalsIgnoreCase("PDF") || op instanceof ScpBancocabecera;
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
-				.equalsIgnoreCase("TXT") && !(op instanceof VsjBancocabecera);
+				.equalsIgnoreCase("TXT") && !(op instanceof ScpBancocabecera);
 		final String REPORT = getReportFromItem(op);
 		StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {
             byte[] b = null;

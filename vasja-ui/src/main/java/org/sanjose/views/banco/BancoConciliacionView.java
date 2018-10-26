@@ -208,7 +208,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         }
     }
 
-    private void loadItems(List<VsjBancocabecera> vsjBancocabeceras) {
+    private void loadItems(List<ScpBancocabecera> vsjBancocabeceras) {
         HierarchicalContainer indContainer = new HierarchicalContainer();
         indContainer.addContainerProperty("id", Integer.class, "");
         indContainer.addContainerProperty("txtCorrelativo", String.class, "");
@@ -227,28 +227,28 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         indContainer.addContainerProperty("flgCobrado", Boolean.class, "");
         indContainer.addContainerProperty("flgEnviado", Character.class, "");
         indContainer.addContainerProperty("flg_Anula", Character.class, "");
-        indContainer.addContainerProperty("cabeceraObject", VsjBancocabecera.class, "");
+        indContainer.addContainerProperty("cabeceraObject", ScpBancocabecera.class, "");
 
-        for (VsjBancocabecera cabecera : vsjBancocabeceras) {
-            VsjBancodetalle newDet = new VsjBancodetalle();
-            VsjBancodetallePK newId = new VsjBancodetallePK();
+        for (ScpBancocabecera cabecera : vsjBancocabeceras) {
+            ScpBancodetalle newDet = new ScpBancodetalle();
+            ScpBancodetallePK newId = new ScpBancodetallePK();
             newId.setCodBancocabecera(cabecera.getCodBancocabecera());
             newId.setNumItem(0);
             newDet.setId(newId);
             newDet.setFecFecha(cabecera.getFecFecha());
             newDet.setTxtCorrelativo(cabecera.getTxtCorrelativo());
             newDet.setTxtGlosaitem(cabecera.getTxtGlosa());
-            newDet.setVsjBancocabecera(cabecera);
+            newDet.setScpBancocabecera(cabecera);
             newDet.setNumDebesol(cabecera.getNumDebesol());
             newDet.setNumHabersol(cabecera.getNumHabersol());
             newDet.setNumDebedolar(cabecera.getNumDebedolar());
             newDet.setNumHaberdolar(cabecera.getNumHaberdolar());
             newDet.setNumDebemo(cabecera.getNumDebemo());
             newDet.setNumHabermo(cabecera.getNumHabermo());
-            List<VsjBancodetalle> detalles = getService().getBancodetalleRep().findById_CodBancocabecera(cabecera.getCodBancocabecera());
+            List<ScpBancodetalle> detalles = getService().getBancodetalleRep().findById_CodBancocabecera(cabecera.getCodBancocabecera());
             if (detalles.size() > 1) addItem(indContainer, newDet, true);
 
-            for (VsjBancodetalle det : detalles) {
+            for (ScpBancodetalle det : detalles) {
                 if (detalles.size() > 1) {
                     addItem(indContainer, det, false);
                     addParent(indContainer, det.getId().getCodBancocabecera() + (det.getId().getNumItem() != 0 ? "-" + det.getId().getNumItem() : ""), newDet.getId().getCodBancocabecera() + "");
@@ -266,15 +266,15 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
     }
 
-    private void addItem(HierarchicalContainer indCon, VsjBancodetalle vbd, boolean isParent) {
+    private void addItem(HierarchicalContainer indCon, ScpBancodetalle vbd, boolean isParent) {
         final Item item = indCon.addItem(vbd.getId().getCodBancocabecera() + (vbd.getId().getNumItem() != 0 ? "-" + vbd.getId().getNumItem() : ""));
         item.getItemProperty("id").setValue(vbd.getId().getCodBancocabecera());
         item.getItemProperty("txtCorrelativo").setValue(vbd.getTxtCorrelativo());
         item.getItemProperty("fecFecha").setValue(vbd.getFecFecha());
-        item.getItemProperty("txtCheque").setValue(vbd.getVsjBancocabecera().getTxtCheque());
+        item.getItemProperty("txtCheque").setValue(vbd.getScpBancocabecera().getTxtCheque());
         item.getItemProperty("codProyecto").setValue(vbd.getCodProyecto());
         item.getItemProperty("codCtacontable").setValue(vbd.getCodContracta());
-        ScpDestino destino = getService().getDestinoRepo().findByCodDestino(vbd.getVsjBancocabecera().getCodDestino());
+        ScpDestino destino = getService().getDestinoRepo().findByCodDestino(vbd.getScpBancocabecera().getCodDestino());
         item.getItemProperty("txtNombredestino").setValue(destino != null ? destino.getTxtNombredestino() : "");
         item.getItemProperty("txtGlosaitem").setValue(vbd.getTxtGlosaitem());
         item.getItemProperty("numDebesol").setValue(vbd.getNumDebesol());
@@ -284,9 +284,9 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         item.getItemProperty("numDebemo").setValue(vbd.getNumDebemo());
         item.getItemProperty("numHabermo").setValue(vbd.getNumHabermo());
         item.getItemProperty("flg_Anula").setValue(vbd.getFlg_Anula());
-        item.getItemProperty("flgEnviado").setValue(vbd.getVsjBancocabecera().getFlgEnviado());
-        item.getItemProperty("flgCobrado").setValue(isParent && !vbd.getVsjBancocabecera().isAnula() ? vbd.getVsjBancocabecera().getFlgCobrado() : null);
-        item.getItemProperty("cabeceraObject").setValue(vbd.getVsjBancocabecera());
+        item.getItemProperty("flgEnviado").setValue(vbd.getScpBancocabecera().getFlgEnviado());
+        item.getItemProperty("flgCobrado").setValue(isParent && !vbd.getScpBancocabecera().isAnula() ? vbd.getScpBancocabecera().getFlgCobrado() : null);
+        item.getItemProperty("cabeceraObject").setValue(vbd.getScpBancocabecera());
     }
 
     private void addParent(HierarchicalContainer container, String item, String parent) {

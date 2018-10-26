@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 				}
 		),
 		@NamedStoredProcedureQuery(
-				name = "getEnviarContabilidadBanco",
+				name = "getEnviarBanco",
 				procedureName = "usp_scp_vsj_enviarAContabilidadBanco",
 				parameters = {
 						@StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class),

@@ -14,8 +14,8 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.model.VsjBancodetalle;
+import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpBancodetalle;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.MainScreen;
@@ -40,7 +40,7 @@ public class BancoLogic extends BancoItemLogic {
 
     private FieldGroup fieldGroupCabezera;
 
-    private BeanItem<VsjBancocabecera> beanItem;
+    private BeanItem<ScpBancocabecera> beanItem;
 
     @Override
     public void init(BancoOperView view) {
@@ -72,7 +72,7 @@ public class BancoLogic extends BancoItemLogic {
 
     public void nuevoCheque() {
         switchMode(NEW);
-        editarCheque(new VsjBancocabecera());
+        editarCheque(new ScpBancocabecera());
     }
 
     private void clearFields() {
@@ -92,7 +92,7 @@ public class BancoLogic extends BancoItemLogic {
         }
     }
 
-    public void editarCheque(VsjBancocabecera vsjBancocabecera) {
+    public void editarCheque(ScpBancocabecera vsjBancocabecera) {
         view.getContainer().removeAllItems();
         view.gridBanco.select(null);
         moneda = vsjBancocabecera.getCodTipomoneda();
@@ -104,7 +104,7 @@ public class BancoLogic extends BancoItemLogic {
         bindForm(vsjBancocabecera);
         addValidators();
         if (vsjBancocabecera.getCodBancocabecera() != null) {
-            List<VsjBancodetalle> bancodetalleList = view.getService().getBancodetalleRep()
+            List<ScpBancodetalle> bancodetalleList = view.getService().getBancodetalleRep()
                     .findById_CodBancocabecera(vsjBancocabecera.getCodBancocabecera());
             if (!bancodetalleList.isEmpty()) {
                 view.getContainer().addAll(bancodetalleList);
@@ -154,7 +154,7 @@ public class BancoLogic extends BancoItemLogic {
         MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
 
-    private void bindForm(VsjBancocabecera item) {
+    private void bindForm(ScpBancocabecera item) {
         isLoading = true;
         clearSaldos();
         beanItem = new BeanItem<>(item);
@@ -198,12 +198,12 @@ public class BancoLogic extends BancoItemLogic {
     }
 
     private void eliminarComprobante() {
-        VsjBancodetalle bancoItem = view.getSelectedRow();
+        ScpBancodetalle bancoItem = view.getSelectedRow();
         MessageBox
                 .createQuestion()
                 .withCaption("Eliminar operacion")
                 .withMessage("?Esta seguro que quiere eliminar operacion: \n" +
-                        bancoItem.getVsjBancocabecera().getTxtCorrelativo() + "-" + bancoItem.getId().getNumItem() + " ?\n")
+                        bancoItem.getScpBancocabecera().getTxtCorrelativo() + "-" + bancoItem.getId().getNumItem() + " ?\n")
                 .withYesButton(() -> {
                     eliminarRealmenteComprobante(bancoItem);
                 })
@@ -211,12 +211,12 @@ public class BancoLogic extends BancoItemLogic {
                 .open();
     }
 
-    private void eliminarRealmenteComprobante(VsjBancodetalle bancoItem) {
+    private void eliminarRealmenteComprobante(ScpBancodetalle bancoItem) {
         if (bancoItem == null) {
             log.error("no se puede eliminar si no esta ya guardado");
             return;
         }
-        if (bancoItem.getVsjBancocabecera().isEnviado()) {
+        if (bancoItem.getScpBancocabecera().isEnviado()) {
             Notification.show("Problema al eliminar", "No se puede eliminar porque ya esta enviado a la contabilidad",
                     Notification.Type.WARNING_MESSAGE);
             return;
@@ -225,7 +225,7 @@ public class BancoLogic extends BancoItemLogic {
         view.getService().deleteBancoOperacion(bancocabecera, bancoItem);
         view.refreshData();
         view.getContainer().removeAllItems();
-        List<VsjBancodetalle> bancodetalleList = view.getService().getBancodetalleRep()
+        List<ScpBancodetalle> bancodetalleList = view.getService().getBancodetalleRep()
                 .findById_CodBancocabecera(bancocabecera.getCodBancocabecera());
         if (!bancodetalleList.isEmpty()) {
             view.getContainer().addAll(bancodetalleList);
@@ -241,24 +241,24 @@ public class BancoLogic extends BancoItemLogic {
         try {
             fieldGroupCabezera.commit();
             log.debug("saved in class: " + bancocabecera);
-            VsjBancocabecera cabecera = beanItem.getBean();
+            ScpBancocabecera cabecera = beanItem.getBean();
             cabecera.setFlgCobrado(!GenUtil.strNullOrEmpty(cabecera.getCodMescobrado()));
-            VsjBancodetalle bancoItem = getVsjBancodetalle();
+            ScpBancodetalle bancoItem = getScpBancodetalle();
             if (!verifyNumMoneda(moneda))
                 throw new FieldGroup.CommitException("Moneda no esta de tipo numeral");
             boolean isNew = cabecera.getFecFregistro() == null;
             log.debug("cabezera ready: " + cabecera);
 
             bancoItem = view.getService().saveBancoOperacion(cabecera, bancoItem, moneda);
-            bancocabecera = bancoItem.getVsjBancocabecera();
-            log.debug("cabecera after save: " + bancoItem.getVsjBancocabecera());
+            bancocabecera = bancoItem.getScpBancocabecera();
+            log.debug("cabecera after save: " + bancoItem.getScpBancocabecera());
             setNumVoucher(bancoItem);
             moneda = item.getCodTipomoneda();
             if (isNew) {
                 view.getContainer().addBean(bancoItem);
             } else {
-                VsjBancodetalle vcbOld = null;
-                for (VsjBancodetalle vcb : view.getContainer().getItemIds()) {
+                ScpBancodetalle vcbOld = null;
+                for (ScpBancodetalle vcb : view.getContainer().getItemIds()) {
                     if (bancoItem.getFecFregistro().equals(vcb.getFecFregistro())) {
                         vcbOld = bancoItem;
                         break;

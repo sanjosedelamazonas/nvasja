@@ -1,5 +1,13 @@
 USE [SCP]
 GO
+IF EXISTS ( SELECT *
+            FROM   sysobjects
+            WHERE  id = object_id(N'[dbo].[usp_scp_vsj_GetSaldosAlDiaBanco]')
+                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+BEGIN
+    DROP PROCEDURE [dbo].[usp_scp_vsj_GetSaldosAlDiaBanco]
+END
+
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]    Script Date: 10/14/2016 03:30:47 ******/
 SET ANSI_NULLS ON
 GO
@@ -65,7 +73,7 @@ BEGIN
 			Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes
 
 			Select @SaldoCaja = Sum(A.num_habersol)-Sum(A.num_debesol)
-			From vsj_bancocabecera A
+			From scp_bancocabecera A
 			Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha <= Convert(datetime, @Fecha, 20))
 			And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 			Group By A.cod_ctacontable, a.cod_tipomoneda
@@ -80,7 +88,7 @@ BEGIN
 			Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes		
 
 			Select @SaldoCaja = Sum(A.num_haberdolar)-Sum(A.num_debedolar)
-			From vsj_bancocabecera A
+			From scp_bancocabecera A
 			Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha <= Convert(datetime, @Fecha, 20))
 			And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 			Group By A.cod_ctacontable, a.cod_tipomoneda
@@ -95,7 +103,7 @@ BEGIN
 			Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes
 
 			Select @SaldoCaja = Sum(A.num_habermo)-Sum(A.num_debemo)
-			From vsj_bancocabecera A
+			From scp_bancocabecera A
 			Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha <= Convert(datetime, @Fecha, 20))
 			And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 			Group By A.cod_ctacontable, a.cod_tipomoneda

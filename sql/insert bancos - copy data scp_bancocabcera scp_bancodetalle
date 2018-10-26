@@ -1,11 +1,11 @@
 /****** Script for SelectTopNRows command from SSMS  ******/
-delete from scp.dbo.vsj_bancodetalle
+delete from scp.dbo.scp_bancodetalle
 where 1=1;
 
-delete from scp.dbo.vsj_bancocabecera
+delete from scp.dbo.scp_bancocabecera
 where 1=1;
 
-insert into scp.dbo.vsj_bancocabecera(
+insert into scp.dbo.scp_bancocabecera(
 [txt_anoproceso]
       ,[ind_tipocuenta]
       ,[flg_saldo]
@@ -61,7 +61,7 @@ SELECT [txt_anoproceso]
   where txt_anoproceso in ('2015','2016','2017','2018')
   order by fec_fecha
 
-  insert into scp.dbo.vsj_bancodetalle(
+  insert into scp.dbo.scp_bancodetalle(
 [num_item],
 cod_bancocabecera,
       [txt_anoproceso]
@@ -155,7 +155,7 @@ bc.cod_bancocabecera
       ,bd.[cod_uregistro]
       ,bd.[fec_factualiza]
       ,bd.[cod_uactualiza]
-  FROM [SCP].[dbo].[scp_bancodetalle]   bd inner join scp.dbo.vsj_bancocabecera  bc
+  FROM [SCP].[dbo].[scp_bancodetalle]   bd inner join scp.dbo.scp_bancocabecera  bc
   on  bd.[txt_anoproceso]=bc.txt_anoproceso
       and bd.[ind_tipocuenta]=bc.ind_tipocuenta
       and bd.[flg_saldo]=bc.flg_saldo

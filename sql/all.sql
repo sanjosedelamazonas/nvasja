@@ -1,7 +1,7 @@
 USE [SCP]
 GO
 
-/****** Object:  Table [dbo].[vsj_bancocabecera]    Script Date: 09/26/2016 02:30:46 ******/
+/****** Object:  Table [dbo].[scp_bancocabecera]    Script Date: 09/26/2016 02:30:46 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -11,7 +11,7 @@ GO
 SET ANSI_PADDING OFF
 GO
 
-CREATE TABLE [dbo].[vsj_bancocabecera](
+CREATE TABLE [dbo].[scp_bancocabecera](
 	[cod_bancocabecera] [int] IDENTITY(1,1) NOT NULL,
 	[txt_anoproceso] [varchar](4) NOT NULL,
 	[ind_tipocuenta] [char](1) NOT NULL,
@@ -42,10 +42,10 @@ CREATE TABLE [dbo].[vsj_bancocabecera](
 	[flg_Anula] [char](1) NULL
 ) ON [PRIMARY]
 SET ANSI_PADDING ON
-ALTER TABLE [dbo].[vsj_bancocabecera] ADD [cod_mescobrado] [varchar](2) NULL
---ALTER TABLE [dbo].[vsj_bancocabecera] ADD [flg_Anula] [char](1) NULL
-/****** Object:  Index [PK_vsj_bancocabecera]    Script Date: 09/26/2016 02:30:46 ******/
-ALTER TABLE [dbo].[vsj_bancocabecera] ADD  CONSTRAINT [PK_vsj_bancocabecera] PRIMARY KEY CLUSTERED 
+ALTER TABLE [dbo].[scp_bancocabecera] ADD [cod_mescobrado] [varchar](2) NULL
+--ALTER TABLE [dbo].[scp_bancocabecera] ADD [flg_Anula] [char](1) NULL
+/****** Object:  Index [PK_scp_bancocabecera]    Script Date: 09/26/2016 02:30:46 ******/
+ALTER TABLE [dbo].[scp_bancocabecera] ADD  CONSTRAINT [PK_scp_bancocabecera] PRIMARY KEY CLUSTERED
 (
 	[cod_bancocabecera] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
@@ -67,7 +67,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-CREATE TABLE [dbo].[vsj_bancodetalle](
+CREATE TABLE [dbo].[scp_bancodetalle](
 	[num_item] int NOT NULL,
 	[cod_bancocabecera] int NOT NULL,
 	[txt_anoproceso] [varchar](4) NOT NULL,
@@ -115,10 +115,10 @@ CREATE TABLE [dbo].[vsj_bancodetalle](
 	[fec_factualiza] [datetime] NULL,
 	[cod_uactualiza] [varchar](15) NULL,
 	[cod_tipomov] [int] NULL
-CONSTRAINT [FK_vsj_bancocabecera] FOREIGN KEY 
-(cod_bancocabecera) REFERENCES vsj_bancocabecera(cod_bancocabecera) 
+CONSTRAINT [FK_scp_bancocabecera] FOREIGN KEY
+(cod_bancocabecera) REFERENCES scp_bancocabecera(cod_bancocabecera)
 ON UPDATE CASCADE,
- CONSTRAINT [PK_vsj_bancodetalle] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_scp_bancodetalle] PRIMARY KEY CLUSTERED
 (
 	[num_item] ASC,
 	[cod_bancocabecera] ASC
@@ -330,7 +330,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidadBanco]
-	@cod_bancocabecera int, --id de operacion de vsj_bancocabecera
+	@cod_bancocabecera int, --id de operacion de scp_bancocabecera
 	@user varchar(15), -- nombre del usuario segun SCP
 	@fecha_operacion varchar(10),-- fecha de operacion en formato 'dd/mm/yyyy'
 	@cod_moneda char(1), -- 0 pen, 1 usd, 2 eur
@@ -432,7 +432,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancocabecera
+		  FROM dbo.scp_bancocabecera
 		  where cod_bancocabecera=@cod_bancocabecera)
 
 		/****************************************************************************
@@ -532,8 +532,8 @@ BEGIN TRY
 			  ,[txt_glosaitem]
 			  ,[cod_destino]
 			  ,[txt_cheque]
-			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 			  ,[cod_tipocomprobantepago]
 			  ,[txt_seriecomprobantepago]
 			  ,[txt_comprobantepago]
@@ -595,7 +595,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle
+		  FROM dbo.scp_bancodetalle
 		  where cod_bancocabecera=@cod_bancocabecera )
 		   (select --insertar linea del banco cta 104 o 106..
 			 bd.[txt_anoproceso]
@@ -609,8 +609,8 @@ BEGIN TRY
 			  ,bd.[txt_glosaitem]
 			  ,bd.[cod_destino]
 			  ,bd.[txt_cheque]
-			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 			  ,bd.[cod_tipocomprobantepago]
 			  ,bd.[txt_seriecomprobantepago]
 			  ,bd.[txt_comprobantepago]
@@ -672,7 +672,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle bd, dbo.vsj_bancocabecera bc
+		  FROM dbo.scp_bancodetalle bd, dbo.scp_bancocabecera bc
 		  where bd.cod_bancocabecera=@cod_bancocabecera
 		  and bc.cod_bancocabecera =bd.cod_bancocabecera )
 
@@ -769,8 +769,8 @@ BEGIN TRY
 			  ,[txt_glosaitem]
 			  ,[cod_destino]
 			  ,[txt_cheque]
-			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 			  ,[cod_tipocomprobantepago]
 			  ,[txt_seriecomprobantepago]
 			  ,[txt_comprobantepago]
@@ -832,7 +832,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle
+		  FROM dbo.scp_bancodetalle
 		  where cod_bancocabecera=@cod_bancocabecera )
 		   (select --insertar linea del banco cta 104 o 106..
 			 bd.[txt_anoproceso]
@@ -846,8 +846,8 @@ BEGIN TRY
 			  ,bd.[txt_glosaitem]
 			  ,bd.[cod_destino]
 			  ,bd.[txt_cheque]
-			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 			  ,bd.[cod_tipocomprobantepago]
 			  ,bd.[txt_seriecomprobantepago]
 			  ,bd.[txt_comprobantepago]
@@ -909,7 +909,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle bd, dbo.vsj_bancocabecera bc
+		  FROM dbo.scp_bancodetalle bd, dbo.scp_bancocabecera bc
 		  where bd.cod_bancocabecera=@cod_bancocabecera
 		  and bc.cod_bancocabecera =bd.cod_bancocabecera )
 
@@ -1008,8 +1008,8 @@ BEGIN TRY
 				  ,[txt_glosaitem]
 				  ,[cod_destino]
 				  ,[txt_cheque]
-				  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-				  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+				  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+				  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 				  ,[cod_tipocomprobantepago]
 				  ,[txt_seriecomprobantepago]
 				  ,[txt_comprobantepago]
@@ -1071,7 +1071,7 @@ BEGIN TRY
 				  ,@user
 				  ,GETDATE()
 				  ,@user
-			  FROM dbo.vsj_bancodetalle
+			  FROM dbo.scp_bancodetalle
 			  where cod_bancocabecera=@cod_bancocabecera )
 			   (select --insertar linea del banco cta 104 o 106..
 				 bd.[txt_anoproceso]
@@ -1085,8 +1085,8 @@ BEGIN TRY
 				  ,bd.[txt_glosaitem]
 				  ,bd.[cod_destino]
 				  ,bd.[txt_cheque]
-				  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-				  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+				  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+				  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 				  ,bd.[cod_tipocomprobantepago]
 				  ,bd.[txt_seriecomprobantepago]
 				  ,bd.[txt_comprobantepago]
@@ -1148,7 +1148,7 @@ BEGIN TRY
 				  ,@user
 				  ,GETDATE()
 				  ,@user
-			  FROM dbo.vsj_bancodetalle bd, dbo.vsj_bancocabecera bc
+			  FROM dbo.scp_bancodetalle bd, dbo.scp_bancocabecera bc
 			  where bd.cod_bancocabecera=@cod_bancocabecera
 			  and bc.cod_bancocabecera =bd.cod_bancocabecera )
 
@@ -1161,7 +1161,7 @@ BEGIN TRY
         * Actualiza vsj_cajabanco cuando ya esta en contabilidad la operacion
         ****************************************************************************/
         SELECT  @ErrorStep = 'Error al actualizar el registro de caja'
-		 update dbo.vsj_bancocabecera
+		 update dbo.scp_bancocabecera
 		 set [flg_enviado]='1'
 			  ,[cod_origenenlace]=@cod_origen
 			  ,[cod_comprobanteenlace]=@cod_comprobante
@@ -1903,7 +1903,7 @@ BEGIN
 	Print 'Inicial: '+CONVERT(char(14),@SaldoInicial,14)
 
 	Select @SaldoCaja = Sum(A.num_habersol)-Sum(A.num_debesol)
-	From vsj_bancocabecera A
+	From scp_bancocabecera A
 	Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha <= Convert(datetime, @Fecha, 20))
 	And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 	Group By A.cod_ctacontable, a.cod_tipomoneda
@@ -1920,7 +1920,7 @@ BEGIN
 	Print 'Inicial: '+CONVERT(char(14),@SaldoInicial,14)
 
 	Select @SaldoCaja = Sum(A.num_haberdolar)-Sum(A.num_debedolar)
-	From vsj_bancocabecera A
+	From scp_bancocabecera A
 	Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha <= Convert(datetime, @Fecha, 20))
 	And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 	Group By A.cod_ctacontable, a.cod_tipomoneda
@@ -1937,7 +1937,7 @@ BEGIN
 	Print 'Inicial: '+CONVERT(char(14),@SaldoInicial,14)
 
 	Select @SaldoCaja = Sum(A.num_habermo)-Sum(A.num_debemo)
-	From vsj_bancocabecera A
+	From scp_bancocabecera A
 	Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha <= Convert(datetime, @Fecha, 20))
 	And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 	Group By A.cod_ctacontable, a.cod_tipomoneda
@@ -2421,7 +2421,7 @@ BEGIN
 			Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes
 
 			Select @SaldoCaja = Sum(A.num_habersol)-Sum(A.num_debesol)
-			From vsj_bancocabecera A
+			From scp_bancocabecera A
 			Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha <= Convert(datetime, @Fecha, 20))
 			And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 			Group By A.cod_ctacontable, a.cod_tipomoneda
@@ -2436,7 +2436,7 @@ BEGIN
 			Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes		
 
 			Select @SaldoCaja = Sum(A.num_haberdolar)-Sum(A.num_debedolar)
-			From vsj_bancocabecera A
+			From scp_bancocabecera A
 			Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha <= Convert(datetime, @Fecha, 20))
 			And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 			Group By A.cod_ctacontable, a.cod_tipomoneda
@@ -2451,7 +2451,7 @@ BEGIN
 			Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes
 
 			Select @SaldoCaja = Sum(A.num_habermo)-Sum(A.num_debemo)
-			From vsj_bancocabecera A
+			From scp_bancocabecera A
 			Where (A.fec_fecha >= Convert(datetime, @FechaInicial, 20) And A.fec_fecha <= Convert(datetime, @Fecha, 20))
 			And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 			Group By A.cod_ctacontable, a.cod_tipomoneda

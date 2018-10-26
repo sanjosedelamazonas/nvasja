@@ -15,7 +15,7 @@ import org.sanjose.MainUI;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpPlancontable;
-import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.GridViewing;
@@ -58,7 +58,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"};
 
-    private BeanItemContainer<VsjBancocabecera> container;
+    private BeanItemContainer<ScpBancocabecera> container;
 
     private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
 
@@ -74,7 +74,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         setHeight(102, Unit.PERCENTAGE);
 
         //noinspection unchecked
-        container = new BeanItemContainer(VsjBancocabecera.class, getService().findByFecFechaBetween(filterInitialDate, new Date()));
+        container = new BeanItemContainer(ScpBancocabecera.class, getService().findByFecFechaBetween(filterInitialDate, new Date()));
         container.addNestedContainerBean("scpDestino");
         gridBanco.setContainerDataSource(container);
         gridBanco.setEditorEnabled(false);
@@ -108,7 +108,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         cobradoChkBox.setBigPreset(false);
         //gridBanco.getColumn("flgCobrado").setRenderer(new CheckboxRenderer());
         gridBanco.setEditorFieldGroup(
-                new BeanFieldGroup<>(VsjBancocabecera.class));
+                new BeanFieldGroup<>(ScpBancocabecera.class));
         gridBanco.setEditorEnabled(true);
         gridBanco.setEditorBuffered(true);
 
@@ -122,7 +122,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
-        ViewUtil.colorizeRows(gridBanco, VsjBancocabecera.class);
+        ViewUtil.colorizeRows(gridBanco, ScpBancocabecera.class);
 
         DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
@@ -175,7 +175,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
             @Override
             public void select(SelectionEvent selectionEvent) {
                 if (selectionEvent.getSelected().isEmpty()) return;
-                VsjBancocabecera cabeceraSelected = (VsjBancocabecera) selectionEvent.getSelected().toArray()[0];
+                ScpBancocabecera cabeceraSelected = (ScpBancocabecera) selectionEvent.getSelected().toArray()[0];
                 bancoOperView.getViewLogic().setNavigatorView(bancoOperacionesView);
                 bancoOperView.getViewLogic().editarCheque(cabeceraSelected);
             }

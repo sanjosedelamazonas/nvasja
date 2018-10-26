@@ -10,7 +10,7 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
@@ -41,7 +41,7 @@ public class BancoOperacionesLogic implements Serializable {
         view.btnNuevoCheque.addClickListener(e -> gridLogic.nuevoCheque());
         view.btnEditar.addClickListener(e -> {
             for (Object obj : view.getSelectedRows()) {
-                gridLogic.editarCheque((VsjBancocabecera) obj);
+                gridLogic.editarCheque((ScpBancocabecera) obj);
                 break;
             }
         });
@@ -60,7 +60,7 @@ public class BancoOperacionesLogic implements Serializable {
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
                 Object item = view.gridBanco.getContainerDataSource().getItem(view.gridBanco.getEditedItemId());
                 if (item != null) {
-                    VsjBancocabecera vcb = (VsjBancocabecera) ((BeanItem) item).getBean();
+                    ScpBancocabecera vcb = (ScpBancocabecera) ((BeanItem) item).getBean();
                     vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
                             .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
                     view.getService().updateCobradoInCabecera(vcb);
@@ -76,25 +76,25 @@ public class BancoOperacionesLogic implements Serializable {
             if (itemId == null) {
                 //  gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
             } else {
-                // gridContextMenu.addItem("Editar", k -> gridLogic.editarCheque((VsjBancocabecera) itemId));
+                // gridContextMenu.addItem("Editar", k -> gridLogic.editarCheque((ScpBancocabecera) itemId));
                 // gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
-                if (!((VsjBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
-                    gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque((VsjBancocabecera) itemId));
+                if (!((ScpBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
+                    gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque((ScpBancocabecera) itemId));
                 }
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
                         List<Object> bancocabeceras = new ArrayList<>();
-                        List<VsjBancocabecera> vsjBancocabecerasEnviadas = null;
+                        List<ScpBancocabecera> vsjBancocabecerasEnviadas = null;
                         if (!view.getSelectedRows().isEmpty()) {
                             bancocabeceras.addAll(view.getSelectedRows());
                         } else {
                             bancocabeceras.add(itemId);
                         }
                         vsjBancocabecerasEnviadas = MainUI.get().getProcUtil().enviarContabilidadBanco(bancocabeceras, view.getService());
-                        for (VsjBancocabecera vcb : vsjBancocabecerasEnviadas) {
+                        for (ScpBancocabecera vcb : vsjBancocabecerasEnviadas) {
                             Object cabeceraToRemove = null;
                             for (Object objVcb : bancocabeceras) {
-                                if (((VsjBancocabecera) objVcb).getCodBancocabecera().equals(vcb.getCodBancocabecera())) {
+                                if (((ScpBancocabecera) objVcb).getCodBancocabecera().equals(vcb.getCodBancocabecera())) {
                                     cabeceraToRemove = objVcb;
                                     break;
                                 }

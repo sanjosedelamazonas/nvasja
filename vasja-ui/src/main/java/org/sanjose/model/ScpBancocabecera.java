@@ -15,9 +15,9 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="vsj_bancocabecera")
-@NamedQuery(name="VsjBancocabecera.findAll", query="SELECT v FROM VsjBancocabecera v")
-public class VsjBancocabecera extends VsjBancoItem implements Serializable {
+@Table(name="scp_bancocabecera")
+@NamedQuery(name="ScpBancocabecera.findAll", query="SELECT v FROM ScpBancocabecera v")
+public class ScpBancocabecera extends VsjBancoItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -49,16 +49,16 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 	@Column(name="cod_mescobrado")
 	private String codMescobrado;
 	private Character flg_Anula;
-	//bi-directional many-to-one association to VsjBancodetalle
+	//bi-directional many-to-one association to ScpBancodetalle
 	@OneToMany(mappedBy = "vsjBancocabecera")
-	private List<VsjBancodetalle> vsjBancodetalles;
+	private List<ScpBancodetalle> vsjBancodetalles;
 
 	@ManyToOne(targetEntity = ScpDestino.class)
 	@JoinColumn(name = "cod_destino", insertable = false, updatable = false)
 	private ScpDestino scpDestino;
 
 
-	public VsjBancocabecera() {
+	public ScpBancocabecera() {
 		setFecFecha(new Timestamp(System.currentTimeMillis()));
 		setFlgEnviado('0');
 		setFlgIm('1');
@@ -68,8 +68,8 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 	}
 
 	@Override
-	public VsjBancocabecera prepareToSave() throws FieldGroup.CommitException {
-		VsjBancocabecera item = (VsjBancocabecera) super.prepareToSave();
+	public ScpBancocabecera prepareToSave() throws FieldGroup.CommitException {
+		ScpBancocabecera item = (ScpBancocabecera) super.prepareToSave();
 		item.setIndTipocuenta('2');
 		return item;
 	}
@@ -190,24 +190,24 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 		this.scpDestino = scpDestino;
 	}
 
-	public List<VsjBancodetalle> getVsjBancodetalles() {
+	public List<ScpBancodetalle> getScpBancodetalles() {
 		return this.vsjBancodetalles;
 	}
 
-	public void setVsjBancodetalles(List<VsjBancodetalle> vsjBancodetalles) {
+	public void setScpBancodetalles(List<ScpBancodetalle> vsjBancodetalles) {
 		this.vsjBancodetalles = vsjBancodetalles;
 	}
 
-	public VsjBancodetalle addVsjBancodetalle(VsjBancodetalle vsjBancodetalle) {
-		getVsjBancodetalles().add(vsjBancodetalle);
-		vsjBancodetalle.setVsjBancocabecera(this);
+	public ScpBancodetalle addScpBancodetalle(ScpBancodetalle vsjBancodetalle) {
+		getScpBancodetalles().add(vsjBancodetalle);
+		vsjBancodetalle.setScpBancocabecera(this);
 
 		return vsjBancodetalle;
 	}
 
-	public VsjBancodetalle removeVsjBancodetalle(VsjBancodetalle vsjBancodetalle) {
-		getVsjBancodetalles().remove(vsjBancodetalle);
-		vsjBancodetalle.setVsjBancocabecera(null);
+	public ScpBancodetalle removeScpBancodetalle(ScpBancodetalle vsjBancodetalle) {
+		getScpBancodetalles().remove(vsjBancodetalle);
+		vsjBancodetalle.setScpBancocabecera(null);
 
 		return vsjBancodetalle;
 	}
@@ -221,7 +221,7 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		VsjBancocabecera that = (VsjBancocabecera) o;
+		ScpBancocabecera that = (ScpBancocabecera) o;
 
 		return getCodBancocabecera() != null ? getCodBancocabecera().equals(that.getCodBancocabecera()) : that.getCodBancocabecera() == null;
 
@@ -234,7 +234,7 @@ public class VsjBancocabecera extends VsjBancoItem implements Serializable {
 
 	@Override
 	public String toString() {
-		return "VsjBancocabecera{" +
+		return "ScpBancocabecera{" +
 				"codBancocabecera=" + codBancocabecera +
 				", codComprobanteenlace='" + codComprobanteenlace + '\'' +
 				", codCtacontable='" + codCtacontable + '\'' +

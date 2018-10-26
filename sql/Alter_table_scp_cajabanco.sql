@@ -30,3 +30,23 @@ update [dbo].[scp_cajabanco] set
 	[cod_transcorrelativo] ='',
 	[cod_tipomov] =0
 	where 1=1;
+;
+create function [dbo].[usp_vsj_cajabanco_gen_correlativo](@id int)
+returns char(8)
+as
+begin
+return right('00000000' + convert(varchar(10), @id), 8)
+end
+GO
+;
+create trigger [dbo].[vsj_scp_cajabanco_insert] on [dbo].[scp_cajabanco]
+after insert as
+update
+    scp_cajabanco
+set
+    scp_cajabanco.txt_correlativo = dbo.usp_vsj_cajabanco_gen_correlativo(scp_cajabanco.cod_cajabanco)
+from
+    scp_cajabanco
+inner join
+    inserted on scp_cajabanco.cod_cajabanco = inserted.cod_cajabanco
+GO

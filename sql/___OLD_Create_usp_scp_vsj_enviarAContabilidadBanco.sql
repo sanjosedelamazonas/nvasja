@@ -6,7 +6,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidadBanco]
-	@cod_bancocabecera int, --id de operacion de vsj_bancocabecera
+	@cod_bancocabecera int, --id de operacion de scp_bancocabecera
 	@user varchar(15), -- nombre del usuario segun SCP
 	@fecha_operacion varchar(10),-- fecha de operacion en formato 'dd/mm/yyyy'
 	@cod_moneda char(1), -- 0 pen, 1 usd, 2 eur
@@ -108,7 +108,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancocabecera
+		  FROM dbo.scp_bancocabecera
 		  where cod_bancocabecera=@cod_bancocabecera)
 
 		/****************************************************************************
@@ -149,8 +149,8 @@ BEGIN TRY
 			  ,b.[txt_glosaitem]
 			  ,b.[cod_destino]
 			  ,b.[txt_cheque]
-			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 			  ,b.[cod_tipocomprobantepago]
 			  ,b.[txt_seriecomprobantepago]
 			  ,b.[txt_comprobantepago]
@@ -212,7 +212,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle b
+		  FROM dbo.scp_bancodetalle b
 		  where b.cod_bancocabecera=@cod_bancocabecera
 		  union all
 		  select --insertar linea del banco cta 104 o 106..
@@ -227,8 +227,8 @@ BEGIN TRY
 			  ,bd.[txt_glosaitem]
 			  ,bd.[cod_destino]
 			  ,bd.[txt_cheque]
-			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 			  ,bd.[cod_tipocomprobantepago]
 			  ,bd.[txt_seriecomprobantepago]
 			  ,bd.[txt_comprobantepago]
@@ -290,7 +290,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle bd, dbo.vsj_bancocabecera bc
+		  FROM dbo.scp_bancodetalle bd, dbo.scp_bancocabecera bc
 		  where bd.cod_bancocabecera=@cod_bancocabecera
 		  and bc.cod_bancocabecera =bd.cod_bancocabecera )
 
@@ -328,8 +328,8 @@ BEGIN TRY
 			  ,b.[txt_glosaitem]
 			  ,b.[cod_destino]
 			  ,b.[txt_cheque]
-			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 			  ,b.[cod_tipocomprobantepago]
 			  ,b.[txt_seriecomprobantepago]
 			  ,b.[txt_comprobantepago]
@@ -391,7 +391,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle b
+		  FROM dbo.scp_bancodetalle b
 		  where b.cod_bancocabecera=@cod_bancocabecera
 		  union all
 		  select --insertar linea del banco cta 104 o 106..
@@ -406,8 +406,8 @@ BEGIN TRY
 			  ,bd.[txt_glosaitem]
 			  ,bd.[cod_destino]
 			  ,bd.[txt_cheque]
-			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 			  ,bd.[cod_tipocomprobantepago]
 			  ,bd.[txt_seriecomprobantepago]
 			  ,bd.[txt_comprobantepago]
@@ -469,7 +469,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle bd, dbo.vsj_bancocabecera bc
+		  FROM dbo.scp_bancodetalle bd, dbo.scp_bancocabecera bc
 		  where bd.cod_bancocabecera=@cod_bancocabecera
 		  and bc.cod_bancocabecera =bd.cod_bancocabecera )
 		end
@@ -510,8 +510,8 @@ BEGIN TRY
 			  ,b.[txt_glosaitem]
 			  ,b.[cod_destino]
 			  ,b.[txt_cheque]
-			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 			  ,b.[cod_tipocomprobantepago]
 			  ,b.[txt_seriecomprobantepago]
 			  ,b.[txt_comprobantepago]
@@ -573,7 +573,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle b
+		  FROM dbo.scp_bancodetalle b
 		  where b.cod_bancocabecera=@cod_bancocabecera
 		  union all
 		  select --insertar linea del banco cta 104 o 106..
@@ -588,8 +588,8 @@ BEGIN TRY
 			  ,bd.[txt_glosaitem]
 			  ,bd.[cod_destino]
 			  ,bd.[txt_cheque]
-			  ,'0' --!!!!corregir cuando se anade a vsj_bancodetalle [flg_chequecobrado]
-			  ,'' ----!!!!corregir cuando se anade a vsj_bancodetalle [cod_mescobr]
+			  ,'0' --!!!!corregir cuando se anade a scp_bancodetalle [flg_chequecobrado]
+			  ,'' ----!!!!corregir cuando se anade a scp_bancodetalle [cod_mescobr]
 			  ,bd.[cod_tipocomprobantepago]
 			  ,bd.[txt_seriecomprobantepago]
 			  ,bd.[txt_comprobantepago]
@@ -651,7 +651,7 @@ BEGIN TRY
 			  ,@user
 			  ,GETDATE()
 			  ,@user
-		  FROM dbo.vsj_bancodetalle bd, dbo.vsj_bancocabecera bc
+		  FROM dbo.scp_bancodetalle bd, dbo.scp_bancocabecera bc
 		  where bd.cod_bancocabecera=@cod_bancocabecera
 		  and bc.cod_bancocabecera =bd.cod_bancocabecera )
 
@@ -663,7 +663,7 @@ BEGIN TRY
         * Actualiza vsj_cajabanco cuando ya esta en contabilidad la operacion
         ****************************************************************************/
         SELECT  @ErrorStep = 'Error al actualizar el registro de caja'
-		 update dbo.vsj_bancocabecera
+		 update dbo.scp_bancocabecera
 		 set [flg_enviado]='1'
 			  ,[cod_origenenlace]=@cod_origen
 			  ,[cod_comprobanteenlace]=@cod_comprobante

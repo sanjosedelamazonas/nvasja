@@ -5,9 +5,9 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.model.ScpComprobantedetalle;
-import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.model.VsjBancodetalle;
-import org.sanjose.model.VsjBancodetallePK;
+import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpBancodetalle;
+import org.sanjose.model.ScpBancodetallePK;
 import org.sanjose.repo.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
@@ -41,14 +41,14 @@ public class BancoService {
     private final ScpCargocuartaRep cargocuartaRepo;
     private final ScpTipodocumentoRep tipodocumentoRepo;
     private final EntityManager em;
-    private final VsjBancocabeceraRep bancocabeceraRep;
-    private final VsjBancodetalleRep bancodetalleRep;
+    private final ScpBancocabeceraRep bancocabeceraRep;
+    private final ScpBancodetalleRep bancodetalleRep;
     private final Logger log = LoggerFactory.getLogger(BancoService.class);
     private ScpTipocambioRep scpTipocambioRep;
     private ScpComprobantedetalleRep scpComprobantedetalleRep;
 
     @Autowired
-    public BancoService(VsjBancocabeceraRep bancocabeceraRep, VsjBancodetalleRep bancodetalleRep,
+    public BancoService(ScpBancocabeceraRep bancocabeceraRep, ScpBancodetalleRep bancodetalleRep,
                         VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
                         ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
                         ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
@@ -77,7 +77,7 @@ public class BancoService {
     }
 
     @Transactional(readOnly = false)
-    public VsjBancodetalle saveBancoOperacion(VsjBancocabecera cabecera, VsjBancodetalle bancoItem, Character moneda) throws FieldGroup.CommitException {
+    public ScpBancodetalle saveBancoOperacion(ScpBancocabecera cabecera, ScpBancodetalle bancoItem, Character moneda) throws FieldGroup.CommitException {
         cabecera.setCodTipomoneda(moneda);
         cabecera = cabecera.prepareToSave();
         cabecera = bancocabeceraRep.save(cabecera);
@@ -88,30 +88,31 @@ public class BancoService {
 
         bancoItem.setCodTipogasto(configuractacajabancoRepo.findById(bancoItem.getCodTipomov()).getCodTipocuenta());
         bancoItem.setCodTipomoneda(moneda);
+        if (bancoItem.getCodProyecto()==null)
+            bancoItem.setCodProyecto("");
         bancoItem = bancoItem.prepareToSave();
         bancoItem.setFecFecha(cabecera.getFecFecha());
         bancoItem.setTxtCheque(cabecera.getTxtCheque());
-        bancoItem.setVsjBancocabecera(cabecera);
+        bancoItem.setScpBancocabecera(cabecera);
         if (bancoItem.getId() == null) {
-            VsjBancodetallePK id = new VsjBancodetallePK();
+            ScpBancodetallePK id = new ScpBancodetallePK();
             id.setCodBancocabecera(cabecera.getCodBancocabecera());
             id.setNumItem(bancodetalleRep.findById_CodBancocabecera(cabecera.getCodBancocabecera()).size() + 1);
             bancoItem.setId(id);
         }
 
-        bancoItem.setVsjBancocabecera(cabecera);
-        bancoItem = bancodetalleRep.save(bancoItem);
+        bancoItem.setScpBancocabecera(cabecera);
         if (GenUtil.strNullOrEmpty(bancoItem.getTxtCorrelativo())) {
-            bancoItem.setTxtCorrelativo(GenUtil.getTxtCorrelativo(bancoItem.getId().getNumItem()));
-            bancoItem = bancodetalleRep.save(bancoItem);
+            bancoItem.setTxtCorrelativo(cabecera.getTxtCorrelativo());
         }
+        bancoItem = bancodetalleRep.save(bancoItem);
         BigDecimal saldoHabersol = new BigDecimal(0);
         BigDecimal saldoHaberdolar = new BigDecimal(0);
         BigDecimal saldoHabermo = new BigDecimal(0);
         BigDecimal saldoDebesol = new BigDecimal(0);
         BigDecimal saldoDebedolar = new BigDecimal(0);
         BigDecimal saldoDebemo = new BigDecimal(0);
-        for (VsjBancodetalle it : bancodetalleRep
+        for (ScpBancodetalle it : bancodetalleRep
                 .findById_CodBancocabecera(cabecera.getCodBancocabecera())) {
             saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
             saldoDebemo = saldoDebemo.add(it.getNumDebemo());
@@ -127,20 +128,20 @@ public class BancoService {
         cabecera.setNumDebemo(saldoDebemo);
         cabecera.setNumDebemo(saldoHabermo);
         cabecera = bancocabeceraRep.save(cabecera);
-        bancoItem.setVsjBancocabecera(cabecera);
+        bancoItem.setScpBancocabecera(cabecera);
         return bancoItem;
     }
 
 
     @Transactional(readOnly = false)
-    public void deleteBancoOperacion(VsjBancocabecera cabecera, VsjBancodetalle bancoItem) {
+    public void deleteBancoOperacion(ScpBancocabecera cabecera, ScpBancodetalle bancoItem) {
         int delNumItem = bancoItem.getId().getNumItem();
         bancodetalleRep.delete(bancoItem);
-        for (VsjBancodetalle it : bancodetalleRep
+        for (ScpBancodetalle it : bancodetalleRep
                 .findById_CodBancocabeceraAndId_NumItemGreaterThan(cabecera.getCodBancocabecera(), delNumItem)) {
             try {
-                VsjBancodetalle newBancoDetalle = (VsjBancodetalle) it.clone();
-                VsjBancodetallePK id = (VsjBancodetallePK) it.getId().clone();
+                ScpBancodetalle newBancoDetalle = (ScpBancodetalle) it.clone();
+                ScpBancodetallePK id = (ScpBancodetallePK) it.getId().clone();
                 id.setNumItem(it.getId().getNumItem() - 1);
                 newBancoDetalle.setId(id);
                 bancodetalleRep.delete(it);
@@ -155,7 +156,7 @@ public class BancoService {
         BigDecimal saldoDebesol = new BigDecimal(0);
         BigDecimal saldoDebedolar = new BigDecimal(0);
         BigDecimal saldoDebemo = new BigDecimal(0);
-        for (VsjBancodetalle it : bancodetalleRep
+        for (ScpBancodetalle it : bancodetalleRep
                 .findById_CodBancocabecera(cabecera.getCodBancocabecera())) {
             saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
             saldoDebemo = saldoDebemo.add(it.getNumDebemo());
@@ -174,7 +175,7 @@ public class BancoService {
     }
 
     @Transactional(readOnly = false)
-    public void updateCobradoInCabecera(VsjBancocabecera bancocabecera) {
+    public void updateCobradoInCabecera(ScpBancocabecera bancocabecera) {
         if (bancocabecera.isEnviado()) {
             // UPDATE in contabilidad
             List<ScpComprobantedetalle> comprobantedetalles = scpComprobantedetalleRep.findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobanteAndCodCtacontable(
@@ -196,34 +197,34 @@ public class BancoService {
     }
 
     @Transactional(readOnly = false)
-    public void anularCheque(VsjBancocabecera vcb) throws FieldGroup.CommitException {
+    public void anularCheque(ScpBancocabecera vcb) throws FieldGroup.CommitException {
         vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
                 .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
         updateCobradoInCabecera(vcb);
         vcb.setTxtGlosa("ANULADO");
         vcb.setCodDestino("00000000");
         vcb.setFlg_Anula('1');
-        for (VsjBancodetalle det : bancodetalleRep.findById_CodBancocabecera(vcb.getCodBancocabecera())) {
+        for (ScpBancodetalle det : bancodetalleRep.findById_CodBancocabecera(vcb.getCodBancocabecera())) {
             det.setFlg_Anula('1');
             saveBancoOperacion(vcb, det, vcb.getCodTipomoneda());
         }
     }
 
     @Transactional
-    public List<VsjBancocabecera> findAll() {
+    public List<ScpBancocabecera> findAll() {
         return bancocabeceraRep.findAll();
     }
 
     @Transactional
-    public List<VsjBancocabecera> findByFecFechaBetween(Date from, Date to) {
+    public List<ScpBancocabecera> findByFecFechaBetween(Date from, Date to) {
         return bancocabeceraRep.findByFecFechaBetween(from, to);
     }
 
-    public VsjBancocabeceraRep getBancocabeceraRep() {
+    public ScpBancocabeceraRep getBancocabeceraRep() {
         return bancocabeceraRep;
     }
 
-    public VsjBancodetalleRep getBancodetalleRep() {
+    public ScpBancodetalleRep getBancodetalleRep() {
         return bancodetalleRep;
     }
 

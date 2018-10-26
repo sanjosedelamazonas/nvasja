@@ -23,12 +23,12 @@ import static org.sanjose.util.GenUtil.USD;
  * 
  */
 @Entity
-@Table(name="vsj_bancodetalle")
-@NamedQuery(name="VsjBancodetalle.findAll", query="SELECT v FROM VsjBancodetalle v")
-public class VsjBancodetalle extends VsjBancoItem implements Serializable, Cloneable {
+@Table(name="scp_bancodetalle")
+@NamedQuery(name="ScpBancodetalle.findAll", query="SELECT v FROM ScpBancodetalle v")
+public class ScpBancodetalle extends VsjBancoItem implements Serializable, Cloneable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	private VsjBancodetallePK id;
+	private ScpBancodetallePK id;
 	@Column(name="cod_contracta")
 	private String codContracta;
 	@Column(name="cod_contraparte")
@@ -48,7 +48,7 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable, Clone
 	@Column(name="cod_formapago")
 	private String codFormapago;
 	@Column(name="cod_proyecto")
-	private String codProyecto;
+	private String codProyecto="";
 	@Column(name="cod_tercero")
 	private String codTercero;
 	@Column(name="cod_tipocomprobantepago")
@@ -91,13 +91,13 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable, Clone
 	@NotNull
 	@Column(name="cod_tipomov")
 	private Integer codTipomov;
-	//bi-directional many-to-one association to VsjBancocabecera
+	//bi-directional many-to-one association to ScpBancocabecera
 	@ManyToOne
 	@JoinColumn(name="cod_bancocabecera", insertable=false, updatable=false)
 	//@Column(name="cod_bancocabecera", insertable=false, updatable=false)
-	private VsjBancocabecera vsjBancocabecera;
+	private ScpBancocabecera vsjBancocabecera;
 
-	public VsjBancodetalle() {
+	public ScpBancodetalle() {
 		setFecFecha(new Timestamp(System.currentTimeMillis()));
 		setFlgIm('1');
 		setFlgSaldo('0');
@@ -110,9 +110,9 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable, Clone
     }
 
     @Override
-    public VsjBancodetalle prepareToSave() throws FieldGroup.CommitException {
-        VsjBancodetalle item = (VsjBancodetalle) super.prepareToSave();
-        Logger logger = LoggerFactory.getLogger(VsjBancodetalle.class);
+    public ScpBancodetalle prepareToSave() throws FieldGroup.CommitException {
+        ScpBancodetalle item = (ScpBancodetalle) super.prepareToSave();
+        Logger logger = LoggerFactory.getLogger(ScpBancodetalle.class);
         if (GenUtil.strNullOrEmpty(item.getCodProyecto()) && GenUtil.strNullOrEmpty(item.getCodTercero()))
             throw new Validator.InvalidValueException("Codigo Proyecto o Codigo Tercero debe ser rellenado");
 
@@ -166,11 +166,11 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable, Clone
         return item;
     }
 
-	public VsjBancodetallePK getId() {
+	public ScpBancodetallePK getId() {
 		return id;
 	}
 
-	public void setId(VsjBancodetallePK id) {
+	public void setId(ScpBancodetallePK id) {
 		this.id = id;
 	}
 
@@ -422,11 +422,11 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable, Clone
 		this.codTipomov = codTipomov;
 	}
 
-	public VsjBancocabecera getVsjBancocabecera() {
+	public ScpBancocabecera getScpBancocabecera() {
 		return this.vsjBancocabecera;
 	}
 
-	public void setVsjBancocabecera(VsjBancocabecera vsjBancocabecera) {
+	public void setScpBancocabecera(ScpBancocabecera vsjBancocabecera) {
 		this.vsjBancocabecera = vsjBancocabecera;
 	}
 
@@ -444,7 +444,7 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable, Clone
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		VsjBancodetalle that = (VsjBancodetalle) o;
+		ScpBancodetalle that = (ScpBancodetalle) o;
 
 		return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
 
@@ -457,7 +457,7 @@ public class VsjBancodetalle extends VsjBancoItem implements Serializable, Clone
 
 	@Override
 	public String toString() {
-		return "VsjBancodetalle{" + super.toString() + " " +
+		return "ScpBancodetalle{" + super.toString() + " " +
 				"codBancodetalle=" + id +
 				", codContracta='" + codContracta + '\'' +
 				", codContraparte='" + codContraparte + '\'' +

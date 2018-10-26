@@ -12,9 +12,9 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.converter.ZeroOneToBooleanConverter;
-import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.model.VsjBancodetalle;
-import org.sanjose.model.VsjBancodetallePK;
+import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpBancodetalle;
+import org.sanjose.model.ScpBancodetallePK;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
@@ -66,7 +66,7 @@ public class BancoOperView extends BancoOperUI implements Viewing {
     private final Field[] cabezeraFields = new Field[]{chkCobrado, dataFechaComprobante, selCuenta, selCodAuxCabeza,
             glosaCabeza, cheque};
     private BancoLogic viewLogic = null;
-    private BeanItemContainer<VsjBancodetalle> container;
+    private BeanItemContainer<ScpBancodetalle> container;
     private GeneratedPropertyContainer gpContainer;
     private BancoService bancoService;
 
@@ -99,15 +99,15 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         chkEnviado.setConverter(new ZeroOneToBooleanConverter());
         // Grid
         //noinspection unchecked
-        container = new BeanItemContainer(VsjBancodetalle.class, new ArrayList());
+        container = new BeanItemContainer(ScpBancodetalle.class, new ArrayList());
         gpContainer = new GeneratedPropertyContainer(container);
         gpContainer.addGeneratedProperty("Numero",
                 new PropertyValueGenerator<String>() {
                     @Override
                     public String getValue(Item item, Object itemId,
                                            Object propertyId) {
-                        return ((VsjBancocabecera) item.getItemProperty("vsjBancocabecera").getValue()).getTxtCorrelativo() +
-                                "-" + ((VsjBancodetallePK) item.getItemProperty("id").getValue()).getNumItem();
+                        return ((ScpBancocabecera) item.getItemProperty("scpBancocabecera").getValue()).getTxtCorrelativo() +
+                                "-" + ((ScpBancodetallePK) item.getItemProperty("id").getValue()).getNumItem();
                     }
 
                     @Override
@@ -132,15 +132,15 @@ public class BancoOperView extends BancoOperUI implements Viewing {
 
         ViewUtil.alignMontosInGrid(gridBanco);
 
-        ViewUtil.colorizeRows(gridBanco, VsjBancodetalle.class);
+        ViewUtil.colorizeRows(gridBanco, ScpBancodetalle.class);
 
         gridBanco.setSelectionMode(Grid.SelectionMode.SINGLE);
         setTotal(null);
 
     }
 
-    public VsjBancodetalle getSelectedRow() {
-        return (VsjBancodetalle) gridBanco.getSelectedRow();
+    public ScpBancodetalle getSelectedRow() {
+        return (ScpBancodetalle) gridBanco.getSelectedRow();
     }
 
     public void setEnableDetalleFields(boolean enabled) {
@@ -156,13 +156,13 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         btnAuxiliar.setEnabled(enabled);
     }
 
-    public BeanItemContainer<VsjBancodetalle> getContainer() {
+    public BeanItemContainer<ScpBancodetalle> getContainer() {
         return container;
     }
 
     private BigDecimal calcTotal(Character locMoneda) {
         BigDecimal total = new BigDecimal(0.00);
-        for (VsjBancodetalle cajabanco : container.getItemIds()) {
+        for (ScpBancodetalle cajabanco : container.getItemIds()) {
             log.debug("calcTotal: " + cajabanco);
             if (locMoneda.equals(PEN)) {
                 total = total.add(cajabanco.getNumDebesol()).subtract(cajabanco.getNumHabersol());

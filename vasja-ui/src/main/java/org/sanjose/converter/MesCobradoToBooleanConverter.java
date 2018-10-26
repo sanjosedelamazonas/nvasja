@@ -2,7 +2,7 @@ package org.sanjose.converter;
 
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.Grid;
-import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.util.GenUtil;
 
 import java.text.SimpleDateFormat;
@@ -10,10 +10,10 @@ import java.util.Locale;
 
 public class MesCobradoToBooleanConverter implements Converter<Boolean, String> {
 
-    private VsjBancocabecera cabecera;
+    private ScpBancocabecera cabecera;
     private Grid grid;
 
-    public MesCobradoToBooleanConverter(VsjBancocabecera cabecera) {
+    public MesCobradoToBooleanConverter(ScpBancocabecera cabecera) {
         this.cabecera = cabecera;
     }
 
@@ -27,7 +27,7 @@ public class MesCobradoToBooleanConverter implements Converter<Boolean, String> 
             throw new ConversionException("Error converting. Both cabecera and grid are NULLs!");
         String mesCobrado = null;
         if (cabecera != null) mesCobrado = cabecera.getCodMescobrado();
-        else mesCobrado = ((VsjBancocabecera) grid.getEditedItemId()).getCodMescobrado();
+        else mesCobrado = ((ScpBancocabecera) grid.getEditedItemId()).getCodMescobrado();
 
         if (s != null && s && GenUtil.strNullOrEmpty(mesCobrado)) {
             SimpleDateFormat sdf = new SimpleDateFormat("MM");

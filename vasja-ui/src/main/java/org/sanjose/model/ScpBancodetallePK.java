@@ -9,7 +9,7 @@ import java.io.Serializable;
  * 
  */
 @Embeddable
-public class VsjBancodetallePK implements Serializable, Cloneable {
+public class ScpBancodetallePK implements Serializable, Cloneable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
@@ -20,7 +20,7 @@ public class VsjBancodetallePK implements Serializable, Cloneable {
 	@Column(name="cod_bancocabecera", insertable=false, updatable=false)
 	private int codBancocabecera;
 
-	public VsjBancodetallePK() {
+	public ScpBancodetallePK() {
 	}
 	public int getNumItem() {
 		return this.numItem;
@@ -39,10 +39,10 @@ public class VsjBancodetallePK implements Serializable, Cloneable {
 		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof VsjBancodetallePK)) {
+		if (!(other instanceof ScpBancodetallePK)) {
 			return false;
 		}
-		VsjBancodetallePK castOther = (VsjBancodetallePK)other;
+		ScpBancodetallePK castOther = (ScpBancodetallePK)other;
 		return 
 			(this.numItem == castOther.numItem)
 			&& (this.codBancocabecera == castOther.codBancocabecera);
@@ -59,7 +59,7 @@ public class VsjBancodetallePK implements Serializable, Cloneable {
 
 	@Override
 	public String toString() {
-		return "VsjBancodetallePK{" +
+		return "ScpBancodetallePK{" +
 				"numItem=" + numItem +
 				", codBancocabecera=" + codBancocabecera +
 				'}';

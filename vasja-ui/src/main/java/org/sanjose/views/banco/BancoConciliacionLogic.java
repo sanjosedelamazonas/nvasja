@@ -9,7 +9,7 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
@@ -58,7 +58,7 @@ public class BancoConciliacionLogic implements Serializable, SaldoDelDia {
 
             @Override
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                VsjBancocabecera vcb = getCabeceraFromItemId(view.gridBanco.getEditedItemId());
+                ScpBancocabecera vcb = getCabeceraFromItemId(view.gridBanco.getEditedItemId());
                 if (vcb != null) {
                     vcb.setFlgCobrado((Boolean) view.gridBanco.getContainerDataSource().getItem(view.gridBanco.getEditedItemId()).getItemProperty("flgCobrado").getValue());
                     vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
@@ -101,13 +101,13 @@ public class BancoConciliacionLogic implements Serializable, SaldoDelDia {
 
     }
 
-    private VsjBancocabecera getCabeceraFromItemId(Object itemId) {
+    private ScpBancocabecera getCabeceraFromItemId(Object itemId) {
         Object itemProperty = view.gridBanco.getContainerDataSource().getItem(itemId).getItemProperty("cabeceraObject");
         if (itemProperty != null) {
             try {
                 Method mth = itemProperty.getClass().getMethod("getValue", new Class[]{});
                 mth.setAccessible(true);
-                return (VsjBancocabecera) mth.invoke(itemProperty);
+                return (ScpBancocabecera) mth.invoke(itemProperty);
             } catch (NoSuchMethodException nsm) {
                 nsm.printStackTrace();
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {

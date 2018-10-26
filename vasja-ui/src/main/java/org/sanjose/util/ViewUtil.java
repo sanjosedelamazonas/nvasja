@@ -21,8 +21,8 @@ import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpCajabanco;
-import org.sanjose.model.VsjBancocabecera;
-import org.sanjose.model.VsjBancodetalle;
+import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpBancodetalle;
 import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.views.caja.ComprobanteView;
@@ -286,12 +286,12 @@ public class ViewUtil {
 
     public static void colorizeRows(Grid grid, Class clas) {
         grid.setRowStyleGenerator(rowReference -> {
-            if (clas.equals(VsjBancocabecera.class) && ((VsjBancocabecera)rowReference.getItemId()).isEnviado()) {
+            if (clas.equals(ScpBancocabecera.class) && ((ScpBancocabecera)rowReference.getItemId()).isEnviado()) {
                 return "enviado";
             }
-            if (clas.equals(VsjBancocabecera.class) && ((VsjBancocabecera) rowReference.getItemId()).isAnula())
+            if (clas.equals(ScpBancocabecera.class) && ((ScpBancocabecera) rowReference.getItemId()).isAnula())
                 return "anulado";
-            if (clas.equals(VsjBancodetalle.class) && ((VsjBancodetalle) rowReference.getItemId()).isAnula())
+            if (clas.equals(ScpBancodetalle.class) && ((ScpBancodetalle) rowReference.getItemId()).isAnula())
                 return "anulado";
 
             if (clas.equals(FilterableSortableGridTreeContainer.class)) {

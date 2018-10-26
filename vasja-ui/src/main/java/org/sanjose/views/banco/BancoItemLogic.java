@@ -50,15 +50,15 @@ class BancoItemLogic implements Serializable {
 
 
     private static final Logger log = LoggerFactory.getLogger(BancoItemLogic.class);
-    protected VsjBancodetalle item;
+    protected ScpBancodetalle item;
     protected boolean isLoading = true;
     protected boolean isEdit = false;
     protected NavigatorViewing navigatorView;
     protected Character moneda;
-    protected VsjBancocabecera bancocabecera;
+    protected ScpBancocabecera bancocabecera;
     protected FieldGroup fieldGroup;
     protected BancoOperView view;
-    private BeanItem<VsjBancodetalle> beanItem;
+    private BeanItem<ScpBancodetalle> beanItem;
     private ProcUtil procUtil;
     private SaldoChecker saldoChecker;
 
@@ -218,25 +218,25 @@ class BancoItemLogic implements Serializable {
 
     public void addValidators() {
         // Validators
-        view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "fecFecha"));
-        view.getFechaDoc().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "fecComprobantepago"));
+        view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "fecFecha"));
+        view.getFechaDoc().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "fecComprobantepago"));
         view.getSelProyecto().addValidator(new TwoCombosValidator(view.getSelTercero(), true, null));
         view.getSelTercero().addValidator(new TwoCombosValidator(view.getSelProyecto(), true, null));
         view.getNumIngreso().setDescription("Ingreso");
         view.getNumEgreso().setDescription("Egreso");
         view.getNumIngreso().addValidator(new TwoNumberfieldsValidator(view.getNumEgreso(), false, "Ingreso o egreso debe ser rellenado"));
         view.getNumEgreso().addValidator(new TwoNumberfieldsValidator(view.getNumIngreso(), false, "Ingreso o egreso debe ser rellenado"));
-        view.getSelResponsable().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "codDestino"));
-        view.getSelLugarGasto().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "codContraparte"));
-        view.getSelCodAuxiliar().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "codDestinoitem"));
+        view.getSelResponsable().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "codDestino"));
+        view.getSelLugarGasto().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "codContraparte"));
+        view.getSelCodAuxiliar().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "codDestinoitem"));
         view.getGlosaCabeza().setDescription("Glosa Cabeza");
-        view.getGlosaCabeza().addValidator(new LocalizedBeanValidator(VsjBancocabecera.class, "txtGlosa"));
+        view.getGlosaCabeza().addValidator(new LocalizedBeanValidator(ScpBancocabecera.class, "txtGlosa"));
         view.getGlosaDetalle().setDescription("Glosa Detalle");
-        view.getGlosaDetalle().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "txtGlosaitem"));
-        view.getSerieDoc().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "txtSeriecomprobantepago"));
-        view.getNumDoc().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "txtComprobantepago"));
-        view.getSelCtaContable().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "codContracta"));
-        view.getSelTipoMov().addValidator(new LocalizedBeanValidator(VsjBancodetalle.class, "codTipomov"));
+        view.getGlosaDetalle().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "txtGlosaitem"));
+        view.getSerieDoc().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "txtSeriecomprobantepago"));
+        view.getNumDoc().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "txtComprobantepago"));
+        view.getSelCtaContable().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "codContracta"));
+        view.getSelTipoMov().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "codTipomov"));
         // Check saldos and warn
         saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN());
         view.getNumEgreso().addBlurListener(event -> saldoChecker.check());
@@ -287,19 +287,19 @@ class BancoItemLogic implements Serializable {
                         .withYesButton(() -> {
                             log.debug("To delete: " + item);
 
-                            List<VsjBancodetalle> comprobantes = view.getService().getBancodetalleRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
-                            List<VsjBancocabecera> cabeceras = view.getService().getBancocabeceraRep().findByCodDestino(codDestino);
+                            List<ScpBancodetalle> comprobantes = view.getService().getBancodetalleRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
+                            List<ScpBancocabecera> cabeceras = view.getService().getBancocabeceraRep().findByCodDestino(codDestino);
                             if (comprobantes.isEmpty() && cabeceras.isEmpty()) {
                                 destinoView.destinoRepo.delete(item);
                                 refreshDestino();
                                 destinoWindow.close();
                             } else {
                                 StringBuilder sb = new StringBuilder();
-                                for (VsjBancodetalle vcb : comprobantes) {
+                                for (ScpBancodetalle vcb : comprobantes) {
                                     sb.append("\n").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha())
                                             .append(" ").append(vcb.getTxtGlosaitem());
                                 }
-                                for (VsjBancocabecera vcb : cabeceras) {
+                                for (ScpBancocabecera vcb : cabeceras) {
                                     sb.append("\n").append(vcb.getTxtCorrelativo()).append(" ").
                                             append(vcb.getCodBancocabecera()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosa());
                                 }
@@ -504,7 +504,7 @@ class BancoItemLogic implements Serializable {
         }
     }
 
-    public void bindForm(VsjBancodetalle item) {
+    public void bindForm(ScpBancodetalle item) {
         isLoading = true;
         isEdit = !GenUtil.objNullOrEmpty(item.getId());
         beanItem = new BeanItem<>(item);
@@ -561,19 +561,19 @@ class BancoItemLogic implements Serializable {
             } else {
                 setEditorTerceroLogic(item.getCodTercero());
             }
-        } else if (item.getVsjBancocabecera() != null) {
-            if (item.getId() == null && item.getVsjBancocabecera().getTxtCorrelativo() != null) {
+        } else if (item.getScpBancocabecera() != null) {
+            if (item.getId() == null && item.getScpBancocabecera().getTxtCorrelativo() != null) {
                 log.debug("is NOT Edit in bindForm but ID is null");
-                view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo() + "-" + String.valueOf(view.getContainer().size() + 1));
+                view.getNumVoucher().setValue(item.getScpBancocabecera().getTxtCorrelativo() + "-" + String.valueOf(view.getContainer().size() + 1));
             }
         }
         setSaldos();
         isEdit = false;
     }
 
-    protected void setNumVoucher(VsjBancodetalle item) {
-        if (item.getVsjBancocabecera() != null && !GenUtil.strNullOrEmpty(item.getVsjBancocabecera().getTxtCorrelativo()))
-            view.getNumVoucher().setValue(item.getVsjBancocabecera().getTxtCorrelativo() + "-" + item.getId().getNumItem());
+    protected void setNumVoucher(ScpBancodetalle item) {
+        if (item.getScpBancocabecera() != null && !GenUtil.strNullOrEmpty(item.getScpBancocabecera().getTxtCorrelativo()))
+            view.getNumVoucher().setValue(item.getScpBancocabecera().getTxtCorrelativo() + "-" + item.getId().getNumItem());
         view.getNumVoucher().setEnabled(false);
     }
 
@@ -586,9 +586,9 @@ class BancoItemLogic implements Serializable {
     }
 
     void nuevoComprobante(Character moneda) {
-        VsjBancodetalle vcb = new VsjBancodetalle();
+        ScpBancodetalle vcb = new ScpBancodetalle();
         if (bancocabecera != null)
-            vcb.setVsjBancocabecera(bancocabecera);
+            vcb.setScpBancocabecera(bancocabecera);
         vcb.setCodTipomoneda(moneda);
         vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
@@ -620,11 +620,11 @@ class BancoItemLogic implements Serializable {
                 .forEach(f -> f.setValue(""));
     }
 
-    VsjBancodetalle getVsjBancodetalle() throws CommitException {
+    ScpBancodetalle getScpBancodetalle() throws CommitException {
         if (fieldGroup==null || beanItem==null || beanItem.getBean()==null)
             throw new CommitException("El cheque debe tener operaciones rellenadas");
         fieldGroup.commit();
-        VsjBancodetalle item = beanItem.getBean();
+        ScpBancodetalle item = beanItem.getBean();
         log.debug("got from getDetalle " + item);
         return item;
     }

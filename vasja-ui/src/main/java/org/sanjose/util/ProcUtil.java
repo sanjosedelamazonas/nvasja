@@ -6,7 +6,7 @@ import com.vaadin.ui.Notification;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpTipocambio;
-import org.sanjose.model.VsjBancocabecera;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.views.banco.BancoService;
 import org.sanjose.views.caja.ComprobanteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class ProcUtil {
 
     private EntityManager em;
 
-    private VsjBancocabecera curBancoCabecera = null;
+    private ScpBancocabecera curBancoCabecera = null;
 
     private boolean isContinueEnviar = true;
 
@@ -196,8 +196,8 @@ public class ProcUtil {
     }
 
     @Transactional(readOnly = false)
-    public String enviarContabilidadBanco(VsjBancocabecera vcb) {
-        StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarContabilidadBanco");
+    public String enviarContabilidadBanco(ScpBancocabecera vcb) {
+        StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarBanco");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         query.setParameter(1, vcb.getCodBancocabecera());
         query.setParameter(2, CurrentUser.get());
@@ -208,11 +208,11 @@ public class ProcUtil {
     }
 
     @Transactional(readOnly = false)
-    public List<VsjBancocabecera> enviarContabilidadBancoInTransaction(Collection<Object> vcbs, BancoService service) {
-        List<VsjBancocabecera> vsjBancocabeceras = new ArrayList<>();
-        List<VsjBancocabecera> vsjBancocabecerasEnviados = new ArrayList<>();
+    public List<ScpBancocabecera> enviarContabilidadBancoInTransaction(Collection<Object> vcbs, BancoService service) {
+        List<ScpBancocabecera> vsjBancocabeceras = new ArrayList<>();
+        List<ScpBancocabecera> vsjBancocabecerasEnviados = new ArrayList<>();
         for (Object objVcb : vcbs) {
-            curBancoCabecera = (VsjBancocabecera) objVcb;
+            curBancoCabecera = (ScpBancocabecera) objVcb;
             if (curBancoCabecera.isEnviado()) {
                 continue;
             }
@@ -227,7 +227,7 @@ public class ProcUtil {
                 return vsjBancocabecerasEnviados;
             }
         }
-        for (VsjBancocabecera vcbS : vsjBancocabeceras) {
+        for (ScpBancocabecera vcbS : vsjBancocabeceras) {
             curBancoCabecera = vcbS;
             log.info("Enviando: " + curBancoCabecera);
             String result = enviarContabilidadBanco(curBancoCabecera);
@@ -244,7 +244,7 @@ public class ProcUtil {
         return vsjBancocabecerasEnviados;
     }
 
-    public List<VsjBancocabecera> enviarContabilidadBanco(Collection<Object> vcbs, BancoService service) {
+    public List<ScpBancocabecera> enviarContabilidadBanco(Collection<Object> vcbs, BancoService service) {
         try {
             return enviarContabilidadBancoInTransaction(vcbs, service);
         } catch (PersistenceException pe) {
