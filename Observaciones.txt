@@ -31,14 +31,16 @@ DONE
 - nie usuwa z konfiguracji caja predeterminada
 DONE
 - nro de comprobane 01-000001 en la impresion y en el reporte
-?
+DONE!
 - nuevo comprobante o edycja w oknie emergente
-?
+DONE
 - cta contable cerrada - no conciderar
 - przenosi do contabilidad z numero de comprobante z caja/bancos y prefix 01/02
 DONE
 - okno na saldos osobne - zalezne od periodo w ktorym wybrana caja
-?
+
+? ->
+
 - sortowanie w caja y manejo de caja por fecha, nro de comprobante
 - zamyka okno po dodaniu operacji bez wydrukowania
 DONE
@@ -52,3 +54,9 @@ DONE
 - nuevo cheque - cuando nuevo item powinno sie kopiowac auxiliar z cabezera w responsable
 - nuevo cheque - jezeli zmienia sie konto po dodaniu linii i konto jest z innej waluty to nie zmienia waluty w liniach, ani konta na wydruku
 - przycisk ver detalles nie wybiera actualnego recordu na podgladzie tylko poprzedni
+- procedura ustawia cobrado w comprobantedetalle
+
+KRYTYCZNE
+- Usuwanie cheque - przenumerowanie!
+- na ekranie cheque po nacisnieciu Eliminar ni mozna zamknac okna, dobrze by bylo gdyby pytal czy estas seguro que quieres eliminar y powiedzial ze operacja zostala anulada
+- przetestować na nowej bazie

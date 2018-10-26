@@ -18,6 +18,16 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>vasja-parent</name>
 
+	<issueManagement>
+		<url>https://github.com/sanjosedelamazonas/nvasja/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+
+	<scm>
+		<url>https://github.com/sanjosedelamazonas/nvasja</url>
+		<connection>scm:git:git://github.com/sanjosedelamazonas/nvasja.git</connection>
+	</scm>
+
 	<properties>
 		<!--<vaadin.version>7.7.10</vaadin.version>
         -->
@@ -143,7 +153,8 @@
     <module>vasja-fonts</module>
 	<module>vasja-reports</module>
     <module>vasja-ui</module>
-    <module>vasja-production</module>
-    <module>printapplet-addon</module>
+    <!--<module>vasja-production</module>
+    -->
+	  	<module>printapplet-addon</module>
   </modules>
 </project>

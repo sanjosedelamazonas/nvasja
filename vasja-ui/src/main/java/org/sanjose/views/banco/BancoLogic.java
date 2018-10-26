@@ -10,6 +10,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import de.steinwedel.messagebox.MessageBox;
+import jdk.nashorn.internal.runtime.options.Option;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
@@ -18,12 +19,11 @@ import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpBancodetalle;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.Viewing;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.verifyNumMoneda;
@@ -103,17 +103,26 @@ public class BancoLogic extends BancoItemLogic {
         bancocabecera = vsjBancocabecera;
         bindForm(vsjBancocabecera);
         addValidators();
-        if (vsjBancocabecera.getCodBancocabecera() != null) {
-            List<ScpBancodetalle> bancodetalleList = view.getService().getBancodetalleRep()
-                    .findById_CodBancocabecera(vsjBancocabecera.getCodBancocabecera());
-            if (!bancodetalleList.isEmpty()) {
-                view.getContainer().addAll(bancodetalleList);
-                view.setTotal(moneda);
-                view.gridBanco.select(bancodetalleList.toArray()[0]);
-                viewComprobante();
-            }
+        loadDetallesToGrid(vsjBancocabecera).ifPresent(bancodet -> {
+            view.gridBanco.select(bancodet);
+            viewComprobante();
+        });
+        if (vsjBancocabecera.getCodBancocabecera()!=null)
             switchMode(VIEW);
+    }
+
+    private Optional loadDetallesToGrid(ScpBancocabecera vsjBancocabecera) {
+        if (vsjBancocabecera.getCodBancocabecera()==null) return Optional.ofNullable(null);
+        List<ScpBancodetalle> bancodetalleList = view.getService().getBancodetalleRep()
+                .findById_CodBancocabecera(vsjBancocabecera.getCodBancocabecera());
+        view.initGrid();
+        if (!bancodetalleList.isEmpty()) {
+            view.getContainer().addAll(bancodetalleList);
+            view.getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
+            view.setTotal(moneda);
+            return Optional.of(bancodetalleList.toArray()[0]);
         }
+        return Optional.ofNullable(null);
     }
 
     private void nuevoComprobante() {
@@ -127,7 +136,6 @@ public class BancoLogic extends BancoItemLogic {
         } else {
             super.nuevoComprobante(PEN);
         }
-
     }
 
     private void editarComprobante() {
@@ -197,43 +205,36 @@ public class BancoLogic extends BancoItemLogic {
         isEdit = false;
     }
 
-    private void eliminarComprobante() {
+    void eliminarComprobante() {
         ScpBancodetalle bancoItem = view.getSelectedRow();
+        if (bancoItem  == null)
+            return;
+        if (bancoItem.getScpBancocabecera().isEnviado()) {
+            MessageBox
+                    .createInfo()
+                    .withCaption("Ya enviado a contabilidad")
+                    .withMessage("No se puede eliminar porque ya esta enviado a la contabilidad.")
+                    .withOkButton()
+                    .open();
+            return;
+        }
         MessageBox
                 .createQuestion()
-                .withCaption("Eliminar operacion")
-                .withMessage("?Esta seguro que quiere eliminar operacion: \n" +
+                .withCaption("Eliminar")
+                .withMessage("?Esta seguro que quiere eliminar esta operacion:\n" +
                         bancoItem.getScpBancocabecera().getTxtCorrelativo() + "-" + bancoItem.getId().getNumItem() + " ?\n")
-                .withYesButton(() -> {
-                    eliminarRealmenteComprobante(bancoItem);
-                })
+                .withYesButton(this::doEliminarComprobante)
                 .withNoButton()
                 .open();
     }
 
-    private void eliminarRealmenteComprobante(ScpBancodetalle bancoItem) {
-        if (bancoItem == null) {
-            log.error("no se puede eliminar si no esta ya guardado");
-            return;
-        }
-        if (bancoItem.getScpBancocabecera().isEnviado()) {
-            Notification.show("Problema al eliminar", "No se puede eliminar porque ya esta enviado a la contabilidad",
-                    Notification.Type.WARNING_MESSAGE);
-            return;
-        }
-        log.info("Ready to eliminar: " + bancoItem);
+
+    private void doEliminarComprobante() {
+        ScpBancodetalle bancoItem = view.getSelectedRow();
+        log.info("Eliminando: " + bancocabecera.getTxtCorrelativo() + "-" + bancoItem.getId().getNumItem());
         view.getService().deleteBancoOperacion(bancocabecera, bancoItem);
+        loadDetallesToGrid(bancocabecera);
         view.refreshData();
-        view.getContainer().removeAllItems();
-        List<ScpBancodetalle> bancodetalleList = view.getService().getBancodetalleRep()
-                .findById_CodBancocabecera(bancocabecera.getCodBancocabecera());
-        if (!bancodetalleList.isEmpty()) {
-            view.getContainer().addAll(bancodetalleList);
-            view.getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
-            view.setTotal(moneda);
-            view.gridBanco.select(bancodetalleList.toArray()[0]);
-            viewComprobante();
-        }
     }
 
     private void saveCabecera() {
@@ -264,9 +265,11 @@ public class BancoLogic extends BancoItemLogic {
                         break;
                     }
                 }
-                view.getContainer().removeItem(vcbOld);
-                view.getContainer().addBean(bancoItem);
-                view.getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
+                loadDetallesToGrid(cabecera);
+                view.gridBanco.select(bancoItem);
+                //view.getContainer().removeItem(vcbOld);
+//
+  //              view.getContainer().addBean(bancoItem);
             }
             view.setTotal(moneda);
             view.refreshData();

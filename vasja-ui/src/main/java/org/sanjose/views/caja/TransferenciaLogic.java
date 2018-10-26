@@ -94,7 +94,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
     }
 
     @Override
-    public void eliminarComprobante() {
+    public void doEliminarComprobante() {
         if (GenUtil.strNullOrEmpty(tView.getSelectedRow().getCodTranscorrelativo()))
             tView.getContainer().removeItem(tView.getSelectedRow());
         else {

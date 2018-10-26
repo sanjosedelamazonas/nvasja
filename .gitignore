@@ -13,4 +13,6 @@ printapplet-addon/src/main/resources/dk/apaq/vaadin/addon/printservice/gwt/publi
 .classpath
 .project
 .designer
-
+.gradle
+gradle
+gradlew*

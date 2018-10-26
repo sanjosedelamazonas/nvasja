@@ -22,7 +22,14 @@ public class AboutView extends VerticalLayout implements Viewing {
         aboutContent.addComponent(
                 new Label(FontAwesome.INFO_CIRCLE.getHtml()
                         + " This application is using Vaadin "
-                        + Version.getFullVersion(), ContentMode.HTML), "info");
+                        + Version.getFullVersion() +"<br>"
+                        + " Version of WEB APP: "
+                        + getClass().getPackage().getImplementationVersion()
+                        , ContentMode.HTML), "info");
+        aboutContent.addComponent(
+                new Label(FontAwesome.INFO_CIRCLE.getHtml()
+                        + " Version of WEB APP: "
+                        + getClass().getPackage().getImplementationVersion(), ContentMode.HTML), "info");
         setSizeFull();
         setStyleName("about-view");
         addComponent(aboutContent);

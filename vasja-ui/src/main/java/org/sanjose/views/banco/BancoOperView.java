@@ -97,6 +97,20 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         chkCobrado.setSimpleMode(false);
         chkEnviado.setSimpleMode(false);
         chkEnviado.setConverter(new ZeroOneToBooleanConverter());
+
+        // Grid
+        initGrid();
+
+        gridBanco.addSelectionListener(new SelectionEvent.SelectionListener() {
+            @Override
+            public void select(SelectionEvent selectionEvent) {
+                if (selectionEvent.getSelected().isEmpty()) return;
+                viewLogic.viewComprobante();
+            }
+        });
+    }
+
+    public void initGrid(){
         // Grid
         //noinspection unchecked
         container = new BeanItemContainer(ScpBancodetalle.class, new ArrayList());
@@ -120,14 +134,6 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         gridBanco.setEditorEnabled(false);
         gridBanco.sort("fecFregistro", SortDirection.DESCENDING);
 
-        gridBanco.addSelectionListener(new SelectionEvent.SelectionListener() {
-            @Override
-            public void select(SelectionEvent selectionEvent) {
-                if (selectionEvent.getSelected().isEmpty()) return;
-                viewLogic.viewComprobante();
-            }
-        });
-
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
 
         ViewUtil.alignMontosInGrid(gridBanco);
@@ -136,7 +142,6 @@ public class BancoOperView extends BancoOperUI implements Viewing {
 
         gridBanco.setSelectionMode(Grid.SelectionMode.SINGLE);
         setTotal(null);
-
     }
 
     public ScpBancodetalle getSelectedRow() {
