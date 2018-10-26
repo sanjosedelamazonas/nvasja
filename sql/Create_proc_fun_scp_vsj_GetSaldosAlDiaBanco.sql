@@ -1,16 +1,4 @@
-IF EXISTS (SELECT *
-            FROM   sysobjects
-            WHERE  id = object_id(N'[dbo].[fun_scp_vsj_GetSaldosAlDiaBanco]'))
-BEGIN
-    DROP FUNCTION [dbo].[fun_scp_vsj_GetSaldosAlDiaBanco]
-END
-
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]    Script Date: 10/14/2016 03:30:47 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]    Script Date: 10/30/2016 21:21:26 ******/
+/****** Object:  UserDefinedFunction [dbo].[fun_scp_vsj_GetSaldosAlDiaBanco]    Script Date: 10/27/2018 01:37:37 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -39,23 +27,23 @@ BEGIN
 	Set @Saldo=0.00
 
 	select @FechaInicial=(SUBSTRING(@Fecha,1,4)+'-01-01 00:00:00')
-	
-	SELECT @MonedaLit = CASE @Moneda 
+
+	SELECT @MonedaLit = CASE @Moneda
 						 WHEN '0' then 'N'
 						 WHEN '1' then 'D'
 						 WHEN '2' then 'E'
 						 ELSE 'N'
 						END;
 	DECLARE myCursor CURSOR FOR
-		SELECT cod_ctacontable FROM scp_plancontable WHERE 
-		flg_movimiento='N' 
-		AND txt_anoproceso=@Ano 
+		SELECT cod_ctacontable FROM scp_plancontable WHERE
+		flg_movimiento='N'
+		AND txt_anoproceso=@Ano
 		AND (cod_ctacontable LIKE '104%' OR cod_ctacontable LIKE '106%')
 		AND ind_tipomoneda=@MonedaLit
 
 	OPEN myCursor
 	FETCH NEXT FROM myCursor INTO @Cuenta
-	WHILE (@@FETCH_STATUS = 0) 
+	WHILE (@@FETCH_STATUS = 0)
 	BEGIN
 		IF (@MonedaLit='N')
 		BEGIN
@@ -79,7 +67,7 @@ BEGIN
 			Where a.txt_anoproceso=@Ano
 			And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 			and a.cod_mes='00'
-			Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes		
+			Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes
 
 			Select @SaldoCaja = Sum(A.num_haberdolar)-Sum(A.num_debedolar)
 			From scp_bancocabecera A
@@ -102,14 +90,15 @@ BEGIN
 			And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 			Group By A.cod_ctacontable, a.cod_tipomoneda
 		END
-		
+
 		select @Saldo=-(@SaldoInicial+@SaldoCaja)
-		
+
 		INSERT INTO @SaldosTable (cuenta, saldo) VALUES (@Cuenta,@Saldo)
-		FETCH NEXT FROM myCursor INTO @Cuenta		
+		FETCH NEXT FROM myCursor INTO @Cuenta
 	End
 	CLOSE myCursor
-	DEALLOCATE myCursor	
-RETURN	
+	DEALLOCATE myCursor
+RETURN
 END
 -- SELECT * FROM [fun_scp_vsj_GetSaldoAlDiaBanco]('2016-08-18 23:59:59','N')
+GO

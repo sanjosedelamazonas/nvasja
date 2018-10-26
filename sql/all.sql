@@ -91,12 +91,7 @@ COMMIT
 ;
 update [dbo].[scp_bancodetalle] set
 	[cod_tipomov] =0
-	where 1=1;Alter TABLE [dbo].[scp_cajabanco] add
-	[cod_cajabanco] [int] IDENTITY(1,1) NOT NULL ,
-	[cod_transcorrelativo] [varchar](255) NULL DEFAULT '',
-	[cod_tipomov] [int] NULL DEFAULT 0
-;
-	/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
+	where 1=1;	/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
 BEGIN TRANSACTION
 SET QUOTED_IDENTIFIER ON
 SET ARITHABORT ON
@@ -107,6 +102,20 @@ SET ANSI_PADDING ON
 SET ANSI_WARNINGS ON
 COMMIT
 BEGIN TRANSACTION
+
+ALTER TABLE dbo.scp_cajabanco SET (LOCK_ESCALATION = TABLE)
+GO
+ALTER TABLE dbo.scp_cajabanco
+	DROP CONSTRAINT PK_scp_cajabanco
+GO
+ALTER TABLE dbo.scp_cajabanco SET (LOCK_ESCALATION = TABLE)
+GO
+
+Alter TABLE [dbo].[scp_cajabanco] add
+	[cod_cajabanco] [int] IDENTITY(1,1) NOT NULL ,
+	[cod_transcorrelativo] [varchar](255) NULL DEFAULT '',
+	[cod_tipomov] [int] NULL DEFAULT 0
+;
 GO
 ALTER TABLE dbo.scp_cajabanco ADD CONSTRAINT
 	PK_scp_cajabanco PRIMARY KEY CLUSTERED
@@ -123,6 +132,8 @@ update [dbo].[scp_cajabanco] set
 	[cod_transcorrelativo] ='',
 	[cod_tipomov] =0
 	where 1=1;
+;
+GO
 ;
 create function [dbo].[usp_vsj_cajabanco_gen_correlativo](@id int)
 returns char(8)
@@ -143,8 +154,7 @@ from
 inner join
     inserted on scp_cajabanco.cod_cajabanco = inserted.cod_cajabanco
 GO
-GO
-
+PRINT '1. Alter DONE'
 /****** Object:  Table [dbo].[vsj_configuracioncaja]    Script Date: 09/12/2016 10:02:43 ******/
 SET ANSI_NULLS ON
 GO
@@ -172,9 +182,6 @@ PRIMARY KEY CLUSTERED
 GO
 
 SET ANSI_PADDING OFF
-GO
-
-
 GO
 
 /****** Object:  Table [dbo].[vsj_configuractacajabanco]    Script Date: 09/12/2016 10:02:52 ******/
@@ -225,9 +232,6 @@ GO
 ALTER TABLE [dbo].[vsj_configuractacajabanco] ADD  DEFAULT ('TRUE') FOR [activo]
 GO
 
-
-GO
-
 /****** Object:  Table [dbo].[vsj_propiedad]    Script Date: 09/08/2016 18:48:05 ******/
 SET ANSI_NULLS ON
 GO
@@ -254,8 +258,7 @@ SET ANSI_PADDING OFF
 GO
 
 
-
-GO
+PRINT '2. Create_vsj DONE'
 IF EXISTS ( SELECT *
             FROM   sysobjects
             WHERE  id = object_id(N'[dbo].[usp_scp_vsj_enviarAContabilidadBanco]')
@@ -1405,8 +1408,6 @@ END CATCH
 /*
 Exec usp_scp_vsj_enviarAContabilidadBanco 10437,'abork','01/09/2016','0',0
 */
-
-GO
 IF EXISTS ( SELECT *
             FROM   sysobjects
             WHERE  id = object_id(N'[dbo].[usp_scp_vsj_enviarAContabilidad]')
@@ -1952,6 +1953,7 @@ END CATCH
 /*
 Exec usp_scp_vsj_enviarAContabilidad 25557,'abork','24/08/2016','1',0,815,'170410',0
 */
+PRINT '3. Cr usp'
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia]    Script Date: 09/12/2016 10:05:34 ******/
 SET ANSI_NULLS ON
 GO
@@ -2013,6 +2015,7 @@ Exec usp_scp_vsj_getSaldoAlDia 2,'09/09/2016','100310', 0,0,0
 */
 GO
 
+PRINT '4. Cr proc1'
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getCociliacionDeSaldos]    Script Date: 09/12/2016 10:05:09 ******/
 SET ANSI_NULLS ON
 GO
@@ -2028,7 +2031,7 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_getCociliacionDeSaldos]
 	@SaldoUSD decimal(12,2) OUTPUT,
 	@SaldoEUR decimal(12,2) OUTPUT
 AS
-
+BEGIN
 Declare @SaldoPEN_contado decimal(12,2) 
 Declare @SaldoUSD_contabilidad decimal(12,2) 	
 Declare @SaldoEUR_contabilidad decimal(12,2) 	
@@ -2091,13 +2094,14 @@ SUM(num_habersol-num_debesol) PEN--,Sum(num_haberdolar-num_debedolar) USD, sum(n
   group by txt_anoproceso,cod_proyecto,Substring(Ltrim(cod_ctacontable),1,3) ,cod_tipomoneda
   order by cod_proyecto,cod_tipomoneda, Substring(Ltrim(cod_ctacontable),1,3)
 
+END
 /* 
 
 Exec usp_scp_vsj_getCociliacionDeSaldos 1,'31/12/2015','005013',0,0,0
 
 */
 GO
-
+;
 IF EXISTS ( SELECT *
             FROM   sysobjects
             WHERE  id = object_id(N'[dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]')
@@ -2130,6 +2134,8 @@ Declare @Ano varchar(4)
 Declare @FechaInicial char(10)
 Declare @SaldoInicial decimal(12,2)
 Declare @SaldoCaja decimal(12,2)
+
+BEGIN
 
 Set @Ano=SUBSTRING(@Fecha,1,4)
 -- Set @FechaInicial='01/01/'+SUBSTRING(@Fecha,7,4)
@@ -2195,9 +2201,11 @@ Print 'Banco : '+CONVERT(char(14),@SaldoCaja,14)
 select @Saldo=-(@SaldoInicial+@SaldoCaja)
 
 Print 'Saldo : '+CONVERT(char(14),@Saldo,14)
-
+END
 -- Exec usp_scp_vsj_GetSaldoAlDiaBanco '2016-08-18 23:59:59','1060104','2',0
 GO
+;
+
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaCaja]    Script Date: 09/22/2016 23:08:53 ******/
 SET ANSI_NULLS ON
 GO
@@ -2221,6 +2229,7 @@ Set @SaldoInicial=0.00
 Set @SaldoCaja=0.00
 Set @Saldo=0.00
 
+BEGIN
 select @FechaInicial=(SUBSTRING(@Fecha,1,4)+'-01-01 00:00:00')
 
 if (@Moneda='0')
@@ -2285,7 +2294,11 @@ select @Saldo=-(@SaldoInicial+@SaldoCaja)
 --Print 'Saldo : '+CONVERT(char(14),@Saldo,14)
 
 -- Exec usp_scp_vsj_GetSaldoAlDiaCaja '2016-08-31 23:59:59','1011101','0',0
--- Exec usp_scp_vsj_GetSaldoAlDiaCaja '2016-08-31 00:00:00','1011101','0',0/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]    Script Date: 09/12/2016 10:05:54 ******/
+-- Exec usp_scp_vsj_GetSaldoAlDiaCaja '2016-08-31 00:00:00','1011101','0',0
+
+END
+GO
+;/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]    Script Date: 09/12/2016 10:05:54 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2303,6 +2316,7 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]
  @SaldoEUR_contabilidad decimal(12,2) OUTPUT )
 
 As
+BEGIN
 
 Set @SaldoPEN_contabilidad=0.00
 Set @SaldoUSD_contabilidad =0.00
@@ -2414,14 +2428,14 @@ END
 Print 'Contabilidad  PEN:'+CONVERT(char(14),@SaldoPEN_contabilidad ,121)
 +' USD:'+CONVERT(char(14),@SaldoUSD_contabilidad ,121)
 +' EUR:'+CONVERT(char(14),@SaldoEUR_contabilidad ,121)
-
+END
 /*
 
 Exec usp_scp_vsj_getSaldoProyectoAlDia_contabilidad 1,'01/01/2016','09/09/2016','023017',0,0,0
 
 */
 GO
-
+;
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]    Script Date: 09/12/2016 10:06:13 ******/
 SET ANSI_NULLS ON
 GO
@@ -2440,7 +2454,7 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]
  @SaldoEUR_banco decimal(12,2) OUTPUT )
 
 As
-
+BEGIN
 Set @SaldoPEN_banco=0.00
 Set @SaldoUSD_banco =0.00
 Set @SaldoEUR_banco=0.00
@@ -2525,16 +2539,15 @@ END
 Print 'Bancos PEN: '+CONVERT(char(14),@SaldoPEN_banco ,121)
 +' USD: '+CONVERT(char(14),@SaldoUSD_banco ,121)
 +' EUR: '+CONVERT(char(14),@SaldoEUR_banco ,121)
-
+END
 /*
 
 Exec usp_scp_vsj_getSaldoProyectoAlDia_NoEnviadosBancos 2,'01/01/2016','09/09/2016','190420',0,0,0
 
 */
 
-
 GO
-
+;
 
 GO
 
@@ -2555,10 +2568,12 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosCaja]
  @SaldoEUR_caja decimal(12,2) OUTPUT )
 
 As
-
+BEGIN
 Set @SaldoPEN_caja=0.00
 Set @SaldoUSD_caja=0.00
 Set @SaldoEUR_caja=0.00
+
+
 
 if (@Tipo=1) -- Proyecto
 BEGIN
@@ -2623,26 +2638,16 @@ BEGIN
 END
 Print 'Caja PEN:'+CONVERT(char(14),@SaldoPEN_caja ,121)+' USD:'+CONVERT(char(14),@SaldoUSD_caja ,121)+' EUR:'+CONVERT(char(14),@SaldoEUR_caja,121)
 
+END
 /*
 
 Exec usp_scp_vsj_getSaldoProyectoAlDia_NoEnviadosCaja 2,'01/01/2016','09/09/2016','190410',0,0,0
 
 */
 GO
-
-IF EXISTS (SELECT *
-            FROM   sysobjects
-            WHERE  id = object_id(N'[dbo].[fun_scp_vsj_GetSaldosAlDiaBanco]'))
-BEGIN
-    DROP FUNCTION [dbo].[fun_scp_vsj_GetSaldosAlDiaBanco]
-END
-
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]    Script Date: 10/14/2016 03:30:47 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]    Script Date: 10/30/2016 21:21:26 ******/
+;
+PRINT '5. Cr proc_usp*; GO;'
+/****** Object:  UserDefinedFunction [dbo].[fun_scp_vsj_GetSaldosAlDiaBanco]    Script Date: 10/27/2018 01:37:37 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2671,23 +2676,23 @@ BEGIN
 	Set @Saldo=0.00
 
 	select @FechaInicial=(SUBSTRING(@Fecha,1,4)+'-01-01 00:00:00')
-	
-	SELECT @MonedaLit = CASE @Moneda 
+
+	SELECT @MonedaLit = CASE @Moneda
 						 WHEN '0' then 'N'
 						 WHEN '1' then 'D'
 						 WHEN '2' then 'E'
 						 ELSE 'N'
 						END;
 	DECLARE myCursor CURSOR FOR
-		SELECT cod_ctacontable FROM scp_plancontable WHERE 
-		flg_movimiento='N' 
-		AND txt_anoproceso=@Ano 
+		SELECT cod_ctacontable FROM scp_plancontable WHERE
+		flg_movimiento='N'
+		AND txt_anoproceso=@Ano
 		AND (cod_ctacontable LIKE '104%' OR cod_ctacontable LIKE '106%')
 		AND ind_tipomoneda=@MonedaLit
 
 	OPEN myCursor
 	FETCH NEXT FROM myCursor INTO @Cuenta
-	WHILE (@@FETCH_STATUS = 0) 
+	WHILE (@@FETCH_STATUS = 0)
 	BEGIN
 		IF (@MonedaLit='N')
 		BEGIN
@@ -2711,7 +2716,7 @@ BEGIN
 			Where a.txt_anoproceso=@Ano
 			And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 			and a.cod_mes='00'
-			Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes		
+			Group By A.cod_ctacontable, a.cod_tipomoneda, a.cod_mes
 
 			Select @SaldoCaja = Sum(A.num_haberdolar)-Sum(A.num_debedolar)
 			From scp_bancocabecera A
@@ -2734,24 +2739,30 @@ BEGIN
 			And A.cod_ctacontable=@Cuenta And a.cod_tipomoneda=@Moneda
 			Group By A.cod_ctacontable, a.cod_tipomoneda
 		END
-		
+
 		select @Saldo=-(@SaldoInicial+@SaldoCaja)
-		
+
 		INSERT INTO @SaldosTable (cuenta, saldo) VALUES (@Cuenta,@Saldo)
-		FETCH NEXT FROM myCursor INTO @Cuenta		
+		FETCH NEXT FROM myCursor INTO @Cuenta
 	End
 	CLOSE myCursor
-	DEALLOCATE myCursor	
-RETURN	
+	DEALLOCATE myCursor
+RETURN
 END
 -- SELECT * FROM [fun_scp_vsj_GetSaldoAlDiaBanco]('2016-08-18 23:59:59','N')
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
 IF EXISTS (SELECT *
             FROM   sysobjects
             WHERE  id = object_id(N'[dbo].[fun_scp_vsj_getLetraDeNumero]'))
 BEGIN
     DROP FUNCTION [dbo].[fun_scp_vsj_getLetraDeNumero]
 END
-
+GO
 
 CREATE FUNCTION [fun_scp_vsj_getLetraDeNumero] (@Numero NUMERIC(20,2)) RETURNS Varchar(200) AS
 BEGIN
@@ -2869,6 +2880,7 @@ RETURN RTRIM(@lcRetorno) + ' con ' + LTRIM(STR(@lnFraccion,2)) + '/100'
 END
 
 GO
+PRINT '7. Cr function_scp'
 /****** Script for SelectTopNRows command from SSMS  ******/
 delete from [dbo].[vsj_configuractacajabanco]
 insert into [dbo].[vsj_configuractacajabanco]
@@ -2914,3 +2926,4 @@ end
 ,1
 FROM [dbo].[scp_configuractacajabanco]
 where txt_anoproceso='2018'
+PRINT '8. Cr vsj'

@@ -13,7 +13,7 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_getCociliacionDeSaldos]
 	@SaldoUSD decimal(12,2) OUTPUT,
 	@SaldoEUR decimal(12,2) OUTPUT
 AS
-
+BEGIN
 Declare @SaldoPEN_contado decimal(12,2) 
 Declare @SaldoUSD_contabilidad decimal(12,2) 	
 Declare @SaldoEUR_contabilidad decimal(12,2) 	
@@ -76,10 +76,11 @@ SUM(num_habersol-num_debesol) PEN--,Sum(num_haberdolar-num_debedolar) USD, sum(n
   group by txt_anoproceso,cod_proyecto,Substring(Ltrim(cod_ctacontable),1,3) ,cod_tipomoneda
   order by cod_proyecto,cod_tipomoneda, Substring(Ltrim(cod_ctacontable),1,3)
 
+END
 /* 
 
 Exec usp_scp_vsj_getCociliacionDeSaldos 1,'31/12/2015','005013',0,0,0
 
 */
 GO
-
+;

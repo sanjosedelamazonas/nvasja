@@ -16,7 +16,7 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]
  @SaldoEUR_banco decimal(12,2) OUTPUT )
 
 As
-
+BEGIN
 Set @SaldoPEN_banco=0.00
 Set @SaldoUSD_banco =0.00
 Set @SaldoEUR_banco=0.00
@@ -101,13 +101,12 @@ END
 Print 'Bancos PEN: '+CONVERT(char(14),@SaldoPEN_banco ,121)
 +' USD: '+CONVERT(char(14),@SaldoUSD_banco ,121)
 +' EUR: '+CONVERT(char(14),@SaldoEUR_banco ,121)
-
+END
 /*
 
 Exec usp_scp_vsj_getSaldoProyectoAlDia_NoEnviadosBancos 2,'01/01/2016','09/09/2016','190420',0,0,0
 
 */
 
-
 GO
-
+;

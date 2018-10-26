@@ -31,6 +31,8 @@ Declare @FechaInicial char(10)
 Declare @SaldoInicial decimal(12,2)
 Declare @SaldoCaja decimal(12,2)
 
+BEGIN
+
 Set @Ano=SUBSTRING(@Fecha,1,4)
 -- Set @FechaInicial='01/01/'+SUBSTRING(@Fecha,7,4)
 Set @SaldoInicial=0.00
@@ -95,5 +97,7 @@ Print 'Banco : '+CONVERT(char(14),@SaldoCaja,14)
 select @Saldo=-(@SaldoInicial+@SaldoCaja)
 
 Print 'Saldo : '+CONVERT(char(14),@Saldo,14)
-
+END
 -- Exec usp_scp_vsj_GetSaldoAlDiaBanco '2016-08-18 23:59:59','1060104','2',0
+GO
+;

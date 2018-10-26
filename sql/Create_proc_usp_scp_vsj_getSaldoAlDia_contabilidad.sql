@@ -16,6 +16,7 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]
  @SaldoEUR_contabilidad decimal(12,2) OUTPUT )
 
 As
+BEGIN
 
 Set @SaldoPEN_contabilidad=0.00
 Set @SaldoUSD_contabilidad =0.00
@@ -127,11 +128,11 @@ END
 Print 'Contabilidad  PEN:'+CONVERT(char(14),@SaldoPEN_contabilidad ,121)
 +' USD:'+CONVERT(char(14),@SaldoUSD_contabilidad ,121)
 +' EUR:'+CONVERT(char(14),@SaldoEUR_contabilidad ,121)
-
+END
 /*
 
 Exec usp_scp_vsj_getSaldoProyectoAlDia_contabilidad 1,'01/01/2016','09/09/2016','023017',0,0,0
 
 */
 GO
-
+;

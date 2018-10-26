@@ -1,8 +1,3 @@
-Alter TABLE [dbo].[scp_cajabanco] add
-	[cod_cajabanco] [int] IDENTITY(1,1) NOT NULL ,
-	[cod_transcorrelativo] [varchar](255) NULL DEFAULT '',
-	[cod_tipomov] [int] NULL DEFAULT 0
-;
 	/* To prevent any potential data loss issues, you should review this script in detail before running it outside the context of the database designer.*/
 BEGIN TRANSACTION
 SET QUOTED_IDENTIFIER ON
@@ -14,6 +9,20 @@ SET ANSI_PADDING ON
 SET ANSI_WARNINGS ON
 COMMIT
 BEGIN TRANSACTION
+
+ALTER TABLE dbo.scp_cajabanco SET (LOCK_ESCALATION = TABLE)
+GO
+ALTER TABLE dbo.scp_cajabanco
+	DROP CONSTRAINT PK_scp_cajabanco
+GO
+ALTER TABLE dbo.scp_cajabanco SET (LOCK_ESCALATION = TABLE)
+GO
+
+Alter TABLE [dbo].[scp_cajabanco] add
+	[cod_cajabanco] [int] IDENTITY(1,1) NOT NULL ,
+	[cod_transcorrelativo] [varchar](255) NULL DEFAULT '',
+	[cod_tipomov] [int] NULL DEFAULT 0
+;
 GO
 ALTER TABLE dbo.scp_cajabanco ADD CONSTRAINT
 	PK_scp_cajabanco PRIMARY KEY CLUSTERED
@@ -30,6 +39,8 @@ update [dbo].[scp_cajabanco] set
 	[cod_transcorrelativo] ='',
 	[cod_tipomov] =0
 	where 1=1;
+;
+GO
 ;
 create function [dbo].[usp_vsj_cajabanco_gen_correlativo](@id int)
 returns char(8)
