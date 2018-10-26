@@ -55,6 +55,11 @@ vaadin:
 
 spring:
   profiles: production
+  datasource:
+    url: jdbc:sqlserver://virtualxp:1433;databaseName=SCP_old
+    username: vasja
+    password: vasja123
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 server:
   port: 8000
 logging:
@@ -68,3 +73,4 @@ vaadin:
   servlet:
     productionMode: true
     heartbeatInterval: 90
+    closeIdleSessions: true

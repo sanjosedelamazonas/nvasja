@@ -4,6 +4,6 @@
     <description>Cashflow Management system for Vicariato San Jose del Amazonas (2016)</description>
     <env name="VASJA_HOME" value="%BASE%"/>
     <executable>java</executable>
-    <arguments>-Xms1024M -Xmx2048M -jar "%BASE%\vasja-ui-1.0-SNAPSHOT.jar" --server.port=8000</arguments>
+    <arguments>-Xms1024M -Xmx2048M -Dspring.profiles.active=production -jar "%BASE%\vasja-ui-1.0-SNAPSHOT.jar" --server.port=8000</arguments>
     <logmode>rotate</logmode>
 </service>

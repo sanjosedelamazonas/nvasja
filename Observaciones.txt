@@ -35,6 +35,7 @@ DONE!
 - nuevo comprobante o edycja w oknie emergente
 DONE
 - cta contable cerrada - no conciderar
+??
 - przenosi do contabilidad z numero de comprobante z caja/bancos y prefix 01/02
 DONE
 - okno na saldos osobne - zalezne od periodo w ktorym wybrana caja

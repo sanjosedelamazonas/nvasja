@@ -3,6 +3,7 @@ package org.sanjose.util;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
+import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpTipocambio;
@@ -10,6 +11,7 @@ import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.views.banco.BancoService;
 import org.sanjose.views.caja.ComprobanteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -132,13 +134,14 @@ public class ProcUtil {
         return (String)query.getOutputParameterValue(8);
     }
 
+
+
     @Transactional(readOnly = false)
     public void enviarContabilidad(Collection<Object> vcbs, ComprobanteService service) {
-        ScpCajabanco vcb = null;
-        try {
+        try{
             List<ScpCajabanco> scpCajabancoList = new ArrayList<>();
             for (Object objVcb : vcbs) {
-                vcb = (ScpCajabanco) objVcb;
+                ScpCajabanco vcb = (ScpCajabanco) objVcb;
                 if (vcb.isEnviado()) {
                     continue;
                 }
@@ -153,45 +156,62 @@ public class ProcUtil {
                     tcval = EUR.equals(vcb.getCodTipomoneda()) ? tipocambio.getNumTcveuro() : tipocambio.getNumTcvdolar();
                 }
                 System.out.println("got tcval: " + tcval + " " + tcval.compareTo(new BigDecimal(0)));
+
                 if (tcval.compareTo(new BigDecimal(0))==0) {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     Notification.show("Falta tipo de cambio para el dia: " + sdf.format(vcb.getFecFecha()), Notification.Type.WARNING_MESSAGE);
-                    final ProcUtil pu = this;
-                    final ScpCajabanco tmpVcb = vcb;
-/*
                     MessageBox
                             .createQuestion()
                             .withCaption("Falta tipo de cambio")
-                            .withMessage("Falta tipo de cambio para el dia: " + sdf.format(vcb.getFecFecha()) +"\n?Continuar?\n")
+                            .withMessage("Falta tipo de cambio para el dia: " + sdf.format(vcb.getFecFecha()) +"\n?Continuar o ignorar esta operacion?\n")
                             .withYesButton(() -> {
-                                pu.setContinueEnviar(true);
-                                System.out.println("Continue");
+                                try {
+                                    doEnviarContabilidad(vcb);
+                                    System.out.println("Continue");
+                                } catch (EnviarContabilidadException envexc) {
+                                    MessageBox
+                                            .createError()
+                                            .withCaption("Problema al Enviar a contabilidad")
+                                            .withMessage(envexc.getMessage())
+                                            .withOkButton()
+                                            .open();
+                                }
                             })
                             .withNoButton(() -> {
-                                pu.setContinueEnviar(false);
                                 System.out.println("No continue");
                             })
                             .open();
-*/
+                } else {
+                    doEnviarContabilidad(vcb);
                 }
-                if (!isContinueEnviar) return;
-            }
-            for (ScpCajabanco vcbS : scpCajabancoList) {
-                vcb = vcbS;
-                log.info("Enviando: " + vcb);
-                String result = enviarContabilidad(vcb);
-                log.info("Resultado: " + result);
-                Notification.show("Operacion: " + vcb.getCodCajabanco(), result, Notification.Type.TRAY_NOTIFICATION);
             }
             if (vcbs.size() != scpCajabancoList.size()) {
                 Notification.show("!Attention!", "!Algunas operaciones eran omitidas por ya ser enviadas!", Notification.Type.TRAY_NOTIFICATION);
             }
+        } catch (EnviarContabilidadException envexc) {
+            MessageBox
+                    .createError()
+                    .withCaption("Problema al Enviar a contabilidad")
+                    .withMessage(envexc.getMessage())
+                    .withOkButton()
+                    .open();
+        }
+    }
+
+
+
+    @Transactional(readOnly = false)
+    public void doEnviarContabilidad(ScpCajabanco vcb) throws EnviarContabilidadException {
+        try {
+            log.info("Enviando: " + vcb);
+            String result = enviarContabilidad(vcb);
+            log.info("Resultado: " + result);
+            Notification.show("Operacion: " + vcb.getCodCajabanco(), result, Notification.Type.TRAY_NOTIFICATION);
         } catch (PersistenceException pe) {
-            Notification.show("Problema al enviar a contabilidad operacion: " + (vcb != null ? vcb.getCodCajabanco() : 0)
-                            + "\n\n" + pe.getMessage() +
-                            (pe.getCause() != null ? "\n" + pe.getCause().getMessage() : "")
-                            + (pe.getCause() != null && pe.getCause().getCause() != null ? "\n" + pe.getCause().getCause().getMessage() : "")
-                    , Notification.Type.ERROR_MESSAGE);
+            throw new EnviarContabilidadException("Problema al enviar a contabilidad operacion: " + (vcb != null ? vcb.getCodCajabanco() : 0)
+                    + "\n\n" + pe.getMessage() +
+                    (pe.getCause() != null ? "\n" + pe.getCause().getMessage() : "")
+                    + (pe.getCause() != null && pe.getCause().getCause() != null ? "\n" + pe.getCause().getCause().getMessage() : ""),vcb);
         }
     }
 
