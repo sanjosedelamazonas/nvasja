@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-08T14:50:57 -->
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2018-10-26T00:32:00 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComprobanteCheque" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="42" uuid="e6e4b764-eb4a-44ec-8aa8-52e244f987a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -51,57 +51,57 @@
 	</style>
 	<subDataset name="DatasetTable" uuid="5539659e-8890-4a15-a495-1a33d3a1127d">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SQL Server localhost"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="192.168.1.114"/>
 		<parameter name="OPDET_ID" class="java.lang.Integer">
 			<defaultValueExpression><![CDATA[201]]></defaultValueExpression>
 		</parameter>
 		<queryString language="SQL">
 			<![CDATA[SELECT
-  vsj_bancodetalle.cod_bancocabecera AS CHEQUE_ID,
-  vsj_bancodetalle.num_item AS OPERACION_ID,
-  vsj_bancodetalle.cod_proyecto AS OPERACION_PROYECTO,
-  vsj_bancodetalle.cod_tercero AS OPERACION_TERCERO,
-  vsj_bancodetalle.cod_ctaproyecto AS OPERACION_RUBRO_PROY,
-  vsj_bancodetalle.cod_contracta AS OPERACION_CTA_CONTABLE,
-  vsj_bancodetalle.cod_ctaespecial AS OPERACION_RUBRO_INST,
-  vsj_bancodetalle.cod_contraparte AS OPERACION_LUGAR_GASTO,
-  vsj_bancodetalle.txt_seriecomprobantepago AS OPERACION_SERIE_DOCUMENTO,
-  vsj_bancodetalle.txt_comprobantepago AS OPERACION_DOCUMENTO,
-  vsj_bancodetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
-  vsj_bancodetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
+  scp_bancodetalle.cod_bancocabecera AS CHEQUE_ID,
+  scp_bancodetalle.num_item AS OPERACION_ID,
+  scp_bancodetalle.cod_proyecto AS OPERACION_PROYECTO,
+  scp_bancodetalle.cod_tercero AS OPERACION_TERCERO,
+  scp_bancodetalle.cod_ctaproyecto AS OPERACION_RUBRO_PROY,
+  scp_bancodetalle.cod_contracta AS OPERACION_CTA_CONTABLE,
+  scp_bancodetalle.cod_ctaespecial AS OPERACION_RUBRO_INST,
+  scp_bancodetalle.cod_contraparte AS OPERACION_LUGAR_GASTO,
+  scp_bancodetalle.txt_seriecomprobantepago AS OPERACION_SERIE_DOCUMENTO,
+  scp_bancodetalle.txt_comprobantepago AS OPERACION_DOCUMENTO,
+  scp_bancodetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
+  scp_bancodetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
     CASE
-            WHEN ((vsj_bancodetalle.[num_habersol] - vsj_bancodetalle.[num_debesol] > 0)
-            		OR (vsj_bancodetalle.num_haberdolar - vsj_bancodetalle.num_debedolar > 0)
-            		OR (vsj_bancodetalle.num_habermo - vsj_bancodetalle.num_debemo > 0))
+            WHEN ((scp_bancodetalle.[num_habersol] - scp_bancodetalle.[num_debesol] > 0)
+            		OR (scp_bancodetalle.num_haberdolar - scp_bancodetalle.num_debedolar > 0)
+            		OR (scp_bancodetalle.num_habermo - scp_bancodetalle.num_debemo > 0))
                THEN 1
                ELSE 0
        END as OPERACION_ISCARGO,
 
   CASE
-		WHEN (vsj_bancodetalle.cod_tipomoneda ='0')
+		WHEN (scp_bancodetalle.cod_tipomoneda ='0')
                THEN
-					vsj_bancodetalle.[num_debesol] - vsj_bancodetalle.[num_habersol]
-		WHEN (vsj_bancodetalle.cod_tipomoneda ='1')
+					scp_bancodetalle.[num_debesol] - scp_bancodetalle.[num_habersol]
+		WHEN (scp_bancodetalle.cod_tipomoneda ='1')
                THEN
-					vsj_bancodetalle.[num_debedolar] - vsj_bancodetalle.[num_haberdolar]
-		WHEN (vsj_bancodetalle.cod_tipomoneda ='2')
+					scp_bancodetalle.[num_debedolar] - scp_bancodetalle.[num_haberdolar]
+		WHEN (scp_bancodetalle.cod_tipomoneda ='2')
                THEN
-					vsj_bancodetalle.[num_debemo] - vsj_bancodetalle.[num_habermo]
+					scp_bancodetalle.[num_debemo] - scp_bancodetalle.[num_habermo]
                ELSE 0
        END as OPERACION_IMPORTE
 FROM
-	vsj_bancodetalle
-	INNER JOIN vsj_bancocabecera ON vsj_bancodetalle.cod_bancocabecera = vsj_bancocabecera.cod_bancocabecera
-	INNER JOIN scp_plancontable ON vsj_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable
-	AND vsj_bancocabecera.txt_anoproceso = scp_plancontable.txt_anoproceso
-	LEFT JOIN scp_destino firma ON vsj_bancodetalle.cod_destino = firma.cod_destino
-	LEFT JOIN scp_destino dest2 ON vsj_bancocabecera.cod_destino = dest2.cod_destino
-	LEFT JOIN scp_destino tercero ON vsj_bancodetalle.cod_tercero = tercero.cod_destino
-	LEFT JOIN dbo.scp_proyecto CUENTA ON vsj_bancodetalle.cod_proyecto = CUENTA.cod_proyecto
+	scp_bancodetalle
+	INNER JOIN scp_bancocabecera ON scp_bancodetalle.cod_bancocabecera = scp_bancocabecera.cod_bancocabecera
+	INNER JOIN scp_plancontable ON scp_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable
+	AND scp_bancocabecera.txt_anoproceso = scp_plancontable.txt_anoproceso
+	LEFT JOIN scp_destino firma ON scp_bancodetalle.cod_destino = firma.cod_destino
+	LEFT JOIN scp_destino dest2 ON scp_bancocabecera.cod_destino = dest2.cod_destino
+	LEFT JOIN scp_destino tercero ON scp_bancodetalle.cod_tercero = tercero.cod_destino
+	LEFT JOIN dbo.scp_proyecto CUENTA ON scp_bancodetalle.cod_proyecto = CUENTA.cod_proyecto
  WHERE
-	vsj_bancocabecera.cod_bancocabecera = $P{OPDET_ID}
- ORDER BY     vsj_bancocabecera.txt_correlativo,
-     vsj_bancodetalle.num_item ASC]]>
+	scp_bancocabecera.cod_bancocabecera = $P{OPDET_ID}
+ ORDER BY     scp_bancocabecera.txt_correlativo,
+     scp_bancodetalle.num_item ASC]]>
 		</queryString>
 		<field name="OPERACION_ID" class="java.lang.Integer"/>
 		<field name="OPERACION_PROYECTO" class="java.lang.String"/>
@@ -317,7 +317,7 @@ FROM
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA["BP-" + $F{OPERACION_ID} + "-2016"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["02-" + $F{OPERACION_ID} ]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="39" width="278" height="15" uuid="2f85be0a-263e-43c2-af1b-274a2b739eb9"/>
@@ -391,7 +391,7 @@ FROM
 				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? "S/.:" : ($F{OPERACION_TIPOMONEDA}.toString().equals("1") ? "U$D:" : "€:"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? "Importe S/.:" : ($F{OPERACION_TIPOMONEDA}.toString().equals("1") ? "Importe U$D:" : "Importe €:"))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="343" y="39" width="196" height="15" uuid="cf8033e9-4f64-4f12-9184-e470ba7a5fca"/>
@@ -758,19 +758,12 @@ FROM
 				</graphicElement>
 			</line>
 			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="false">
-				<reportElement style="Column header" x="39" y="107" width="72" height="18" forecolor="#050505" uuid="c20cee5a-360b-428a-a30c-f0b3fd618ab4"/>
+				<reportElement style="Column header" x="0" y="107" width="111" height="18" forecolor="#050505" uuid="c20cee5a-360b-428a-a30c-f0b3fd618ab4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[="Impreso: "+new java.util.Date()]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="0" y="107" width="40" height="18" uuid="d80aded6-cbbc-4dbb-a546-d9e16c8bc188"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isItalic="true"/>
-				</textElement>
-				<text><![CDATA[Impreso:]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="359" y="34" width="50" height="14" uuid="b55c46de-a84e-4dd3-a42f-60dfd0618446"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -844,74 +837,74 @@ FROM
 				<text><![CDATA[Cheque:]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="321" y="105" width="1" height="21" uuid="07b5fb5f-bef2-4a76-b354-f11c091324e5"/>
+				<reportElement positionType="FixRelativeToBottom" x="297" y="105" width="1" height="21" uuid="07b5fb5f-bef2-4a76-b354-f11c091324e5"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#999999"/>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="112" y="109" width="52" height="14" uuid="13cb4f3f-aeaa-47f8-8a50-70c9fd0fef1a"/>
+				<reportElement x="112" y="106" width="28" height="21" uuid="13cb4f3f-aeaa-47f8-8a50-70c9fd0fef1a"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[Contra Cta:]]></text>
+				<text><![CDATA[Contra cta:]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="432" y="105" width="1" height="21" uuid="f7fcc8c2-7629-4e66-b9db-4018a2630692"/>
+				<reportElement positionType="FixRelativeToBottom" x="410" y="105" width="1" height="21" uuid="f7fcc8c2-7629-4e66-b9db-4018a2630692"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#999999"/>
 				</graphicElement>
 			</line>
 			<textField isBlankWhenNull="true">
-				<reportElement x="164" y="109" width="52" height="14" uuid="312ffd67-05b7-43e8-aad7-71a679de3a74"/>
+				<reportElement x="140" y="109" width="60" height="14" uuid="312ffd67-05b7-43e8-aad7-71a679de3a74"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{OPERACION_CTA_CONTABLE}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="376" y="109" width="54" height="14" uuid="6f82679c-eb54-4527-893c-1757cf4938e4"/>
+				<reportElement x="340" y="109" width="63" height="14" uuid="6f82679c-eb54-4527-893c-1757cf4938e4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{OPERACION_RUBRO_INST}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="323" y="109" width="52" height="14" uuid="8e51b74c-4b85-4fe8-859d-25870a8ad1d2"/>
+				<reportElement x="299" y="106" width="34" height="21" uuid="8e51b74c-4b85-4fe8-859d-25870a8ad1d2"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[Rubro Inst:]]></text>
+				<text><![CDATA[Rubro inst]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="485" y="109" width="54" height="14" uuid="0e7c19cd-59a2-4bc1-9290-141890f1ba1f"/>
+				<reportElement x="458" y="109" width="70" height="14" uuid="0e7c19cd-59a2-4bc1-9290-141890f1ba1f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{OPERACION_RUBRO_PROY}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="433" y="109" width="52" height="14" uuid="21b152e8-fac4-4fbe-a797-177a8deb5ec2"/>
+				<reportElement x="411" y="105" width="39" height="22" uuid="21b152e8-fac4-4fbe-a797-177a8deb5ec2"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[Rubr proy:]]></text>
+				<text><![CDATA[Rubro proyecto]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="216" y="105" width="1" height="21" uuid="f7814e9d-7522-40c3-8b82-b35fac8a5adc"/>
+				<reportElement positionType="FixRelativeToBottom" x="203" y="105" width="1" height="21" uuid="f7814e9d-7522-40c3-8b82-b35fac8a5adc"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#999999"/>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="218" y="109" width="52" height="14" uuid="875e8913-931d-4e27-bb50-c8c37695a611"/>
+				<reportElement x="204" y="106" width="36" height="21" uuid="875e8913-931d-4e27-bb50-c8c37695a611"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[Lugar Gst:]]></text>
+				<text><![CDATA[Lugar de gasto]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="270" y="109" width="50" height="14" uuid="c33af79c-fff4-4ad5-aee2-c97342e58ea0"/>
+				<reportElement x="242" y="109" width="50" height="14" uuid="c33af79c-fff4-4ad5-aee2-c97342e58ea0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>

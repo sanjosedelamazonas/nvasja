@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2018-10-24T08:16:23 -->
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2018-10-26T00:46:23 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Comprobante" pageWidth="430" pageHeight="215" columnWidth="414" leftMargin="8" rightMargin="8" topMargin="8" bottomMargin="0" uuid="e6e4b764-eb4a-44ec-8aa8-52e244f987a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -8,7 +8,7 @@
 	<property name="net.sf.jasperreports.export.text.character.width" value="7.238"/>
 	<property name="net.sf.jasperreports.export.text.character.height" value="13.948"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="192.168.1.114"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="mm"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="mm"/>
@@ -94,10 +94,10 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 		<initialValueExpression><![CDATA[201]]></initialValueExpression>
 	</variable>
 	<detail>
-		<band height="207" splitType="Stretch">
+		<band height="196" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="cm"/>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="65" y="97" width="588" height="14" uuid="9503d1ad-9f42-4338-a7bf-e203fb042538"/>
+				<reportElement x="65" y="97" width="335" height="14" uuid="9503d1ad-9f42-4338-a7bf-e203fb042538"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
@@ -111,7 +111,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textFieldExpression><![CDATA[$F{OPERACION_FIRMA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="65" y="77" width="688" height="13" uuid="48436bfa-9d44-408f-a4e3-ce8b02c9b06e"/>
+				<reportElement x="65" y="77" width="345" height="13" uuid="48436bfa-9d44-408f-a4e3-ce8b02c9b06e"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
@@ -123,17 +123,17 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA["CP-" +$F{OPERACION_ID} +"-" +new SimpleDateFormat("YYYY").format($F{OPERACION_FECHA})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["01-" +$F{OPERACION_ID} ]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="269" y="40" width="160" height="15" uuid="85e50521-c4f4-4890-ad51-6f499abbffe9"/>
+				<reportElement x="269" y="40" width="141" height="15" uuid="85e50521-c4f4-4890-ad51-6f499abbffe9"/>
 				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{OPERACION_debe}.compareTo(new BigDecimal(0))>0 ? "--- ABONO ---" : " --- CARGO --- ")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="yyyy.MM.dd HH:mm" isBlankWhenNull="false">
-				<reportElement style="Column header" x="65" y="166" width="103" height="15" forecolor="#050505" uuid="1d136d8f-75e4-4978-9866-3c7e9fafd633"/>
+				<reportElement style="Column header" x="65" y="164" width="103" height="15" forecolor="#050505" uuid="1d136d8f-75e4-4978-9866-3c7e9fafd633"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
@@ -154,7 +154,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textFieldExpression><![CDATA[($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? "S/.:" : $F{OPERACION_TIPOMONEDA}.toString().equals("1") ? "U$D" : "EUR")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="299" y="56" width="128" height="13" uuid="297103ad-89bc-4422-9da4-6958f5a4616b"/>
+				<reportElement x="299" y="56" width="111" height="13" uuid="297103ad-89bc-4422-9da4-6958f5a4616b"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="10"/>
 				</textElement>
@@ -169,14 +169,14 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textFieldExpression><![CDATA[$F{OPERACION_FECHA}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="65" y="182" width="295" height="14" uuid="5f2f44b7-5c12-475d-8783-85a42a4818c4"/>
+				<reportElement x="65" y="180" width="295" height="14" uuid="5f2f44b7-5c12-475d-8783-85a42a4818c4"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{OPERACION_haber}.compareTo(new BigDecimal(0))>0 ? $F{OPERACION_haber_TXT} : $F{OPERACION_debe_TXT})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="65" y="117" width="788" height="14" uuid="3481f83f-8d38-4b13-ae2e-ed0fb116d49a"/>
+				<reportElement x="65" y="117" width="335" height="14" uuid="3481f83f-8d38-4b13-ae2e-ed0fb116d49a"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>

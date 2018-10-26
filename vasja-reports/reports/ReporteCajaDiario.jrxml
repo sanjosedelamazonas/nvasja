@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2018-10-25T00:46:21 -->
+<!-- 2018-10-26T00:47:12 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCajaDiario" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="571" leftMargin="12" rightMargin="12" topMargin="12" bottomMargin="12" uuid="cbf7024d-2a36-4fa2-8a1d-19d9bb8950a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -256,7 +256,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="Arial" size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("1"))?"EUR"+$V{CAJA_EUR}:""]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("2"))?"EUR"+$V{CAJA_EUR}:""]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -372,14 +372,14 @@
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("1")) ? (($F{Cargo}==1)?$F{num_haberdolar}:$F{num_debedolar}):(" ") ]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("1")) ? (($F{Cargo}==1)?$F{num_haberdolar}:$F{num_debedolar}):(" ")]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
 				<reportElement style="Detail" x="490" y="0" width="50" height="10" uuid="4bf9a584-e8c8-4ee8-a732-897a50f6f1fe"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("2")) ? (($F{Cargo}==1)?$F{num_habermo}:$F{num_debemo}):(" ") ]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("2")) ? (($F{Cargo}==1)?$F{num_habermo}:$F{num_debemo}):(" ")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
