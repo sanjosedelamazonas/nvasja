@@ -332,7 +332,6 @@ public class DataFilterUtil {
 		Collection<Object> ids = beanItemContainer.getItemIds();//ep.getAllEntityIdentifiers(BeanItemContainer, filter, null);
 		for (Object id : ids) {
 			Object entity = beanItemContainer.getItem(id).getBean();
-			logger.fine("Got: " + entity);
 			BeanItem bItem = new BeanItem(entity);
 			Item item = c.addItem(entity);
 			if (concatenatedColumn!=null) item.getItemProperty(column)
@@ -377,16 +376,12 @@ public class DataFilterUtil {
 		String contProp = (colProp!=null ? colProp : column);
 		c.addContainerProperty(contProp, String.class, "");
 		for (Object elem : elements) {
-			logger.fine("Got: " + elem);
 			BeanItem bItem = new BeanItem(elem);
 			Object value = null;
 			if (column.contains(".")) {
-				logger.fine("idCol: " + idCol + " colProp: " + colProp);
 				Object idObj = bItem.getItemProperty(idCol).getValue();
-				//logger.info("Got subItem: " + idObj + " method: " + "get" + colProp.substring(0,1).toUpperCase() + colProp.substring(1));
 				try {
 					Method mth = idObj.getClass().getMethod("get" + (colProp != null ? colProp.substring(0, 1).toUpperCase() : null) + colProp.substring(1), new Class[] {});
-					logger.fine("Got method: " + mth);
 					mth.setAccessible(true);
 					value = mth.invoke(idObj);
 				} catch (NoSuchMethodException nsm) {
@@ -395,12 +390,11 @@ public class DataFilterUtil {
 					logger.severe("Problem binding Combobox for: " + column + "  " + concatenatedColumn + "\n" + e.getMessage() );
 					e.printStackTrace();
 				}
-				//logger.fine("Got value: " + value);
 			} else {
 				if (bItem.getItemProperty(column)!=null)
 					value = bItem.getItemProperty(column).getValue();
 			}
-			Item item = c.addItem(value);
+			c.addItem(value);
 			if (concatenatedColumn!=null) {
 				Property prop = c.getContainerProperty(value, contProp);
 				prop.setValue((idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value) + " " + bItem.getItemProperty(concatenatedColumn).getValue());

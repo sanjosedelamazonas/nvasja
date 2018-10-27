@@ -17,9 +17,13 @@ cat Create_function_scp_*.sql >> all.sql
 echo "PRINT '7. Cr function_scp'" >> all.sql
 cat Insert_into*.sql >> all.sql
 echo "PRINT '8. Cr vsj'" >> all.sql
+echo "PRINT '9. FIXING DATA'" >> all.sql
+cat Data_fixes.sql >> all.sql
+echo "PRINT '10. DATA FIXED'" >> all.sql
 
 OLD="USE"
 NEW="--USE"
 f=all.sql
 TFILE=tmp_all.sql
 sed "s/$OLD/$NEW/g" "$f" > $TFILE && mv $TFILE "$f"
+
