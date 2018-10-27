@@ -1,5 +1,3 @@
-USE [SCP]
-GO
 IF EXISTS ( SELECT *
             FROM   sysobjects
             WHERE  id = object_id(N'[dbo].[usp_scp_vsj_enviarAContabilidadBanco]')

@@ -44,14 +44,14 @@ public class ConfigurationUtil {
 		defaultParamMap.put("REPORTS_DIARIO_CAJA_TYPE", "PDF");
 		defaultParamMap.put("REPORTS_DIARIO_BANCARIA_TYPE", "PDF");
 		//defaultParamMap.put("REPORTS_cuenta_TYPE", "PDF");
-		defaultParamMap.put("REPORTS_COMPROBANTE_TYPE", "TXT");
+		defaultParamMap.put("REPORTS_COMPROBANTE_TYPE", "PDF");
 		defaultParamMap.put("REPORTS_COMPROBANTE_OPEN", "TRUE");
 		defaultParamMap.put("REPORTS_COMPROBANTE_PRINT", "FALSE");
 		defaultParamMap.put("REPORTE_CAJA_PREPARADO_POR", "Gilmer G�mez Ochoa");
 		defaultParamMap.put("REPORTE_CAJA_REVISADOR_POR", "Claudia Urrunaga R�os");
 		defaultParamMap.put("REPORTE_BANCOS_PREPARADO_POR", "Cinthia del Castillo Segovia");
 		defaultParamMap.put("REPORTE_BANCOS_REVISADOR_POR", "Claudia Urrunaga R�os");
-		defaultParamMap.put("PRINTER_LIST_SHOW", "TRUE");
+		defaultParamMap.put("PRINTER_LIST_SHOW", "FALSE");
 		defaultParamMap.put("DEFAULT_PRINTER_test", "PDF");
 	}
 

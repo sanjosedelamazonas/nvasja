@@ -1,4 +1,4 @@
-USE [SCP]
+
 GO
 
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosCaja]    Script Date: 09/12/2016 10:06:29 ******/
@@ -18,10 +18,12 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosCaja]
  @SaldoEUR_caja decimal(12,2) OUTPUT )
 
 As
-
+BEGIN
 Set @SaldoPEN_caja=0.00
 Set @SaldoUSD_caja=0.00
 Set @SaldoEUR_caja=0.00
+
+
 
 if (@Tipo=1) -- Proyecto
 BEGIN
@@ -86,10 +88,11 @@ BEGIN
 END
 Print 'Caja PEN:'+CONVERT(char(14),@SaldoPEN_caja ,121)+' USD:'+CONVERT(char(14),@SaldoUSD_caja ,121)+' EUR:'+CONVERT(char(14),@SaldoEUR_caja,121)
 
+END
 /*
 
 Exec usp_scp_vsj_getSaldoProyectoAlDia_NoEnviadosCaja 2,'01/01/2016','09/09/2016','190410',0,0,0
 
 */
 GO
-
+;

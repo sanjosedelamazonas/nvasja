@@ -1,5 +1,4 @@
-USE [SCP]
-GO
+
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaCaja]    Script Date: 09/22/2016 23:08:53 ******/
 SET ANSI_NULLS ON
 GO
@@ -23,6 +22,7 @@ Set @SaldoInicial=0.00
 Set @SaldoCaja=0.00
 Set @Saldo=0.00
 
+BEGIN
 select @FechaInicial=(SUBSTRING(@Fecha,1,4)+'-01-01 00:00:00')
 
 if (@Moneda='0')
@@ -88,3 +88,7 @@ select @Saldo=-(@SaldoInicial+@SaldoCaja)
 
 -- Exec usp_scp_vsj_GetSaldoAlDiaCaja '2016-08-31 23:59:59','1011101','0',0
 -- Exec usp_scp_vsj_GetSaldoAlDiaCaja '2016-08-31 00:00:00','1011101','0',0
+
+END
+GO
+;

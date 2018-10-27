@@ -13,4 +13,6 @@ public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
 
 	ScpDestino findByCodDestino(String s);
 
+	ScpDestino findByCodDestinoContaining(String s);
+
 }

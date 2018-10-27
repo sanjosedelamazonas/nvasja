@@ -35,6 +35,7 @@ DONE!
 - nuevo comprobante o edycja w oknie emergente
 DONE
 - cta contable cerrada - no conciderar
+??
 - przenosi do contabilidad z numero de comprobante z caja/bancos y prefix 01/02
 DONE
 - okno na saldos osobne - zalezne od periodo w ktorym wybrana caja
@@ -46,6 +47,7 @@ DONE
 DONE
 - dodanie nowego Auxiliar y Responsable nie sprawdza czy istnieje juz taki record o danym numerz dokumnetu
 - na ekranie manejo caja limitowac kolumny w tabeli po EUR wylaczyc, poszerzyc pole glosa, zamienic miejscami cta contable i contracta
+DONE
 - na ekranie operacion po nacisnieciu Eliminar ni mozna zamknac okna, dobrze by bylo gdyby pytal czy estas seguro que quieres eliminar y powiedzial ze operacja zostala anulada
 DONE
 - przy envio a contabilidad jak nie ma tipo de cambio to powinno pytac czy chcesz proceder para enviar o no

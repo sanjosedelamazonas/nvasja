@@ -92,7 +92,6 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
         addStyleName("crud-view");
         //noinspection unchecked
         container = new BeanItemContainer(ScpCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
-        
         gridCaja.setContainerDataSource(container);
         gridCaja.sort("fecFecha", SortDirection.DESCENDING);
 

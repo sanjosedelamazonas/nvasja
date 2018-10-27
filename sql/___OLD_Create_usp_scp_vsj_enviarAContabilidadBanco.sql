@@ -1,4 +1,4 @@
-USE [SCP]
+
 GO
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidadBanco]    Script Date: 10/23/2016 16:55:48 ******/
 SET ANSI_NULLS ON

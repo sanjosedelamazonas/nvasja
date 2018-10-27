@@ -1,5 +1,3 @@
-USE [SCP]
-GO
 IF EXISTS ( SELECT *
             FROM   sysobjects
             WHERE  id = object_id(N'[dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]')
@@ -14,7 +12,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-USE [SCP]
+
 GO
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]    Script Date: 10/30/2016 21:21:26 ******/
 SET ANSI_NULLS ON
@@ -26,13 +24,14 @@ CREATE PROCEDURE [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]
 	@Cuenta varchar(7), -- Cuenta de banco por ejemplo '1040103'
 	@Moneda varchar(1),  -- 0 PEN, 1 USD
 	@Saldo decimal(12,2) OUTPUT
-
 AS
 
 Declare @Ano varchar(4)
 Declare @FechaInicial char(10)
 Declare @SaldoInicial decimal(12,2)
 Declare @SaldoCaja decimal(12,2)
+
+BEGIN
 
 Set @Ano=SUBSTRING(@Fecha,1,4)
 -- Set @FechaInicial='01/01/'+SUBSTRING(@Fecha,7,4)
@@ -98,5 +97,7 @@ Print 'Banco : '+CONVERT(char(14),@SaldoCaja,14)
 select @Saldo=-(@SaldoInicial+@SaldoCaja)
 
 Print 'Saldo : '+CONVERT(char(14),@Saldo,14)
-
+END
 -- Exec usp_scp_vsj_GetSaldoAlDiaBanco '2016-08-18 23:59:59','1060104','2',0
+GO
+;

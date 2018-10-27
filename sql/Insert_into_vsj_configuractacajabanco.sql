@@ -1,6 +1,6 @@
 /****** Script for SelectTopNRows command from SSMS  ******/
-delete from [SCP].[dbo].[vsj_configuractacajabanco]
-insert into [SCP].[dbo].[vsj_configuractacajabanco]
+delete from [dbo].[vsj_configuractacajabanco]
+insert into [dbo].[vsj_configuractacajabanco]
 (      [cod_tipocuenta]
       ,[txt_tipocuenta]
       ,[cod_ctacontablecaja]
@@ -41,5 +41,5 @@ end
 			when 3 then 1
 end
 ,1
-FROM [SCP].[dbo].[scp_configuractacajabanco]
+FROM [dbo].[scp_configuractacajabanco]
 where txt_anoproceso='2018'

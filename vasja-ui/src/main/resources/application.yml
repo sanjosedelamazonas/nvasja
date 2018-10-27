@@ -34,6 +34,7 @@ spring:
 logging:
   level:
     org:
+      sanjose: DEBUG
       springframework:
         web: INFO
         beans: INFO
@@ -55,11 +56,17 @@ vaadin:
 
 spring:
   profiles: production
+  datasource:
+    url: jdbc:sqlserver://LEON-PC:1433;databaseName=SCP_TEST
+    username: vasja
+    password: tJF/{LJ6h;Z5uW\G
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 server:
   port: 8000
 logging:
   level:
     org:
+      sanjose: INFO
       springframework:
         web: INFO
         beans: INFO
@@ -68,3 +75,4 @@ vaadin:
   servlet:
     productionMode: true
     heartbeatInterval: 90
+    closeIdleSessions: true

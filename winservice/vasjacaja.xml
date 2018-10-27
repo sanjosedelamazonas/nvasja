@@ -1,9 +1,9 @@
 <service>
     <id>vasjacaja</id>
     <name>Vasja Caja</name>
-    <description>Cashflow Management system for Vicariato San Jose del Amazonas (2016)</description>
+    <description>Cashflow Management system for Vicariato San Jose del Amazonas (2018)</description>
     <env name="VASJA_HOME" value="%BASE%"/>
     <executable>java</executable>
-    <arguments>-Xms1024M -Xmx2048M -jar "%BASE%\vasja-ui-1.0-SNAPSHOT.jar" --server.port=8000</arguments>
+    <arguments>-Xms1024M -Xmx2048M -Djava.security.properties="%BASE%\java.security" -Dspring.profiles.active=production -jar "%BASE%\vasja-ui-1.0-SNAPSHOT.jar" --server.port=8000</arguments>
     <logmode>rotate</logmode>
 </service>

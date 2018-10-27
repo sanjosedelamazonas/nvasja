@@ -4,6 +4,7 @@ import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
+import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpDestino;
 
@@ -37,7 +38,16 @@ public class DestinoLogic implements Serializable {
     public ScpDestino saveDestino() {
         try {
             ScpDestino item = view.getScpDestino();
-
+            if (view.destinoRepo.findByCodDestinoContaining(item.getCodDestino())!=null) {
+                MessageBox
+                        .createWarning()
+                        .withCaption("Problema al guardar el destino")
+                        .withMessage("!El destino con codigo " + item.getCodDestino() + " ya existe!")
+                        .withOkButton(
+                        )
+                        .open();
+                return null;
+            }
             if (item.getCodUregistro()==null) item.setCodUregistro(CurrentUser.get());
             if (item.getFecFregistro()==null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
             item.setCodUactualiza(CurrentUser.get());
@@ -49,8 +59,13 @@ public class DestinoLogic implements Serializable {
             log.info("Ready to save: " + item);
             return view.destinoRepo.save(item);
         } catch (CommitException ce) {
-            Notification.show("Error al guardar el destino: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
-            log.info("Got Commit Exception: " + ce.getMessage());
+            MessageBox
+                    .createError()
+                    .withCaption("Problema al guardar el destino")
+                    .withMessage("!Error al guardar el destino: " + ce.getLocalizedMessage())
+                    .withOkButton(
+                    )
+                    .open();
             return null;
         }
     }

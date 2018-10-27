@@ -1,6 +1,3 @@
-USE [SCP]
-GO
-
 /****** Object:  Table [dbo].[vsj_configuracioncaja]    Script Date: 09/12/2016 10:02:43 ******/
 SET ANSI_NULLS ON
 GO
