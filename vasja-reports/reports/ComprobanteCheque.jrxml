@@ -123,23 +123,23 @@ FROM
 	</parameter>
 	<queryString language="SQL">
 		<![CDATA[SELECT
-  vsj_bancocabecera.cod_ctacontable AS CHEQUE_CUENTA_NUMERO,
+  scp_bancocabecera.cod_ctacontable AS CHEQUE_CUENTA_NUMERO,
   scp_plancontable.txt_descctacontable AS CHEQUE_CUENTA_NOMBRE,
-  vsj_bancodetalle.cod_bancocabecera AS CHEQUE_ID,
-  vsj_bancocabecera.txt_glosa AS CHEQUE_DESCRIPCION,
-  vsj_bancocabecera.txt_correlativo AS OPERACION_ID,
-  vsj_bancocabecera.fec_fecha AS CHEQUE_FECHA,
-  vsj_bancocabecera.txt_cheque AS CHEQUE_CHEQUENUMERO,
-  vsj_bancodetalle.cod_proyecto AS OPERACION_PROYECTO,
-  vsj_bancodetalle.cod_tercero AS OPERACION_TERCERO,
-  vsj_bancodetalle.cod_financiera AS OPERACION_FINANCIERA,
-  vsj_bancodetalle.cod_ctaproyecto AS OPERACION_RUBRO_PROY,
-  vsj_bancodetalle.cod_contracta AS OPERACION_CTA_CONTABLE,
-  vsj_bancodetalle.cod_ctaespecial AS OPERACION_RUBRO_INST,
-  vsj_bancodetalle.cod_contraparte AS OPERACION_LUGAR_GASTO,
-  vsj_bancodetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
-  vsj_bancodetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
-  vsj_bancodetalle.fec_fecha AS OPERACION_FECHA,
+  scp_bancodetalle.cod_bancocabecera AS CHEQUE_ID,
+  scp_bancocabecera.txt_glosa AS CHEQUE_DESCRIPCION,
+  scp_bancocabecera.txt_correlativo AS OPERACION_ID,
+  scp_bancocabecera.fec_fecha AS CHEQUE_FECHA,
+  scp_bancocabecera.txt_cheque AS CHEQUE_CHEQUENUMERO,
+  scp_bancodetalle.cod_proyecto AS OPERACION_PROYECTO,
+  scp_bancodetalle.cod_tercero AS OPERACION_TERCERO,
+  scp_bancodetalle.cod_financiera AS OPERACION_FINANCIERA,
+  scp_bancodetalle.cod_ctaproyecto AS OPERACION_RUBRO_PROY,
+  scp_bancodetalle.cod_contracta AS OPERACION_CTA_CONTABLE,
+  scp_bancodetalle.cod_ctaespecial AS OPERACION_RUBRO_INST,
+  scp_bancodetalle.cod_contraparte AS OPERACION_LUGAR_GASTO,
+  scp_bancodetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
+  scp_bancodetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
+  scp_bancodetalle.fec_fecha AS OPERACION_FECHA,
   firma.txt_ruc AS CHEQUE_DNI,
   firma.txt_nombredestino AS OPERACION_FIRMA,
   dest2.txt_ruc AS OPERACION_DNI,
@@ -147,57 +147,57 @@ FROM
   isnull(CUENTA.txt_descproyecto,tercero.txt_nombredestino) AS CUENTA_NOMBRE,
   isnull(CUENTA.cod_proyecto,tercero.cod_destino) AS CUENTA_NUMERO,
   CASE
-            WHEN ((vsj_bancocabecera.[num_habersol] - vsj_bancocabecera.[num_debesol] > 0)
-            		OR (vsj_bancocabecera.num_haberdolar - vsj_bancocabecera.num_debedolar > 0)
-            		OR (vsj_bancocabecera.num_habermo - vsj_bancocabecera.num_debemo > 0))
+            WHEN ((scp_bancocabecera.[num_habersol] - scp_bancocabecera.[num_debesol] > 0)
+            		OR (scp_bancocabecera.num_haberdolar - scp_bancocabecera.num_debedolar > 0)
+            		OR (scp_bancocabecera.num_habermo - scp_bancocabecera.num_debemo > 0))
                THEN 1
                ELSE 0
        END as CHEQUE_ISCARGO,
   CASE
-		WHEN (vsj_bancocabecera.cod_tipomoneda ='0')
+		WHEN (scp_bancocabecera.cod_tipomoneda ='0')
                THEN
-					vsj_bancocabecera.[num_debesol] - vsj_bancocabecera.[num_habersol]
-		WHEN (vsj_bancocabecera.cod_tipomoneda ='1')
+					scp_bancocabecera.[num_debesol] - scp_bancocabecera.[num_habersol]
+		WHEN (scp_bancocabecera.cod_tipomoneda ='1')
                THEN
-					vsj_bancocabecera.[num_debedolar] - vsj_bancocabecera.[num_haberdolar]
-		WHEN (vsj_bancocabecera.cod_tipomoneda ='2')
+					scp_bancocabecera.[num_debedolar] - scp_bancocabecera.[num_haberdolar]
+		WHEN (scp_bancocabecera.cod_tipomoneda ='2')
                THEN
-					vsj_bancocabecera.[num_debemo] - vsj_bancocabecera.[num_habermo]
+					scp_bancocabecera.[num_debemo] - scp_bancocabecera.[num_habermo]
                ELSE 0
        END as CHEQUE_IMPORTE,
   CASE
-            WHEN ((vsj_bancodetalle.[num_habersol] - vsj_bancodetalle.[num_debesol] > 0)
-            		OR (vsj_bancodetalle.num_haberdolar - vsj_bancodetalle.num_debedolar > 0)
-            		OR (vsj_bancodetalle.num_habermo - vsj_bancodetalle.num_debemo > 0))
+            WHEN ((scp_bancodetalle.[num_habersol] - scp_bancodetalle.[num_debesol] > 0)
+            		OR (scp_bancodetalle.num_haberdolar - scp_bancodetalle.num_debedolar > 0)
+            		OR (scp_bancodetalle.num_habermo - scp_bancodetalle.num_debemo > 0))
                THEN 1
                ELSE 0
        END as OPERACION_ISCARGO,
 
   CASE
-		WHEN (vsj_bancodetalle.cod_tipomoneda ='0')
+		WHEN (scp_bancodetalle.cod_tipomoneda ='0')
                THEN
-					vsj_bancodetalle.[num_debesol] - vsj_bancodetalle.[num_habersol]
-		WHEN (vsj_bancodetalle.cod_tipomoneda ='1')
+					scp_bancodetalle.[num_debesol] - scp_bancodetalle.[num_habersol]
+		WHEN (scp_bancodetalle.cod_tipomoneda ='1')
                THEN
-					vsj_bancodetalle.[num_debedolar] - vsj_bancodetalle.[num_haberdolar]
-		WHEN (vsj_bancodetalle.cod_tipomoneda ='2')
+					scp_bancodetalle.[num_debedolar] - scp_bancodetalle.[num_haberdolar]
+		WHEN (scp_bancodetalle.cod_tipomoneda ='2')
                THEN
-					vsj_bancodetalle.[num_debemo] - vsj_bancodetalle.[num_habermo]
+					scp_bancodetalle.[num_debemo] - scp_bancodetalle.[num_habermo]
                ELSE 0
        END as OPERACION_IMPORTE
  FROM
-	vsj_bancodetalle
-	INNER JOIN vsj_bancocabecera ON vsj_bancodetalle.cod_bancocabecera = vsj_bancocabecera.cod_bancocabecera
-	INNER JOIN scp_plancontable ON vsj_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable
-	AND vsj_bancocabecera.txt_anoproceso = scp_plancontable.txt_anoproceso
-	LEFT JOIN scp_destino firma ON vsj_bancodetalle.cod_destino = firma.cod_destino
-	LEFT JOIN scp_destino dest2 ON vsj_bancocabecera.cod_destino = dest2.cod_destino
-	LEFT JOIN scp_destino tercero ON vsj_bancodetalle.cod_tercero = tercero.cod_destino
-	LEFT JOIN dbo.scp_proyecto CUENTA ON vsj_bancodetalle.cod_proyecto = CUENTA.cod_proyecto
+	scp_bancodetalle
+	INNER JOIN scp_bancocabecera ON scp_bancodetalle.cod_bancocabecera = scp_bancocabecera.cod_bancocabecera
+	INNER JOIN scp_plancontable ON scp_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable
+	AND scp_bancocabecera.txt_anoproceso = scp_plancontable.txt_anoproceso
+	LEFT JOIN scp_destino firma ON scp_bancodetalle.cod_destino = firma.cod_destino
+	LEFT JOIN scp_destino dest2 ON scp_bancocabecera.cod_destino = dest2.cod_destino
+	LEFT JOIN scp_destino tercero ON scp_bancodetalle.cod_tercero = tercero.cod_destino
+	LEFT JOIN dbo.scp_proyecto CUENTA ON scp_bancodetalle.cod_proyecto = CUENTA.cod_proyecto
  WHERE
-	 vsj_bancocabecera.cod_bancocabecera = $P{OP_ID}
- ORDER BY     vsj_bancocabecera.txt_correlativo,
-     vsj_bancodetalle.num_item ASC]]>
+	 scp_bancocabecera.cod_bancocabecera = $P{OP_ID}
+ ORDER BY     scp_bancocabecera.txt_correlativo,
+     scp_bancodetalle.num_item ASC]]>
 	</queryString>
 	<field name="CHEQUE_CUENTA_NUMERO" class="java.lang.String"/>
 	<field name="CHEQUE_CUENTA_NOMBRE" class="java.lang.String"/>

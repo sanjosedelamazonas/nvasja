@@ -85,7 +85,7 @@ public class BancoService {
             cabecera.setTxtCorrelativo(GenUtil.getTxtCorrelativo(cabecera.getCodBancocabecera()));
             cabecera = bancocabeceraRep.save(cabecera);
         }
-
+        bancoItem.setCodCtacontable(cabecera.getCodCtacontable());
         bancoItem.setCodTipogasto(configuractacajabancoRepo.findById(bancoItem.getCodTipomov()).getCodTipocuenta());
         bancoItem.setCodTipomoneda(moneda);
         if (bancoItem.getCodProyecto()==null)
