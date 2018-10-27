@@ -21,7 +21,7 @@ DONE
 DONE
 
 -> id z contabilidad powinno sie pojawic na comprobante z caja/banco
-
+DONE
 -> gui caja  y bancos:
  - jezeli data operacji/wyszukania jest z innego roku niz biezacy to lista z tabeli plan_contable (nro e caja, cta contable etc) powinna uwzgledniac rok wyszukiwania/operacji
 - na wyszukiwaniu proyectos powinno pokazywac tez projekty ktore nie maja daty zakonczenia, albo uwzgledniac date operacji/wyszukiwania wzgledem daty zakonczenia proyecto
@@ -33,36 +33,29 @@ DONE
 - nro de comprobane 01-000001 en la impresion y en el reporte
 DONE!
 - nuevo comprobante o edycja w oknie emergente
-DONE
-- cta contable cerrada - no conciderar
-??
 - przenosi do contabilidad z numero de comprobante z caja/bancos y prefix 01/02
 DONE
 - okno na saldos osobne - zalezne od periodo w ktorym wybrana caja
-
 ? ->
-
 - sortowanie w caja y manejo de caja por fecha, nro de comprobante
 - zamyka okno po dodaniu operacji bez wydrukowania
 DONE
 - dodanie nowego Auxiliar y Responsable nie sprawdza czy istnieje juz taki record o danym numerz dokumnetu
+(poprawić...)
 - na ekranie manejo caja limitowac kolumny w tabeli po EUR wylaczyc, poszerzyc pole glosa, zamienic miejscami cta contable i contracta
-DONE
+(ukryć)
 - na ekranie operacion po nacisnieciu Eliminar ni mozna zamknac okna, dobrze by bylo gdyby pytal czy estas seguro que quieres eliminar y powiedzial ze operacja zostala anulada
 DONE
 - przy envio a contabilidad jak nie ma tipo de cambio to powinno pytac czy chcesz proceder para enviar o no
 
 - bancos - lista cuentas nie powinna uwzgledniac cuentas cerradas
+DONE
 - nuevo cheque - cuando nuevo item powinno sie kopiowac auxiliar z cabezera w responsable
 - nuevo cheque - jezeli zmienia sie konto po dodaniu linii i konto jest z innej waluty to nie zmienia waluty w liniach, ani konta na wydruku
 - przycisk ver detalles nie wybiera actualnego recordu na podgladzie tylko poprzedni
-- procedura ustawia cobrado w comprobantedetalle
+DONE
+- procedura ustawia cobrado w comprobantedetalle po wybraniu cobrado w systemie
 
 - jak w cheque ktory byl juz zapisany zmieniam konto na jakies z inna moneda (np z soles na dolares) to powinno wyzerowac soles y zapisa w nowej walucie wartosci, a zamiast tego mowi ze nie ma wartosci w nowej walucie
 
 - przy zapisywaniu bancodetalle dla nowego cheque pola puste (terceros o proyecto, cod_especial, cod)ctaproyecto, cod_contraparte, cod_fianciera, cod_ctacontable, codcontracta.....) nie powinno byc null sino vacio
-
-KRYTYCZNE
-- Usuwanie cheque - przenumerowanie!
-- na ekranie cheque po nacisnieciu Eliminar ni mozna zamknac okna, dobrze by bylo gdyby pytal czy estas seguro que quieres eliminar y powiedzial ze operacja zostala anulada
-- przetestować na nowej bazie

@@ -50,3 +50,9 @@ java -jar -Dspring.profiles.active=production vasja-ui/target/vasja-ui-1.0-SNAPS
 
 JAVA Security problem connecting to SQL Server:
 java -jar -Djava.security.properties="%BASE%\java.security" -Dspring.profiles.active=production vasja-ui/target/vasja-ui-1.0-SNAPSHOT.jar
+
+DEBUG MODE:
+
+cd vasja-ui
+mvn -Pdebug spring-boot:run
+Open Intellij and connect using the displayed port number
