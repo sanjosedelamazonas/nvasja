@@ -237,6 +237,8 @@ class BancoItemLogic implements Serializable {
         view.getNumDoc().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "txtComprobantepago"));
         view.getSelCtaContable().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "codContracta"));
         view.getSelTipoMov().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "codTipomov"));
+        view.getSelCodAuxCabeza().addValidator(new LocalizedBeanValidator(ScpBancocabecera.class, "codDestino"));
+        view.getSelCuenta().addValidator(new LocalizedBeanValidator(ScpBancocabecera.class, "codCtacontable"));
         // Check saldos and warn
         saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN());
         view.getNumEgreso().addBlurListener(event -> saldoChecker.check());

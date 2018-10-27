@@ -55,7 +55,11 @@ DONE
 - przycisk ver detalles nie wybiera actualnego recordu na podgladzie tylko poprzedni
 DONE
 - procedura ustawia cobrado w comprobantedetalle po wybraniu cobrado w systemie
-
 - jak w cheque ktory byl juz zapisany zmieniam konto na jakies z inna moneda (np z soles na dolares) to powinno wyzerowac soles y zapisa w nowej walucie wartosci, a zamiast tego mowi ze nie ma wartosci w nowej walucie
-
 - przy zapisywaniu bancodetalle dla nowego cheque pola puste (terceros o proyecto, cod_especial, cod)ctaproyecto, cod_contraparte, cod_fianciera, cod_ctacontable, codcontracta.....) nie powinno byc null sino vacio
+- ekran cheque - nr 02- + nr item na dole + sam item w liście - czerwono jak czek nie ma pokrycia - saldo na czerwono!!!
+- ekran cheque - saldo w miejscu cobrado i enviado, Auxialiar Entregado por - szerokie + monto total, glosa pod spodem
+    - zamiast wykrzykników coś innego pokazujące pola do wypełnienia
+    - większa glosa
+    - responsable dłuższe
+    - auxiliar - wymagany!!!

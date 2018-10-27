@@ -4,6 +4,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -25,8 +26,10 @@ public class ScpBancocabecera extends VsjBancoItem implements Serializable {
 	private Integer codBancocabecera;
 	@Column(name="cod_comprobanteenlace")
 	private String codComprobanteenlace;
+	@NotNull
 	@Column(name="cod_ctacontable")
 	private String codCtacontable;
+	@NotNull
 	@Column(name="cod_destino")
 	private String codDestino;
 	@Column(name="cod_origenenlace")
