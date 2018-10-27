@@ -56,6 +56,10 @@ DONE
 - przycisk ver detalles nie wybiera actualnego recordu na podgladzie tylko poprzedni
 - procedura ustawia cobrado w comprobantedetalle
 
+- jak w cheque ktory byl juz zapisany zmieniam konto na jakies z inna moneda (np z soles na dolares) to powinno wyzerowac soles y zapisa w nowej walucie wartosci, a zamiast tego mowi ze nie ma wartosci w nowej walucie
+
+- przy zapisywaniu bancodetalle dla nowego cheque pola puste (terceros o proyecto, cod_especial, cod)ctaproyecto, cod_contraparte, cod_fianciera, cod_ctacontable, codcontracta.....) nie powinno byc null sino vacio
+
 KRYTYCZNE
 - Usuwanie cheque - przenumerowanie!
 - na ekranie cheque po nacisnieciu Eliminar ni mozna zamknac okna, dobrze by bylo gdyby pytal czy estas seguro que quieres eliminar y powiedzial ze operacja zostala anulada

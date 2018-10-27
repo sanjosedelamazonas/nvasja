@@ -247,7 +247,7 @@ BEGIN TRY
 			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
 			  ,isnull([cod_proyecto],'')
 			  ,isnull([cod_ctaproyecto],'')
-			  ,isnull([cod_ctacontable],'')
+			  ,isnull([cod_contracta],'')
 			  ,'' --[cod_ctacontable9]
 			  ,'' --[cod_ctacontable79]
 			  ,'' --[cod_ctaarea]
@@ -256,10 +256,10 @@ BEGIN TRY
 			  ,isnull([cod_financiera],'')
 			  ,'' --[cod_flujocaja]
 			  ,@num_tc_usd --[num_tcvdolar]
-			  ,[num_debesol]
 			  ,[num_habersol]
-			  ,case when @num_tc_usd>0 then [num_debesol]/@num_tc_usd else 0 end
+			  ,[num_debesol]
 			  ,case when @num_tc_usd>0 then [num_habersol]/@num_tc_usd else 0 end
+			  ,case when @num_tc_usd>0 then [num_debesol]/@num_tc_usd else 0 end
 			  ,0 --[num_tcmo]
 			  ,0--[num_debemo]
 			  ,0--[num_habermo]
@@ -405,7 +405,7 @@ BEGIN TRY
 			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
 			  ,isnull(bd.[cod_proyecto],'')
 			  ,isnull(bd.[cod_ctaproyecto],'')
-			  ,isnull(bd.[cod_ctacontable],'')
+			  ,isnull(bc.[cod_ctacontable],'')
 			  ,'' --[cod_ctacontable9]
 			  ,'' --[cod_ctacontable79]
 			  ,'' --[cod_ctaarea]
@@ -416,8 +416,8 @@ BEGIN TRY
 			  ,@num_tc_usd --[num_tcvdolar]
 			  ,bd.[num_debesol]
 			  ,bd.[num_habersol]
-			  ,case when @num_tc_usd>0 then bd.[num_habersol]/@num_tc_usd else 0 end  --[num_debedolar]
 			  ,case when @num_tc_usd>0 then bd.[num_debesol]/@num_tc_usd else 0 end   --[num_haberdolar]
+			  ,case when @num_tc_usd>0 then bd.[num_habersol]/@num_tc_usd else 0 end  --[num_debedolar]
 			  ,0--@num_tc_mo
 			  ,0--@num_haber_mo
 			  ,0-- @num_debe_mo
