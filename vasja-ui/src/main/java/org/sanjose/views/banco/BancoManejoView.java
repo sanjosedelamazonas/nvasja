@@ -1,6 +1,7 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -22,6 +23,7 @@ import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
@@ -161,7 +163,9 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
     }
 
     public void refreshData() {
-        filter(filterInitialDate, new Date());
+        SortOrder[] sortOrders = gridBanco.getSortOrder().toArray(new SortOrder[1]);
+        filter(fechaDesde.getValue(), fechaHasta.getValue());
+        gridBanco.setSortOrder(Arrays.asList(sortOrders));
     }
 
     @Override

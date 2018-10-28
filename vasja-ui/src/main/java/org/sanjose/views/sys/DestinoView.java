@@ -42,6 +42,8 @@ public class DestinoView extends DestinoUI implements View {
 
     private boolean isEdit = false;
 
+    private boolean isNuevo = false;
+
     @Autowired
     public DestinoView(ScpDestinoRep destinoRepo,
                        ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo) {
@@ -71,6 +73,7 @@ public class DestinoView extends DestinoUI implements View {
         // Validators
         codigo.addValidator(new LocalizedBeanValidator(ScpDestino.class, "codDestino"));
         clasificacion.addValidator(new LocalizedBeanValidator(ScpDestino.class, "indTipodestino"));
+        nombreCompleta.setDescription("Nombre Completa");
         nombreCompleta.addValidator(new LocalizedBeanValidator(ScpDestino.class, "txtNombredestino"));
         tipoDePersona.addValidator(new LocalizedBeanValidator(ScpDestino.class, "indTipopersona"));
         viewLogic.init();
@@ -137,5 +140,19 @@ public class DestinoView extends DestinoUI implements View {
 
     public Button getBtnNuevo() {
         return btnNuevo;
+    }
+
+    public boolean isNuevo() {
+        return isNuevo;
+    }
+
+    public void setNuevo(boolean nuevo) {
+        isNuevo = nuevo;
+    }
+
+
+
+    public FieldGroup getFieldGroup() {
+        return fieldGroup;
     }
 }

@@ -1,5 +1,6 @@
 package org.sanjose.model;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
@@ -21,6 +22,7 @@ public class ScpDestino implements Serializable {
 	@Id
 	//@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@NotBlank
+	@NotNull
 	@Column(name="cod_destino")
 	private String codDestino;
 
@@ -258,4 +260,31 @@ public class ScpDestino implements Serializable {
 		this.txtTelefono2 = txtTelefono2;
 	}
 
+
+	@Override
+	public String toString() {
+		return "ScpDestino{" +
+				"codDestino='" + codDestino + '\'' +
+				", codCargo='" + codCargo + '\'' +
+				", codFilial='" + codFilial + '\'' +
+				", codUactualiza='" + codUactualiza + '\'' +
+				", codUregistro='" + codUregistro + '\'' +
+				", fecFactualiza=" + fecFactualiza +
+				", fecFregistro=" + fecFregistro +
+				", flgIm=" + flgIm +
+				", indSexo=" + indSexo +
+				", indTipodctoidentidad='" + indTipodctoidentidad + '\'' +
+				", indTipodestino=" + indTipodestino +
+				", indTipopersona=" + indTipopersona +
+				", txtApellidomaterno='" + txtApellidomaterno + '\'' +
+				", txtApellidopaterno='" + txtApellidopaterno + '\'' +
+				", txtDireccion='" + txtDireccion + '\'' +
+				", txtNombre='" + txtNombre + '\'' +
+				", txtNombredestino='" + txtNombredestino + '\'' +
+				", txtNumerodctoidentidad='" + txtNumerodctoidentidad + '\'' +
+				", txtRuc='" + txtRuc + '\'' +
+				", txtTelefono1='" + txtTelefono1 + '\'' +
+				", txtTelefono2='" + txtTelefono2 + '\'' +
+				'}';
+	}
 }

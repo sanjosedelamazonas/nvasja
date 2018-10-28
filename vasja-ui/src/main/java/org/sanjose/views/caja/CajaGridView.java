@@ -2,6 +2,7 @@ package org.sanjose.views.caja;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.event.ItemClickEvent;
@@ -12,6 +13,7 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TextField;
@@ -33,10 +35,7 @@ import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.Viewing;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +46,7 @@ import java.util.stream.Collectors;
  */
 @SpringComponent
 // @UIScope
-public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewing, GridViewing {
+public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorViewing, Viewing, GridViewing {
 
     public static final String VIEW_NAME = "Operaciones de Caja";
     private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
@@ -276,7 +275,9 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
     }
 
     public void refreshData() {
-        filter(filterInitialDate, new Date());
+        SortOrder[] sortOrders = gridCaja.getSortOrder().toArray(new SortOrder[1]);
+        filter(fechaDesde.getValue(), fechaHasta.getValue());
+        gridCaja.setSortOrder(Arrays.asList(sortOrders));
     }
 
     @Override
@@ -322,6 +323,11 @@ public class CajaGridView extends CajaGridUI implements NavigatorViewing, Viewin
 
     public ComprobanteService getService() {
         return comprobanteService;
+    }
+
+    @Override
+    public Grid getGridCaja() {
+        return gridCaja;
     }
 
     @Override

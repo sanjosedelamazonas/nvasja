@@ -1,6 +1,7 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -17,11 +18,14 @@ import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.sys.SaldoDelDia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -33,7 +37,7 @@ import java.util.List;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class CajaManejoLogic implements Serializable, SaldoDelDia {
+public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCajabanco>,Serializable, SaldoDelDia {
 
 
 	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);
@@ -44,6 +48,7 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
 
     public void init(CajaManejoView cajaManejoView) {
         view = cajaManejoView;
+        cajaView = view;
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.nuevaTransferencia.addClickListener(e -> newTransferencia());
         view.btnEditar.addClickListener(e -> editarComprobante(view.getSelectedRow()));
@@ -70,25 +75,10 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
                 if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
 
                 if (Role.isPrivileged()) {
-                    gridContextMenu.addItem("Enviar a contabilidad", k -> {
-                        List<Object> cajabancos = new ArrayList<>();
-                        cajabancos.add(itemId);
-                        MainUI.get().getProcUtil().enviarContabilidad(cajabancos, view.getService());
-                        view.refreshData();
-                    });
+                    gridContextMenu.addItem("Enviar a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId); });
                 }
             }
         });
-    }
-
-
-
-    private void newComprobante() {
-        view.clearSelection();
-        MainUI.get().getComprobanteView().viewLogic.nuevoComprobante();
-        MainUI.get().getComprobanteView().viewLogic.setNavigatorView(view);
-        ViewUtil.openInNewWindow(MainUI.get().getComprobanteView());
-        //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
     private void newTransferencia() {
@@ -98,27 +88,6 @@ public class CajaManejoLogic implements Serializable, SaldoDelDia {
         ViewUtil.openInNewWindow(MainUI.get().getTransferenciaView());
         //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
-
-    public void editarComprobante(ScpCajabanco vcb) {
-        if (vcb==null) return;
-        // Transferencia
-        if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
-            try {
-                MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
-                MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
-                ViewUtil.openInNewWindow(MainUI.get().getTransferenciaView());
-                //MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
-            } catch (NonEditableException e) {
-                Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-            }
-        } else {
-            MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
-            MainUI.get().getComprobanteView().viewLogic.setNavigatorView(view);
-            ViewUtil.openInNewWindow(MainUI.get().getComprobanteView());
-            //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
-        }
-    }
-
 
     private void generateComprobante() {
         ReportHelper.generateComprobante(view.getSelectedRow());

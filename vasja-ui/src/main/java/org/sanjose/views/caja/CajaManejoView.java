@@ -1,6 +1,7 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.data.sort.Sort;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.ItemClickEvent;
@@ -19,6 +20,8 @@ import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.Viewing;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
 import static org.sanjose.util.GenUtil.PEN;
@@ -29,7 +32,7 @@ import static org.sanjose.util.GenUtil.PEN;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Viewing, GridViewing {
+public class CajaManejoView extends CajaManejoUI implements CajaViewing, NavigatorViewing, Viewing, GridViewing {
 
     public static final String VIEW_NAME = "Manejo de Caja";
     private final CajaManejoLogic viewLogic = new CajaManejoLogic();
@@ -130,7 +133,9 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vi
     }
 
     public void refreshData() {
-        filter(filterInitialDate, new Date());
+        SortOrder[] sortOrders = gridCaja.getSortOrder().toArray(new SortOrder[1]);
+        filter(fechaDesde.getValue(), fechaHasta.getValue());
+        gridCaja.setSortOrder(Arrays.asList(sortOrders));
     }
 
     @Override
@@ -156,6 +161,11 @@ public class CajaManejoView extends CajaManejoUI implements NavigatorViewing, Vi
 
     public void clearSelection() {
         gridCaja.getSelectionModel().reset();
+    }
+
+    @Override
+    public Collection<Object> getSelectedRows() {
+        return gridCaja.getSelectedRows();
     }
 
     public ScpCajabanco getSelectedRow() {

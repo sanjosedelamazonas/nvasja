@@ -9,6 +9,7 @@ import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpTipocambio;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.repo.ScpTipocambioRep;
+import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.banco.BancoService;
 import org.sanjose.views.caja.ComprobanteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,9 +172,9 @@ public class ProcUtil {
         return !(tcval.compareTo(new BigDecimal(0))==0);
     }
 
-    public void enviarContabilidad(Collection<Object> vcbs, ComprobanteService service) {
+    public void enviarContabilidad(Collection<Object> vcbs, ComprobanteService service, ItemsRefreshing<ScpCajabanco> itemsRefreshing) {
+        Set<ScpCajabanco> cajabancosAEnviar = new HashSet<>();
         try{
-            Set<ScpCajabanco> cajabancosAEnviar = new HashSet<>();
             Set<ScpCajabanco> cajaBancosFaltaTipoCambio = new HashSet<>();
             for (Object objVcb : vcbs) {
                 ScpCajabanco vcb = (ScpCajabanco) objVcb;
@@ -199,6 +200,7 @@ public class ProcUtil {
                         .withYesButton(() -> {
                             try {
                                 doEnviarContabilidad(cajabancosAEnviar);
+                                itemsRefreshing.refreshItems(cajabancosAEnviar);
                             } catch (EnviarContabilidadException envexc) {
                                 MessageBox
                                         .createError()
@@ -220,11 +222,13 @@ public class ProcUtil {
                     .withMessage(envexc.getMessage())
                     .withOkButton()
                     .open();
+
         }
+        itemsRefreshing.refreshItems(cajabancosAEnviar);
     }
 
 
-    public Collection<ScpBancocabecera> enviarContabilidadBanco(Collection<Object> vcbs, BancoService service) {
+    public void enviarContabilidadBanco(Collection<Object> vcbs, BancoService service, ItemsRefreshing<ScpBancocabecera> itemsRefreshing) {
         try{
             Set<ScpBancocabecera> bancosAEnviar = new HashSet<>();
             Set<ScpBancocabecera> bancosFaltaTipoCambio = new HashSet<>();
@@ -251,7 +255,7 @@ public class ProcUtil {
                         .withMessage("Falta tipo de cambio para operaciones: " + sb.toString() +"\n?Continuar o ignorar esta operacion?\n")
                         .withYesButton(() -> {
                             try {
-                                enviarContabilidadBancoInTransaction(bancosAEnviar, service);
+                                itemsRefreshing.refreshItems(enviarContabilidadBancoInTransaction(bancosAEnviar, service));
                             } catch (EnviarContabilidadException envexc) {
                                 MessageBox
                                         .createError()
@@ -264,9 +268,8 @@ public class ProcUtil {
                         .withNoButton()
                         .open();
             } else {
-                enviarContabilidadBancoInTransaction(bancosAEnviar, service);
+                itemsRefreshing.refreshItems(enviarContabilidadBancoInTransaction(bancosAEnviar, service));
             }
-            return bancosAEnviar;
         } catch (EnviarContabilidadException envexc) {
             MessageBox
                     .createError()
@@ -275,7 +278,6 @@ public class ProcUtil {
                     .withOkButton()
                     .open();
         }
-        return new HashSet<>();
     }
 
 

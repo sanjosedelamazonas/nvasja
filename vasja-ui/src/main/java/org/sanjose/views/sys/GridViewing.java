@@ -1,5 +1,6 @@
 package org.sanjose.views.sys;
 
+import java.util.Collection;
 import java.util.Date;
 
 /**

@@ -1,9 +1,13 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Grid;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
@@ -18,12 +22,13 @@ import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.sys.SaldoDelDia;
 
+import javax.swing.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -41,6 +46,8 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
     private Grid.FooterRow saldosFooterInicial;
     private Grid.FooterRow saldosFooterFinal;
     private BancoGridLogic gridLogic;
+    private static final Logger log = LoggerFactory.getLogger(BancoManejoLogic.class);
+
 
     public void init(BancoManejoView bancoManejoView) {
         view = bancoManejoView;
@@ -90,14 +97,7 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
                 }
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
-                        if (!view.getSelectedRows().isEmpty()) {
-                            MainUI.get().getProcUtil().enviarContabilidadBanco(view.getSelectedRows(), view.getService());
-                        } else {
-                            List<Object> bancocabeceras = new ArrayList<>();
-                            bancocabeceras.add(itemId);
-                            MainUI.get().getProcUtil().enviarContabilidadBanco(bancocabeceras, view.getService());
-                        }
-                        view.refreshData();
+                        gridLogic.enviarContabilidad((ScpBancocabecera)itemId);
                     });
                 }
                 gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));

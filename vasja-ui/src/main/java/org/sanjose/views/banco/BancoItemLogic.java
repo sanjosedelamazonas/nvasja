@@ -267,9 +267,11 @@ class BancoItemLogic implements Serializable {
 
         destinoView.getBtnGuardar().addClickListener(event -> {
             ScpDestino editedItem = destinoView.viewLogic.saveDestino();
-            destinoWindow.close();
-            refreshDestino();
-            comboBox.setValue(editedItem.getCodDestino());
+            if (editedItem!=null) {
+                destinoWindow.close();
+                refreshDestino();
+                comboBox.setValue(editedItem.getCodDestino());
+            }
 
         });
         destinoView.getBtnAnular().addClickListener(event -> {
@@ -341,7 +343,8 @@ class BancoItemLogic implements Serializable {
             DataFilterUtil.refreshComboBox(view.getSelCtaContable(),view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
                     '0', 'N', GenUtil.getYear(newFecha), "101%", "102%", "104%", "106%"),
                     "id.codCtacontable", "txtDescctacontable", null);
-        DataFilterUtil.refreshComboBox(view.getSelProyecto(), view.getService().getProyectoRepo().findByFecFinalGreaterThanAndFecInicioLessThan(newFecha, newFecha),
+        DataFilterUtil.refreshComboBox(view.getSelProyecto(), view.getService().getProyectoRepo().
+                        findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(newFecha, newFecha, GenUtil.getBegin20thCent()),
                 "codProyecto", "txtDescproyecto", null);
         view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
     }

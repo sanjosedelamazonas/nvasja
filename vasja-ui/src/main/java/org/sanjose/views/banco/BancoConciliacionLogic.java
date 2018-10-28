@@ -2,6 +2,7 @@ package org.sanjose.views.banco;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Grid;
@@ -10,16 +11,17 @@ import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.sys.SaldoDelDia;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -82,18 +84,16 @@ public class BancoConciliacionLogic implements Serializable, SaldoDelDia {
                 }
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
-                        if (!view.getSelectedRows().isEmpty()) {
-                            // TODO
-                            MainUI.get().getProcUtil().enviarContabilidadBanco(view.getSelectedRows(), view.getService());
-                        } else {
-                            List<Object> bancocabeceras = new ArrayList<>();
-                            bancocabeceras.add(getCabeceraFromItemId(itemId));
-                            MainUI.get().getProcUtil().enviarContabilidadBanco(bancocabeceras, view.getService());
+                        Collection<Object> cabecerasParaEnviar = new HashSet<Object>();
+                        for (Object item : view.getSelectedRows()) {
+                            cabecerasParaEnviar.add(getCabeceraFromItemId(item));
                         }
-                        view.refreshData();
+                        if (cabecerasParaEnviar.isEmpty() && itemId!=null)
+                            cabecerasParaEnviar.add(getCabeceraFromItemId(itemId));
+                        MainUI.get().getProcUtil().enviarContabilidadBanco(cabecerasParaEnviar, view.getService(), gridLogic);
+                        view.gridBanco.deselectAll();
                     });
                 }
-
                 gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante(getCabeceraFromItemId(itemId)));
                 if (ViewUtil.isPrinterReady())
                     gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante(getCabeceraFromItemId(itemId)));

@@ -2,6 +2,7 @@ package org.sanjose.views.banco;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -14,9 +15,11 @@ import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.ItemsRefreshing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,6 +38,7 @@ public class BancoOperacionesLogic implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(BancoOperacionesLogic.class);
     private BancoOperacionesView view;
     private BancoGridLogic gridLogic;
+
 
     public void init(BancoOperacionesView bancoOperacionesView) {
         view = bancoOperacionesView;
@@ -84,32 +88,7 @@ public class BancoOperacionesLogic implements Serializable {
                 }
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
-                        List<Object> bancocabeceras = new ArrayList<>();
-                        Collection<ScpBancocabecera> vsjBancocabecerasEnviadas = null;
-                        if (!view.getSelectedRows().isEmpty()) {
-                            bancocabeceras.addAll(view.getSelectedRows());
-                        } else {
-                            bancocabeceras.add(itemId);
-                        }
-                        vsjBancocabecerasEnviadas = MainUI.get().getProcUtil().enviarContabilidadBanco(bancocabeceras, view.getService());
-                        for (ScpBancocabecera vcb : vsjBancocabecerasEnviadas) {
-                            Object cabeceraToRemove = null;
-                            for (Object objVcb : bancocabeceras) {
-                                if (((ScpBancocabecera) objVcb).getCodBancocabecera().equals(vcb.getCodBancocabecera())) {
-                                    cabeceraToRemove = objVcb;
-                                    break;
-                                }
-                            }
-                            if (cabeceraToRemove != null) {
-                                view.getGridBanco().getContainerDataSource().getItem(cabeceraToRemove).getItemProperty("flgEnviado").setValue('1');
-                                view.getGridBanco().refreshAllRows();
-                                //view.getGridBanco().getContainerDataSource().removeItem(cabeceraToRemove);
-                                //view.getGridBanco().getContainerDataSource().addItem(vcb);
-                            }
-                        }
-                        //view.refreshData();
-                        //view.getGridBanco().clearSortOrder();
-                        view.getGridBanco().sort("fecFecha", SortDirection.DESCENDING);
+                        gridLogic.enviarContabilidad((ScpBancocabecera)itemId);
                     });
                 }
                 gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));
@@ -122,4 +101,5 @@ public class BancoOperacionesLogic implements Serializable {
         view.btnEditar.setVisible(false);
         view.btnNuevoCheque.setVisible(false);
     }
+
 }

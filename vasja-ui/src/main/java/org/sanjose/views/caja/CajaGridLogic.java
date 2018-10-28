@@ -24,6 +24,7 @@ import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ProcUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.sys.DestinoView;
 
 import java.io.Serializable;
@@ -38,21 +39,23 @@ import java.util.*;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class CajaGridLogic implements Serializable {
+public class CajaGridLogic extends CajaLogic implements Serializable {
 
 	
 	private static final Logger log = LoggerFactory.getLogger(CajaGridLogic.class);
 
     private CajaGridView view;
-    private ProcUtil procUtil;
+
 
     public void init(CajaGridView cajaGridView) {
         view = cajaGridView;
-        procUtil = MainUI.get().getProcUtil();
+        cajaView = view;
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.responsablesBtn.addClickListener(e -> editDestino(view.getSelectedRow()));
         view.enviarBtn.addClickListener(e -> {
-            procUtil.enviarContabilidad(view.getSelectedRows(), view.getService());
+            if (!view.getSelectedRows().isEmpty()) {
+                enviarContabilidad(view.getSelectedRow());
+            }
             view.gridCaja.deselectAll();
         });
         view.editarBtn.addClickListener(e -> editarComprobante(view.getSelectedRow()));
@@ -94,33 +97,12 @@ public class CajaGridLogic implements Serializable {
                 gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((ScpCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
                         k -> editarComprobante((ScpCajabanco) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
-                gridContextMenu.addItem("Enviar a contabilidad", k -> {
-                    Collection<Object> cajabancosToRefresh = null;
-                    if (!view.getSelectedRows().isEmpty()) {
-                        cajabancosToRefresh = view.getSelectedRows();
-                        procUtil.enviarContabilidad(view.getSelectedRows(), view.getService());
-                        view.gridCaja.deselectAll();
-                    } else {
-                        Set<Object> cajabancos = new HashSet<>();
-                        cajabancos.add(itemId);
-                        procUtil.enviarContabilidad(cajabancos, view.getService());
-                        cajabancosToRefresh = cajabancos;
-                    }
-                    view.refreshData();
-                    cajabancosToRefresh.forEach(o -> {
-                        ScpCajabanco scb = ((ScpCajabanco)o);
-                        ScpCajabanco newScb = view.getService().getCajabancoRep().findByCodCajabanco(scb.getCodCajabanco());
-                        view.gridCaja.getContainerDataSource().removeItem(scb);
-                        view.gridCaja.getContainerDataSource().addItem(newScb);
-                    });
-                    view.gridCaja.refreshAllRows();
-                });
+                gridContextMenu.addItem("Enviar a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId); });
                 gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));
                 if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((ScpCajabanco) itemId));
             }
         });
     }
-
 
     private void editDestino(ScpCajabanco vcb) {
         Window destinoWindow = new Window();
@@ -146,7 +128,9 @@ public class CajaGridLogic implements Serializable {
 
         destinoView.getBtnGuardar().addClickListener(event -> {
             ScpDestino editedItem = destinoView.viewLogic.saveDestino();
-            destinoWindow.close();
+            if (editedItem!=null) {
+                destinoWindow.close();
+            }
         });
         destinoView.getBtnAnular().addClickListener(event -> {
             destinoView.viewLogic.anularDestino();
@@ -192,35 +176,6 @@ public class CajaGridLogic implements Serializable {
         UI.getCurrent().addWindow(destinoWindow);
     }
 
-
     public void enter(String productId) {
-    }
-
-    private void newComprobante() {
-        view.clearSelection();
-        MainUI.get().getComprobanteView().viewLogic.setNavigatorView(this.view);
-        MainUI.get().getComprobanteView().viewLogic.nuevoComprobante();
-        //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
-        ViewUtil.openInNewWindow(MainUI.get().getComprobanteView());
-    }
-
-    private void editarComprobante(ScpCajabanco vcb) {
-        if (vcb==null) return;
-        // Transferencia
-        if (!GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo())) {
-            try {
-                MainUI.get().getTransferenciaView().viewLogic.editarTransferencia(vcb);
-                MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
-                //MainUI.get().getNavigator().navigateTo(TransferenciaView.VIEW_NAME);
-                ViewUtil.openInNewWindow(MainUI.get().getTransferenciaView());
-            } catch (NonEditableException e) {
-                Notification.show("No es editable", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-            }
-        } else {
-            MainUI.get().getComprobanteView().viewLogic.setNavigatorView(this.view);
-            MainUI.get().getComprobanteView().viewLogic.editarComprobante(vcb);
-            //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
-            ViewUtil.openInNewWindow(MainUI.get().getComprobanteView());
-        }
     }
 }

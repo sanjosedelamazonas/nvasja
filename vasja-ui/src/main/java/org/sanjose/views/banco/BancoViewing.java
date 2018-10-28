@@ -1,5 +1,6 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.ui.Grid;
 import org.sanjose.views.sys.NavigatorViewing;
 
 import java.util.Collection;
@@ -18,4 +19,6 @@ public interface BancoViewing extends NavigatorViewing {
     BancoService getService();
 
     BancoOperView getBancoOperView();
+
+    Grid getGridBanco();
 }

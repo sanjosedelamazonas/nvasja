@@ -1,6 +1,7 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.FilterableSortableGridTreeContainer;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.ObjectProperty;
@@ -27,6 +28,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -298,8 +300,13 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
     }
 
     public void refreshData() {
+        SortOrder[] sortOrders = gridBanco.getSortOrder().toArray(new SortOrder[1]);
         filterComprobantes();
-        gridBanco.sort("fecFecha", SortDirection.DESCENDING);
+        if (sortOrders.length==0)
+            gridBanco.sort("fecFecha", SortDirection.DESCENDING);
+        else
+            gridBanco.setSortOrder(Arrays.asList(sortOrders));
+
     }
 
     @Override

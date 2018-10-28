@@ -1,9 +1,0 @@
-1. sortowanie CajaManejo po fecha i correlativo
-2. Reporte Transferencia
-3. Confirma si no hay tipo de cambio al enviar
-4. Auxiliar - Nuevo - DONE
-5. Editar - Responsable - DONE
-6. Nie dodawaj auxiliar jeśli już istnieje - DestinoLogic
-7. Otwórz comprobante przy "Guardar" - DONE
-8. Zamykanie okna po Eliminar, czy na pewno eliminar - DONE
-9.

@@ -8,13 +8,17 @@ import org.sanjose.authentication.Role;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.ItemsRefreshing;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * VASJA class
  * User: prubach
  * Date: 18.10.16
  */
-public class BancoGridLogic {
+public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera> {
 
     private BancoViewing view;
 
@@ -60,6 +64,14 @@ public class BancoGridLogic {
                 .open();
     }
 
+    public void enviarContabilidad(ScpBancocabecera scpBancocabecera) {
+        Collection<Object> cabecerasParaEnviar = view.getSelectedRows();
+        if (cabecerasParaEnviar.isEmpty() && scpBancocabecera!=null)
+            cabecerasParaEnviar.add(scpBancocabecera);
+        MainUI.get().getProcUtil().enviarContabilidadBanco(cabecerasParaEnviar, view.getService(),this);
+        view.getGridBanco().deselectAll();
+    }
+
     public void generateComprobante() {
         for (Object obj : view.getSelectedRows()) {
             ScpBancocabecera vcb = (ScpBancocabecera) obj;
@@ -72,6 +84,16 @@ public class BancoGridLogic {
             ScpBancocabecera vcb = (ScpBancocabecera) obj;
             ViewUtil.printComprobante(vcb);
         }
+    }
+
+    @Override
+    public void refreshItems(Collection<ScpBancocabecera> items) {
+        items.forEach(scb -> {
+            ScpBancocabecera newScb = view.getService().getBancocabeceraRep().findByCodBancocabecera(scb.getCodBancocabecera());
+            view.getGridBanco().getContainerDataSource().removeItem(scb);
+            view.getGridBanco().getContainerDataSource().addItem(newScb);
+        });
+        view.refreshData();
     }
 }
 
