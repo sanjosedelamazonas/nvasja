@@ -28,11 +28,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.sanjose.util.GenUtil.*;
 
@@ -480,29 +478,10 @@ class BancoItemLogic implements Serializable {
                     view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
                             "N", GenUtil.getYear(view.getDataFechaComprobante().getValue()), codProyecto),
                     "Rubro proyecto", "txtDescctaproyecto");
-            List<Scp_ProyectoPorFinanciera>
-                    proyectoPorFinancieraList = view.getService().getProyectoPorFinancieraRepo().findById_CodProyecto(codProyecto);
+            DataUtil.setupAndBindproyectoPorFinanciera(codProyecto, view.getSelFuente(),
+                    view.getService().getProyectoPorFinancieraRepo(), view.getService().getFinancieraRepo());
 
-            // Filter financiera if exists in Proyecto Por Financiera
-            List<ScpFinanciera> financieraList = view.getService().getFinancieraRepo().findAll();
-            List<ScpFinanciera> financieraEfectList = new ArrayList<>();
-            if (proyectoPorFinancieraList != null && !proyectoPorFinancieraList.isEmpty()) {
-                List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
-
-                for (ScpFinanciera financiera : financieraList) {
-                    if (financiera.getCodFinanciera() != null &&
-                            codFinancieraList.contains(financiera.getCodFinanciera())) {
-                        financieraEfectList.add(financiera);
-                    }
-                }
-            } else {
-                financieraEfectList = financieraList;
-            }
-            DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", financieraEfectList,
-                    "Fuente", "txtDescfinanciera");
-            if (financieraEfectList.size() == 1)
-                view.getSelFuente().select(financieraEfectList.get(0).getCodFinanciera());
-            // Sel Tipo Movimiento
+                // Sel Tipo Movimiento
             DataFilterUtil.refreshComboBox(view.getSelTipoMov(),
                     view.getService().getConfiguractacajabancoRepo().findByActivoAndParaBancoAndParaProyecto(true, true, true),
                     "codTipocuenta", "txtTipocuenta", "id");

@@ -33,7 +33,6 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.sanjose.util.GenUtil.EUR;
 import static org.sanjose.util.GenUtil.PEN;
@@ -654,29 +653,8 @@ class ComprobanteLogic implements Serializable {
                             "N", GenUtil.getCurYear(), codProyecto),
                     "txtDescctaproyecto");
 
-            List<Scp_ProyectoPorFinanciera>
-                    proyectoPorFinancieraList = view.getService().getProyectoPorFinancieraRepo().findById_CodProyecto(codProyecto);
-
-            // Filter financiera if exists in Proyecto Por Financiera
-            List<ScpFinanciera> financieraList = view.getService().getFinancieraRepo().findAll();
-            List<ScpFinanciera> financieraEfectList = new ArrayList<>();
-            if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
-                List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
-
-                for (ScpFinanciera financiera : financieraList) {
-                    if (financiera.getCodFinanciera()!=null &&
-                            codFinancieraList.contains(financiera.getCodFinanciera())) {
-                        financieraEfectList.add(financiera);
-                    }
-                }
-            } else {
-                financieraEfectList = financieraList;
-            }
-            DataFilterUtil.refreshComboBox(view.getSelFuente(), "codFinanciera", financieraEfectList,
-                    "txtDescfinanciera");
-            if (financieraEfectList.size()==1)
-                view.getSelFuente().select(financieraEfectList.get(0).getCodFinanciera());
-
+            DataUtil.setupAndBindproyectoPorFinanciera(codProyecto, view.getSelFuente(),
+                    view.getService().getProyectoPorFinancieraRepo(), view.getService().getFinancieraRepo());
             // Sel Tipo Movimiento
             DataFilterUtil.refreshComboBox(view.getSelTipoMov(),
                     view.getService().getConfiguractacajabancoRepo().findByActivoAndParaCajaAndParaProyecto(true, true, true),

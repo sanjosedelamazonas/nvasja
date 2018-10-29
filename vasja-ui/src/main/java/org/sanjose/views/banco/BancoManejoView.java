@@ -41,24 +41,24 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
             "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
             "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
-            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"
+            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula", "codBancocabecera"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
             "Cobr", "Fecha", "Numero", "Cuenta",
             "Auxiliar", "Nombre", "Cheque", "Glosa",
             "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
-            "Orig", "Comprob.", "Env", "Anul"
+            "Orig", "Comprob.", "Env", "Anul", "Codigo"
     };
     private final int[] FILTER_WIDTH = new int[]{
             1, 4, 4, 4,
             6, 10, 4, 12,
             3, 3, 3, 3, 3, 3,
-            1, 4, 1, 1
+            1, 4, 1, 1, 4
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codCtacontable",
             "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
-            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"};
+            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula", "codBancocabecera"};
 
     private BeanItemContainer<ScpBancocabecera> container;
 
@@ -114,6 +114,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
         gridBanco.getColumn("flgCobrado").setEditable(true);
         gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridBanco.getColumn("codBancocabecera").setHidden(true);
 
         // Add filters
         ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);

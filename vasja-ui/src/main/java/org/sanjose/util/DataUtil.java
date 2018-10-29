@@ -1,14 +1,20 @@
 package org.sanjose.util;
 
+import com.vaadin.ui.ComboBox;
 import org.sanjose.MainUI;
 import org.sanjose.bean.Caja;
+import org.sanjose.model.ScpFinanciera;
 import org.sanjose.model.ScpPlancontable;
+import org.sanjose.model.Scp_ProyectoPorFinanciera;
+import org.sanjose.repo.ScpFinancieraRep;
 import org.sanjose.repo.ScpPlancontableRep;
+import org.sanjose.repo.Scp_ProyectoPorFinancieraRep;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.sanjose.util.GenUtil.*;
 
@@ -19,6 +25,34 @@ import static org.sanjose.util.GenUtil.*;
  */
 public class DataUtil {
 
+
+
+    public static void setupAndBindproyectoPorFinanciera(String codProyecto, ComboBox selFuente,
+                                                         Scp_ProyectoPorFinancieraRep projectoPorFinRepo,
+                                                         ScpFinancieraRep financieraRepo) {
+        List<Scp_ProyectoPorFinanciera>
+                proyectoPorFinancieraList = projectoPorFinRepo.findById_CodProyecto(codProyecto);
+
+        // Filter financiera if exists in Proyecto Por Financiera
+        List<ScpFinanciera> financieraList = financieraRepo.findAll();
+        List<ScpFinanciera> financieraEfectList = new ArrayList<>();
+        if (proyectoPorFinancieraList != null && !proyectoPorFinancieraList.isEmpty()) {
+            List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
+
+            for (ScpFinanciera financiera : financieraList) {
+                if (financiera.getCodFinanciera() != null &&
+                        codFinancieraList.contains(financiera.getCodFinanciera())) {
+                    financieraEfectList.add(financiera);
+                }
+            }
+        } else {
+            financieraEfectList = financieraList;
+        }
+        DataFilterUtil.bindComboBox(selFuente, "codFinanciera", financieraEfectList,
+                "Fuente", "txtDescfinanciera");
+        if (financieraEfectList.size() == 1)
+            selFuente.select(financieraEfectList.get(0).getCodFinanciera());
+    }
 
     public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo, Character moneda) {
         List<ScpPlancontable> allCajas = planRepo.
