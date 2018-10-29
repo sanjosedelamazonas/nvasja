@@ -133,6 +133,9 @@ public class BancoLogic extends BancoItemLogic {
             log.debug("nuevo Item, cabecera: " + bancocabecera);
             bindForm(bancocabecera);
             super.nuevoComprobante(bancocabecera.getCodTipomoneda());
+            view.getSelCodAuxiliar().setValue(view.getSelCodAuxCabeza().getValue());
+            view.getSelResponsable().setValue(view.getSelCodAuxCabeza().getValue());
+            view.getGlosaDetalle().setValue(view.getGlosaCabeza().getValue());
         } else {
             super.nuevoComprobante(PEN);
         }

@@ -52,6 +52,7 @@ class ComprobanteLogic implements Serializable {
 
 	private static final Logger log = LoggerFactory.getLogger(ComprobanteLogic.class);
 
+
     protected ComprobanteViewing view;
     protected NavigatorViewing navigatorView;
     protected FieldGroup fieldGroup;
@@ -245,15 +246,18 @@ class ComprobanteLogic implements Serializable {
         view.getFechaDoc().setConverter(DateToTimestampConverter.INSTANCE);
         view.getFechaDoc().setResolution(Resolution.DAY);
 
+
+        //if (GenUtil.strNullOrEmpty())
         // Proyecto
-        DataFilterUtil.bindComboBox(view.getSelProyecto(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()),
+        DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()),
                 "Sel Proyecto", "txtDescproyecto");
-        view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
+        view.getTipoProyectoTercero().addValueChangeListener(this::setTipoProyectoTerceroLogic);
+        view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
 
         // Tercero
-        DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
-                "txtNombredestino");
-        view.getSelTercero().addValueChangeListener(this::setTerceroLogic);
+       // DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
+       //         "txtNombredestino");
+       // view.getSelTercero().addValueChangeListener(this::setTerceroLogic);
 
         // Tipo Moneda
         DataFilterUtil.bindTipoMonedaOptionGroup(view.getSelMoneda(), "codTipomoneda");
@@ -342,8 +346,9 @@ class ComprobanteLogic implements Serializable {
         // Validators
         view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "fecFecha"));
         view.getFechaDoc().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "fecComprobantepago"));
-        view.getSelProyecto().addValidator(new TwoCombosValidator(view.getSelTercero(), true, null));
-        view.getSelTercero().addValidator(new TwoCombosValidator(view.getSelProyecto(), true, null));
+
+        //view.getSelProyecto().addValidator(new TwoCombosValidator(view.getSelTercero(), true, null));
+        ///view.getSelTercero().addValidator(new TwoCombosValidator(view.getSelProyecto(), true, null));
         view.getSelMoneda().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codTipomoneda"));
         view.getNumIngreso().setDescription("Ingreso");
         view.getNumEgreso().setDescription("Egreso");
@@ -368,6 +373,7 @@ class ComprobanteLogic implements Serializable {
         view.getBtnResponsable().addClickListener(event->editDestino(view.getSelResponsable()));
         view.setEnableFields(false);
         nuevoComprobante();
+        view.getTipoProyectoTercero().select(GenUtil.T_PROY);
     }
 
     private void editDestino(ComboBox comboBox) {
@@ -462,10 +468,11 @@ class ComprobanteLogic implements Serializable {
                         findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
                 '0', 'N', GenUtil.getYear(newFecha), "101%", "102%", "104%", "106%"),
                 "id.codCtacontable", "txtDescctacontable", null);
-        DataFilterUtil.refreshComboBox(view.getSelProyecto(), view.getService().getProyectoRepo().
+        //TODO Proy
+        DataFilterUtil.refreshComboBox(view.getSelProyectoTercero(), view.getService().getProyectoRepo().
                         findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(newFecha, newFecha, GenUtil.getBegin20thCent()),
                 "codProyecto", "txtDescproyecto", null);
-        view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
+        view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
     }
 
     private void setMonedaLogic(Character moneda) {
@@ -536,14 +543,14 @@ class ComprobanteLogic implements Serializable {
         if (view.getDataFechaComprobante().getValue()!=null) {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             ProcUtil.Saldos res = null;
-            if (isProyecto()) {
-                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), view.getSelProyecto().getValue().toString(), null);
+            if (isProyecto() && !GenUtil.objNullOrEmpty(view.getSelProyectoTercero().getValue())) {
+                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), view.getSelProyectoTercero().getValue().toString(), null);
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue(df.format(res.getSaldoEUR()));
             }
-            if (isTercero()) {
-                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), null, view.getSelTercero().getValue().toString());
+            if (isTercero() && !GenUtil.objNullOrEmpty(view.getSelProyectoTercero().getValue())) {
+                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), null, view.getSelProyectoTercero().getValue().toString());
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue("");
@@ -579,11 +586,11 @@ class ComprobanteLogic implements Serializable {
         VsjConfiguracioncaja config = null;
         if (isProyecto()) {
             List<VsjConfiguracioncaja> configs = view.getService().getConfiguracioncajaRepo().findByCodProyectoAndIndTipomoneda(
-                    view.getSelProyecto().getValue().toString(), tipomoneda);
+                    view.getSelProyectoTercero().getValue().toString(), tipomoneda);
             if (!configs.isEmpty()) {
                 config = configs.get(0);
             } else {
-                String catProy = view.getService().getProyectoRepo().findByCodProyecto(view.getSelProyecto().getValue().toString())
+                String catProy = view.getService().getProyectoRepo().findByCodProyecto(view.getSelProyectoTercero().getValue().toString())
                         .getCodCategoriaproyecto();
                 configs = view.getService().getConfiguracioncajaRepo().findByCodCategoriaproyectoAndIndTipomoneda(
                         catProy, tipomoneda);
@@ -593,7 +600,7 @@ class ComprobanteLogic implements Serializable {
             }
         } else if (isTercero()) {
             List<VsjConfiguracioncaja> configs = view.getService().getConfiguracioncajaRepo().findByCodDestinoAndIndTipomoneda(
-                    view.getSelTercero().getValue().toString(), tipomoneda);
+                    view.getSelProyectoTercero().getValue().toString(), tipomoneda);
             if (!configs.isEmpty()) {
                 config = configs.get(0);
             }
@@ -609,18 +616,46 @@ class ComprobanteLogic implements Serializable {
         setSaldoCaja();
     }
 
+    private void setTipoProyectoTerceroLogic(Property.ValueChangeEvent event) {
+        if (isLoading) return;
+        fieldGroup.unbind(view.getSelProyectoTercero());
+        if (event.getProperty().getValue()!=null && isProyecto()) {
+            beanItem.getBean().setCodTercero("");
+            fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
+            view.getSelProyectoTercero().removeValueChangeListener(this::setTerceroLogic);
+            view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
+            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()),
+                    "Sel Proyecto", "txtDescproyecto");
+
+            // Tercero
+            // DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
+            //         "txtNombredestino");
+            // view.getSelTercero().addValueChangeListener(this::setTerceroLogic);
+
+        } else if (event.getProperty().getValue()!=null && isTercero()) {
+            beanItem.getBean().setCodProyecto("");
+            fieldGroup.bind(view.getSelProyectoTercero(), "codTercero");
+            view.getSelProyectoTercero().removeValueChangeListener(this::setProyectoLogic);
+            view.getSelProyectoTercero().addValueChangeListener(this::setTerceroLogic);
+            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
+                     "txtNombredestino");
+            view.getSelProyectoTercero().addValueChangeListener(this::setTerceroLogic);
+        }
+    }
+
     private void setProyectoLogic(Property.ValueChangeEvent event) {
         if (isLoading) return;
-        if (event.getProperty().getValue()!=null)
-            setEditorLogic(event.getProperty().getValue().toString());
-        view.getSelProyecto().getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
+        if (event.getProperty().getValue() != null) {
+            setEditorProyectoLogic(event.getProperty().getValue().toString());
+            //view.getSelTercero().getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
+        }
     }
 
     private void setTerceroLogic(Property.ValueChangeEvent event) {
         if (isLoading) return;
         if (event.getProperty().getValue() != null) {
             setEditorTerceroLogic(event.getProperty().getValue().toString());
-            view.getSelTercero().getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
+            //view.getSelTercero().getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
         }
     }
 
@@ -644,7 +679,7 @@ class ComprobanteLogic implements Serializable {
         }
     }
 
-    private void setEditorLogic(String codProyecto) {
+    private void setEditorProyectoLogic(String codProyecto) {
         if (!GenUtil.strNullOrEmpty(codProyecto)) {
             view.setEnableFields(true);
             view.getSelFuente().setEnabled(true);
@@ -695,8 +730,18 @@ class ComprobanteLogic implements Serializable {
         }
         view.getNumEgreso().setValue(null);
         view.getNumIngreso().setValue(null);
-        fieldGroup.bind(view.getSelProyecto(), "codProyecto");
-        fieldGroup.bind(view.getSelTercero(), "codTercero");
+
+        if (!GenUtil.strNullOrEmpty(item.getCodProyecto()) && !GenUtil.strNullOrEmpty(item.getCodTercero())) {
+            log.error("Problema con esta operacion " + item.getCodCajabanco() + " - codigo proyecto y codigo tercero son rellenadas!");
+            //throw new CommitException("Problema con esta operacion codigo proyecto y codigo tercero son rellenadas!");
+        }
+        if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
+            fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
+            view.getTipoProyectoTercero().select("VASJA/Proyectos");
+        } else {
+            fieldGroup.bind(view.getSelProyectoTercero(), "codTercero");
+            view.getTipoProyectoTercero().select("Terceros");
+        }
         fieldGroup.bind(view.getSelMoneda(), "codTipomoneda");
         fieldGroup.bind(view.getDataFechaComprobante(), "fecFecha");
         fieldGroup.bind(view.getSelCaja(), "codCtacontable");
@@ -741,8 +786,8 @@ class ComprobanteLogic implements Serializable {
                 ((ComboBox) f).setPageLength(25);
         }
         view.setEnableFields(false);
-        view.getSelProyecto().setEnabled(true);
-        view.getSelTercero().setEnabled(true);
+        view.getSelProyectoTercero().setEnabled(true);
+        view.getTipoProyectoTercero().setEnabled(true);
         view.getDataFechaComprobante().setEnabled(true);
 
 
@@ -758,7 +803,7 @@ class ComprobanteLogic implements Serializable {
             setSaldos();
             setSaldoCaja();
             if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {
-                setEditorLogic(item.getCodProyecto());
+                setEditorProyectoLogic(item.getCodProyecto());
             } else {
                 setEditorTerceroLogic(item.getCodTercero());
             }
@@ -777,11 +822,13 @@ class ComprobanteLogic implements Serializable {
     }
 
     private boolean isProyecto() {
-        return !GenUtil.objNullOrEmpty(view.getSelProyecto().getValue());
+        return !GenUtil.objNullOrEmpty(view.getTipoProyectoTercero().getValue())
+                && view.getTipoProyectoTercero().getValue().equals(GenUtil.T_PROY);
     }
 
     private boolean isTercero() {
-        return !GenUtil.objNullOrEmpty(view.getSelTercero().getValue());
+        return !GenUtil.objNullOrEmpty(view.getTipoProyectoTercero().getValue())
+                && view.getTipoProyectoTercero().getValue().equals(GenUtil.T_TERC);
     }
 
     private void clearSaldos() {
@@ -809,8 +856,8 @@ class ComprobanteLogic implements Serializable {
                 view.getNuevoComprobante().setEnabled(true);
                 view.getImprimirBtn().setEnabled(false);
 
-                view.getSelProyecto().setEnabled(false);
-                view.getSelTercero().setEnabled(false);
+                view.getSelProyectoTercero().setEnabled(false);
+                view.getTipoProyectoTercero().setEnabled(false);
                 view.getDataFechaComprobante().setEnabled(false);
                 break;
 
@@ -823,8 +870,8 @@ class ComprobanteLogic implements Serializable {
                 view.getNuevoComprobante().setEnabled(false);
                 view.getImprimirBtn().setEnabled(false);
 
-                view.getSelProyecto().setEnabled(true);
-                view.getSelTercero().setEnabled(true);
+                view.getSelProyectoTercero().setEnabled(true);
+                view.getTipoProyectoTercero().setEnabled(true);
                 view.getDataFechaComprobante().setEnabled(true);
                 break;
 

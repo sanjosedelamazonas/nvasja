@@ -325,7 +325,7 @@ public class ViewUtil {
     public static void openInNewWindow(ComprobanteViewing component) {
         Window subWindow = new Window();
         subWindow.setWindowMode(WindowMode.NORMAL);
-        int width = component instanceof TransferenciaView ? 1280 : 900;
+        int width = component instanceof TransferenciaView ? 1280 : 1100;
         subWindow.setWidth(width, Sizeable.Unit.PIXELS);
         subWindow.setHeight(600, Sizeable.Unit.PIXELS);
         subWindow.setModal(false);

@@ -29,6 +29,9 @@ public class GenUtil {
 
     public static final Character _EUR='E';
 
+    public static final String T_PROY="VASJA/Proyectos";
+
+    public static final String T_TERC="Terceros";
 
     private static Map<Character, String> symMoneda = new HashMap<>();
 

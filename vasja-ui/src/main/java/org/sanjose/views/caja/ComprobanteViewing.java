@@ -17,13 +17,13 @@ public interface ComprobanteViewing {
 
     void refreshData();
 
-    ComboBox getSelProyecto();
+    ComboBox getSelProyectoTercero();
 
     TextField getNumVoucher();
 
     ComboBox getSelFuente();
 
-    ComboBox getSelTercero();
+    OptionGroup getTipoProyectoTercero();
 
     TextField getSaldoProyPEN();
 

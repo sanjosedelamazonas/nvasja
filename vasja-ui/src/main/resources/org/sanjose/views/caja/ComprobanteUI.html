@@ -40,21 +40,17 @@
     <vaadin-horizontal-layout spacing>
      <vaadin-horizontal-layout spacing height="61px">
       <vaadin-popup-date-field caption="Fecha de la operacion" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante" :middle></vaadin-popup-date-field>
-      <vaadin-option-group _id="optionGroup" :middle>
-       <option>VASJA/Proyectos</option>
+      <vaadin-option-group _id="tipoProyectoTercero" :middle>
+       <option selected="true">VASJA/Proyectos</option>
        <option>Terceros</option>
       </vaadin-option-group>
      </vaadin-horizontal-layout>
      <vaadin-vertical-layout caption="Cuenta:" width="99.1%">
-      <vaadin-combo-box input-prompt="" style-name="form-textfield" item-caption-mode="id" width="427px" _id="selProyecto">
+      <vaadin-combo-box input-prompt="" style-name="form-textfield" item-caption-mode="id" width="427px" _id="selProyectoTercero">
        <option>Option 1</option>
        <option>Option 2</option>
       </vaadin-combo-box>
-      <vaadin-combo-box input-prompt="" style-name="form-textfield" item-caption-mode="id" width="427px" height="22px" _id="selTercero">
-       <option>Option 1</option>
-       <option>Option 2</option>
-      </vaadin-combo-box>
-      <vaadin-combo-box input-prompt="" style-name="form-textfield" item-caption-mode="id" width="86px" _id="selFuente">
+      <vaadin-combo-box input-prompt="" style-name="form-textfield" item-caption-mode="id" width="186px" _id="selFuente">
        <option>Option 1</option>
        <option>Option 2</option>
       </vaadin-combo-box>

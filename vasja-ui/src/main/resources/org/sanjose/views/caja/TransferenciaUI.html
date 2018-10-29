@@ -31,7 +31,7 @@
       <vaadin-horizontal-layout style-name="cuenta-Layout" spacing> 
        <vaadin-vertical-layout spacing> 
         <vaadin-horizontal-layout description="Proyecto" spacing> 
-         <vaadin-combo-box input-prompt="Proyecto" style-name="form-textfield" item-caption-mode="id" width="185px" _id="selProyecto"> 
+         <vaadin-combo-box input-prompt="Proyecto/Tercero" style-name="form-textfield" item-caption-mode="id" width="185px" _id="selProyectoTercero">
           <option>Option 1</option> 
           <option>Option 2</option> 
          </vaadin-combo-box> 
@@ -39,7 +39,11 @@
           <option>Option 1</option> 
           <option>Option 2</option> 
          </vaadin-combo-box> 
-        </vaadin-horizontal-layout> 
+        </vaadin-horizontal-layout>
+        <vaadin-option-group _id="tipoProyectoTercero" :middle>
+         <option>VASJA/Proyectos</option>
+         <option>Terceros</option>
+        </vaadin-option-group>
         <vaadin-combo-box input-prompt="Tercero" style-name="form-textfield" item-caption-mode="id" width="291px" _id="selTercero"> 
          <option>Option 1</option> 
          <option>Option 2</option> 

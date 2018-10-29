@@ -30,7 +30,7 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
     public static final String VIEW_NAME = "Caja";
     private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);
 
-    private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
+    private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyectoTercero, tipoProyectoTercero, selCaja, selMoneda,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
     ComprobanteLogic viewLogic;
@@ -120,8 +120,8 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
     }
 
     @Override
-    public ComboBox getSelProyecto() {
-        return selProyecto;
+    public ComboBox getSelProyectoTercero() {
+        return selProyectoTercero;
     }
 
     public PopupDateField getDataFechaComprobante() {
@@ -136,8 +136,8 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
         return selFuente;
     }
 
-    public ComboBox getSelTercero() {
-        return selTercero;
+    public OptionGroup getTipoProyectoTercero() {
+        return tipoProyectoTercero;
     }
 
     public TextField getSaldoProyPEN() {

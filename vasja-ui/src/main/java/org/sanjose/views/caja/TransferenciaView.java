@@ -51,7 +51,7 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
     private static final Logger log = LoggerFactory.getLogger(TransferenciaView.class);
 
-    private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyecto, selTercero, selCaja, selMoneda,
+    private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyectoTercero, tipoProyectoTercero, selCaja, selMoneda,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
     TransferenciaLogic viewLogic = null;
@@ -192,11 +192,14 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
         return USD.equals(getMonedaActiva());
     }
 
-    @Override
-    public ComboBox getSelProyecto() {
-        return selProyecto;
+    public OptionGroup getTipoProyectoTercero() {
+        return tipoProyectoTercero;
     }
 
+    @Override
+    public ComboBox getSelProyectoTercero() {
+        return selProyectoTercero;
+    }
 
     public TextField getNumVoucher() {
         return numVoucher;

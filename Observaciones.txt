@@ -51,6 +51,7 @@ DONeE
 - bancos - lista cuentas nie powinna uwzgledniac cuentas cerradas
 DONE
 - nuevo cheque - cuando nuevo item powinno sie kopiowac auxiliar z cabezera w responsable
+DONE
 - nuevo cheque - jezeli zmienia sie konto po dodaniu linii i konto jest z innej waluty to nie zmienia waluty w liniach, ani konta na wydruku
 - przycisk ver detalles nie wybiera actualnego recordu na podgladzie tylko poprzedni
 DONE

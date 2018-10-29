@@ -35,7 +35,8 @@ public class TransferenciaUI extends CssLayout {
     protected CssCheckBox chkEnviado;
     protected TextField txtOrigen;
     protected TextField txtNumCombrobante;
-    protected ComboBox selProyecto;
+    protected ComboBox selProyectoTercero;
+    protected OptionGroup tipoProyectoTercero;
     protected ComboBox selFuente;
     protected ComboBox selTercero;
     protected TextField saldoProyPEN;

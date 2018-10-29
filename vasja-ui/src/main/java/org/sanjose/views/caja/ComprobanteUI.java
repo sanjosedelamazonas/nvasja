@@ -38,9 +38,8 @@ public class ComprobanteUI extends CssLayout {
     protected Button eliminarBtn;
     protected FormLayout cuenta_form;
     protected PopupDateField dataFechaComprobante;
-    protected OptionGroup optionGroup;
-    protected ComboBox selProyecto;
-    protected ComboBox selTercero;
+    protected OptionGroup tipoProyectoTercero;
+    protected ComboBox selProyectoTercero;
     protected ComboBox selFuente;
     protected TextField saldoProyPEN;
     protected TextField saldoProyUSD;
