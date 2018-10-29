@@ -70,14 +70,16 @@
     <vaadin-form-layout style-name="billing-formlayout" size-auto margin-top="false" margin-bottom="false" _id="billing_form2">
      <vaadin-horizontal-layout spacing>
       <vaadin-horizontal-layout spacing width="700px">
-       <vaadin-text-field caption="Glosa" input-prompt="" style-name="form-textfield" width="351px" _id="glosa"></vaadin-text-field>
-       <vaadin-option-group item-caption-mode="id" _id="selMoneda">
-        <option>Soles</option>
-        <option>Dolares</option>
-        <option>Euros</option>
-       </vaadin-option-group>
-       <tm_kod_widgets_numberfield-number-field caption="Ingreso" width="74px" height="22px" _id="numIngreso"></tm_kod_widgets_numberfield-number-field>
-       <tm_kod_widgets_numberfield-number-field caption="Egreso" width="74px" height="22px" _id="numEgreso"></tm_kod_widgets_numberfield-number-field>
+       <vaadin-text-field caption="Glosa" input-prompt="" style-name="form-textfield" width="459px" _id="glosa"></vaadin-text-field>
+       <vaadin-horizontal-layout :right>
+        <vaadin-option-group item-caption-mode="id" _id="selMoneda">
+         <option>Soles</option>
+         <option>Dolares</option>
+         <option>Euros</option>
+        </vaadin-option-group>
+        <tm_kod_widgets_numberfield-number-field caption="Ingreso" width="74px" height="22px" _id="numIngreso"></tm_kod_widgets_numberfield-number-field>
+        <tm_kod_widgets_numberfield-number-field caption="Egreso" width="74px" height="22px" _id="numEgreso"></tm_kod_widgets_numberfield-number-field>
+       </vaadin-horizontal-layout>
       </vaadin-horizontal-layout>
       <vaadin-vertical-layout size-auto :right>
        <vaadin-combo-box style-name="form-textfield" item-caption-mode="id" width="180px" _id="selCaja">
@@ -106,7 +108,7 @@
        <option>Option 2</option>
       </vaadin-combo-box>
      </vaadin-horizontal-layout>
-     <vaadin-vertical-layout size-auto>
+     <vaadin-vertical-layout spacing size-auto>
       <vaadin-horizontal-layout spacing>
        <vaadin-combo-box caption="Lugar de gasto" input-prompt="" style-name="form-textfield" item-caption-mode="id" width="193px" _id="selLugarGasto">
         <option>Option 1</option>
