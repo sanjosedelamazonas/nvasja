@@ -619,20 +619,14 @@ class ComprobanteLogic implements Serializable {
     private void setTipoProyectoTerceroLogic(Property.ValueChangeEvent event) {
         if (isLoading) return;
         fieldGroup.unbind(view.getSelProyectoTercero());
-        if (event.getProperty().getValue()!=null && isProyecto()) {
+        if (isProyecto()) {
             beanItem.getBean().setCodTercero("");
             fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
             view.getSelProyectoTercero().removeValueChangeListener(this::setTerceroLogic);
             view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
             DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()),
                     "Sel Proyecto", "txtDescproyecto");
-
-            // Tercero
-            // DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
-            //         "txtNombredestino");
-            // view.getSelTercero().addValueChangeListener(this::setTerceroLogic);
-
-        } else if (event.getProperty().getValue()!=null && isTercero()) {
+        } else if (isTercero()) {
             beanItem.getBean().setCodProyecto("");
             fieldGroup.bind(view.getSelProyectoTercero(), "codTercero");
             view.getSelProyectoTercero().removeValueChangeListener(this::setProyectoLogic);
@@ -735,12 +729,12 @@ class ComprobanteLogic implements Serializable {
             log.error("Problema con esta operacion " + item.getCodCajabanco() + " - codigo proyecto y codigo tercero son rellenadas!");
             //throw new CommitException("Problema con esta operacion codigo proyecto y codigo tercero son rellenadas!");
         }
-        if (!GenUtil.strNullOrEmpty(item.getCodProyecto())) {
-            fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
-            view.getTipoProyectoTercero().select("VASJA/Proyectos");
-        } else {
+        if (!GenUtil.strNullOrEmpty(item.getCodTercero())) {
             fieldGroup.bind(view.getSelProyectoTercero(), "codTercero");
-            view.getTipoProyectoTercero().select("Terceros");
+            view.getTipoProyectoTercero().select(GenUtil.T_TERC);
+        } else {
+            fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
+            view.getTipoProyectoTercero().select(GenUtil.T_PROY);
         }
         fieldGroup.bind(view.getSelMoneda(), "codTipomoneda");
         fieldGroup.bind(view.getDataFechaComprobante(), "fecFecha");
@@ -802,10 +796,13 @@ class ComprobanteLogic implements Serializable {
             view.setEnableFields(true);
             setSaldos();
             setSaldoCaja();
+            setTipoProyectoTerceroLogic(null);
             if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {
                 setEditorProyectoLogic(item.getCodProyecto());
+                view.getTipoProyectoTercero().select(item.getCodProyecto());
             } else {
                 setEditorTerceroLogic(item.getCodTercero());
+                view.getTipoProyectoTercero().select(item.getCodTercero());
             }
         } else {
             view.getSelMoneda().setValue(item.getCodTipomoneda());
@@ -850,7 +847,7 @@ class ComprobanteLogic implements Serializable {
             case EMPTY:
                 view.getCerrarBtn().setEnabled(true);
                 view.getGuardarBtn().setEnabled(false);
-                view.getAnularBtn().setEnabled(false);
+                view.getAnularBtn().setEnabled(true);
                 view.getModificarBtn().setEnabled(false);
                 view.getEliminarBtn().setEnabled(false);
                 view.getNuevoComprobante().setEnabled(true);
