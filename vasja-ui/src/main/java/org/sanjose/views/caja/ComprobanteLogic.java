@@ -560,7 +560,7 @@ class ComprobanteLogic implements Serializable {
 
     private void setSaldoCaja() {
         if (view.getDataFechaComprobante().getValue()!=null && view.getSelCaja().getValue()!=null && view.getSelMoneda().getValue()!=null) {
-            BigDecimal saldo = procUtil.getSaldoCaja(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()),
+            BigDecimal saldo = procUtil.getSaldoCaja(view.getDataFechaComprobante().getValue(),
                     view.getSelCaja().getValue().toString(), view.getSelMoneda().getValue().toString().charAt(0));
             view.getSaldoCajaPEN().setValue(saldo.toString());
             saldoChecker.setSaldoField(view.getSaldoCajaPEN());
