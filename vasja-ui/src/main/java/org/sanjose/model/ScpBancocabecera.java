@@ -74,6 +74,11 @@ public class ScpBancocabecera extends VsjBancoItem implements Serializable {
 	public ScpBancocabecera prepareToSave() throws FieldGroup.CommitException {
 		ScpBancocabecera item = (ScpBancocabecera) super.prepareToSave();
 		item.setIndTipocuenta('2');
+		if (item.getTxtCheque()==null) item.setTxtCheque("");
+		if (item.getCodOrigenenlace()==null) item.setCodOrigenenlace("");
+		if (item.getCodComprobanteenlace()==null) item.setCodComprobanteenlace("");
+		if (item.getCodMescobrado()==null) item.setCodMescobrado("");
+		if (item.getCodDestino()==null) item.setCodDestino("");
 		return item;
 	}
 

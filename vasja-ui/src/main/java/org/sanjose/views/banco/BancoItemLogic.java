@@ -371,6 +371,8 @@ class BancoItemLogic implements Serializable {
     private void setMonedaLogic(Character moneda) {
         log.debug("in moneda logic: " + isLoading + " " + moneda);
         if (!isLoading) {
+            String oldNumEgreso = view.getNumEgreso().getValue();
+            String oldNumIngreso = view.getNumIngreso().getValue();
             try {
                 fieldGroup.unbind(view.getNumEgreso());
                 fieldGroup.unbind(view.getNumIngreso());
@@ -412,6 +414,9 @@ class BancoItemLogic implements Serializable {
             }
             view.getNumEgreso().setEnabled(true);
             view.getNumIngreso().setEnabled(true);
+            // copy values to new field
+            view.getNumEgreso().setValue(oldNumEgreso);
+            view.getNumIngreso().setValue(oldNumIngreso);
             ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
             ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
         }

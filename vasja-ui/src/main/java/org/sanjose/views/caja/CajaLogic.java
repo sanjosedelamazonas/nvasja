@@ -25,6 +25,14 @@ public abstract class CajaLogic implements ItemsRefreshing<ScpCajabanco> {
         //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
+    protected void newTransferencia() {
+        cajaView.clearSelection();
+        MainUI.get().getTransferenciaView().viewLogic.nuevaTrans();
+        MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(cajaView);
+        ViewUtil.openInNewWindow(MainUI.get().getTransferenciaView());
+        //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+    }
+
     protected void editarComprobante(ScpCajabanco vcb) {
         if (vcb==null) return;
         // Transferencia
@@ -62,5 +70,4 @@ public abstract class CajaLogic implements ItemsRefreshing<ScpCajabanco> {
         });
         cajaView.refreshData();
     }
-
 }

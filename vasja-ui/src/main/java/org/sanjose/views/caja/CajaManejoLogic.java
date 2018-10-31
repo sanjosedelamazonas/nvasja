@@ -81,14 +81,6 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         });
     }
 
-    private void newTransferencia() {
-        view.clearSelection();
-        MainUI.get().getTransferenciaView().viewLogic.nuevaTrans();
-        MainUI.get().getTransferenciaView().viewLogic.setNavigatorView(view);
-        ViewUtil.openInNewWindow(MainUI.get().getTransferenciaView());
-        //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
-    }
-
     private void generateComprobante() {
         ReportHelper.generateComprobante(view.getSelectedRow());
     }

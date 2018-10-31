@@ -20,6 +20,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
+
 /**
  * Created by pol on 06.10.16.
  */
@@ -88,8 +91,6 @@ public class BancoService {
         bancoItem.setCodCtacontable(cabecera.getCodCtacontable());
         bancoItem.setCodTipogasto(configuractacajabancoRepo.findById(bancoItem.getCodTipomov()).getCodTipocuenta());
         bancoItem.setCodTipomoneda(moneda);
-        if (bancoItem.getCodProyecto()==null)
-            bancoItem.setCodProyecto("");
         bancoItem = bancoItem.prepareToSave();
         bancoItem.setFecFecha(cabecera.getFecFecha());
         bancoItem.setTxtCheque(cabecera.getTxtCheque());
@@ -114,6 +115,15 @@ public class BancoService {
         BigDecimal saldoDebemo = new BigDecimal(0);
         for (ScpBancodetalle it : bancodetalleRep
                 .findById_CodBancocabecera(cabecera.getCodBancocabecera())) {
+            // Check if moneda changed - if so update in other items
+            if (!it.getCodTipomoneda().equals(moneda)) {
+                // Change moneda for old items
+                BigDecimal oldDebe = getDebeAndReset(it);
+                BigDecimal oldHaber = getHaberAndReset(it);
+                it = setNewSaldos(it, oldDebe, oldHaber, moneda);
+                it = bancodetalleRep.save(it);
+            }
+            
             saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
             saldoDebemo = saldoDebemo.add(it.getNumDebemo());
             saldoDebesol = saldoDebesol.add(it.getNumDebesol());
@@ -132,7 +142,51 @@ public class BancoService {
         return bancoItem;
     }
 
+    private ScpBancodetalle setNewSaldos(ScpBancodetalle bd, BigDecimal debe, BigDecimal haber, Character moneda) {
+        if (moneda.equals(PEN)) {
+            bd.setNumDebesol(debe);
+            bd.setNumHabersol(haber);
+        } else if (moneda.equals(USD)) {
+            bd.setNumDebedolar(debe);
+            bd.setNumHaberdolar(haber);
+        } else {
+            bd.setNumDebemo(debe);
+            bd.setNumHabermo(haber);
+        }
+        bd.setCodTipomoneda(moneda);
+        return bd;
+    }
+    
+    private BigDecimal getDebeAndReset(ScpBancodetalle bd) {
+        BigDecimal debe = new BigDecimal(0);
+        if (bd.getCodTipomoneda().equals(PEN)) {
+            debe = debe.add(bd.getNumDebesol());
+            bd.setNumDebesol(new BigDecimal(0));
+        } else if (bd.getCodTipomoneda().equals(USD)) {
+            debe = debe.add(bd.getNumDebedolar());
+            bd.setNumDebedolar(new BigDecimal(0));
+        } else {
+            debe = debe.add(bd.getNumDebemo());
+            bd.setNumDebemo(new BigDecimal(0));
+        }
+        return debe;
+    }
 
+    private BigDecimal getHaberAndReset(ScpBancodetalle bd) {
+        BigDecimal haber = new BigDecimal(0);
+        if (bd.getCodTipomoneda().equals(PEN)) {
+            haber = haber.add(bd.getNumHabersol());
+            bd.setNumHabersol(new BigDecimal(0));
+        } else if (bd.getCodTipomoneda().equals(USD)) {
+            haber = haber.add(bd.getNumHaberdolar());
+            bd.setNumHaberdolar(new BigDecimal(0));
+        } else {
+            haber = haber.add(bd.getNumHabermo());
+            bd.setNumHabermo(new BigDecimal(0));
+        }
+        return haber;
+    }
+    
     @Transactional(readOnly = false)
     public void deleteBancoOperacion(ScpBancocabecera cabecera, ScpBancodetalle bancoItem) {
         int delNumItem = bancoItem.getId().getNumItem();

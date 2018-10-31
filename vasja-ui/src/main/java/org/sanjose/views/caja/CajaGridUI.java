@@ -27,6 +27,7 @@ public class CajaGridUI extends VerticalLayout {
 	protected Label labFechas;
 	protected DateField fechaHasta;
 	protected Button nuevoComprobante;
+	protected Button nuevaTransferencia;
 	protected Button editarBtn;
 	protected Button enviarBtn;
 	protected Button responsablesBtn;

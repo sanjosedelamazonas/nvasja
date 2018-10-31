@@ -51,6 +51,7 @@ public class CajaGridLogic extends CajaLogic implements Serializable {
         view = cajaGridView;
         cajaView = view;
         view.nuevoComprobante.addClickListener(e -> newComprobante());
+        view.nuevaTransferencia.addClickListener(e -> newTransferencia());
         view.responsablesBtn.addClickListener(e -> editDestino(view.getSelectedRow()));
         view.enviarBtn.addClickListener(e -> {
             if (!view.getSelectedRows().isEmpty()) {

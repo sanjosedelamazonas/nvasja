@@ -21,11 +21,13 @@ import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.Viewing;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.sanjose.util.GenUtil.PEN;
+import static org.sanjose.util.GenUtil.USD;
 import static org.sanjose.util.GenUtil.verifyNumMoneda;
 import static org.sanjose.views.sys.Viewing.Mode.*;
 
@@ -261,18 +263,8 @@ public class BancoLogic extends BancoItemLogic {
             if (isNew) {
                 view.getContainer().addBean(bancoItem);
             } else {
-                ScpBancodetalle vcbOld = null;
-                for (ScpBancodetalle vcb : view.getContainer().getItemIds()) {
-                    if (bancoItem.getFecFregistro().equals(vcb.getFecFregistro())) {
-                        vcbOld = bancoItem;
-                        break;
-                    }
-                }
                 loadDetallesToGrid(cabecera);
                 view.gridBanco.select(bancoItem);
-                //view.getContainer().removeItem(vcbOld);
-//
-  //              view.getContainer().addBean(bancoItem);
             }
             view.setTotal(moneda);
             view.refreshData();

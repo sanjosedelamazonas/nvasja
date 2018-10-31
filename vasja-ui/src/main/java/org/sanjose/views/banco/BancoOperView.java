@@ -120,8 +120,7 @@ public class BancoOperView extends BancoOperUI implements Viewing {
                     @Override
                     public String getValue(Item item, Object itemId,
                                            Object propertyId) {
-                        return ((ScpBancocabecera) item.getItemProperty("scpBancocabecera").getValue()).getTxtCorrelativo() +
-                                "-" + ((ScpBancodetallePK) item.getItemProperty("id").getValue()).getNumItem();
+                        return String.valueOf(((ScpBancodetallePK) item.getItemProperty("id").getValue()).getNumItem());
                     }
 
                     @Override

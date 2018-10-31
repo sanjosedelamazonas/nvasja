@@ -163,7 +163,21 @@ public class ScpBancodetalle extends VsjBancoItem implements Serializable, Clone
             item.setNumHabermo(new BigDecimal(0.00));
             item.setNumDebemo(new BigDecimal(0.00));
         }
-        return item;
+        if (item.getCodProyecto()==null) item.setCodProyecto("");
+		if (item.getCodTercero()==null) item.setCodTercero("");
+		if (item.getCodTercero()==null) item.setCodTercero("");
+		if (item.getTxtCheque()==null) item.setTxtCheque("");
+		if (item.getCodCtaproyecto()==null) item.setCodCtaproyecto("");
+		if (item.getCodCtaespecial()==null) item.setCodCtaespecial("");
+		if (item.getCodContraparte()==null) item.setCodContraparte("");
+		if (item.getCodFinanciera()==null) item.setCodFinanciera("");
+		if (item.getCodTipoingreso()==null) item.setCodTipoingreso("");
+		if (item.getCodFormapago()==null) item.setCodFormapago("");
+		if (item.getTxtDetallepago()==null) item.setTxtDetallepago("");
+		if (item.getCodTipocomprobantepago()==null) item.setCodTipocomprobantepago("");
+		if (item.getTxtComprobantepago()==null) item.setTxtComprobantepago("");
+		if (item.getTxtSeriecomprobantepago()==null) item.setTxtSeriecomprobantepago("");
+		return item;
     }
 
 	public ScpBancodetallePK getId() {
