@@ -39,11 +39,7 @@ public interface ComprobanteViewing {
 
     ComboBox getSelCaja();
 
-    TextField getSaldoCajaPEN();
-
-    TextField getSaldoCajaUSD();
-
-    TextField getSaldoCajaEUR();
+    TextField getSaldoCaja();
 
     TextField getGlosa();
 

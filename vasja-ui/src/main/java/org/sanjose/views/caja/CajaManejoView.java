@@ -38,21 +38,26 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
     private final CajaManejoLogic viewLogic = new CajaManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
             "codCtacontable", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
-            /*"codDestino", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
+            "codDestino", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
-            "flgEnviado", "codOrigenenlace", "codComprobanteenlace"*/
+            "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
+    };
+    private final String[] HIDDEN_COLUMN_IDS = new String[] {
+            "codDestino", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
+            "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
+            "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
             "Cta Cont.", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
-            /*"Responsable", "Lug. Gasto", "Cod. Aux", "Cuenta", "Rubro Inst.", "TD",
+            "Responsable", "Lug. Gasto", "Cod. Aux", "Cuenta", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
-            "Env", "Origen", "Comprobante"*/
+            "Env", "Origen", "Comprobante"
     };
     private final int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
             5, 15, 6, 6, 6, 6, 6, 6, //
-            //6, 4, 6, 5, 5, 2, // Tipo Doc
-            //4, 5, 5, 5, 4, // Fuente
-            //2, 2, 5
+            6, 4, 6, 5, 5, 2, // Tipo Doc
+            4, 5, 5, 5, 4, // Fuente
+            2, 2, 5
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"txtCorrelativo", /*"flgEnviado", "codOrigenenlace",
             "codComprobanteenlace"*/};
@@ -80,6 +85,8 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
 
         ViewUtil.setColumnNames(gridCaja, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
+        Arrays.asList(HIDDEN_COLUMN_IDS).forEach( colName ->  gridCaja.getColumn(colName).setHidden(true));
+
         ViewUtil.alignMontosInGrid(gridCaja);
 
         gridCaja.setSelectionMode(SelectionMode.SINGLE);
@@ -91,7 +98,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
         DataFilterUtil.bindComboBox(selFiltroCaja, "id.codCtacontable",
-                DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), PEN),
+                DataUtil.getTodasCajas(fechaDesde.getValue(), getService().getPlanRepo()),
                 "txtDescctacontable");
 
         selFiltroCaja.addValueChangeListener(e -> {
@@ -128,7 +135,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
 
     private void refreshCajas() {
         DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
-                DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), PEN),
+                DataUtil.getTodasCajas(fechaDesde.getValue(), getService().getPlanRepo()),
                 "txtDescctacontable");
     }
 

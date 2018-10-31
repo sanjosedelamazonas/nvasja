@@ -38,7 +38,6 @@ public class TransferenciaUI extends CssLayout {
     protected ComboBox selProyectoTercero;
     protected OptionGroup tipoProyectoTercero;
     protected ComboBox selFuente;
-    protected ComboBox selTercero;
     protected TextField saldoProyPEN;
     protected TextField saldoProyUSD;
     protected TextField saldoProyEUR;
@@ -47,9 +46,7 @@ public class TransferenciaUI extends CssLayout {
     protected NumberField numIngreso;
     protected NumberField numEgreso;
     protected ComboBox selCaja;
-    protected TextField saldoCajaPEN;
-    protected TextField saldoCajaUSD;
-    protected TextField saldoCajaEUR;
+    protected TextField saldoCaja;
     protected TextField glosa;
     protected ComboBox selResponsable;
     protected Button btnResponsable;

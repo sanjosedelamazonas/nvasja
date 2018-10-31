@@ -81,9 +81,22 @@ public class DataUtil {
     }
 
     public static List<ScpPlancontable> getTodasCajas(Date ano, ScpPlancontableRep planRepo) {
-        return planRepo.
+        List<ScpPlancontable> allCajas = planRepo.
                 findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith(
                         'N', GenUtil.getYear(ano), "101");
+        List<ScpPlancontable> cajas = new ArrayList<>();
+        for (ScpPlancontable caja : allCajas) {
+            Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
+            BigDecimal saldo = MainUI.get().getProcUtil().getSaldoCaja(
+                    GenUtil.getEndOfDay(GenUtil.dateAddDays(ano,-1)),
+                    caja.getId().getCodCtacontable()
+                    , moneda);
+            // If is closed and has a saldo of "0.00" we can omit it
+            if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
+                continue;
+            cajas.add(caja);
+        }
+        return cajas;
     }
 
 

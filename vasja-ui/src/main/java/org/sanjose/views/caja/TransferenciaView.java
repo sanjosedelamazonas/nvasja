@@ -209,10 +209,6 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
         return selFuente;
     }
 
-    public ComboBox getSelTercero() {
-        return selTercero;
-    }
-
     public TextField getSaldoProyPEN() {
         return saldoProyPEN;
     }
@@ -241,16 +237,8 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
         return selCaja;
     }
 
-    public TextField getSaldoCajaPEN() {
-        return saldoCajaPEN;
-    }
-
-    public TextField getSaldoCajaUSD() {
-        return saldoCajaUSD;
-    }
-
-    public TextField getSaldoCajaEUR() {
-        return saldoCajaEUR;
+    public TextField getSaldoCaja() {
+        return saldoCaja;
     }
 
     public TextField getGlosa() {

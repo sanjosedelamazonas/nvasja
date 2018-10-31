@@ -30,31 +30,27 @@
       </vaadin-horizontal-layout> 
       <vaadin-horizontal-layout style-name="cuenta-Layout" spacing> 
        <vaadin-vertical-layout spacing> 
-        <vaadin-horizontal-layout description="Proyecto" spacing> 
-         <vaadin-combo-box input-prompt="Proyecto/Tercero" style-name="form-textfield" item-caption-mode="id" width="185px" _id="selProyectoTercero">
-          <option>Option 1</option> 
-          <option>Option 2</option> 
-         </vaadin-combo-box> 
-         <vaadin-combo-box input-prompt="Fuente" style-name="form-textfield" item-caption-mode="id" width="94px" _id="selFuente"> 
-          <option>Option 1</option> 
-          <option>Option 2</option> 
-         </vaadin-combo-box> 
-        </vaadin-horizontal-layout>
+        <vaadin-horizontal-layout>
         <vaadin-option-group _id="tipoProyectoTercero" :middle>
          <option>VASJA/Proyectos</option>
          <option>Terceros</option>
         </vaadin-option-group>
-        <vaadin-combo-box input-prompt="Tercero" style-name="form-textfield" item-caption-mode="id" width="291px" _id="selTercero"> 
-         <option>Option 1</option> 
-         <option>Option 2</option> 
-        </vaadin-combo-box> 
-       </vaadin-vertical-layout> 
-       <vaadin-horizontal-layout> 
-        <vaadin-text-field caption="S/." enabled="false" style-name="form-textfield" width="70px" _id="saldoProyPEN"></vaadin-text-field> 
-        <vaadin-text-field caption="$" enabled="false" style-name="form-textfield" width="70px" _id="saldoProyUSD"></vaadin-text-field> 
-        <vaadin-text-field caption="€" enabled="false" style-name="form-textfield" width="70px" _id="saldoProyEUR"></vaadin-text-field> 
-       </vaadin-horizontal-layout> 
-      </vaadin-horizontal-layout> 
+         <vaadin-text-field caption="S/." enabled="false" style-name="form-textfield" width="70px" _id="saldoProyPEN"></vaadin-text-field>
+         <vaadin-text-field caption="$" enabled="false" style-name="form-textfield" width="70px" _id="saldoProyUSD"></vaadin-text-field>
+         <vaadin-text-field caption="€" enabled="false" style-name="form-textfield" width="70px" _id="saldoProyEUR"></vaadin-text-field>
+        </vaadin-horizontal-layout>
+        <vaadin-horizontal-layout description="Proyecto" spacing>
+         <vaadin-combo-box input-prompt="Proyecto/Tercero" style-name="form-textfield" item-caption-mode="id" width="300px" _id="selProyectoTercero">
+          <option>Option 1</option>
+          <option>Option 2</option>
+         </vaadin-combo-box>
+         <vaadin-combo-box input-prompt="Fuente" style-name="form-textfield" item-caption-mode="id" width="120px" _id="selFuente">
+          <option>Option 1</option>
+          <option>Option 2</option>
+         </vaadin-combo-box>
+        </vaadin-horizontal-layout>
+       </vaadin-vertical-layout>
+      </vaadin-horizontal-layout>
      </vaadin-form-layout> 
      <vaadin-form-layout style-name="billing-formlayout" width="550px" height="325px" margin-top="false" margin-bottom="false" _id="billing_form2"> 
       <vaadin-horizontal-layout spacing width="505px"> 
@@ -65,17 +61,13 @@
        <tm_kod_widgets_numberfield-number-field caption="Ingreso" width="69px" _id="numIngreso"></tm_kod_widgets_numberfield-number-field>
           <tm_kod_widgets_numberfield-number-field caption="Egreso" width="69px"
                                                    _id="numEgreso"></tm_kod_widgets_numberfield-number-field>
-          <vaadin-combo-box caption="Caja" style-name="form-textfield" item-caption-mode="id" width="115.71%"
+          <vaadin-combo-box caption="Caja" style-name="form-textfield" item-caption-mode="id" width="110px"
                             _id="selCaja">
               <option>Option 1</option>
               <option>Option 2</option>
           </vaadin-combo-box>
-          <vaadin-text-field caption="Caja S/." enabled="false" style-name="form-textfield" width="75px"
-                             _id="saldoCajaPEN"></vaadin-text-field>
-          <vaadin-text-field caption="Caja $" enabled="false" style-name="form-textfield" width="72px"
-                             _id="saldoCajaUSD"></vaadin-text-field>
-          <vaadin-text-field caption="Caja €" enabled="false" style-name="form-textfield" width="72px"
-                          _id="saldoCajaEUR"></vaadin-text-field>
+          <vaadin-text-field caption="Caja" enabled="false" style-name="form-textfield" width="75px"
+                             _id="saldoCaja"></vaadin-text-field>
       </vaadin-horizontal-layout>
       <vaadin-text-field input-prompt="Glosa" style-name="form-textfield" width="502px" _id="glosa"></vaadin-text-field> 
       <vaadin-horizontal-layout spacing> 

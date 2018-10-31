@@ -3,21 +3,12 @@ package org.sanjose.views.caja;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
-import org.sanjose.model.ScpPlancontable;
-import org.sanjose.util.DataUtil;
-import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
-
-import java.math.BigDecimal;
-
-import static org.sanjose.util.GenUtil.PEN;
-import static org.sanjose.util.GenUtil.USD;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -168,16 +159,8 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
         return selCaja;
     }
 
-    public TextField getSaldoCajaPEN() {
-        return saldoCajaPEN;
-    }
-
-    public TextField getSaldoCajaUSD() {
-        return saldoCajaUSD;
-    }
-
-    public TextField getSaldoCajaEUR() {
-        return saldoCajaEUR;
+    public TextField getSaldoCaja() {
+        return saldoCaja;
     }
 
     public TextField getGlosa() {

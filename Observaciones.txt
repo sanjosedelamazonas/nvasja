@@ -1,8 +1,9 @@
 Destino:
 -> clasificacion 'Tercero' no disponible - ma być czy nie?
 -> sprawdzenie czy istnieje juz taki przy zapisywaniu
+DONE
 -> codigo jak nie wpisany to generuje
-
+DONE
 Banco - vsj_bancodetalle:
 - dodac  flg_chequecobrado y cod_mescobr y edycje tego dla Ninfa (considerar pedir a Edward que cuando modifica cheque cobrado en contabilidad tambien se modifica vsj_bancodetalle
 DONE
@@ -10,7 +11,7 @@ DONE
 -> dodac  flg_chequecobrado y cod_mescobr y edycje tego dla Ninfa
 DONE
 (considerar pedir a Edward que cuando modifica cheque cobrado en contabilidad tambien se modifica vsj_bancodetalle
-
+DONE
 -> hay que anadir otro campo para codigo de configracion [SCP].[dbo].[vsj_configuractacajabanco] porque se repiten codigos entre caja y bancos para diferentes operaciones
 DONE
 -> no hay como poner valores para filtros en configuracion>movimientos por ejemplo para selecionar solo para caja proyectos

@@ -50,9 +50,7 @@ public class ComprobanteUI extends CssLayout {
     protected NumberField numIngreso;
     protected NumberField numEgreso;
     protected ComboBox selCaja;
-    protected TextField saldoCajaPEN;
-    protected TextField saldoCajaUSD;
-    protected TextField saldoCajaEUR;
+    protected TextField saldoCaja;
     protected ComboBox selResponsable;
     protected Button btnResponsable;
     protected ComboBox selTipoMov;
