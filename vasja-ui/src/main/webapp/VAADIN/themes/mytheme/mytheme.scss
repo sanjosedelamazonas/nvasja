@@ -35,7 +35,7 @@ $editor-background-color: #3b3f42 !default;
 $valo-menu-background-color: $editor-background-color !default;
 
 $v-focus-color: rgb(96, 160, 234) !default;
-$v-error-indicator-color: #eb2977 !default;
+$v-error-indicator-color: #00eb1e !default;
 $v-friendly-color: rgb(54, 185, 85);
 
 $v-font-size: 15px !default;
@@ -60,6 +60,9 @@ $v-layout-margin-left: $v-layout-margin-top !default;
 $v-layout-spacing-vertical: round($v-unit-size / 1.8) !default;
 $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
 
+// Validation not passed - i.e. required field left blank
+$validation-error-border-color: #3bed61;
+$validation-error-background: #ffe48e;
 
 @import "../valo/valo.scss";
 
@@ -89,6 +92,32 @@ $v-layout-spacing-horizontal: round($v-unit-size / 1.8) !default;
     .v-grid-row.anulado {
         color: #C2B4AA;
     }
+
+  // Validation not passed - i.e. required field left blank
+  .v-filterselect-error-error .v-filterselect-input {
+    border-color: $validation-error-border-color !important;
+    background: $validation-error-background;
+    color: #6c2621;
+  }
+
+  .v-filterselect-error-error .v-filterselect-button {
+    color: #3bed4c;
+    border-color: $validation-error-border-color;
+  }
+
+  .v-textfield-error-error {
+    border-color: $validation-error-border-color !important;
+    background: $validation-error-background;
+    color: #6c2621;
+  }
+
+  .v-errorindicator-error {
+    color: $validation-error-border-color;
+    font-weight: 600;
+    width: 11px;
+    text-align: center;
+  }
+
 
   // login screen - for small screens, see below
   .login-screen {

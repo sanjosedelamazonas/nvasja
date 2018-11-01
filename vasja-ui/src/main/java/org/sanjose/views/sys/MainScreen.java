@@ -62,12 +62,15 @@ public class MainScreen extends HorizontalLayout {
         menu = new Menu(navigator);
         if (Role.isCaja()) {
             menu.addSeparator("Caja");
+            comprobanteView.init();
+            transferenciaView.init();
 /*
             menu.addView(comprobanteView, ComprobanteView.VIEW_NAME,
                     ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(transferenciaView, TransferenciaView.VIEW_NAME,
                     TransferenciaView.VIEW_NAME, FontAwesome.EDIT);
 */
+
             menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
                     CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
         }

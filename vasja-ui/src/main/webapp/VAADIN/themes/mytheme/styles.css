@@ -1965,7 +1965,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-errorindicator {
-	color: #eb2977;
+	color: #00eb1e;
 	font-weight: 600;
 	width: 11px;
 	text-align: center;
@@ -2031,7 +2031,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-required-field-indicator {
-	color: #eb2977;
+	color: #00eb1e;
 	padding: 0 0.2em;
 }
 
@@ -2115,7 +2115,7 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-tooltip .v-errormessage {
 	background-color: white;
 	background-color: #fff;
-	color: #eb2977;
+	color: #00eb1e;
 	margin: -3px -6px;
 	padding: 3px 6px;
 	max-height: 10em;
@@ -2584,19 +2584,19 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-button-danger {
 	height: 22px;
 	padding: 0 10px;
-	color: #f9eef2;
+	color: #eaf9ec;
 	font-weight: 500;
 	
 	
 	border-radius: 4px;
-	border: 1px solid #b9205e;
-	border-top-color: #ba2265;
-	border-bottom-color: #b01b52;
-	background-color: #eb2977;
-	background-image: -webkit-linear-gradient(top, #ec2c80 2%, #df2368 98%);
-	background-image: linear-gradient(to bottom,#ec2c80 2%, #df2368 98%);
-	-webkit-box-shadow: inset 0 1px 0 #ed5d97, inset 0 -1px 0 #d52365, 0 2px 3px rgba(0, 0, 0, 0.05);
-	box-shadow: inset 0 1px 0 #ed5d97, inset 0 -1px 0 #d52365, 0 2px 3px rgba(0, 0, 0, 0.05);
+	border: 1px solid #00b917;
+	border-top-color: #00ba19;
+	border-bottom-color: #00b013;
+	background-color: #00eb1e;
+	background-image: -webkit-linear-gradient(top, #00ec20 2%, #00df19 98%);
+	background-image: linear-gradient(to bottom,#00ec20 2%, #00df19 98%);
+	-webkit-box-shadow: inset 0 1px 0 #25ff40, inset 0 -1px 0 #00d319, 0 2px 3px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 #25ff40, inset 0 -1px 0 #00d319, 0 2px 3px rgba(0, 0, 0, 0.05);
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.05);
 }
 
@@ -2609,7 +2609,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-button-danger:hover:after {
-	background-color: rgba(242, 111, 163, 0.1);
+	background-color: rgba(56, 255, 82, 0.1);
 }
 
 .mytheme .v-button-danger:focus:after {
@@ -2619,7 +2619,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-button-danger:active:after {
-	background-color: rgba(136, 2, 56, 0.2);
+	background-color: rgba(0, 118, 15, 0.2);
 }
 
 .mytheme .v-button-borderless {
@@ -3419,14 +3419,14 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-filterselect-error .v-filterselect-input {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .mytheme .v-filterselect-error .v-filterselect-button {
-	color: #eb2977;
-	border-color: #eb2977;
+	color: #00eb1e;
+	border-color: #00eb1e;
 }
 
 .mytheme .v-filterselect-error-info .v-filterselect-input {
@@ -5321,12 +5321,12 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-grid-editor-cells > div .error::before {
-	border-top: 6px solid #eb2977;
+	border-top: 6px solid #00eb1e;
 	border-right: 6px solid transparent;
 }
 
 .mytheme .v-grid-editor-cells > div .error, .mytheme .v-grid-editor-cells > div .error > input {
-	background-color: #fffbfc;
+	background-color: #fafffa;
 }
 
 .mytheme .v-grid-editor-cells > div .v-textfield, .mytheme .v-grid-editor-cells > div .v-textfield-focus, .mytheme .v-grid-editor-cells > div .v-datefield, .mytheme .v-grid-editor-cells > div .v-datefield .v-textfield-focus, .mytheme .v-grid-editor-cells > div .v-filterselect-input, .mytheme .v-grid-editor-cells > div .v-filterselect-input:focus {
@@ -5372,7 +5372,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-grid-editor-message > div:before {
 	display: inline-block;
-	color: #eb2977;
+	color: #00eb1e;
 	font-weight: 600;
 	width: 11px;
 	text-align: center;
@@ -5511,9 +5511,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-textfield-error {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .mytheme .v-textfield-error-info {
@@ -6017,9 +6017,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-textarea-error {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .mytheme .v-textarea-borderless {
@@ -6374,14 +6374,14 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-datefield-error .v-datefield-textfield {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .mytheme .v-datefield-error .v-datefield-button {
-	color: #eb2977;
-	border-color: #eb2977;
+	color: #00eb1e;
+	border-color: #00eb1e;
 }
 
 .mytheme .v-datefield-error-info .v-datefield-textfield {
@@ -11460,9 +11460,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-select-twincol-error .v-select-twincol-options, .mytheme .v-select-twincol-error .v-select-twincol-selections {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .mytheme .v-select-twincol-error-info .v-select-twincol-options, .mytheme .v-select-twincol-error-info .v-select-twincol-selections {
@@ -11524,9 +11524,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-select-error .v-select-select {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .mytheme .v-calendar-header-day {
@@ -12118,12 +12118,12 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-label-failure {
-	border-color: #eb2977;
+	border-color: #00eb1e;
 }
 
 .mytheme .v-label-failure:before {
 	content: "\f05e";
-	color: #eb2977;
+	color: #00eb1e;
 }
 
 .mytheme [draggable=true] {
@@ -12256,9 +12256,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-select-error .v-select-select {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .mytheme .v-popupview {
@@ -12733,7 +12733,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-Notification.error {
-	background: #eb2977;
+	background: #00eb1e;
 	font-weight: 500;
 	-webkit-box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.25);
 	box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.25);
@@ -12744,7 +12744,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-Notification.error .v-Notification-description {
-	color: #f3dce5;
+	color: #d3f4d7;
 }
 
 .mytheme .v-Notification.dark {
@@ -12904,11 +12904,11 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-Notification.failure {
-	border-color: #eb2977;
+	border-color: #00eb1e;
 }
 
 .mytheme .v-Notification.failure .v-Notification-caption {
-	color: #eb2977;
+	color: #00eb1e;
 }
 
 .mytheme .v-Notification.failure .v-Notification-caption:before {
@@ -13433,6 +13433,30 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-grid-row.anulado {
 	color: #C2B4AA;
+}
+
+.mytheme .v-filterselect-error-error .v-filterselect-input {
+	border-color: #3bed61 !important;
+	background: #ffe48e;
+	color: #6c2621;
+}
+
+.mytheme .v-filterselect-error-error .v-filterselect-button {
+	color: #3bed4c;
+	border-color: #3bed61;
+}
+
+.mytheme .v-textfield-error-error {
+	border-color: #3bed61 !important;
+	background: #ffe48e;
+	color: #6c2621;
+}
+
+.mytheme .v-errorindicator-error {
+	color: #3bed61;
+	font-weight: 600;
+	width: 11px;
+	text-align: center;
 }
 
 .mytheme .login-screen {
@@ -14036,9 +14060,16 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .v-textfield-warning {
-	border-color: #2bff11 !important;
+	border-color: #ff000f !important;
 	background: #FEFFBC !important;
 	color: #6c213f;
+}
+
+.v-textfield-yield.v-disabled {
+	border-color: #ff000f !important;
+	background: #00eb1e;
+	color: #e2242f;
+	font-weight: bold;
 }
 
 .contextmenu.v-app, .contextmenu.v-app-loading {
@@ -14171,7 +14202,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-errorindicator {
-	color: #eb2977;
+	color: #00eb1e;
 	font-weight: 600;
 	width: 11px;
 	text-align: center;
@@ -14237,7 +14268,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-required-field-indicator {
-	color: #eb2977;
+	color: #00eb1e;
 	padding: 0 0.2em;
 }
 
@@ -14321,7 +14352,7 @@ div.v-layout.v-horizontal.v-widget {
 .contextmenu .v-tooltip .v-errormessage {
 	background-color: white;
 	background-color: #fff;
-	color: #eb2977;
+	color: #00eb1e;
 	margin: -3px -6px;
 	padding: 3px 6px;
 	max-height: 10em;
@@ -14790,19 +14821,19 @@ div.v-layout.v-horizontal.v-widget {
 .contextmenu .v-button-danger {
 	height: 22px;
 	padding: 0 10px;
-	color: #f9eef2;
+	color: #eaf9ec;
 	font-weight: 500;
 	
 	
 	border-radius: 4px;
-	border: 1px solid #b9205e;
-	border-top-color: #ba2265;
-	border-bottom-color: #b01b52;
-	background-color: #eb2977;
-	background-image: -webkit-linear-gradient(top, #ec2c80 2%, #df2368 98%);
-	background-image: linear-gradient(to bottom,#ec2c80 2%, #df2368 98%);
-	-webkit-box-shadow: inset 0 1px 0 #ed5d97, inset 0 -1px 0 #d52365, 0 2px 3px rgba(0, 0, 0, 0.05);
-	box-shadow: inset 0 1px 0 #ed5d97, inset 0 -1px 0 #d52365, 0 2px 3px rgba(0, 0, 0, 0.05);
+	border: 1px solid #00b917;
+	border-top-color: #00ba19;
+	border-bottom-color: #00b013;
+	background-color: #00eb1e;
+	background-image: -webkit-linear-gradient(top, #00ec20 2%, #00df19 98%);
+	background-image: linear-gradient(to bottom,#00ec20 2%, #00df19 98%);
+	-webkit-box-shadow: inset 0 1px 0 #25ff40, inset 0 -1px 0 #00d319, 0 2px 3px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 #25ff40, inset 0 -1px 0 #00d319, 0 2px 3px rgba(0, 0, 0, 0.05);
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.05);
 }
 
@@ -14815,7 +14846,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-button-danger:hover:after {
-	background-color: rgba(242, 111, 163, 0.1);
+	background-color: rgba(56, 255, 82, 0.1);
 }
 
 .contextmenu .v-button-danger:focus:after {
@@ -14825,7 +14856,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-button-danger:active:after {
-	background-color: rgba(136, 2, 56, 0.2);
+	background-color: rgba(0, 118, 15, 0.2);
 }
 
 .contextmenu .v-button-borderless {
@@ -15625,14 +15656,14 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-filterselect-error .v-filterselect-input {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .contextmenu .v-filterselect-error .v-filterselect-button {
-	color: #eb2977;
-	border-color: #eb2977;
+	color: #00eb1e;
+	border-color: #00eb1e;
 }
 
 .contextmenu .v-filterselect-error-info .v-filterselect-input {
@@ -17527,12 +17558,12 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-grid-editor-cells > div .error::before {
-	border-top: 6px solid #eb2977;
+	border-top: 6px solid #00eb1e;
 	border-right: 6px solid transparent;
 }
 
 .contextmenu .v-grid-editor-cells > div .error, .contextmenu .v-grid-editor-cells > div .error > input {
-	background-color: #fffbfc;
+	background-color: #fafffa;
 }
 
 .contextmenu .v-grid-editor-cells > div .v-textfield, .contextmenu .v-grid-editor-cells > div .v-textfield-focus, .contextmenu .v-grid-editor-cells > div .v-datefield, .contextmenu .v-grid-editor-cells > div .v-datefield .v-textfield-focus, .contextmenu .v-grid-editor-cells > div .v-filterselect-input, .contextmenu .v-grid-editor-cells > div .v-filterselect-input:focus {
@@ -17578,7 +17609,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .contextmenu .v-grid-editor-message > div:before {
 	display: inline-block;
-	color: #eb2977;
+	color: #00eb1e;
 	font-weight: 600;
 	width: 11px;
 	text-align: center;
@@ -17717,9 +17748,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-textfield-error {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .contextmenu .v-textfield-error-info {
@@ -18223,9 +18254,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-textarea-error {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .contextmenu .v-textarea-borderless {
@@ -18580,14 +18611,14 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-datefield-error .v-datefield-textfield {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .contextmenu .v-datefield-error .v-datefield-button {
-	color: #eb2977;
-	border-color: #eb2977;
+	color: #00eb1e;
+	border-color: #00eb1e;
 }
 
 .contextmenu .v-datefield-error-info .v-datefield-textfield {
@@ -23666,9 +23697,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-select-twincol-error .v-select-twincol-options, .contextmenu .v-select-twincol-error .v-select-twincol-selections {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .contextmenu .v-select-twincol-error-info .v-select-twincol-options, .contextmenu .v-select-twincol-error-info .v-select-twincol-selections {
@@ -23730,9 +23761,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-select-error .v-select-select {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .contextmenu .v-calendar-header-day {
@@ -24324,12 +24355,12 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-label-failure {
-	border-color: #eb2977;
+	border-color: #00eb1e;
 }
 
 .contextmenu .v-label-failure:before {
 	content: "\f05e";
-	color: #eb2977;
+	color: #00eb1e;
 }
 
 .contextmenu [draggable=true] {
@@ -24462,9 +24493,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-select-error .v-select-select {
-	border-color: #eb2977 !important;
-	background: #fffbfc;
-	color: #6c213f;
+	border-color: #00eb1e !important;
+	background: #fafffa;
+	color: #197425;
 }
 
 .contextmenu .v-popupview {
@@ -24939,7 +24970,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-Notification.error {
-	background: #eb2977;
+	background: #00eb1e;
 	font-weight: 500;
 	-webkit-box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.25);
 	box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.25);
@@ -24950,7 +24981,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-Notification.error .v-Notification-description {
-	color: #f3dce5;
+	color: #d3f4d7;
 }
 
 .contextmenu .v-Notification.dark {
@@ -25110,11 +25141,11 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .contextmenu .v-Notification.failure {
-	border-color: #eb2977;
+	border-color: #00eb1e;
 }
 
 .contextmenu .v-Notification.failure .v-Notification-caption {
-	color: #eb2977;
+	color: #00eb1e;
 }
 
 .contextmenu .v-Notification.failure .v-Notification-caption:before {

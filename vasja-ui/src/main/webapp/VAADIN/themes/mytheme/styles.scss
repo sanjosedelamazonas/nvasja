@@ -26,10 +26,19 @@ $v-layout-margin: $v-layout-margin-top $v-layout-margin-right $v-layout-margin-b
     color: gray;
 }
 
+// WARN - Egreso field if monto lower than Saldo Caja or Saldo Proyecto
 .v-textfield-warning {
-	border-color: #2bff11 !important;
+	border-color: #ff000f !important;
 	background: #FEFFBC !important;
 	color: #6c213f;
+}
+
+// WARN - Saldo Caja or Saldo Proyecto when Egreso monto higher than the saldo
+.v-textfield-yield.v-disabled {
+	border-color: #ff000f !important;
+	background: #00eb1e;
+	color: #e2242f;
+	font-weight: bold
 }
 
 .contextmenu {

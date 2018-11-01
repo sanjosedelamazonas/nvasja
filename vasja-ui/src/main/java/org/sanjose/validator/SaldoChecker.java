@@ -41,8 +41,21 @@ public class SaldoChecker {
             proyecto = new BigDecimal(nf.parse(proyectoField.getValue()).toString());
         } catch (ParseException e) {
         }
-        if (newVal != null && ((proyecto != null && newVal.compareTo(proyecto) > 0) || (caja != null && newVal.compareTo(caja) > 0))) {
+        boolean isWarn = false;
+        if (newVal != null && (proyecto != null && newVal.compareTo(proyecto) > 0)) {
             //Notification.show("El monto de egreso esta mas grande que el saldo disponible", Notification.Type.WARNING_MESSAGE);
+            proyectoField.addStyleName("yield");
+            isWarn = true;
+        } else {
+            proyectoField.removeStyleName("yield");
+        }
+        if (newVal != null && (caja != null && newVal.compareTo(caja) > 0)) {
+            saldoField.addStyleName("yield");
+            isWarn = true;
+        } else {
+            saldoField.removeStyleName("yield");
+        }
+        if (isWarn) {
             egresoField.addStyleName("warning");
         } else {
             egresoField.removeStyleName("warning");

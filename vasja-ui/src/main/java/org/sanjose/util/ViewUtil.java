@@ -325,13 +325,17 @@ public class ViewUtil {
     public static void openInNewWindow(ComprobanteViewing component) {
         Window subWindow = new Window();
         subWindow.setWindowMode(WindowMode.NORMAL);
-        int width = component instanceof TransferenciaView ? 1280 : 1100;
+        int width = component instanceof TransferenciaView ? 1280 : 990;
+        int height = component instanceof TransferenciaView ? 600 : 560;
+        String caption = component instanceof TransferenciaView ? "Cargo/Abono" : "Comprobante";
         subWindow.setWidth(width, Sizeable.Unit.PIXELS);
-        subWindow.setHeight(600, Sizeable.Unit.PIXELS);
-        subWindow.setModal(false);
+        subWindow.setHeight(height, Sizeable.Unit.PIXELS);
+        subWindow.setModal(true);
         subWindow.setContent((Component)component);
-        component.setSubWindow(subWindow);
         subWindow.setClosable(false);
+        subWindow.setDraggable(true);
+        subWindow.setCaption(caption);
+        component.setSubWindow(subWindow);
         // Don't show navigation buttons if opened in subwindow Nuevo Comprobante
         if (component instanceof ComprobanteView) {
             component.getNuevoComprobante().setVisible(false);

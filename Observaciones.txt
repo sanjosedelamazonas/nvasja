@@ -54,22 +54,23 @@ DONE
 DONE
 - przycisk ver detalles nie wybiera actualnego recordu na podgladzie tylko poprzedni
 DONE
-- procedura ustawia cobrado w comprobantedetalle po wybraniu cobrado w systemie
 - jak w cheque ktory byl juz zapisany zmieniam konto na jakies z inna moneda (np z soles na dolares) to powinno wyzerowac soles y zapisa w nowej walucie wartosci, a zamiast tego mowi ze nie ma wartosci w nowej walucie
 DONE
 - przy zapisywaniu bancodetalle dla nowego cheque pola puste (terceros o proyecto, cod_especial, cod)ctaproyecto, cod_contraparte, cod_fianciera, cod_ctacontable, codcontracta.....) nie powinno byc null sino vacio
 DONE
 - ekran cheque - nr 02- + nr item na dole + sam item w liście - czerwono jak czek nie ma pokrycia - saldo na czerwono!!!
+DONE
+-> hay que implementar avertencia en caja cuando es cargo y 1. no tiene saldo la caja 2. cuando proyecto/tercero no tiene saldo
+DONE
 - ekran cheque - saldo w miejscu cobrado i enviado, Auxialiar Entregado por - szerokie + monto total, glosa pod spodem
-    - zamiast wykrzykników coś innego pokazujące pola do wypełnienia
+    - zamiast wykrzykników coś innego pokazujące pola do wypełnienia - DONE (zielony kolor zamiast czerwonego)
     - większa glosa
     - responsable dłuższe
     - auxiliar - wymagany!!! - DONE
 
--> hay que implementar avertencia en caja cuando es cargo y 1. no tiene saldo la caja 2. cuando proyecto/tercero no tiene saldo
-!!!!
 - okno na saldos osobne - zalezne od periodo w ktorym wybrana caja
 ? ->
+- procedura ustawia cobrado w comprobantedetalle po wybraniu cobrado w systemie
 
 KIEDYS:
 2. Reporte Transferencia
