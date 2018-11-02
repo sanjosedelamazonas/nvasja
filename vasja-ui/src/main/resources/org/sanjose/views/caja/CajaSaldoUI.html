@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout id="verticalMain" size-full margin>
+   <vaadin-horizontal-layout spacing width-full height="200px" _id="horizontalSaldos">
+    <vaadin-vertical-layout caption="Saldo Inicial" size-auto _id="verticalSaldoInicial"> 
+     <vaadin-grid width="450px" height="180px" _id="gridSaldoInicial"></vaadin-grid> 
+    </vaadin-vertical-layout> 
+    <vaadin-vertical-layout caption="Saldo Final" spacing size-auto _id="verticalSaldoFinal"> 
+     <vaadin-grid editor-save-caption="Guardar" editor-cancel-caption="Anular" width="450px" height="180px" _id="gridSaldoFInal"></vaadin-grid> 
+    </vaadin-vertical-layout> 
+    <vaadin-vertical-layout spacing margin _id="verticalButtons" :expand>
+        <vaadin-grid-layout caption="Total del Dia" spacing width="300px" _id="gridSaldoDelDia">
+            <row>
+                <column>
+                    <vaadin-label size-auto plain-text></vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="lblIng" :middle :right>
+                        Ingreso:
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="lblEgr" :middle :right>
+                        Egreso:
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="lblSaldo" :middle :right>
+                        Saldo:
+                    </vaadin-label>
+                </column>
+            </row>
+            <row>
+                <column>
+                    <vaadin-label size-auto plain-text _id="lblSol" :middle>
+                        Sol:
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="valSolIng" :middle :right>
+                        0.00
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="valSolEgr" :middle :right>
+                        0.00
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="valSolSaldo" :middle :right>
+                        0.00
+                    </vaadin-label>
+                </column>
+            </row>
+            <row>
+                <column>
+                    <vaadin-label size-auto plain-text _id="lblDolar" :middle>
+                        Dólar:
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="valDolIng" :middle :right>
+                        0.00
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="valDolEgr" :middle :right>
+                        0.00
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="valDolSaldo" :middle :right>
+                        0.00
+                    </vaadin-label>
+                </column>
+            </row>
+            <row>
+                <column>
+                    <vaadin-label size-auto plain-text _id="lblEur" :middle>
+                        Euro:
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="valEurIng" :middle :right>
+                        0.00
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="valEurEgr" :middle :right>
+                        0.00
+                    </vaadin-label>
+                </column>
+                <column>
+                    <vaadin-label size-auto plain-text _id="valEurSaldo" :middle :right>
+                        0.00
+                    </vaadin-label>
+                </column>
+            </row>
+        </vaadin-grid-layout>
+    </vaadin-vertical-layout> 
+   </vaadin-horizontal-layout> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>
