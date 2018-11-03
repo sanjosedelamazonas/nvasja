@@ -39,6 +39,8 @@ public class CajaSaldoUI extends VerticalLayout {
     protected Label valEurIng;
     protected Label valEurEgr;
     protected Label valEurSaldo;
+    protected Button btnReporte;
+    protected Button btnAnular;
 
     public CajaSaldoUI() {
 		Design.read(this);

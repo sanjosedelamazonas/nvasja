@@ -43,6 +43,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
 	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);
     private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
     private CajaManejoView view;
+    private CajaSaldoView saldosView = new CajaSaldoView();
     private Grid.FooterRow saldosFooterInicial;
     private Grid.FooterRow saldosFooterFinal;
 
@@ -57,7 +58,8 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
         view.btnImprimir.addClickListener(e -> printComprobante());
         view.btnReporteCaja.addClickListener(e -> {
-            ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
+            //ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
+            ViewUtil.openCajaSaldosInNewWindow(saldosView);
         });
 
         GridContextMenu gridContextMenu = new GridContextMenu(view.getGridCaja());
@@ -175,19 +177,19 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
                 null, ConfigurationUtil.get("DECIMAL_FORMAT"));
 
         // PEN
-        view.getValSolEgr().setValue(dpf.format(totalSolesDiaEgr.doubleValue()));
-        view.getValSolIng().setValue(dpf.format(totalSolesDiaIng.doubleValue()));
-        view.getValSolSaldo().setValue(dpf.format(totalSolesDiaIng.subtract(totalSolesDiaEgr).doubleValue()));
+        saldosView.getValSolEgr().setValue(dpf.format(totalSolesDiaEgr.doubleValue()));
+        saldosView.getValSolIng().setValue(dpf.format(totalSolesDiaIng.doubleValue()));
+        saldosView.getValSolSaldo().setValue(dpf.format(totalSolesDiaIng.subtract(totalSolesDiaEgr).doubleValue()));
         // USD
-        view.getValDolEgr().setValue(dpf.format(totalUsdDiaEgr.doubleValue()));
-        view.getValDolIng().setValue(dpf.format(totalUsdDiaIng.doubleValue()));
-        view.getValDolSaldo().setValue(dpf.format(totalUsdDiaIng.subtract(totalUsdDiaEgr).doubleValue()));
+        saldosView.getValDolEgr().setValue(dpf.format(totalUsdDiaEgr.doubleValue()));
+        saldosView.getValDolIng().setValue(dpf.format(totalUsdDiaIng.doubleValue()));
+        saldosView.getValDolSaldo().setValue(dpf.format(totalUsdDiaIng.subtract(totalUsdDiaEgr).doubleValue()));
         // EUR
-        view.getValEurEgr().setValue(dpf.format(totalEurDiaEgr.doubleValue()));
-        view.getValEurIng().setValue(dpf.format(totalEurDiaIng.doubleValue()));
-        view.getValEurSaldo().setValue(dpf.format(totalEurDiaIng.subtract(totalEurDiaEgr).doubleValue()));
+        saldosView.getValEurEgr().setValue(dpf.format(totalEurDiaEgr.doubleValue()));
+        saldosView.getValEurIng().setValue(dpf.format(totalEurDiaIng.doubleValue()));
+        saldosView.getValEurSaldo().setValue(dpf.format(totalEurDiaIng.subtract(totalEurDiaEgr).doubleValue()));
 
-        view.gridSaldoDelDia.setColumnExpandRatio(0, 0);
+        saldosView.gridSaldoDelDia.setColumnExpandRatio(0, 0);
     }
 
 }

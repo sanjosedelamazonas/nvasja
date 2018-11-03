@@ -25,6 +25,7 @@ import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpBancodetalle;
 import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
+import org.sanjose.views.caja.CajaSaldoUI;
 import org.sanjose.views.caja.ComprobanteView;
 import org.sanjose.views.caja.ComprobanteViewing;
 import org.sanjose.views.caja.TransferenciaView;
@@ -344,6 +345,33 @@ public class ViewUtil {
         } else {
             ((TransferenciaView)component).getNuevaTransBtn().setVisible(false);
         }
+        UI.getCurrent().addWindow(subWindow);
+    }
+
+    public static void openCajaSaldosInNewWindow(Component component) {
+        Window subWindow = new Window();
+        subWindow.setWindowMode(WindowMode.NORMAL);
+        int width = 1280;
+        int height = 600;
+        String caption = "Saldos de caja";
+        subWindow.setWidth(width, Sizeable.Unit.PIXELS);
+        subWindow.setHeight(height, Sizeable.Unit.PIXELS);
+        subWindow.setModal(true);
+        subWindow.setContent((Component)component);
+        subWindow.setClosable(false);
+        subWindow.setDraggable(true);
+        subWindow.setCaption(caption);
+        //component.setSubWindow(subWindow);
+        // Don't show navigation buttons if opened in subwindow Nuevo Comprobante
+/*
+        if (component instanceof ComprobanteView) {
+            component.getNuevoComprobante().setVisible(false);
+            component.getModificarBtn().setVisible(false);
+            component.getCerrarBtn().setVisible(false);
+        } else {
+            ((TransferenciaView)component).getNuevaTransBtn().setVisible(false);
+        }
+*/
         UI.getCurrent().addWindow(subWindow);
     }
 }
