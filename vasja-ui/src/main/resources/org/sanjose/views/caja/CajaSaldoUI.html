@@ -5,12 +5,12 @@
  </head> 
  <body> 
   <vaadin-vertical-layout id="verticalMain" size-full margin>
-   <vaadin-horizontal-layout spacing width-full height="200px" _id="horizontalSaldos">
+   <vaadin-horizontal-layout spacing width-full height="250px" _id="horizontalSaldos">
     <vaadin-vertical-layout caption="Saldo Inicial" size-auto _id="verticalSaldoInicial"> 
-     <vaadin-grid width="450px" height="180px" _id="gridSaldoInicial"></vaadin-grid> 
+     <vaadin-grid width="450px" height="250px" _id="gridSaldoInicial"></vaadin-grid>
     </vaadin-vertical-layout> 
     <vaadin-vertical-layout caption="Saldo Final" spacing size-auto _id="verticalSaldoFinal"> 
-     <vaadin-grid editor-save-caption="Guardar" editor-cancel-caption="Anular" width="450px" height="180px" _id="gridSaldoFInal"></vaadin-grid> 
+     <vaadin-grid editor-save-caption="Guardar" editor-cancel-caption="Anular" width="450px" height="250px" _id="gridSaldoFInal"></vaadin-grid>
     </vaadin-vertical-layout> 
     <vaadin-vertical-layout spacing margin _id="verticalButtons" :expand>
         <vaadin-grid-layout caption="Total del Dia" spacing width="300px" _id="gridSaldoDelDia">
@@ -103,14 +103,15 @@
         </vaadin-grid-layout>
     </vaadin-vertical-layout> 
    </vaadin-horizontal-layout>
-      <vaadin-horizontal-layout width="970px" _id="buttons">
-          <vaadin-button width-full plain-text _id="btnReporte">
-              Reporte
-          </vaadin-button>
-          <vaadin-button width-full height="22px" plain-text _id="btnAnular">
-              Anular
-          </vaadin-button>
-      </vaadin-horizontal-layout>
+
+   <vaadin-horizontal-layout width-full _id="buttons">
+      <vaadin-button width-full plain-text _id="btnReporte">
+          Reporte
+      </vaadin-button>
+      <vaadin-button width-full height="22px" plain-text _id="btnAnular">
+          Anular
+      </vaadin-button>
+    </vaadin-horizontal-layout>
   </vaadin-vertical-layout>  
  </body>
 </html>

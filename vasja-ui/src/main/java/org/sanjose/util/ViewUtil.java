@@ -25,15 +25,13 @@ import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpBancodetalle;
 import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
-import org.sanjose.views.caja.CajaSaldoUI;
-import org.sanjose.views.caja.ComprobanteView;
-import org.sanjose.views.caja.ComprobanteViewing;
-import org.sanjose.views.caja.TransferenciaView;
+import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
 
 import javax.print.PrintException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -348,30 +346,22 @@ public class ViewUtil {
         UI.getCurrent().addWindow(subWindow);
     }
 
-    public static void openCajaSaldosInNewWindow(Component component) {
+    public static void openCajaSaldosInNewWindow(CajaSaldoView component, Date fromDate, Date toDate) {
         Window subWindow = new Window();
         subWindow.setWindowMode(WindowMode.NORMAL);
         int width = 1280;
-        int height = 600;
-        String caption = "Saldos de caja";
+        int height = 400;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
+        String caption = "Saldos de Caja: <b>" + sdf.format(fromDate) + "</b> - <b>" + sdf.format(toDate) +"</b>";
         subWindow.setWidth(width, Sizeable.Unit.PIXELS);
         subWindow.setHeight(height, Sizeable.Unit.PIXELS);
         subWindow.setModal(true);
         subWindow.setContent((Component)component);
         subWindow.setClosable(false);
         subWindow.setDraggable(true);
-        subWindow.setCaption(caption);
-        //component.setSubWindow(subWindow);
-        // Don't show navigation buttons if opened in subwindow Nuevo Comprobante
-/*
-        if (component instanceof ComprobanteView) {
-            component.getNuevoComprobante().setVisible(false);
-            component.getModificarBtn().setVisible(false);
-            component.getCerrarBtn().setVisible(false);
-        } else {
-            ((TransferenciaView)component).getNuevaTransBtn().setVisible(false);
-        }
-*/
+        subWindow.setCaptionAsHtml(true);
+        subWindow.setCaption("<center>"+caption+"</center>");
+        component.setSubWindow(subWindow);
         UI.getCurrent().addWindow(subWindow);
     }
 }

@@ -124,12 +124,10 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         ViewUtil.colorizeRows(gridCaja);
 
         // Set Saldos Inicial
-        fechaDesde.addValueChangeListener(ev -> {viewLogic.setSaldos(gridSaldoInicial, true); refreshCajas();});
-        fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));
+        fechaDesde.addValueChangeListener(ev -> refreshCajas());
+        fechaHasta.addValueChangeListener(ev -> refreshCajas());
 
         viewLogic.init(this);
-        viewLogic.setSaldos(gridSaldoInicial, true);
-        viewLogic.setSaldos(gridSaldoFInal, false);
 
     }
 
@@ -194,43 +192,6 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
     public ComboBox getSelFiltroCaja() {
         return selFiltroCaja;
     }
-
-    public Label getValSolIng() {
-        return valSolIng;
-    }
-
-    public Label getValSolEgr() {
-        return valSolEgr;
-    }
-
-    public Label getValSolSaldo() {
-        return valSolSaldo;
-    }
-
-    public Label getValDolIng() {
-        return valDolIng;
-    }
-
-    public Label getValDolEgr() {
-        return valDolEgr;
-    }
-
-    public Label getValDolSaldo() {
-        return valDolSaldo;
-    }
-
-    public Label getValEurIng() {
-        return valEurIng;
-    }
-
-    public Label getValEurEgr() {
-        return valEurEgr;
-    }
-
-    public Label getValEurSaldo() {
-        return valEurSaldo;
-    }
-
 
     public Grid getGridCaja() {
         return gridCaja;

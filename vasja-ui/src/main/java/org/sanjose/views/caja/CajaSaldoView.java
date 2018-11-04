@@ -7,10 +7,8 @@ import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.DateRenderer;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.util.*;
@@ -31,10 +29,21 @@ import java.util.Date;
 public class CajaSaldoView extends CajaSaldoUI {
 
     public static final String VIEW_NAME = "Saldos de caja";
+    private Window subWindow;
+
+    public CajaSaldoView() {
+        init();
+    }
 
     public void init() {
         setSizeFull();
         addStyleName("crud-view");
+        getBtnAnular().addClickListener(clickEvent -> closeWindow());
+    }
+
+    private void closeWindow() {
+        if (getSubWindow()!=null)
+            getSubWindow().close();
     }
 
     public Label getValSolIng() {
@@ -71,5 +80,29 @@ public class CajaSaldoView extends CajaSaldoUI {
 
     public Label getValEurSaldo() {
         return valEurSaldo;
+    }
+
+    public Button getBtnReporte() {
+        return btnReporte;
+    }
+
+    public Button getBtnAnular() {
+        return btnAnular;
+    }
+
+    public Grid getGridSaldoInicial() {
+        return gridSaldoInicial;
+    }
+
+    public Grid getGridSaldoFInal() {
+        return gridSaldoFInal;
+    }
+
+    public Window getSubWindow() {
+        return subWindow;
+    }
+
+    public void setSubWindow(Window subWindow) {
+        this.subWindow = subWindow;
     }
 }

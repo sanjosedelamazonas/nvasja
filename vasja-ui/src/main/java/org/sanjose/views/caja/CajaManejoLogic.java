@@ -44,8 +44,8 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
     private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
     private CajaManejoView view;
     private CajaSaldoView saldosView = new CajaSaldoView();
-    private Grid.FooterRow saldosFooterInicial;
-    private Grid.FooterRow saldosFooterFinal;
+    private Grid.FooterRow saldosFooterInicial=null;
+    private Grid.FooterRow saldosFooterFinal=null;
 
     public void init(CajaManejoView cajaManejoView) {
         view = cajaManejoView;
@@ -57,9 +57,12 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         //
         view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
         view.btnImprimir.addClickListener(e -> printComprobante());
+        saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null));
         view.btnReporteCaja.addClickListener(e -> {
-            //ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
-            ViewUtil.openCajaSaldosInNewWindow(saldosView);
+            setSaldos(saldosView.getGridSaldoInicial(), true);
+            setSaldos(saldosView.getGridSaldoFInal(), false);
+            setSaldoDelDia();
+            ViewUtil.openCajaSaldosInNewWindow(saldosView, view.fechaDesde.getValue(), view.fechaHasta.getValue());
         });
 
         GridContextMenu gridContextMenu = new GridContextMenu(view.getGridCaja());
@@ -127,7 +130,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
 
         grid.setFooterVisible(true);
         if (isInicial) {
-            if (saldosFooterInicial == null) saldosFooterInicial = grid.addFooterRowAt(0);
+            if (saldosFooterInicial==null) saldosFooterInicial = grid.addFooterRowAt(0);
             DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
                     null, ConfigurationUtil.get("DECIMAL_FORMAT"));
             saldosFooterInicial.getCell("codigo").setText("TOTAL:");
@@ -138,7 +141,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
             saldosFooterInicial.getCell("euros").setText(dpf.format(totalEur.doubleValue()));
             saldosFooterInicial.getCell("euros").setStyleName("v-align-right");
         } else {
-            if (saldosFooterFinal == null) saldosFooterFinal = grid.addFooterRowAt(0);
+            if (saldosFooterFinal==null) saldosFooterFinal = grid.addFooterRowAt(0);
             DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
                     null, ConfigurationUtil.get("DECIMAL_FORMAT"));
             saldosFooterFinal.getCell("codigo").setText("TOTAL:");
@@ -149,7 +152,6 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
             saldosFooterFinal.getCell("euros").setText(dpf.format(totalEur.doubleValue()));
             saldosFooterFinal.getCell("euros").setStyleName("v-align-right");
         }
-        setSaldoDelDia();
     }
 
     public void setSaldoDelDia() {

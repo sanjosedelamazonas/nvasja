@@ -35,28 +35,6 @@ public class CajaManejoUI extends VerticalLayout {
     protected Button nuevaTransferencia;
     protected Button btnReporteCaja;
     protected Grid gridCaja;
-    protected HorizontalLayout horizontalSaldos;
-    protected VerticalLayout verticalSaldoInicial;
-    protected Grid gridSaldoInicial;
-    protected VerticalLayout verticalSaldoFinal;
-    protected Grid gridSaldoFInal;
-    protected VerticalLayout verticalButtons;
-    protected GridLayout gridSaldoDelDia;
-    protected Label lblIng;
-    protected Label lblEgr;
-    protected Label lblSaldo;
-    protected Label lblSol;
-    protected Label valSolIng;
-    protected Label valSolEgr;
-    protected Label valSolSaldo;
-    protected Label lblDolar;
-    protected Label valDolIng;
-    protected Label valDolEgr;
-    protected Label valDolSaldo;
-    protected Label lblEur;
-    protected Label valEurIng;
-    protected Label valEurEgr;
-    protected Label valEurSaldo;
 
     public CajaManejoUI() {
 		Design.read(this);
