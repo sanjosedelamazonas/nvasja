@@ -56,6 +56,7 @@ public class BancoConciliacionLogic implements Serializable, SaldoDelDia {
         view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+                log.debug("in pre commit in banco concilliacion");
             }
 
             @Override

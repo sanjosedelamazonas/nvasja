@@ -10,4 +10,7 @@ public interface ScpComprobantedetalleRep extends JpaRepository<ScpComprobantede
     List<ScpComprobantedetalle> findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobanteAndCodCtacontable(
             String s, String s2, String s3, String s4, String s5);
 
+    List<ScpComprobantedetalle> findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobante(
+            String s, String s2, String s3, String s4);
+
 }

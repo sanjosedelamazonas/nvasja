@@ -258,6 +258,8 @@ public class BancoLogic extends BancoItemLogic {
             bancoItem = view.getService().saveBancoOperacion(cabecera, bancoItem, moneda);
             bancocabecera = bancoItem.getScpBancocabecera();
             log.debug("cabecera after save: " + bancoItem.getScpBancocabecera());
+            // Update flg_cobrado y mes_cobrado en Comprobante detalle
+            view.getService().updateCobradoInCabecera(bancocabecera);
             setNumVoucher(bancoItem);
             moneda = item.getCodTipomoneda();
             if (isNew) {

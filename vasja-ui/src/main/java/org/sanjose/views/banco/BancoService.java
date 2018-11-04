@@ -232,9 +232,9 @@ public class BancoService {
     public void updateCobradoInCabecera(ScpBancocabecera bancocabecera) {
         if (bancocabecera.isEnviado()) {
             // UPDATE in contabilidad
-            List<ScpComprobantedetalle> comprobantedetalles = scpComprobantedetalleRep.findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobanteAndCodCtacontable(
+            List<ScpComprobantedetalle> comprobantedetalles = scpComprobantedetalleRep.findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobante(
                     bancocabecera.getTxtAnoproceso(), bancocabecera.getCodMes(), bancocabecera.getCodOrigenenlace(),
-                    bancocabecera.getCodComprobanteenlace(), bancocabecera.getCodCtacontable());
+                    bancocabecera.getCodComprobanteenlace()); //, bancocabecera.getCodCtacontable());
             log.info("Will update comprodets: " + comprobantedetalles.size());
             for (ScpComprobantedetalle det : comprobantedetalles) {
                 if (bancocabecera.getFlgCobrado() != null && bancocabecera.getFlgCobrado()) {

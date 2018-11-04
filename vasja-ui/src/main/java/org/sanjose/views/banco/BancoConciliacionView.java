@@ -67,7 +67,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"id", "txtCorrelativo", "fecFecha", "txtCheque",
             "codProyecto", "codCtacontable",
             "txtNombredestino", "txtGlosaitem",
-            "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo", "flgEnviado", "flg_Anula"};
+            "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo", "flgEnviado", "flg_Anula", "flgCobrado"};
     Grid gridBanco;
 
     FilterableSortableGridTreeContainer container = null;
@@ -106,7 +106,8 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         cobradoChkBox.setCaption("");
         cobradoChkBox.setBigPreset(false);
         gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
-        gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
+        //TODO - disable edit flg_cobrado
+        //gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
 
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
