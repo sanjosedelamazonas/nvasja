@@ -118,6 +118,13 @@ class BancoItemLogic implements Serializable {
 
         // ------------ DETALLE
 
+
+        view.getNumItem().setEnabled(false);
+        view.getMontoTotal().setValue("0.00");
+
+        view.getTipoProyectoTercero().addValueChangeListener(this::setTipoProyectoTerceroLogic);
+
+
         // Proyecto
         DataFilterUtil.bindComboBox(view.getSelProyecto(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()),
                 "txtDescproyecto");
@@ -331,7 +338,6 @@ class BancoItemLogic implements Serializable {
                 "txtNombredestino");
     }
 
-
     private void refreshProyectoYcuentaPorFecha(Date newFecha) {
         if (newFecha==null || view.getService().getPlanRepo()==null) return;
         DataFilterUtil.refreshComboBox(view.getSelCuenta(),
@@ -345,6 +351,30 @@ class BancoItemLogic implements Serializable {
                         findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(newFecha, newFecha, GenUtil.getBegin20thCent()),
                 "codProyecto", "txtDescproyecto", null);
         view.getSelProyecto().addValueChangeListener(this::setProyectoLogic);
+    }
+
+    private void setTipoProyectoTerceroLogic(Property.ValueChangeEvent event) {
+        if (fieldGroup==null) return;
+/*
+        if (isProyecto()) {
+            beanItem.getBean().setCodTercero("");
+            //fieldGroup.unbind(view.getSelProyectoTercero());
+            fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
+            view.getSelProyectoTercero().removeValueChangeListener(this::setTerceroLogic);
+            view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
+            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().
+                            findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(view.getDataFechaComprobante().getValue(), view.getDataFechaComprobante().getValue(), GenUtil.getBegin20thCent()),
+                    "Sel Proyecto", "txtDescproyecto");
+        } else if (isTercero()) {
+            beanItem.getBean().setCodProyecto("");
+            //fieldGroup.unbind(view.getSelProyectoTercero());
+            fieldGroup.bind(view.getSelProyectoTercero(), "codTercero");
+            view.getSelProyectoTercero().removeValueChangeListener(this::setProyectoLogic);
+            view.getSelProyectoTercero().addValueChangeListener(this::setTerceroLogic);
+            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
+                    "txtNombredestino");
+        }
+*/
     }
 
     protected void setCuentaLogic() {

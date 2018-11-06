@@ -394,6 +394,18 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         return imprimirVoucherBtn;
     }
 
+    public TextField getMontoTotal() {
+        return montoTotal;
+    }
+
+    public TextField getNumItem() {
+        return numItem;
+    }
+
+    public OptionGroup getTipoProyectoTercero() {
+        return tipoProyectoTercero;
+    }
+
     @Override
     public void enter(ViewChangeEvent event) {
     }
