@@ -67,7 +67,7 @@ DONE
     - większa glosa
     - responsable dłuższe
     - auxiliar - wymagany!!! - DONE
-
+DONE
 - okno na saldos osobne - zalezne od periodo w ktorym wybrana caja
 DONE
 - procedura ustawia cobrado w comprobantedetalle po wybraniu cobrado w systemie
