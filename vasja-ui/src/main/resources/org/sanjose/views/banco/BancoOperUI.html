@@ -46,52 +46,48 @@
       </vaadin-horizontal-layout>
      </vaadin-form-layout>
      <vaadin-form-layout style-name="billing-formlayout" spacing="false" responsive width="611px" height="328px" margin-top="false" margin-bottom="false" _id="billing_form2">
-      <vaadin-horizontal-layout style-name="cuenta-Layout" spacing>
-       <vaadin-vertical-layout spacing>
-        <vaadin-horizontal-layout description="Proyecto" spacing>
-         <vaadin-text-field description="Num de Voucher" caption="Item" enabled="false" input-prompt="Numero " style-name="form-textfield" responsive width="32px" _id="numItem"></vaadin-text-field>
-         <vaadin-option-group _id="tipoProyectoTercero">
-          <option selected>VASJA/Proyectos</option>
-          <option>Terceros</option>
-         </vaadin-option-group>
-         <vaadin-horizontal-layout>
-          <vaadin-text-field caption="S/." enabled="false" style-name="form-textfield" width="70px" _id="saldoProyPEN"></vaadin-text-field>
-          <vaadin-text-field caption="$" enabled="false" style-name="form-textfield" width="70px" _id="saldoProyUSD"></vaadin-text-field>
-          <vaadin-text-field caption="€" enabled="false" style-name="form-textfield" width="70px" _id="saldoProyEUR"></vaadin-text-field>
-         </vaadin-horizontal-layout>
-        </vaadin-horizontal-layout>
-        <vaadin-horizontal-layout spacing>
-         <vaadin-combo-box input-prompt="sel Proyecto" style-name="form-textfield" item-caption-mode="id" width="407px" _id="selProyectoTercero">
-          <option>Option 1</option>
-          <option>Option 2</option>
-         </vaadin-combo-box>
-         <vaadin-combo-box input-prompt="Fuente" style-name="form-textfield" item-caption-mode="id" width="139px" _id="selFuente">
-          <option>Option 1</option>
-          <option>Option 2</option>
-         </vaadin-combo-box>
-        </vaadin-horizontal-layout>
-       </vaadin-vertical-layout>
+      <vaadin-horizontal-layout description="Proyecto" spacing>
+       <vaadin-text-field description="Num de Voucher" caption="Item" enabled="false" input-prompt="Numero " style-name="form-textfield" responsive width="32px" _id="numItem"></vaadin-text-field>
+       <vaadin-option-group _id="tipoProyectoTercero" :middle :center>
+        <option selected>VASJA/Proyectos</option>
+        <option>Terceros</option>
+       </vaadin-option-group>
+       <vaadin-horizontal-layout>
+        <vaadin-text-field caption="S/." enabled="false" style-name="form-textfield" width="70px" _id="saldoProyPEN"></vaadin-text-field>
+        <vaadin-text-field caption="$" enabled="false" style-name="form-textfield" width="70px" _id="saldoProyUSD"></vaadin-text-field>
+        <vaadin-text-field caption="€" enabled="false" style-name="form-textfield" width="70px" _id="saldoProyEUR"></vaadin-text-field>
+       </vaadin-horizontal-layout>
       </vaadin-horizontal-layout>
-      <vaadin-horizontal-layout spacing width="555px" margin>
-       <vaadin-text-field caption="Glosa por detalle" input-prompt="Glosa por detalle" style-name="form-textfield" width="370px" height="22px" _id="glosaDetalle" :expand></vaadin-text-field>
-       <tm_kod_widgets_numberfield-number-field caption="Ingreso" width="80px" _id="numIngreso"></tm_kod_widgets_numberfield-number-field>
-       <tm_kod_widgets_numberfield-number-field caption="Egreso" width="80px" _id="numEgreso"></tm_kod_widgets_numberfield-number-field>
-      </vaadin-horizontal-layout>
-      <vaadin-horizontal-layout spacing width="562px" margin-left margin-top margin-bottom>
-       <vaadin-combo-box input-prompt="Responsable" style-name="form-textfield" item-caption-mode="id" width="289px" _id="selResponsable" :bottom>
+      <vaadin-horizontal-layout spacing>
+       <vaadin-combo-box input-prompt="sel Proyecto" style-name="form-textfield" item-caption-mode="id" width="411px" _id="selProyectoTercero">
         <option>Option 1</option>
         <option>Option 2</option>
        </vaadin-combo-box>
-       <vaadin-button width="55px" height="22px" plain-text _id="btnResponsable" :bottom :right>
+       <vaadin-combo-box input-prompt="Fuente" style-name="form-textfield" item-caption-mode="id" width="139px" _id="selFuente">
+        <option>Option 1</option>
+        <option>Option 2</option>
+       </vaadin-combo-box>
+      </vaadin-horizontal-layout>
+      <vaadin-horizontal-layout spacing width="557px" height="58px" margin-top margin-bottom>
+       <vaadin-text-field caption="Glosa por detalle" input-prompt="Glosa por detalle" style-name="form-textfield" width="362px" height="22px" _id="glosaDetalle" :expand></vaadin-text-field>
+       <tm_kod_widgets_numberfield-number-field caption="Ingreso" width="80px" _id="numIngreso"></tm_kod_widgets_numberfield-number-field>
+       <tm_kod_widgets_numberfield-number-field caption="Egreso" width="80px" _id="numEgreso"></tm_kod_widgets_numberfield-number-field>
+      </vaadin-horizontal-layout>
+      <vaadin-horizontal-layout width="562px" height="45px" margin-top margin-bottom>
+       <vaadin-combo-box input-prompt="Responsable" style-name="form-textfield" item-caption-mode="id" width="162.9%" height="22px" _id="selResponsable" :middle :right>
+        <option>Option 1</option>
+        <option>Option 2</option>
+       </vaadin-combo-box>
+       <vaadin-button height="22px" plain-text _id="btnResponsable" :middle :right>
          Editar 
        </vaadin-button>
-       <vaadin-combo-box input-prompt="Lugar de gasto" style-name="form-textfield" item-caption-mode="id" width="147px" _id="selLugarGasto" :bottom :right>
+       <vaadin-combo-box input-prompt="Lugar de gasto" style-name="form-textfield" item-caption-mode="id" width="147px" _id="selLugarGasto" :middle :right>
         <option>Option 1</option>
         <option>Option 2</option>
        </vaadin-combo-box>
       </vaadin-horizontal-layout>
       <vaadin-horizontal-layout spacing height="125px">
-       <vaadin-vertical-layout spacing size-auto>
+       <vaadin-vertical-layout spacing width="144px">
         <vaadin-combo-box input-prompt="Tipo de movimiento" style-name="form-textfield" item-caption-mode="id" width="140px" _id="selTipoMov">
          <option>Option 1</option>
          <option>Option 2</option>
