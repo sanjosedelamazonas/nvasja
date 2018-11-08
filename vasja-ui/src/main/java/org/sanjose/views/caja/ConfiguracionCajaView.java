@@ -83,7 +83,7 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewin
 
         ComboBox selProyecto = new ComboBox();
         DataFilterUtil.bindComboBox(selProyecto, "codProyecto", getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()), "Sel Proyecto", "txtDescproyecto");
-        //selProyecto.addValidator(new TwoCombosValidator(selTercero, true, null));
+        //selProyectoTercero.addValidator(new TwoCombosValidator(selTercero, true, null));
         gridConfigCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
         // Tipo Moneda

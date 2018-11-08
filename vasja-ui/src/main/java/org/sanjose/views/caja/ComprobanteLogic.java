@@ -342,8 +342,8 @@ class ComprobanteLogic implements Serializable {
         view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "fecFecha"));
         view.getFechaDoc().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "fecComprobantepago"));
 
-        //view.getSelProyecto().addValidator(new TwoCombosValidator(view.getSelTercero(), true, null));
-        ///view.getSelTercero().addValidator(new TwoCombosValidator(view.getSelProyecto(), true, null));
+        //view.getSelProyectoTercero().addValidator(new TwoCombosValidator(view.getSelTercero(), true, null));
+        ///view.getSelTercero().addValidator(new TwoCombosValidator(view.getSelProyectoTercero(), true, null));
         view.getSelMoneda().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codTipomoneda"));
         view.getNumIngreso().setDescription("Ingreso");
         view.getNumEgreso().setDescription("Egreso");

@@ -10,7 +10,6 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import de.steinwedel.messagebox.MessageBox;
-import jdk.nashorn.internal.runtime.options.Option;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
@@ -21,13 +20,11 @@ import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.Viewing;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.sanjose.util.GenUtil.PEN;
-import static org.sanjose.util.GenUtil.USD;
 import static org.sanjose.util.GenUtil.verifyNumMoneda;
 import static org.sanjose.views.sys.Viewing.Mode.*;
 
@@ -316,8 +313,8 @@ public class BancoLogic extends BancoItemLogic {
                 view.getCerrarBtn().setEnabled(false);
                 view.setEnableCabezeraFields(true);
                 view.setEnableDetalleFields(false);
-                view.selProyecto.setEnabled(false);
-                view.selTercero.setEnabled(false);
+                view.selProyectoTercero.setEnabled(false);
+                view.tipoProyectoTercero.setEnabled(false);
                 break;
 
             case EDIT:

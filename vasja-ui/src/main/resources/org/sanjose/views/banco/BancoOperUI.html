@@ -39,7 +39,7 @@
        <vaadin-button plain-text _id="btnAuxiliar" :bottom>
          + 
        </vaadin-button>
-       <vaadin-text-field caption="S/." enabled="false" input-prompt="Saldo" style-name="form-textfield" width="85px" value="------" _id="montoTotal"></vaadin-text-field>
+       <vaadin-text-field caption="Total S/." enabled="false" input-prompt="Saldo" style-name="form-textfield" width="85px" value="------" _id="montoTotal"></vaadin-text-field>
       </vaadin-horizontal-layout>
       <vaadin-horizontal-layout style-name="cuenta-Layout" spacing>
        <vaadin-text-field caption="Glosa" input-prompt="Glosa" style-name="form-textfield" width="466px" _id="glosaCabeza"></vaadin-text-field>
@@ -62,15 +62,11 @@
          </vaadin-horizontal-layout>
         </vaadin-horizontal-layout>
         <vaadin-horizontal-layout spacing>
-         <vaadin-combo-box input-prompt="Proyecto" style-name="form-textfield" item-caption-mode="id" width="307px" _id="selProyecto">
+         <vaadin-combo-box input-prompt="sel Proyecto" style-name="form-textfield" item-caption-mode="id" width="407px" _id="selProyectoTercero">
           <option>Option 1</option>
           <option>Option 2</option>
          </vaadin-combo-box>
-         <vaadin-combo-box input-prompt="Fuente" style-name="form-textfield" item-caption-mode="id" width="94px" _id="selFuente">
-          <option>Option 1</option>
-          <option>Option 2</option>
-         </vaadin-combo-box>
-         <vaadin-combo-box input-prompt="Tercero" style-name="form-textfield" item-caption-mode="id" width="113px" _id="selTercero">
+         <vaadin-combo-box input-prompt="Fuente" style-name="form-textfield" item-caption-mode="id" width="124px" _id="selFuente">
           <option>Option 1</option>
           <option>Option 2</option>
          </vaadin-combo-box>
@@ -78,9 +74,9 @@
        </vaadin-vertical-layout>
       </vaadin-horizontal-layout>
       <vaadin-horizontal-layout spacing width="555px">
-       <vaadin-text-field caption="Glosa por detalle" input-prompt="Glosa por detalle" style-name="form-textfield" width="101.57%" height="22px" _id="glosaDetalle" :expand></vaadin-text-field>
-       <tm_kod_widgets_numberfield-number-field caption="Ingreso" _id="numIngreso"></tm_kod_widgets_numberfield-number-field>
-       <tm_kod_widgets_numberfield-number-field caption="Egreso" _id="numEgreso"></tm_kod_widgets_numberfield-number-field>
+       <vaadin-text-field caption="Glosa por detalle" input-prompt="Glosa por detalle" style-name="form-textfield" width="370px" height="22px" _id="glosaDetalle" :expand></vaadin-text-field>
+       <tm_kod_widgets_numberfield-number-field caption="Ingreso" _id="numIngreso" width="80px"></tm_kod_widgets_numberfield-number-field>
+       <tm_kod_widgets_numberfield-number-field caption="Egreso" _id="numEgreso" width="80px"></tm_kod_widgets_numberfield-number-field>
       </vaadin-horizontal-layout>
       <vaadin-horizontal-layout spacing>
        <vaadin-combo-box input-prompt="Responsable" style-name="form-textfield" item-caption-mode="id" width="332px" _id="selResponsable">
@@ -142,11 +138,11 @@
      </vaadin-form-layout>
     </vaadin-vertical-layout>
     <vaadin-vertical-layout spacing :expand>
-     <vaadin-form-layout style-name="order-summary-layout" responsive height="370px" margin-top="false" margin-bottom="false" _id="order_summary_layout" :expand>
+     <vaadin-form-layout style-name="order-summary-layout" responsive height="436px" margin-top="false" margin-bottom="false" _id="order_summary_layout" :expand>
       <vaadin-label style-name="header-label-small" plain-text _id="order_heading">
         Operaciones de cheque 
       </vaadin-label>
-      <vaadin-grid width-full height="256px" tabindex="50" _id="gridBanco"></vaadin-grid>
+      <vaadin-grid width-full height="326px" tabindex="50" _id="gridBanco"></vaadin-grid>
       <vaadin-css-layout>
        <vaadin-label style-name="total-sum" _id="saldoTotal">
          Total : 

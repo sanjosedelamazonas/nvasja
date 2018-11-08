@@ -12,7 +12,6 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.converter.ZeroOneToBooleanConverter;
-import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpBancodetalle;
 import org.sanjose.model.ScpBancodetallePK;
 import org.sanjose.util.GenUtil;
@@ -37,29 +36,29 @@ import static org.sanjose.util.GenUtil.USD;
 public class BancoOperView extends BancoOperUI implements Viewing {
 
     public static final String VIEW_NAME = "Cheques";
-    static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"Numero", "codProyecto", "codTercero",
+    static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"Item", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"Numero", "Proyecto", "Tercero",
+    static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"Item", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/."
     };
-    static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"Numero", "codProyecto", "codTercero",
+    static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"Item", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Numero", "Proyecto", "Tercero",
+    static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Item", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing $", "Egr $"
     };
-    static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"Numero", "codProyecto", "codTercero",
+    static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"Item", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebemo", "numHabermo"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{"Numero", "Proyecto", "Tercero",
+    static final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{"Item", "Proyecto", "Tercero",
             "Cuenta", "Glosa", "Ing €", "Egr €"
     };
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
 
     private static final Logger log = LoggerFactory.getLogger(BancoOperView.class);
 
-    private final Field[] allFields = new Field[]{fechaDoc, selProyecto, selTercero,
+    private final Field[] allFields = new Field[]{fechaDoc, selProyectoTercero, tipoProyectoTercero,
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosaDetalle, serieDoc, numDoc,
     };
@@ -115,7 +114,7 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         //noinspection unchecked
         container = new BeanItemContainer(ScpBancodetalle.class, new ArrayList());
         gpContainer = new GeneratedPropertyContainer(container);
-        gpContainer.addGeneratedProperty("Numero",
+        gpContainer.addGeneratedProperty("Item",
                 new PropertyValueGenerator<String>() {
                     @Override
                     public String getValue(Item item, Object itemId,
@@ -133,6 +132,7 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         gridBanco.setEditorEnabled(false);
         gridBanco.sort("fecFregistro", SortDirection.DESCENDING);
 
+        gridBanco.getColumn("Item").setWidth(50);
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
 
         ViewUtil.alignMontosInGrid(gridBanco);
@@ -184,6 +184,7 @@ public class BancoOperView extends BancoOperUI implements Viewing {
             log.debug("in setSaldo - moneda = NULL");
             saldoTotal.setValue("Total:" +
                     "<span class=\"order-sum\"> S./ 0.00</span>");
+            getMontoTotal().setValue("0.00");
             return;
         }
         if (locMoneda.equals(PEN)) {
@@ -208,6 +209,8 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         saldoTotal.setContentMode(ContentMode.HTML);
         saldoTotal.setValue("Total:" +
                 "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)) + calcTotal(locMoneda).toString() + "</span>");
+        getMontoTotal().setValue(calcTotal(locMoneda).toString());
+        getMontoTotal().setCaption("Total " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)));
     }
 
     public void refreshData() {
@@ -218,8 +221,8 @@ public class BancoOperView extends BancoOperUI implements Viewing {
         return bancoService;
     }
 
-    public ComboBox getSelProyecto() {
-        return selProyecto;
+    public ComboBox getSelProyectoTercero() {
+        return selProyectoTercero;
     }
 
     public TextField getNumVoucher() {
@@ -228,10 +231,6 @@ public class BancoOperView extends BancoOperUI implements Viewing {
 
     public ComboBox getSelFuente() {
         return selFuente;
-    }
-
-    public ComboBox getSelTercero() {
-        return selTercero;
     }
 
     public TextField getSaldoProyPEN() {

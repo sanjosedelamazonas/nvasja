@@ -49,9 +49,8 @@ public class BancoOperUI extends CssLayout {
     protected TextField saldoProyPEN;
     protected TextField saldoProyUSD;
     protected TextField saldoProyEUR;
-    protected ComboBox selProyecto;
+    protected ComboBox selProyectoTercero;
     protected ComboBox selFuente;
-    protected ComboBox selTercero;
     protected TextField glosaDetalle;
     protected NumberField numIngreso;
     protected NumberField numEgreso;
