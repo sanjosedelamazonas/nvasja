@@ -4,10 +4,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
-import org.sanjose.model.ScpComprobantedetalle;
-import org.sanjose.model.ScpBancocabecera;
-import org.sanjose.model.ScpBancodetalle;
-import org.sanjose.model.ScpBancodetallePK;
+import org.sanjose.model.*;
 import org.sanjose.repo.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
@@ -89,11 +86,11 @@ public class BancoService {
             cabecera = bancocabeceraRep.save(cabecera);
         }
         bancoItem.setCodCtacontable(cabecera.getCodCtacontable());
-        String codTipoGasto = configuractacajabancoRepo.findById(bancoItem.getCodTipomov()).getCodTipocuenta();
-        if (codTipoGasto==null) {
+        VsjConfiguractacajabanco codTipoMov = configuractacajabancoRepo.findById(bancoItem.getCodTipomov());
+        if (codTipoMov==null) {
             throw new FieldGroup.CommitException("No se puede encontrar el Codigo Tipo Gasto - por favor verifica la configuracion de Caja y Bancos");
         }
-        bancoItem.setCodTipogasto(codTipoGasto);
+        bancoItem.setCodTipogasto(codTipoMov.getCodTipocuenta());
         bancoItem.setCodTipomoneda(moneda);
         bancoItem = bancoItem.prepareToSave();
         bancoItem.setFecFecha(cabecera.getFecFecha());

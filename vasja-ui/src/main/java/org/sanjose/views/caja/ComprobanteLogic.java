@@ -572,6 +572,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
             ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
             ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
             view.setSaldoDeCajas();
+            saldoChecker.check();
         }
     }
 
