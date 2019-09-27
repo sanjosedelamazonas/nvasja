@@ -57,7 +57,7 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
     };
 
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
-            "Cuenta", "Glosa", "Ing S/.", "Egr S/.",
+            "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
             "Responsable", "Lug. Gasto", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
             "Anl", "Env", "Orig.", "Comprob."
@@ -104,7 +104,6 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
                 new BeanFieldGroup<>(ScpCajabanco.class));
         // Moneda
         DataFilterUtil.bindTipoMonedaComboBox(selMoneda, "cod_tipomoneda", "Moneda", false);
-        selMoneda.select('0');
         selMoneda.setNullSelectionAllowed(false);
         selMoneda.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
@@ -113,6 +112,7 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
                 ViewUtil.filterColumnsByMoneda(gridCaja, (Character)e.getProperty().getValue());
             }
         });
+        selMoneda.select('0');
 
         // Fecha
         PopupDateField pdf = new PopupDateField();
@@ -283,10 +283,16 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
         }
     }
 
+    @Override
     public void refreshData() {
         SortOrder[] sortOrders = gridCaja.getSortOrder().toArray(new SortOrder[1]);
         filter(fechaDesde.getValue(), fechaHasta.getValue());
         gridCaja.setSortOrder(Arrays.asList(sortOrders));
+    }
+
+    @Override
+    public void selectMoneda(Character moneda) {
+        selMoneda.select(moneda);
     }
 
     @Override

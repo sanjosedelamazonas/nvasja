@@ -170,6 +170,11 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         calcFooterSums();
     }
 
+    @Override
+    public void selectMoneda(Character moneda) {
+        selMoneda.select(moneda);
+    }
+
     public void calcFooterSums() {
         DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
         BigDecimal sumDebesol = new BigDecimal(0.00);

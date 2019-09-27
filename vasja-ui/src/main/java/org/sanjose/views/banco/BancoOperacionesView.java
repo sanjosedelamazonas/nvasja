@@ -197,6 +197,11 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
     }
 
     @Override
+    public void selectMoneda(Character moneda) {
+        selRepMoneda.select(moneda);
+    }
+
+    @Override
     public void filter(Date fechaDesde, Date fechaHasta) {
         container.removeAllItems();
         setFilterInitialDate(fechaDesde);

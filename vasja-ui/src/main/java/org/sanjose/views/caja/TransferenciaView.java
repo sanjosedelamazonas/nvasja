@@ -166,8 +166,11 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
 
 
     @Override
-    public void refreshData() {
-        MainUI.get().getCajaManejoView().refreshData();
+    public void refreshData(Character moneda) {
+        //if (moneda!=null) MainUI.get().getCajaManejoView().selectMoneda(moneda);
+        //MainUI.get().getCajaManejoView().refreshData();
+        if (moneda!=null) viewLogic.navigatorView.selectMoneda(moneda);
+        viewLogic.navigatorView.refreshData();
     }
 
     @Override

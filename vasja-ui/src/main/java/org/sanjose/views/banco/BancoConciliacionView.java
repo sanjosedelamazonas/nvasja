@@ -277,6 +277,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         }
     }
 
+    @Override
     public void refreshData() {
         SortOrder[] sortOrders = gridBanco.getSortOrder().toArray(new SortOrder[1]);
         filterComprobantes();
@@ -284,8 +285,13 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
             gridBanco.sort("fecFecha", SortDirection.DESCENDING);
         else
             gridBanco.setSortOrder(Arrays.asList(sortOrders));
-
     }
+
+    @Override
+    public void selectMoneda(Character moneda) {
+        // Not implemented here
+    }
+
 
     @Override
     public void enter(ViewChangeEvent event) {

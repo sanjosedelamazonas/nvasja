@@ -15,7 +15,7 @@ public interface ComprobanteViewing {
 
     void setEnableFields(boolean enabled);
 
-    void refreshData();
+    void refreshData(Character moneda);
 
     ComboBox getSelProyectoTercero();
 

@@ -62,6 +62,8 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
     private SaldoChecker saldoChecker;
     private Button.ClickListener guardarBtnListner;
 
+    private Property.ValueChangeListener selProyectoTerceroChangeListener;
+
     public void init(ComprobanteViewing comprobanteView) {
         view = comprobanteView;
         addWarningToGuardarBtn(false);
@@ -116,8 +118,6 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
         view.getGuardarBtn().addClickListener(guardarBtnListner);
     }
 
-
-
     void closeWindow() {
         if (view.getSubWindow()!=null)
             view.getSubWindow().close();
@@ -147,7 +147,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
             savedCajabanco = view.getService().save(item);
 
             view.getNumVoucher().setValue(savedCajabanco.getTxtCorrelativo());
-            view.refreshData();
+            view.refreshData(item.getCodTipomoneda());
             switchMode(Viewing.Mode.VIEW);
             ViewUtil.printComprobante(savedCajabanco);
             closeWindow();
@@ -225,7 +225,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
             view.getNumVoucher().setValue(Integer.toString(savedCajabanco.getCodCajabanco()));
             savedCajabanco = null;
             switchMode(Viewing.Mode.VIEW);
-            view.refreshData();
+            view.refreshData(item.getCodTipomoneda());
             MessageBox
                     .createInfo()
                     .withCaption("Elminado correctamente")
@@ -660,12 +660,17 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
 
     private void setTipoProyectoTerceroLogic(Property.ValueChangeEvent event) {
         if (fieldGroup==null) return;
+        view.getSelProyectoTercero().removeValueChangeListener(selProyectoTerceroChangeListener);
         if (isProyecto()) {
             beanItem.getBean().setCodTercero("");
             //fieldGroup.unbind(view.getSelProyectoTercero());
             fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
-            view.getSelProyectoTercero().removeValueChangeListener(this::setTerceroLogic);
-            view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
+            selProyectoTerceroChangeListener = new Property.ValueChangeListener() {
+                @Override
+                public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                    setProyectoLogic(valueChangeEvent);
+                }
+            };
             DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().
                             findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(view.getDataFechaComprobante().getValue(), view.getDataFechaComprobante().getValue(), GenUtil.getBegin20thCent()),
                     "Sel Proyecto", "txtDescproyecto");
@@ -673,11 +678,16 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
             beanItem.getBean().setCodProyecto("");
             //fieldGroup.unbind(view.getSelProyectoTercero());
             fieldGroup.bind(view.getSelProyectoTercero(), "codTercero");
-            view.getSelProyectoTercero().removeValueChangeListener(this::setProyectoLogic);
-            view.getSelProyectoTercero().addValueChangeListener(this::setTerceroLogic);
+            selProyectoTerceroChangeListener = new Property.ValueChangeListener() {
+                @Override
+                public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                    setTerceroLogic(valueChangeEvent);
+                }
+            };
             DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
                      "txtNombredestino");
         }
+        view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroChangeListener);
     }
 
     private void setProyectoLogic(Property.ValueChangeEvent event) {

@@ -89,7 +89,11 @@ public class BancoService {
             cabecera = bancocabeceraRep.save(cabecera);
         }
         bancoItem.setCodCtacontable(cabecera.getCodCtacontable());
-        bancoItem.setCodTipogasto(configuractacajabancoRepo.findById(bancoItem.getCodTipomov()).getCodTipocuenta());
+        String codTipoGasto = configuractacajabancoRepo.findById(bancoItem.getCodTipomov()).getCodTipocuenta();
+        if (codTipoGasto==null) {
+            throw new FieldGroup.CommitException("No se puede encontrar el Codigo Tipo Gasto - por favor verifica la configuracion de Caja y Bancos");
+        }
+        bancoItem.setCodTipogasto(codTipoGasto);
         bancoItem.setCodTipomoneda(moneda);
         bancoItem = bancoItem.prepareToSave();
         bancoItem.setFecFecha(cabecera.getFecFecha());

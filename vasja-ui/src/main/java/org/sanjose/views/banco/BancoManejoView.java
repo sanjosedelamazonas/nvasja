@@ -169,10 +169,17 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         viewLogic.setSaldos(gridSaldoFInal, false);
     }
 
+    @Override
     public void refreshData() {
         SortOrder[] sortOrders = gridBanco.getSortOrder().toArray(new SortOrder[1]);
         filter(fechaDesde.getValue(), fechaHasta.getValue());
         gridBanco.setSortOrder(Arrays.asList(sortOrders));
+    }
+
+    @Override
+    public void selectMoneda(Character moneda) {
+        // TODO Check if that is correct
+        selRepMoneda.select(moneda);
     }
 
     @Override

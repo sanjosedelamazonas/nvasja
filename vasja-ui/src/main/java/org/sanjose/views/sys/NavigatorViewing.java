@@ -8,4 +8,7 @@ public interface NavigatorViewing {
     String getNavigatorViewName();
 
     void refreshData();
+
+    void selectMoneda(Character moneda);
+
 }

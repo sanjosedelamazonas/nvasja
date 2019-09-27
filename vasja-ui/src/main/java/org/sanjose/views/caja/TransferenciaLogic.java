@@ -190,7 +190,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         List<ScpCajabanco> savedOperaciones = view.getService().saveVsjCajabancos(tView.getContainer().getItemIds());
         tView.getContainer().removeAllItems();
         tView.getContainer().addAll(savedOperaciones);
-        view.refreshData();
+        view.refreshData(moneda);
         state.save();
         switchMode(Viewing.Mode.VIEW);
     }

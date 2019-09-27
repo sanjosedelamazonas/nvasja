@@ -102,8 +102,11 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
     }
 
     @Override
-    public void refreshData() {
-        MainUI.get().getCajaManejoView().refreshData();
+    public void refreshData(Character moneda) {
+        //if (moneda!=null) MainUI.get().getCajaManejoView().selectMoneda(moneda);
+        if (moneda!=null) viewLogic.navigatorView.selectMoneda(moneda);
+        viewLogic.navigatorView.refreshData();
+        //MainUI.get().getCajaManejoView().refreshData();
     }
 
     @Override
