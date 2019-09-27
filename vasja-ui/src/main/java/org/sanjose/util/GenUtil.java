@@ -185,6 +185,21 @@ public class GenUtil {
         }
     }
 
+    public static String getDescMoneda(Character numMoneda) {
+        switch (numMoneda) {
+            case '0' :
+                return "sol";
+            case '1' :
+                return "dolar";
+            case '2':
+                return "mo";
+            default:
+                Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
+                Thread.dumpStack();
+                return "UNKNOWN";
+        }
+    }
+
     public static String getSymMoneda(Character litMoneda) {
         if (symMoneda.isEmpty()) {
             symMoneda.put('N', "S/.");

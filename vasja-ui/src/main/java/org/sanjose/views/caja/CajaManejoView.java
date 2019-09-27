@@ -45,7 +45,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
     private final String[] HIDDEN_COLUMN_IDS = new String[] {
             "codDestino", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
-            "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
+            "flgEnviado", "codOrigenenlace", "codComprobanteenlace", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
             "Cta Cont.", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
@@ -70,6 +70,18 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
 
     public CajaManejoView(ComprobanteService comprobanteService) {
         this.comprobanteService = comprobanteService;
+    }
+
+    private void filterColumnsByMoneda(Grid grid, Character moneda) {
+        for (int i=0;i<3;i++) {
+            String mon = GenUtil.getDescMoneda(Character.forDigit(i, 10));
+            for (String col : new String[] { "numDebe", "numHaber"}) {
+                grid.getColumn(col + mon).setHidden(true);
+            }
+        }
+        for (String col : new String[] { "numDebe", "numHaber"}) {
+            grid.getColumn(col + GenUtil.getDescMoneda(moneda)).setHidden(false);
+        }
     }
 
     @Override
@@ -97,9 +109,26 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         //gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
+
+        DataFilterUtil.bindTipoMonedaComboBox(selMoneda, "cod_tipomoneda", "Moneda", false);
+        selMoneda.select('0');
         DataFilterUtil.bindComboBox(selFiltroCaja, "id.codCtacontable",
-                DataUtil.getTodasCajas(fechaDesde.getValue(), getService().getPlanRepo()),
+                DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), '0'),
                 "txtDescctacontable");
+        selMoneda.setNullSelectionAllowed(false);
+        selMoneda.addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                container.removeContainerFilters("codTipomoneda");
+                container.addContainerFilter(new Compare.Equal("codTipomoneda", e.getProperty().getValue()));
+                filterColumnsByMoneda(gridCaja, (Character)e.getProperty().getValue());
+
+                DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
+                        DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), (Character)e.getProperty().getValue()),
+                        "txtDescctacontable");
+            }
+            viewLogic.setSaldoDelDia();
+        });
+
 
         selFiltroCaja.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {

@@ -1,42 +1,49 @@
 <!doctype html>
 <html>
  <head>
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
- </head> 
- <body> 
-  <vaadin-vertical-layout id="verticalMain" size-full margin> 
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta name="vaadin-version" content="7.7.7">
+ </head>
+ <body>
+  <vaadin-vertical-layout id="verticalMain" size-full margin>
    <vaadin-horizontal-layout spacing height="40px" margin _id="horizontalFechas" :middle :center>
-    <vaadin-date-field _id="fechaDesde"></vaadin-date-field> 
+    <vaadin-date-field _id="fechaDesde"></vaadin-date-field>
     <vaadin-label size-auto plain-text>
       - 
-    </vaadin-label> 
+    </vaadin-label>
     <vaadin-date-field _id="fechaHasta"></vaadin-date-field>
-       <vaadin-combo-box input-prompt="Filtrar por Caja" item-caption-mode="id" width="280px" _id="selFiltroCaja">
-           <option>Option 1</option>
-           <option>Option 2</option>
-           <option>Option 3</option>
-       </vaadin-combo-box>
-       <vaadin-button plain-text _id="nuevoComprobante">
+    <vaadin-combo-box input-prompt="Filtrar por Moneda" item-caption-mode="id" width="80px" _id="selMoneda">
+     <option>Option 1</option>
+     <option>Option 2</option>
+     <option>Option 3</option>
+    </vaadin-combo-box>
+    <vaadin-combo-box input-prompt="Filtrar por Caja" item-caption-mode="id" width="280px" _id="selFiltroCaja">
+     <option>Option 1</option>
+     <option>Option 2</option>
+     <option>Option 3</option>
+    </vaadin-combo-box>
+    <vaadin-button plain-text _id="nuevoComprobante">
       Nuevo comprobante 
-    </vaadin-button> 
+    </vaadin-button>
     <vaadin-button plain-text _id="btnEditar">
       Editar 
-    </vaadin-button> 
+    </vaadin-button>
     <vaadin-button plain-text _id="btnImprimir">
       Imprimir Voucher 
-    </vaadin-button> 
+    </vaadin-button>
     <vaadin-button plain-text _id="btnVerVoucher">
       Ver Voucher 
     </vaadin-button>
-       <vaadin-button plain-text _id="nuevaTransferencia">
-          Nuevo Cargo/Abono
-       </vaadin-button>
-       <vaadin-button plain-text _id="btnReporteCaja">
-           Caja Saldos
-       </vaadin-button>
+    <vaadin-button plain-text _id="nuevaTransferencia">
+      Nuevo Cargo/Abono 
+    </vaadin-button>
+    <vaadin-button plain-text _id="btnReporteCaja">
+      Caja Saldos 
+    </vaadin-button>
    </vaadin-horizontal-layout>
-   <vaadin-grid editor-cancel-caption="Anular" size-full _id="gridCaja" :middle :center :expand></vaadin-grid> 
+   <vaadin-grid editor-cancel-caption="Anular" size-full _id="gridCaja" :middle :center :expand></vaadin-grid>
    <vaadin-vertical-layout size-full></vaadin-vertical-layout>
-  </vaadin-vertical-layout>  
+  </vaadin-vertical-layout>
  </body>
 </html>
