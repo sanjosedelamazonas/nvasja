@@ -3,6 +3,7 @@ package org.sanjose.validator;
 import com.vaadin.ui.TextField;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
+import org.sanjose.views.sys.ComprobanteWarnGuardar;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -17,11 +18,13 @@ public class SaldoChecker {
     private final TextField egresoField;
     private TextField saldoField;
     private TextField proyectoField;
+    private ComprobanteWarnGuardar comprobanteWarnGuardar;
 
-    public SaldoChecker(TextField egresoField, TextField saldoField, TextField proyectoField) {
+    public SaldoChecker(TextField egresoField, TextField saldoField, TextField proyectoField, ComprobanteWarnGuardar comprobanteWarnGuardar) {
         this.egresoField = egresoField;
         this.saldoField = saldoField;
         this.proyectoField = proyectoField;
+        this.comprobanteWarnGuardar = comprobanteWarnGuardar;
     }
 
     public void check() {
@@ -60,6 +63,7 @@ public class SaldoChecker {
         } else {
             egresoField.removeStyleName("warning");
         }
+        comprobanteWarnGuardar.addWarningToGuardarBtn(isWarn);
     }
 
     public TextField getSaldoField() {

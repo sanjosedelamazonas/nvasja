@@ -22,6 +22,7 @@ import org.sanjose.util.*;
 import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.validator.SaldoChecker;
 import org.sanjose.validator.TwoNumberfieldsValidator;
+import org.sanjose.views.sys.ComprobanteWarnGuardar;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.Viewing;
@@ -45,10 +46,9 @@ import static org.sanjose.views.sys.Viewing.Mode.NEW;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-class ComprobanteLogic implements Serializable {
+class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
 
 	private static final Logger log = LoggerFactory.getLogger(ComprobanteLogic.class);
-
 
     protected ComprobanteViewing view;
     protected NavigatorViewing navigatorView;
@@ -60,10 +60,11 @@ class ComprobanteLogic implements Serializable {
     private ProcUtil procUtil;
     private Viewing.Mode mode;
     private SaldoChecker saldoChecker;
+    private Button.ClickListener guardarBtnListner;
 
     public void init(ComprobanteViewing comprobanteView) {
         view = comprobanteView;
-        view.getGuardarBtn().addClickListener(event -> saveComprobante());
+        addWarningToGuardarBtn(false);
         view.getNuevoComprobante().addClickListener(event -> nuevoComprobante());
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
         view.getImprimirBtn().addClickListener(event -> {
@@ -87,6 +88,35 @@ class ComprobanteLogic implements Serializable {
             ((TransferenciaView) view).getNuevaTransBtn().setVisible(false);
         }
     }
+
+    public void addWarningToGuardarBtn(boolean isWarn) {
+        view.getGuardarBtn().removeClickListener(guardarBtnListner);
+        if (isWarn) {
+            guardarBtnListner = new Button.ClickListener() {
+                @Override
+                public void buttonClick(Button.ClickEvent clickEvent) {
+                    MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
+                    MessageBox
+                            .createQuestion()
+                            .withCaption("El saldo del proyect/tercero no es suficiente")
+                            .withMessage("Esta seguro que lo quiere guardar?")
+                            .withYesButton(() ->  saveComprobante())
+                            .withNoButton()
+                            .open();
+                }
+            };
+        } else {
+            guardarBtnListner = new Button.ClickListener() {
+                @Override
+                public void buttonClick(Button.ClickEvent clickEvent) {
+                    saveComprobante();
+                }
+            };
+        }
+        view.getGuardarBtn().addClickListener(guardarBtnListner);
+    }
+
+
 
     void closeWindow() {
         if (view.getSubWindow()!=null)
@@ -230,6 +260,7 @@ class ComprobanteLogic implements Serializable {
             // Reload cajas depending on the Year of comprobante
             refreshProyectoYcuentaPorFecha(newFecha);
         });
+        view.getDataFechaComprobante().focus();
 
         // Fecha Doc
         prop = new ObjectProperty<>(ts);
@@ -276,6 +307,7 @@ class ComprobanteLogic implements Serializable {
 
         DataFilterUtil.bindComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(new Date(), view.getService().getPlanRepo(), PEN), "Sel Caja", "txtDescctacontable");
         view.getSelCaja().addValueChangeListener(e -> setSaldoCaja());
+        view.getSelCaja().setNullSelectionAllowed(false);
 
         List<ScpDestino> destinoList = view.getService().getDestinoRepo().findByIndTipodestinoNot('3');
         // Responsable
@@ -299,13 +331,13 @@ class ComprobanteLogic implements Serializable {
         DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getService().getComprobantepagoRepo().findAll(),
                 "Sel Tipo", "txtDescripcion");
 
-
         // Cta Contable
         DataFilterUtil.bindComboBox(view.getSelCtaContable(), "id.codCtacontable",
                 view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
                         '0', 'N', GenUtil.getCurYear(), "101%", "102%", "104%", "106%"),
                 //getPlanRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith("N", GenUtil.getCurYear(), ""),
                 "Sel cta contable", "txtDescctacontable");
+        view.getSelCtaContable().setNullSelectionAllowed(false);
 
         // Rubro inst
         DataFilterUtil.bindComboBox(view.getSelRubroInst(), "id.codCtaespecial",
@@ -360,7 +392,7 @@ class ComprobanteLogic implements Serializable {
         view.getSelTipoMov().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codTipomov"));
 
         // Check saldos and warn
-        saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCaja(), view.getSaldoProyPEN());
+        saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCaja(), view.getSaldoProyPEN(), this);
         view.getNumEgreso().addBlurListener(event -> saldoChecker.check());
 
         // Editing Destino
@@ -369,6 +401,13 @@ class ComprobanteLogic implements Serializable {
         view.setEnableFields(false);
         //nuevoComprobante();
         view.getTipoProyectoTercero().select(GenUtil.T_PROY);
+
+        // Skip Tab for certain components
+        view.getBtnResponsable().setTabIndex(-1);
+        view.getBtnDestino().setTabIndex(-1);
+        view.getSelCaja().setTabIndex(-1);
+        view.getSelCtaContable().setTabIndex(-1);
+
     }
 
     private void editDestino(ComboBox comboBox) {
@@ -580,6 +619,8 @@ class ComprobanteLogic implements Serializable {
                 view.getSaldoCajaUSD().setValue("");
                 saldoChecker.setSaldoField(view.getSaldoCajaEUR());
             }*/
+        } else {
+            view.getSaldoCaja().setValue("");
         }
     }
 
@@ -668,6 +709,11 @@ class ComprobanteLogic implements Serializable {
                 view.getSelCtaContable().setValue("");
                 view.getSelRubroInst().setValue("");
                 view.getSelRubroProy().setValue("");
+            }
+            // For Tercero select first movimiento in the list automatically
+            for (Object itId : view.getSelTipoMov().getItemIds()) {
+                view.getSelTipoMov().select(itId);
+                break;
             }
             setSaldos();
             setMonedaLogic(view.getSelMoneda().getValue().toString().charAt(0));
@@ -804,7 +850,7 @@ class ComprobanteLogic implements Serializable {
             //refreshProyectoYcuentaPorFecha(item.getFecFecha());
             view.setEnableFields(true);
             //setSaldos();
-            //setSaldoCaja();
+            setSaldoCaja();
             //setTipoProyectoTerceroLogic(null);
             if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {
                 setEditorProyectoLogic(item.getCodProyecto());

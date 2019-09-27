@@ -20,6 +20,7 @@ import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.validator.SaldoChecker;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
+import org.sanjose.views.sys.ComprobanteWarnGuardar;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
 
@@ -43,7 +44,7 @@ import static org.sanjose.util.GenUtil.*;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-class BancoItemLogic implements Serializable {
+class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
 
 
     private static final Logger log = LoggerFactory.getLogger(BancoItemLogic.class);
@@ -246,7 +247,7 @@ class BancoItemLogic implements Serializable {
         view.getSelCodAuxCabeza().addValidator(new LocalizedBeanValidator(ScpBancocabecera.class, "codDestino"));
         view.getSelCuenta().addValidator(new LocalizedBeanValidator(ScpBancocabecera.class, "codCtacontable"));
         // Check saldos and warn
-        saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN());
+        saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN(), this);
         view.getNumEgreso().addBlurListener(event -> saldoChecker.check());
     }
 
@@ -679,5 +680,10 @@ class BancoItemLogic implements Serializable {
         ScpBancodetalle item = beanItem.getBean();
         log.debug("got from getDetalle " + item);
         return item;
+    }
+
+    @Override
+    public void addWarningToGuardarBtn(boolean isWarn) {
+        //TODO Implement Warning when Saving!!!
     }
 }
