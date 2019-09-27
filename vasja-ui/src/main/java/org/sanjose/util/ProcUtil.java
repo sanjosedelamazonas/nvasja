@@ -56,7 +56,7 @@ public class ProcUtil {
             getSaldoAlDiaQuery.setParameter(1, "2");
             getSaldoAlDiaQuery.setParameter(3, codTercero);
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //log.info("Getting date: " + sdf.format(fecha));
         getSaldoAlDiaQuery.setParameter(2, sdf.format(fecha));
         getSaldoAlDiaQuery.execute();
