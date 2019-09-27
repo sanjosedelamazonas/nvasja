@@ -99,6 +99,8 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         gridBanco.getColumn("flgEnviado").setHidden(true);
         gridBanco.getColumn("flg_Anula").setHidden(true);
 
+        gridBanco.getColumn("txtGlosa").setMaximumWidth(400);
+
         CssCheckBox cobradoChkBox = new CssCheckBox();
         cobradoChkBox.setSimpleMode(false);
         cobradoChkBox.setAnimated(false);
@@ -136,9 +138,13 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
                 ScpPlancontable cuenta = getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
                         GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
                 selRepMoneda.select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+                ViewUtil.filterColumnsByMoneda(gridBanco, GenUtil.getNumMoneda(cuenta.getIndTipomoneda()).charValue());
+                gridBanco.getColumn("txtGlosa").setMaximumWidth(500);
             } else {
                 container.removeContainerFilters("codCtacontable");
                 selRepMoneda.select('0');
+                ViewUtil.filterColumnsByMoneda(gridBanco, 'A');
+                gridBanco.getColumn("txtGlosa").setMaximumWidth(400);
             }
             viewLogic.setSaldoDelDia();
         });

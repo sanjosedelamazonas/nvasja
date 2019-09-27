@@ -5,6 +5,7 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -25,10 +26,7 @@ import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpFinanciera;
 import org.sanjose.model.ScpPlanproyecto;
 import org.sanjose.model.Scp_ProyectoPorFinanciera;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.DataFilterUtil;
-import org.sanjose.util.GenUtil;
-import org.sanjose.util.ViewUtil;
+import org.sanjose.util.*;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
@@ -59,7 +57,7 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
     };
 
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
-            "Cuenta", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
+            "Cuenta", "Glosa", "Ing S/.", "Egr S/.",
             "Responsable", "Lug. Gasto", "Cod. Aux", "Cta Cont.", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
             "Anl", "Env", "Orig.", "Comprob."
@@ -104,6 +102,17 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
 
         gridCaja.setEditorFieldGroup(
                 new BeanFieldGroup<>(ScpCajabanco.class));
+        // Moneda
+        DataFilterUtil.bindTipoMonedaComboBox(selMoneda, "cod_tipomoneda", "Moneda", false);
+        selMoneda.select('0');
+        selMoneda.setNullSelectionAllowed(false);
+        selMoneda.addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                container.removeContainerFilters("codTipomoneda");
+                container.addContainerFilter(new Compare.Equal("codTipomoneda", e.getProperty().getValue()));
+                ViewUtil.filterColumnsByMoneda(gridCaja, (Character)e.getProperty().getValue());
+            }
+        });
 
         // Fecha
         PopupDateField pdf = new PopupDateField();

@@ -96,6 +96,8 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         gridBanco.getColumn("flgEnviado").setHidden(true);
         gridBanco.getColumn("flg_Anula").setHidden(true);
 
+        gridBanco.getColumn("txtGlosaitem").setMaximumWidth(400);
+
         gridBanco.setEditorEnabled(true);
         gridBanco.setEditorBuffered(true);
         gridBanco.setEditorSaveCaption("Guardar");
@@ -178,34 +180,9 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
             saldo = MainUI.get().getProcUtil().getSaldoBanco(fechaHasta.getValue(),
                     selFiltroCuenta.getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
             txtSaldoFinal.setValue(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()) + " " + df.format(saldo));
-
-            gridBanco.getColumn("numHabersol").setHidden(true);
-            gridBanco.getColumn("numDebesol").setHidden(true);
-            gridBanco.getColumn("numHaberdolar").setHidden(true);
-            gridBanco.getColumn("numDebedolar").setHidden(true);
-            gridBanco.getColumn("numHabermo").setHidden(true);
-            gridBanco.getColumn("numDebemo").setHidden(true);
-            switch (GenUtil.getNumMoneda(cuenta.getIndTipomoneda()).charValue()) {
-                case '0':
-                    gridBanco.getColumn("numHabersol").setHidden(false);
-                    gridBanco.getColumn("numDebesol").setHidden(false);
-                    break;
-                case '1':
-                    gridBanco.getColumn("numHaberdolar").setHidden(false);
-                    gridBanco.getColumn("numDebedolar").setHidden(false);
-                    break;
-                case '2':
-                    gridBanco.getColumn("numHabermo").setHidden(false);
-                    gridBanco.getColumn("numDebemo").setHidden(false);
-                    break;
-            }
+            ViewUtil.filterColumnsByMoneda(gridBanco, GenUtil.getNumMoneda(cuenta.getIndTipomoneda()).charValue());
         } else {
-            gridBanco.getColumn("numHabersol").setHidden(false);
-            gridBanco.getColumn("numDebesol").setHidden(false);
-            gridBanco.getColumn("numHaberdolar").setHidden(false);
-            gridBanco.getColumn("numDebedolar").setHidden(false);
-            gridBanco.getColumn("numHabermo").setHidden(false);
-            gridBanco.getColumn("numDebemo").setHidden(false);
+            ViewUtil.filterColumnsByMoneda(gridBanco, 'A');
             txtSaldoInicial.setValue("");
             txtSaldoFinal.setValue("");
         }

@@ -78,18 +78,6 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
 
     public Grid.FooterRow gridCajaFooter;
 
-    private void filterColumnsByMoneda(Grid grid, Character moneda) {
-        for (int i=0;i<3;i++) {
-            String mon = GenUtil.getDescMoneda(Character.forDigit(i, 10));
-            for (String col : new String[] { "numDebe", "numHaber"}) {
-                grid.getColumn(col + mon).setHidden(true);
-            }
-        }
-        for (String col : new String[] { "numDebe", "numHaber"}) {
-            grid.getColumn(col + GenUtil.getDescMoneda(moneda)).setHidden(false);
-        }
-    }
-
     @Override
     public void init() {
         setSizeFull();
@@ -125,7 +113,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
             if (e.getProperty().getValue() != null) {
                 container.removeContainerFilters("codTipomoneda");
                 container.addContainerFilter(new Compare.Equal("codTipomoneda", e.getProperty().getValue()));
-                filterColumnsByMoneda(gridCaja, (Character)e.getProperty().getValue());
+                ViewUtil.filterColumnsByMoneda(gridCaja, (Character)e.getProperty().getValue());
 
                 DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
                         DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), (Character)e.getProperty().getValue()),

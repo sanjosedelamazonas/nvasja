@@ -324,6 +324,26 @@ public class ViewUtil {
         });
     }
 
+    private static void allColumnsHide(Grid grid, boolean isHide) {
+        for (int i=0;i<3;i++) {
+            String mon = GenUtil.getDescMoneda(Character.forDigit(i, 10));
+            for (String col : new String[] { "numDebe", "numHaber"}) {
+                grid.getColumn(col + mon).setHidden(isHide);
+            }
+        }
+    }
+
+    public static void filterColumnsByMoneda(Grid grid, Character moneda) {
+        if (moneda=='A') {
+            allColumnsHide(grid, false);
+            return;
+        }
+        allColumnsHide(grid, true);
+        for (String col : new String[] { "numDebe", "numHaber"}) {
+            grid.getColumn(col + GenUtil.getDescMoneda(moneda)).setHidden(false);
+        }
+    }
+
 
     public static void openInNewWindow(ComprobanteViewing component) {
         Window subWindow = new Window();

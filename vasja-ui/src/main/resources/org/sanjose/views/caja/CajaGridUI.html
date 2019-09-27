@@ -1,36 +1,43 @@
 <!doctype html>
 <html>
  <head>
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
- </head> 
- <body> 
-  <vaadin-vertical-layout spacing size-full margin> 
-   <vaadin-horizontal-layout spacing _id="horizontalCabeza"> 
-    <vaadin-date-field _id="fechaDesde"></vaadin-date-field> 
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta name="vaadin-version" content="7.7.7">
+ </head>
+ <body>
+  <vaadin-vertical-layout spacing size-full margin>
+   <vaadin-horizontal-layout spacing _id="horizontalCabeza">
+    <vaadin-combo-box input-prompt="Filtrar por Moneda" item-caption-mode="id" width="65px" _id="selMoneda">
+     <option>Option 1</option>
+     <option>Option 2</option>
+     <option>Option 3</option>
+    </vaadin-combo-box>
+    <vaadin-date-field _id="fechaDesde"></vaadin-date-field>
     <vaadin-label size-auto plain-text _id="labFechas">
       - 
-    </vaadin-label> 
-    <vaadin-date-field _id="fechaHasta"></vaadin-date-field> 
+    </vaadin-label>
+    <vaadin-date-field _id="fechaHasta"></vaadin-date-field>
     <vaadin-button plain-text _id="nuevoComprobante">
       Nuevo 
-    </vaadin-button> 
+    </vaadin-button>
     <vaadin-button plain-text _id="editarBtn">
       Ver detalle 
-    </vaadin-button> 
+    </vaadin-button>
     <vaadin-button plain-text _id="enviarBtn">
       Enviar a contabilidad 
-    </vaadin-button> 
+    </vaadin-button>
     <vaadin-button plain-text _id="responsablesBtn">
       Responsables 
-    </vaadin-button> 
+    </vaadin-button>
     <vaadin-button plain-text _id="imprimirBtn">
       Imprimir Voucher 
     </vaadin-button>
     <vaadin-button plain-text _id="nuevaTransferencia">
-       Nuevo Cargo/Abono
+      Nuevo Cargo/Abono 
     </vaadin-button>
-   </vaadin-horizontal-layout> 
-   <vaadin-grid caption="Operaciones de Caja" editor-save-caption="Guardar" editor-cancel-caption="Anular" size-full editable _id="gridCaja" :expand></vaadin-grid> 
-  </vaadin-vertical-layout>  
+   </vaadin-horizontal-layout>
+   <vaadin-grid caption="Operaciones de Caja" editor-save-caption="Guardar" editor-cancel-caption="Anular" size-full editable _id="gridCaja" :expand></vaadin-grid>
+  </vaadin-vertical-layout>
  </body>
 </html>
