@@ -4,30 +4,32 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
+DROP PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia]
+GO
 CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia]
 	@Tipo char(1), -- 0 proyecto, 1 tercero
-	@FechaFinal varchar(10),            -- Fecha para saldo formato dd/mm/yyyy
+	@FechaFinal varchar(19),            -- Fecha para saldo formato yyyy-mm-dd hh:mi:ss
 	@Codigo varchar(6),		-- codigo del proyecto o tercero
-	@SaldoPEN decimal(12,2) OUTPUT,	
+	@SaldoPEN decimal(12,2) OUTPUT,
 	@SaldoUSD decimal(12,2) OUTPUT,
 	@SaldoEUR decimal(12,2) OUTPUT
 AS
 
-Declare @SaldoPEN_contabilidad decimal(12,2) 
-Declare @SaldoUSD_contabilidad decimal(12,2) 	
-Declare @SaldoEUR_contabilidad decimal(12,2) 	
+Declare @SaldoPEN_contabilidad decimal(12,2)
+Declare @SaldoUSD_contabilidad decimal(12,2)
+Declare @SaldoEUR_contabilidad decimal(12,2)
 
-Declare @SaldoPEN_caja decimal(12,2) 
-Declare @SaldoUSD_caja decimal(12,2) 	
-Declare @SaldoEUR_caja decimal(12,2) 
+Declare @SaldoPEN_caja decimal(12,2)
+Declare @SaldoUSD_caja decimal(12,2)
+Declare @SaldoEUR_caja decimal(12,2)
 
-Declare @SaldoPEN_banco decimal(12,2) 
-Declare @SaldoUSD_banco decimal(12,2) 	
-Declare @SaldoEUR_banco decimal(12,2) 
+Declare @SaldoPEN_banco decimal(12,2)
+Declare @SaldoUSD_banco decimal(12,2)
+Declare @SaldoEUR_banco decimal(12,2)
 
 Declare @FechaInicial char(10)
-Set @FechaInicial='01/01/'+SUBSTRING(@FechaFinal,7,4)
+--Set @FechaInicial='01/01/'+SUBSTRING(@FechaFinal,7,4)
+Set @FechaInicial='01/01/1900'
 
 Set @SaldoPEN = 0.00
 Set @SaldoUSD = 0.00

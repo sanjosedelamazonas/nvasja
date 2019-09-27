@@ -4,14 +4,14 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
-
+drop PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]
+go
 CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]
 (@Tipo int, -- 1 proyecto, 2 tercero
  @FechaInicial varchar(10),
- @FechaFinal varchar(10),
- @Codigo varchar(6), 
- @SaldoPEN_contabilidad decimal(12,2) OUTPUT,	
+ @FechaFinal varchar(19),
+ @Codigo varchar(6),
+ @SaldoPEN_contabilidad decimal(12,2) OUTPUT,
  @SaldoUSD_contabilidad decimal(12,2) OUTPUT,
  @SaldoEUR_contabilidad decimal(12,2) OUTPUT )
 
@@ -29,49 +29,49 @@ BEGIN
 	From scp_comprobantedetalle a,
 			(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante, fec_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
-			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('13') and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 103))) b
-	Where 
+			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('00','13') and
+			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
+	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
-	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104' 
-	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And 
-	Ltrim(Rtrim(a.cod_proyecto)) = @Codigo and 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And 
+	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
+	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And
+	Ltrim(Rtrim(a.cod_proyecto)) = @Codigo and
+	--a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And
 	a.cod_tipomoneda=0
-	Group By a.txt_anoproceso,a.cod_tipomoneda,a.cod_proyecto
+	Group By a.cod_tipomoneda,a.cod_proyecto
 
  --USD
 	Select @SaldoUSD_contabilidad=isnull((Sum(a.num_haberdolar)-Sum(a.num_debedolar)),0)
 	From scp_comprobantedetalle a,
 		(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
-			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('13') and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 103))) b
-	Where 
+			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('00','13')  and
+			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
+	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
-	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104' 
-	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And 
-	Ltrim(Rtrim(a.cod_proyecto)) = @Codigo and 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And 
+	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
+	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And
+	Ltrim(Rtrim(a.cod_proyecto)) = @Codigo and
+--	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And
 	a.cod_tipomoneda=1
-	Group By a.txt_anoproceso,a.cod_tipomoneda,a.cod_proyecto
+	Group By a.cod_tipomoneda,a.cod_proyecto
 
   --EUR
 	Select @SaldoEUR_contabilidad=isnull((Sum(a.num_habermo)-Sum(a.num_debemo)),0)
 	From scp_comprobantedetalle a,
 	(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
-			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('13') and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 103))) b 
-	where 
+			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('00','13')  and
+			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
+	where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
-	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104' 
-	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And 
-	Ltrim(Rtrim(a.cod_proyecto)) = @Codigo and 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And 
-	a.cod_mes<>'13' and 
+	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
+	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And
+	Ltrim(Rtrim(a.cod_proyecto)) = @Codigo and
+	--a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And
+	a.cod_mes<>'13' and
 	a.cod_tipomoneda=2
-	Group By a.txt_anoproceso,a.cod_tipomoneda,a.cod_proyecto
+	Group By a.cod_tipomoneda,a.cod_proyecto
 END
 else if (@Tipo=2)
 BEGIN
@@ -80,49 +80,49 @@ BEGIN
 	From scp_comprobantedetalle a,
 			(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
-			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('13') and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 103))) b
+			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('00','13')  and
+			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
 	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
-	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104' 
-	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And 
-	Ltrim(Rtrim(a.cod_tercero)) = @Codigo and 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And 
+	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
+	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And
+	Ltrim(Rtrim(a.cod_tercero)) = @Codigo and
+--	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And
 	a.cod_tipomoneda=0
-	Group By a.txt_anoproceso,a.cod_tipomoneda,a.cod_tercero
+	Group By a.cod_tipomoneda,a.cod_tercero
 
  --USD
 	Select @SaldoUSD_contabilidad=isnull((Sum(a.num_haberdolar)-Sum(a.num_debedolar)),0)
 	From scp_comprobantedetalle a,
 			(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
-			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('13') and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 103))) b
+			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('00','13')  and
+			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
 	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
-	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104' 
-	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And 
-	Ltrim(Rtrim(a.cod_tercero)) = @Codigo and 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And 
+	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
+	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And
+	Ltrim(Rtrim(a.cod_tercero)) = @Codigo and
+--	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And
 	a.cod_tipomoneda=1
-	Group By a.txt_anoproceso,a.cod_tipomoneda,a.cod_tercero
+	Group By a.cod_tipomoneda,a.cod_tercero
 
   --EUR
 	Select @SaldoEUR_contabilidad=isnull((Sum(a.num_habermo)-Sum(a.num_debemo)),0)
 	From scp_comprobantedetalle a,
 			(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
-			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and 
-				cod_mes not in ('13') and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 103))) b
+			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and
+				cod_mes not in ('00','13')  and
+			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
 	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
-	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104' 
-	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And 
-	Ltrim(Rtrim(a.cod_tercero)) = @Codigo and 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And 
+	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
+	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And
+	Ltrim(Rtrim(a.cod_tercero)) = @Codigo and
+--	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And
 	a.cod_tipomoneda=2
-	Group By a.txt_anoproceso,a.cod_tipomoneda,a.cod_tercero
+	Group By a.cod_tipomoneda,a.cod_tercero
 END
 
 Print 'Contabilidad  PEN:'+CONVERT(char(14),@SaldoPEN_contabilidad ,121)

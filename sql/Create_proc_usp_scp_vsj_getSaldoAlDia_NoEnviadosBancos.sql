@@ -4,14 +4,15 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
+drop PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]
+go
 
 CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]
 (@Tipo int, -- 0 proyecto, 1 tercero
 @FechaInicial char(10),
- @FechaFinal char(10),
- @Codigo varchar(6), 
- @SaldoPEN_banco decimal(12,2) OUTPUT,	
+ @FechaFinal char(19),
+ @Codigo varchar(6),
+ @SaldoPEN_banco decimal(12,2) OUTPUT,
  @SaldoUSD_banco decimal(12,2) OUTPUT,
  @SaldoEUR_banco decimal(12,2) OUTPUT )
 
@@ -27,10 +28,10 @@ BEGIN
 	Select @SaldoPEN_banco=isnull((Sum(b.num_habersol)-Sum(b.num_debesol)),0)
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
-	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo 
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 103)) And 
-	Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
+	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
+	Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And
+--	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
 	A.cod_tipomoneda=0
 	Group By B.cod_proyecto,A.cod_tipomoneda
@@ -39,10 +40,10 @@ BEGIN
 	Select @SaldoUSD_banco=isnull((Sum(b.num_haberdolar)-Sum(b.num_debedolar)),0)
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
-	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo 
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 103)) And 
-	Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
+	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
+	Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And
+	--a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
 	A.cod_tipomoneda=1
 	Group By B.cod_proyecto,A.cod_tipomoneda
@@ -51,10 +52,10 @@ BEGIN
 	Select @SaldoEUR_banco=isnull((Sum(b.num_habermo)-Sum(b.num_debemo)),0)
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
-	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo 
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 103)) And 
-	Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
+	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
+	Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And
+	--a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
 	A.cod_tipomoneda=2
 	Group By B.cod_proyecto,A.cod_tipomoneda
@@ -65,10 +66,10 @@ BEGIN
 	Select @SaldoPEN_banco=isnull((Sum(b.num_habersol)-Sum(b.num_debesol)),0)
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
-	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo 
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 103)) And 
-	Ltrim(Rtrim(b.cod_tercero)) = @Codigo And 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
+	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
+	Ltrim(Rtrim(b.cod_tercero)) = @Codigo And
+--	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
 	A.cod_tipomoneda=0
 	Group By B.cod_tercero,A.cod_tipomoneda
@@ -77,10 +78,10 @@ BEGIN
 	Select @SaldoUSD_banco=isnull((Sum(b.num_haberdolar)-Sum(b.num_debedolar)),0)
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
-	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo 
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 103)) And 
-	Ltrim(Rtrim(b.cod_tercero)) = @Codigo And 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
+	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
+	Ltrim(Rtrim(b.cod_tercero)) = @Codigo And
+--	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
 	A.cod_tipomoneda=1
 	Group By B.cod_tercero,A.cod_tipomoneda
@@ -89,10 +90,10 @@ BEGIN
 	Select @SaldoEUR_banco=isnull((Sum(b.num_habermo)-Sum(b.num_debemo)),0)
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
-	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo 
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 103)) And 
+	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
 	Ltrim(Rtrim(b.cod_tercero)) = @Codigo And 
-	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
+	--a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
 	A.cod_tipomoneda=2
 	Group By B.cod_tercero,A.cod_tipomoneda

@@ -2,3 +2,4 @@
 UPDATE [dbo].[scp_bancodetalle] SET cod_tipomov='' WHERE cod_tipomov IS NULL
 UPDATE [dbo].[scp_plancontable] SET [ind_tipomoneda] = 'E' WHERE txt_anoproceso IN ('2014','2015','2016','2017','2018') AND flg_movimiento='N' AND cod_ctacontable='1060103'
 UPDATE [dbo].[scp_plancontable] SET [ind_tipomoneda] = 'N' WHERE txt_anoproceso IN ('2014','2015','2016','2017','2018') AND flg_movimiento='N' AND cod_ctacontable='1060101'
+update  [SCP].[dbo].[scp_proyecto]  set fec_final=CAST('2018-12-31' AS date) where cod_proyecto in ('005028','005029','005031','005035','005051','005054','005055','005056','005057','005058','005059','005060','005061','005064','005065','005066','005069','005070','005071','005072','005073','005074','005076','005077','023631','023211','023081','023020','023019','023012','023112','050012','006066','005002','005022');

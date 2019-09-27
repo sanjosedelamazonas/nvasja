@@ -5,7 +5,6 @@ cat Create_vsj_*.sql >> all.sql
 echo "PRINT '2. Create_vsj DONE'" >> all.sql
 #cat Create_function_*.sql >> all.sql
 #cat Create_trigger_*.sql >> all.sql
-
 cat Create_usp_*.sql >> all.sql
 echo "PRINT '3. Cr usp'" >> all.sql
 cat Create_proc_1_*.sql >> all.sql
@@ -20,10 +19,8 @@ echo "PRINT '8. Cr vsj'" >> all.sql
 echo "PRINT '9. FIXING DATA'" >> all.sql
 cat Data_fixes.sql >> all.sql
 echo "PRINT '10. DATA FIXED'" >> all.sql
-
 OLD="USE"
 NEW="--USE"
 f=all.sql
 TFILE=tmp_all.sql
 sed "s/$OLD/$NEW/g" "$f" > $TFILE && mv $TFILE "$f"
-
