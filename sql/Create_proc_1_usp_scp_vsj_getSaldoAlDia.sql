@@ -27,14 +27,20 @@ Declare @SaldoPEN_banco decimal(12,2)
 Declare @SaldoUSD_banco decimal(12,2)
 Declare @SaldoEUR_banco decimal(12,2)
 
+Declare @SaldoPEN_inicial decimal(12,2)
+Declare @SaldoUSD_inicial decimal(12,2)
+Declare @SaldoEUR_inicial decimal(12,2)
+
 Declare @FechaInicial char(10)
---Set @FechaInicial='01/01/'+SUBSTRING(@FechaFinal,7,4)
-Set @FechaInicial='01/01/1900'
+Set @FechaInicial='01/01/'+SUBSTRING(@FechaFinal,0,5)
+--Set @FechaInicial='01/01/1900'
 
 Set @SaldoPEN = 0.00
 Set @SaldoUSD = 0.00
 Set @SaldoEUR = 0.00
 
+-- Saldo inicial de contabilidad
+Exec usp_scp_vsj_getSaldoAlDia_inicial @Tipo,@FechaInicial,@FechaFinal,@Codigo,@SaldoPEN_inicial=@SaldoPEN_inicial OUTPUT, @SaldoUSD_inicial=@SaldoUSD_inicial OUTPUT,@SaldoEUR_inicial=@SaldoEUR_inicial OUTPUT
 
 -- Saldo del proyecto o tercero segun contabilidad
 Exec usp_scp_vsj_getSaldoAlDia_contabilidad @Tipo,@FechaInicial,@FechaFinal,@Codigo,@SaldoPEN_contabilidad=@SaldoPEN_contabilidad OUTPUT, @SaldoUSD_contabilidad=@SaldoUSD_contabilidad OUTPUT,@SaldoEUR_contabilidad=@SaldoEUR_contabilidad OUTPUT
@@ -46,9 +52,9 @@ Exec usp_scp_vsj_getSaldoAlDia_NoEnviadosCaja @Tipo,@FechaInicial,@FechaFinal,@C
 Exec usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos @Tipo,@FechaInicial,@FechaFinal,@Codigo,@SaldoPEN_banco=@SaldoPEN_banco OUTPUT, @SaldoUSD_banco=@SaldoUSD_banco OUTPUT,@SaldoEUR_banco=@SaldoEUR_banco OUTPUT
 
 
-Select @SaldoPEN=@SaldoPEN_contabilidad-@SaldoPEN_caja-@SaldoPEN_banco
-Select @SaldoUSD=@SaldoUSD_contabilidad-@SaldoUSD_caja-@SaldoUSD_banco
-Select @SaldoEUR=@SaldoEUR_contabilidad-@SaldoEUR_caja-@SaldoEUR_banco
+Select @SaldoPEN=@SaldoPEN_inicial+@SaldoPEN_contabilidad-@SaldoPEN_caja-@SaldoPEN_banco
+Select @SaldoUSD=@SaldoUSD_inicial+@SaldoUSD_contabilidad-@SaldoUSD_caja-@SaldoUSD_banco
+Select @SaldoEUR=@SaldoEUR_inicial+@SaldoEUR_contabilidad-@SaldoEUR_caja-@SaldoEUR_banco
 
 Print 'Total PEN:'+CONVERT(char(14),@SaldoPEN,14)
 +' USD:'+CONVERT(char(14),@SaldoUSD,121)

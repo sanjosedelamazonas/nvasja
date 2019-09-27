@@ -61,16 +61,15 @@ BEGIN
 	From scp_comprobantedetalle a,
 	(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
-			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('00','13')  and
+			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106') and cod_mes not in ('00','13')  and
 			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
 	where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
 	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
 	And Substring(Ltrim(a.cod_ctacontable),1,3)<>'106') And
-	Ltrim(Rtrim(a.cod_proyecto)) = @Codigo and
+	Ltrim(Rtrim(a.cod_proyecto)) = @Codigo
 	--a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) And
-	a.cod_mes<>'13' and
-	a.cod_tipomoneda=2
+    and a.cod_tipomoneda=2
 	Group By a.cod_tipomoneda,a.cod_proyecto
 END
 else if (@Tipo=2)
@@ -80,7 +79,7 @@ BEGIN
 	From scp_comprobantedetalle a,
 			(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
-			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('00','13')  and
+			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106') and cod_mes not in ('00','13')  and
 			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
 	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
