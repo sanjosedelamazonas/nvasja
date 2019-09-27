@@ -18,8 +18,12 @@ import org.sanjose.model.ScpCajabanco;
 import org.sanjose.util.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
+import org.sanjose.views.sys.SumFooter;
 import org.sanjose.views.sys.Viewing;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -32,7 +36,7 @@ import static org.sanjose.util.GenUtil.PEN;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class CajaManejoView extends CajaManejoUI implements CajaViewing, NavigatorViewing, Viewing, GridViewing {
+public class CajaManejoView extends CajaManejoUI implements CajaViewing, NavigatorViewing, Viewing, GridViewing, SumFooter {
 
     public static final String VIEW_NAME = "Manejo de Caja";
     private final CajaManejoLogic viewLogic = new CajaManejoLogic();
@@ -72,6 +76,8 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         this.comprobanteService = comprobanteService;
     }
 
+    public Grid.FooterRow gridCajaFooter;
+
     private void filterColumnsByMoneda(Grid grid, Character moneda) {
         for (int i=0;i<3;i++) {
             String mon = GenUtil.getDescMoneda(Character.forDigit(i, 10));
@@ -109,7 +115,6 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         //gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
-
         DataFilterUtil.bindTipoMonedaComboBox(selMoneda, "cod_tipomoneda", "Moneda", false);
         selMoneda.select('0');
         DataFilterUtil.bindComboBox(selFiltroCaja, "id.codCtacontable",
@@ -129,7 +134,6 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
             viewLogic.setSaldoDelDia();
         });
 
-
         selFiltroCaja.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
                 container.removeContainerFilters("codCtacontable");
@@ -138,6 +142,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
                 container.removeContainerFilters("codCtacontable");
             }
             viewLogic.setSaldoDelDia();
+            calcFooterSums();
         });
 
         gridCaja.addItemClickListener(this::setItemLogic);
@@ -145,12 +150,15 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         //gridCaja.getColumn("flgEnviado").setHidden(true);
 
         // Add filters
-        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
+        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic, this);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
         ViewUtil.colorizeRows(gridCaja);
+
+        gridCajaFooter = gridCaja.appendFooterRow();
+        calcFooterSums();
 
         // Set Saldos Inicial
         fechaDesde.addValueChangeListener(ev -> refreshCajas());
@@ -164,12 +172,41 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
                 DataUtil.getTodasCajas(fechaDesde.getValue(), getService().getPlanRepo()),
                 "txtDescctacontable");
+        calcFooterSums();
     }
 
     public void refreshData() {
         SortOrder[] sortOrders = gridCaja.getSortOrder().toArray(new SortOrder[1]);
         filter(fechaDesde.getValue(), fechaHasta.getValue());
         gridCaja.setSortOrder(Arrays.asList(sortOrders));
+        calcFooterSums();
+    }
+
+    public void calcFooterSums() {
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        BigDecimal sumDebesol = new BigDecimal(0.00);
+        BigDecimal sumHabersol = new BigDecimal(0.00);
+        BigDecimal sumDebedolar = new BigDecimal(0.00);
+        BigDecimal sumHaberdolar = new BigDecimal(0.00);
+        BigDecimal sumDebemo = new BigDecimal(0.00);
+        BigDecimal sumHabermo = new BigDecimal(0.00);
+        for (ScpCajabanco scp : container.getItemIds()) {
+            sumDebesol = sumDebesol.add(scp.getNumDebesol());
+            sumHabersol = sumHabersol.add(scp.getNumHabersol());
+            sumDebedolar = sumDebedolar.add(scp.getNumDebedolar());
+            sumHaberdolar = sumHaberdolar.add(scp.getNumHaberdolar());
+            sumDebemo = sumDebemo.add(scp.getNumDebemo());
+            sumHabermo = sumHabermo.add(scp.getNumHabermo());
+        }
+        gridCajaFooter.getCell("numDebesol").setText(df.format(sumDebesol));
+        gridCajaFooter.getCell("numHabersol").setText(df.format(sumHabersol));
+        gridCajaFooter.getCell("numDebedolar").setText(df.format(sumDebedolar));
+        gridCajaFooter.getCell("numHaberdolar").setText(df.format(sumHaberdolar));
+        gridCajaFooter.getCell("numDebemo").setText(df.format(sumDebemo));
+        gridCajaFooter.getCell("numHabermo").setText(df.format(sumHabermo));
+
+        Arrays.asList(new String[] { "numDebesol", "numDebesol", "numHabersol", "numDebedolar", "numDebemo", "numHabermo"})
+                .forEach( e -> gridCajaFooter.getCell(e).setStyleName("v-align-right strong"));
     }
 
     @Override
@@ -178,6 +215,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         setFilterInitialDate(fechaDesde);
         container.addAll(getService().getCajabancoRep().findByFecFechaBetween(fechaDesde, fechaHasta));
         gridCaja.setSortOrder(Sort.by("fecFecha", SortDirection.DESCENDING).then("txtCorrelativo", SortDirection.DESCENDING).build());
+        calcFooterSums();
     }
 
     private void setItemLogic(ItemClickEvent event) {

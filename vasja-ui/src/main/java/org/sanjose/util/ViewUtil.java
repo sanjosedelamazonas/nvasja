@@ -28,6 +28,7 @@ import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
+import org.sanjose.views.sys.SumFooter;
 
 import javax.print.PrintException;
 import java.sql.Timestamp;
@@ -160,23 +161,23 @@ public class ViewUtil {
     }
 
 
+    public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width) {
+        setupColumnFilters(grid, visible_cols, filter_cols_width, null, null);
+    }
+
     public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width, SaldoDelDia saldoDelDia) {
+        setupColumnFilters(grid, visible_cols, filter_cols_width, saldoDelDia, null);
+    }
+
+    public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width, SaldoDelDia saldoDelDia, SumFooter sumFooter) {
         Map<String, Integer> filCols = new HashMap<>();
         for (int i = 0; i < filter_cols_width.length; i++) {
             filCols.put(visible_cols[i], filter_cols_width[i]);
         }
-        setupColumnFilters(grid, filCols, saldoDelDia);
+        setupColumnFilters(grid, filCols, saldoDelDia, sumFooter);
     }
 
-    public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width) {
-        Map<String, Integer> filCols = new HashMap<>();
-        for (int i=0;i<filter_cols_width.length;i++) {
-            filCols.put(visible_cols[i], filter_cols_width[i]);
-        }
-        setupColumnFilters(grid, filCols, null);
-    }
-
-    private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, SaldoDelDia saldoDelDia) {
+    private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, SaldoDelDia saldoDelDia, SumFooter sumFooter) {
         Grid.HeaderRow filterRow = grid.appendHeaderRow();
         for (Grid.Column column: grid.getColumns()) {
             Object pid = column.getPropertyId();
@@ -197,6 +198,8 @@ public class ViewUtil {
                                 new Compare.Equal(pid, event.getProperty().getValue()));
                     if (saldoDelDia != null)
                         saldoDelDia.setSaldoDelDia();
+                    if (sumFooter != null)
+                        sumFooter.calcFooterSums();
                 });
                 cell.setComponent(filterCombo);
             } else {
@@ -219,6 +222,8 @@ public class ViewUtil {
                     }
                     if (saldoDelDia != null)
                         saldoDelDia.setSaldoDelDia();
+                    if (sumFooter != null)
+                        sumFooter.calcFooterSums();
                 });
                 cell.setComponent(filterField);
             }
@@ -261,7 +266,6 @@ public class ViewUtil {
         fechaHasta.setValue(defHasta);
         fechaHasta.addValueChangeListener(valueChangeEvent -> filterComprobantes(container, propertyId, fechaDesde, fechaHasta, viewing));
     }
-
 
     public static void filterComprobantes(Container.Filterable container, String propertyId, DateField fechaDesde, DateField fechaHasta, GridViewing viewing) {
         ((Container.SimpleFilterable) container).removeContainerFilters(propertyId);
