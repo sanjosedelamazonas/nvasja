@@ -9,7 +9,9 @@ public interface Viewing extends View {
 
     void init();
 
-    public enum Mode {
+    String getWindowTitle();
+
+    enum Mode {
         NEW, EDIT, VIEW, EMPTY
     }
 }

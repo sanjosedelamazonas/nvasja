@@ -13,6 +13,9 @@ import java.util.List;
 public class ImpresorasView extends VerticalLayout implements Viewing {
 
     public static final String VIEW_NAME = "Impresoras";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
 
     private final Label label;
 

@@ -36,6 +36,9 @@ import static org.sanjose.util.GenUtil.USD;
 public class BancoOperView extends BancoOperUI implements Viewing {
 
     public static final String VIEW_NAME = "Cheques";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"Item", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol"
     };

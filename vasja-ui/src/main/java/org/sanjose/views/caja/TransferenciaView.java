@@ -30,6 +30,9 @@ import static org.sanjose.util.GenUtil.USD;
 public class TransferenciaView extends TransferenciaUI implements ComprobanteViewing, Viewing {
 
     public static final String VIEW_NAME = "Transferencia";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"txtCorrelativo", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol"
     };

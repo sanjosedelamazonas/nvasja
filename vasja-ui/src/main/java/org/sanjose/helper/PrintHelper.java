@@ -44,6 +44,9 @@ import java.util.logging.Logger;
 public class PrintHelper extends VerticalLayout implements Viewing {
 
     public static final String VIEW_NAME = "Imprimir service";
+	public String getWindowTitle() {
+		return VIEW_NAME;
+	}
     private static final Logger logger = Logger
 			.getLogger(PrintHelper.class.getName());
 	private final Table table = new Table();

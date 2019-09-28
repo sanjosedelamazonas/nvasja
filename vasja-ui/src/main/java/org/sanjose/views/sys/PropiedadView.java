@@ -25,6 +25,9 @@ import java.util.Collection;
 public class PropiedadView extends PropiedadUI implements Viewing {
 
     public static final String VIEW_NAME = "Config del Sistema";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     private static final Logger log = LoggerFactory.getLogger(PropiedadView.class);
     public final VsjPropiedadRep repo;
     private final PropiedadLogic viewLogic;

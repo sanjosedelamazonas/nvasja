@@ -47,6 +47,9 @@ import java.util.stream.Collectors;
 public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorViewing, Viewing, GridViewing {
 
     public static final String VIEW_NAME = "Operaciones de Caja";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     private static final Logger log = LoggerFactory.getLogger(CajaGridView.class);
     private final CajaGridLogic viewLogic;
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",

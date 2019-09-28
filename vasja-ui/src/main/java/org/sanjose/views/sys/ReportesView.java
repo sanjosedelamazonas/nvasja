@@ -23,6 +23,9 @@ import java.util.*;
 public class ReportesView extends ReportesUI implements Viewing {
 
     public static final String VIEW_NAME = "Reportes";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     private static final Logger log = LoggerFactory.getLogger(ReportesView.class);
     private ComprobanteService comprobanteService;
     private Map<String,CustomReport> customReportMap = new TreeMap<>();

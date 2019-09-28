@@ -28,6 +28,9 @@ import java.util.Date;
 public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewing {
 
     public static final String VIEW_NAME = "Cajas";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionCajaView.class);
     private final ConfiguracionCajaLogic viewLogic = new ConfiguracionCajaLogic(this);
     private final String[] VISIBLE_COLUMN_IDS = new String[]{

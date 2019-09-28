@@ -13,6 +13,7 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
+import org.sanjose.MainUI;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.util.*;
@@ -39,10 +40,15 @@ import static org.sanjose.util.GenUtil.PEN;
 public class CajaManejoView extends CajaManejoUI implements CajaViewing, NavigatorViewing, Viewing, GridViewing, SumFooter {
 
     public static final String VIEW_NAME = "Manejo de Caja";
+
+    public String getWindowTitle() {
+        return "Registro de caja diario";
+    }
+
     private final CajaManejoLogic viewLogic = new CajaManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
-            "codCtacontable", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
-            "codDestino", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
+            "codDestino", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
+            "codCtacontable", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
@@ -52,8 +58,8 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
-            "Cta Cont.", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
-            "Responsable", "Lug. Gasto", "Cod. Aux", "Cuenta", "Rubro Inst.", "TD",
+            "Responsable", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
+            "Cta Cont.", "Lug. Gasto", "Cod. Aux", "Cuenta", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
             "Env", "Origen", "Comprobante"
     };
@@ -77,6 +83,8 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
     }
 
     public Grid.FooterRow gridCajaFooter;
+
+    private Character moneda ='0';
 
     @Override
     public void init() {
@@ -104,19 +112,20 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         gridCaja.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
         DataFilterUtil.bindTipoMonedaComboBox(selMoneda, "cod_tipomoneda", "Moneda", false);
-        selMoneda.select('0');
+        selMoneda.select(moneda);
         DataFilterUtil.bindComboBox(selFiltroCaja, "id.codCtacontable",
-                DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), '0'),
+                DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
                 "txtDescctacontable");
         selMoneda.setNullSelectionAllowed(false);
         selMoneda.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
+                moneda = (Character)e.getProperty().getValue();
                 container.removeContainerFilters("codTipomoneda");
-                container.addContainerFilter(new Compare.Equal("codTipomoneda", e.getProperty().getValue()));
-                ViewUtil.filterColumnsByMoneda(gridCaja, (Character)e.getProperty().getValue());
+                container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
+                ViewUtil.filterColumnsByMoneda(gridCaja, moneda);
 
                 DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
-                        DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), (Character)e.getProperty().getValue()),
+                        DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
                         "txtDescctacontable");
             }
             viewLogic.setSaldoDelDia();
@@ -158,7 +167,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
 
     private void refreshCajas() {
         DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
-                DataUtil.getTodasCajas(fechaDesde.getValue(), getService().getPlanRepo()),
+                DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
                 "txtDescctacontable");
         calcFooterSums();
     }

@@ -42,6 +42,9 @@ import java.util.List;
 public class BancoConciliacionView extends BancoConciliacionUI implements Viewing, BancoViewing {
 
     public static final String VIEW_NAME = "Conciliacion de bancos";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     private final BancoConciliacionLogic viewLogic = new BancoConciliacionLogic();
 
     private final String[] VISIBLE_COLUMN_IDS = new String[]{

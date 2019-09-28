@@ -31,6 +31,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class DestinoView extends DestinoUI implements View {
 
     public static final String VIEW_NAME = "Destino";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     private static final Logger log = LoggerFactory.getLogger(DestinoView.class);
     public final DestinoLogic viewLogic = new DestinoLogic(this);
     public final ScpDestinoRep destinoRepo;

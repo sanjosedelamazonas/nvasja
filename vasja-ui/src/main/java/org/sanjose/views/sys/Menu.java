@@ -27,6 +27,8 @@ public class Menu extends CssLayout {
     private final CssLayout menuPart;
     private List<Viewing> viewList = new ArrayList<>();
     private Button menuBtn;
+    private String winTitle = "VASJA";
+    private Label windowTitle = new Label(winTitle);
 
     public Menu(Navigator navigator) {
         this.navigator = navigator;
@@ -39,13 +41,12 @@ public class Menu extends CssLayout {
         top.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
         top.addStyleName(ValoTheme.MENU_TITLE);
         top.setSpacing(true);
-        Label title = new Label("VASJA");
-        title.addStyleName(ValoTheme.LABEL_H3);
-        title.setSizeUndefined();
+        windowTitle.addStyleName(ValoTheme.LABEL_H3);
+        windowTitle.setSizeUndefined();
         Image image = new Image(null, new ThemeResource("img/table-logo.png"));
         image.setStyleName("logo");
         top.addComponent(image);
-        top.addComponent(title);
+        top.addComponent(windowTitle);
         menuPart.addComponent(top);
 
         // logout menu item
@@ -160,6 +161,7 @@ public class Menu extends CssLayout {
             selected.addStyleName("selected");
         }
         menuPart.removeStyleName(VALO_MENU_VISIBLE);
+        windowTitle.setValue(winTitle + " - " + ((Viewing)navigator.getCurrentView()).getWindowTitle());
     }
 
     public void setShowMenu(boolean showMenu) {

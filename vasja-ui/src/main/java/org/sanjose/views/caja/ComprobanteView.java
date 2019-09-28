@@ -19,6 +19,9 @@ import tm.kod.widgets.numberfield.NumberField;
 public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing, Viewing {
 
     public static final String VIEW_NAME = "Caja";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     private static final Logger log = LoggerFactory.getLogger(ComprobanteView.class);
 
     private final Field[] allFields = new Field[] { fechaDoc, dataFechaComprobante, selProyectoTercero, tipoProyectoTercero, selCaja, selMoneda,

@@ -30,6 +30,9 @@ import java.util.Date;
 public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI implements Viewing {
 
     public static final String VIEW_NAME = "Movimientos";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionCtaCajaBancoView.class);
     private final ConfiguracionCtaCajaBancoLogic viewLogic = new ConfiguracionCtaCajaBancoLogic(this);
     private final String[] VISIBLE_COLUMN_IDS = new String[]{

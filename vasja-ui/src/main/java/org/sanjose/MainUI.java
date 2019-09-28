@@ -107,6 +107,7 @@ public class MainUI extends UI {
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
         else
             getNavigator().navigateTo(getNavigator().getState());
+        //getNavigator().getCurrentView().
     }
 
     public AccessControl getAccessControl() {

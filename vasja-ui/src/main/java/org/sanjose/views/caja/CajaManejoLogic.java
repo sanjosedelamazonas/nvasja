@@ -58,7 +58,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
         view.btnImprimir.addClickListener(e -> printComprobante());
         saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null));
-        view.btnReporteCaja.addClickListener(e -> {
+        view.btnDetallesSaldos.addClickListener(e -> {
             setSaldos(saldosView.getGridSaldoInicial(), true);
             setSaldos(saldosView.getGridSaldoFInal(), false);
             setSaldoDelDia();

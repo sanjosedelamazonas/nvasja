@@ -36,6 +36,9 @@ import java.util.Date;
 public class BancoManejoView extends BancoManejoUI implements Viewing, BancoViewing, GridViewing {
 
     public static final String VIEW_NAME = "Manejo de Cheques";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     private final BancoManejoLogic viewLogic = new BancoManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
             "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",

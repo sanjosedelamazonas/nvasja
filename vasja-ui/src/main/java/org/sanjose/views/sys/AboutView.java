@@ -12,6 +12,9 @@ import com.vaadin.ui.VerticalLayout;
 public class AboutView extends VerticalLayout implements Viewing {
 
     public static final String VIEW_NAME = "About";
+    public String getWindowTitle() {
+        return VIEW_NAME;
+    }
     private final CustomLayout aboutContent;
     private Label label;
 

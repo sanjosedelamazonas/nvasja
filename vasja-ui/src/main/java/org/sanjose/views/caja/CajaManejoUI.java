@@ -26,13 +26,17 @@ public class CajaManejoUI extends VerticalLayout {
     protected DateField fechaDesde;
     protected DateField fechaHasta;
     protected ComboBox selMoneda;
-    protected ComboBox selFiltroCaja;
-    protected Button nuevoComprobante;
     protected Button btnEditar;
     protected Button btnImprimir;
     protected Button btnVerVoucher;
+    protected Button btnDetallesSaldos;
+    protected Button btnEliminar;
+    protected HorizontalLayout horizontalReporteCaja;
+    protected Button btnReporteImprimirCaja;
+    protected HorizontalLayout horizontalNuevosCaja;
+    protected ComboBox selFiltroCaja;
+    protected Button nuevoComprobante;
     protected Button nuevaTransferencia;
-    protected Button btnReporteCaja;
     protected Grid gridCaja;
 
     public CajaManejoUI() {

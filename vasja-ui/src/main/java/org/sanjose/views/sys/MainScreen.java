@@ -28,22 +28,8 @@ import java.util.List;
 public class MainScreen extends HorizontalLayout {
     private static final Logger log = LoggerFactory.getLogger(MainScreen.class);
     private final Menu menu;
-    // notify the view menu about view changes so that it can display which view
-    // is currently active
-    private final ViewChangeListener viewChangeListener = new ViewChangeListener() {
-
-        @Override
-        public boolean beforeViewChange(ViewChangeEvent event) {
-            return true;
-        }
-
-        @Override
-        public void afterViewChange(ViewChangeEvent event) {
-            menu.setActiveView(event.getViewName());
-        }
-
-    };
     private PrintHelper printHelper = null;
+
 
     public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
                       ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView,
@@ -127,6 +113,23 @@ public class MainScreen extends HorizontalLayout {
         setExpandRatio(viewContainer, 1);
         setSizeFull();
     }
+
+
+    // notify the view menu about view changes so that it can display which view
+    // is currently active
+    private final ViewChangeListener viewChangeListener = new ViewChangeListener() {
+
+        @Override
+        public boolean beforeViewChange(ViewChangeEvent event) {
+            return true;
+        }
+
+        @Override
+        public void afterViewChange(ViewChangeEvent event) {
+            menu.setActiveView(event.getViewName());
+        }
+
+    };
 
     public void printerLoaded(List<String> imprimeras, String defaultPrinter) {
         log.info("Loaded " + imprimeras.size() + " printers");
