@@ -6,8 +6,11 @@
   <meta name="vaadin-version" content="7.7.7">
  </head>
  <body>
-  <vaadin-vertical-layout id="verticalMain" size-full margin>
-   <vaadin-horizontal-layout spacing height="40px" margin _id="horizontalFechas" :middle :center>
+  <vaadin-vertical-layout id="verticalMain" margin>
+   <vaadin-horizontal-layout width-full height="22px" _id="horiz1">
+    <vaadin-label size-auto plain-text>
+      Operaciones del día: 
+    </vaadin-label>
     <vaadin-date-field _id="fechaDesde"></vaadin-date-field>
     <vaadin-label size-auto plain-text>
       al 
@@ -21,44 +24,46 @@
      <option>Option 2</option>
      <option>Option 3</option>
     </vaadin-combo-box>
-    <vaadin-button plain-text _id="btnEditar">
-      Modificar 
-    </vaadin-button>
-    <vaadin-button plain-text _id="btnImprimir">
-      Imprimir Voucher 
-    </vaadin-button>
-    <vaadin-button plain-text _id="btnVerVoucher">
-      Ver Voucher 
-    </vaadin-button>
     <vaadin-label size-auto plain-text>
       Saldo actual de caja: 
     </vaadin-label>
+    <vaadin-text-field _id="saldoCaja"></vaadin-text-field>
     <vaadin-button plain-text _id="btnDetallesSaldos">
       Detalles de saldos 
     </vaadin-button>
-    <vaadin-button plain-text _id="btnEliminar">
-      Eliminar Voucher 
-    </vaadin-button>
    </vaadin-horizontal-layout>
-   <vaadin-horizontal-layout spacing height="40px" margin _id="horizontalReporteCaja" :middle :right>
+   <vaadin-horizontal-layout width-full height="44px" _id="horiz2">
     <vaadin-button plain-text _id="btnReporteImprimirCaja">
       Reporte de caja 
     </vaadin-button>
    </vaadin-horizontal-layout>
-   <vaadin-horizontal-layout spacing height="40px" margin _id="horizontalNuevosCaja" :middle :right>
+   <vaadin-horizontal-layout _id="horiz3">
     <vaadin-combo-box input-prompt="Filtrar por Caja" item-caption-mode="id" width="280px" _id="selFiltroCaja">
      <option>Option 1</option>
      <option>Option 2</option>
      <option>Option 3</option>
     </vaadin-combo-box>
-    <vaadin-button plain-text _id="nuevoComprobante">
-      Nuevo comprobante 
-    </vaadin-button>
     <vaadin-button plain-text _id="nuevaTransferencia">
       Nuevo Cargo/Abono 
     </vaadin-button>
+    <vaadin-button plain-text _id="nuevoComprobante">
+      Nuevo comprobante 
+    </vaadin-button>
    </vaadin-horizontal-layout>
-   <vaadin-grid editor-cancel-caption="Anular" width="70%" height-full _id="gridCaja" :middle :center :expand></vaadin-grid>
+   <vaadin-horizontal-layout _id="horiz4">
+    <vaadin-grid editor-cancel-caption="Anular" width="1239px" height="700px" _id="gridCaja"></vaadin-grid>
+    <vaadin-vertical-layout size-auto>
+     <vaadin-button width="131px" plain-text _id="btnImprimir">
+       Imprimir Voucher 
+     </vaadin-button>
+     <vaadin-button width="131px" plain-text _id="btnEditar">
+       Modificar 
+     </vaadin-button>
+     <vaadin-button width="130px" plain-text _id="btnEliminar">
+       Eliminar Voucher 
+     </vaadin-button>
+    </vaadin-vertical-layout>
+   </vaadin-horizontal-layout>
   </vaadin-vertical-layout>
  </body>
 </html>
