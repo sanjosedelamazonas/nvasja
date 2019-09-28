@@ -1,0 +1,1 @@
+SELECT cod_cajabanco, txt_anoproceso, sc.cod_destino, sd.cod_destino as destino, sd.txt_nombredestino FROM scp_cajabanco sc LEFT JOIN scp_destino sd on sc.cod_destino = sd.cod_destino WHERE sd.cod_destino IS NULL
