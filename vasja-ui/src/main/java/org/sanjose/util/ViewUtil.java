@@ -355,7 +355,8 @@ public class ViewUtil {
         subWindow.setHeight(height, Sizeable.Unit.PIXELS);
         subWindow.setModal(true);
         subWindow.setContent((Component)component);
-        subWindow.setClosable(false);
+        if (!ConfigurationUtil.is("DEV_MODE"))
+            subWindow.setClosable(false);
         subWindow.setDraggable(true);
         subWindow.setCaption(caption);
         component.setSubWindow(subWindow);

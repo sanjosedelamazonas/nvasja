@@ -26,10 +26,7 @@ import org.sanjose.views.sys.Viewing;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -62,6 +59,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         //view.btnImprimir.addClickListener(e -> printComprobante());
         view.btnEliminar.addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
         saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null));
+        view.btnReporteImprimirCaja.addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null));
         view.btnDetallesSaldos.addClickListener(e -> {
             setSaldos(saldosView.getGridSaldoInicial(), true);
             setSaldos(saldosView.getGridSaldoFInal(), false);
@@ -88,6 +86,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
                 }
             }
         });
+        setSaldos(saldosView.getGridSaldoFInal(), false);
     }
 
     private void generateComprobante() {
@@ -98,6 +97,9 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         ViewUtil.printComprobante(view.getSelectedRow());
     }
 
+    public void setSaldosFinal() {
+        setSaldos(saldosView.getGridSaldoFInal(), false);
+    }
 
     public void setSaldos(Grid grid, boolean isInicial) {
         grid.getContainerDataSource().removeAllItems();
@@ -105,6 +107,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         grid.setContainerDataSource(c);
         grid.setColumnOrder(COL_VIS_SALDO);
         grid.setColumns(COL_VIS_SALDO);
+
         BigDecimal totalSoles = new BigDecimal(0.00);
         BigDecimal totalUsd = new BigDecimal(0.00);
         BigDecimal totalEur = new BigDecimal(0.00);
@@ -155,6 +158,12 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
             saldosFooterFinal.getCell("dolares").setText(dpf.format(totalUsd.doubleValue()));
             saldosFooterFinal.getCell("euros").setText(dpf.format(totalEur.doubleValue()));
             saldosFooterFinal.getCell("euros").setStyleName("v-align-right");
+            // set Saldo in CajaManejo
+            Map<Character, BigDecimal> totals = new HashMap<>();
+            totals.put(GenUtil.PEN, totalSoles);
+            totals.put(GenUtil.USD, totalUsd);
+            totals.put(GenUtil.EUR, totalEur);
+            view.saldoCaja.setValue(dpf.format(totals.get(view.getMoneda()).doubleValue()));
         }
     }
 

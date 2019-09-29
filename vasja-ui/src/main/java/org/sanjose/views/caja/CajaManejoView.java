@@ -84,6 +84,10 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
 
     public Grid.FooterRow gridCajaFooter;
 
+    public Character getMoneda() {
+        return moneda;
+    }
+
     private Character moneda ='0';
 
     @Override
@@ -131,6 +135,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
                         "txtDescctacontable");
             }
             viewLogic.setSaldoDelDia();
+            viewLogic.setSaldosFinal();
         });
         container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
         selFiltroCaja.addValueChangeListener(e -> {
@@ -141,6 +146,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
                 container.removeContainerFilters("codCtacontable");
             }
             viewLogic.setSaldoDelDia();
+            viewLogic.setSaldosFinal();
             calcFooterSums();
         });
 
@@ -164,7 +170,6 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         fechaHasta.addValueChangeListener(ev -> refreshCajas());
 
         viewLogic.init(this);
-
     }
 
     private void refreshCajas() {
@@ -179,6 +184,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         filter(fechaDesde.getValue(), fechaHasta.getValue());
         gridCaja.setSortOrder(Arrays.asList(sortOrders));
         calcFooterSums();
+        //viewLogic.setSaldos(gridCaja, false);
     }
 
     @Override

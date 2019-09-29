@@ -187,6 +187,7 @@ public class ReportHelper {
 		repWindow.setPositionY(50);
 		repWindow.setModal(false);
         repWindow.setContent(emb);
+        repWindow.setDraggable(true);
 		UI.getCurrent().addWindow(repWindow);
         //JavaScript.getCurrent().execute("window.onload = function() { window.print(); } ");
 	}
