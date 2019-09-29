@@ -57,9 +57,10 @@ vaadin:
 spring:
   profiles: production
   datasource:
-    url: jdbc:sqlserver://LEON-PC:1433;databaseName=SCP_TEST
+    url: jdbc:sqlserver://leon.lan:1433;databaseName=SCP
     username: vasja
-    password: tJF/{LJ6h;Z5uW\G
+    password: vasja123
+#    password: tJF/{LJ6h;Z5uW\G
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 server:
   port: 8000
