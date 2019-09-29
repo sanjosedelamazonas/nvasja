@@ -6,7 +6,7 @@
   <meta name="vaadin-version" content="7.7.7">
  </head>
  <body>
-  <vaadin-vertical-layout id="verticalMain" margin>
+  <vaadin-vertical-layout id="verticalMain" height="100px" margin>
    <vaadin-horizontal-layout width-full height="22px" _id="horiz1">
     <vaadin-label size-auto plain-text>
       Operaciones del día: 
@@ -35,8 +35,8 @@
       Reporte de caja 
     </vaadin-button>
    </vaadin-horizontal-layout>
-   <vaadin-horizontal-layout width-full height="44px" _id="horiz2"></vaadin-horizontal-layout>
-   <vaadin-horizontal-layout _id="horiz3">
+   <vaadin-horizontal-layout width-full height="30px" _id="horiz2"></vaadin-horizontal-layout>
+   <vaadin-horizontal-layout width-full height="30px" _id="horiz3">
     <vaadin-combo-box input-prompt="Filtrar por Caja" item-caption-mode="id" width="280px" _id="selFiltroCaja">
      <option>Option 1</option>
      <option>Option 2</option>
@@ -52,10 +52,10 @@
    <vaadin-horizontal-layout _id="horiz4">
     <vaadin-grid editor-cancel-caption="Anular" width="1239px" height="700px" _id="gridCaja"></vaadin-grid>
     <vaadin-vertical-layout size-auto>
-     <vaadin-button width="131px" height="22px" plain-text _id="btnImprimir">
+     <vaadin-button width="131px" height="22px" plain-text _id="btnVerImprimir">
        Ver/Imprimir 
      </vaadin-button>
-     <vaadin-button width="131px" plain-text _id="btnEditar">
+     <vaadin-button width="131px" plain-text _id="btnModificar">
        Modificar 
      </vaadin-button>
      <vaadin-button width="130px" plain-text _id="btnEliminar">

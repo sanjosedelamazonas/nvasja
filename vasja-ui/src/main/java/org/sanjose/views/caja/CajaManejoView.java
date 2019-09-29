@@ -116,6 +116,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         DataFilterUtil.bindComboBox(selFiltroCaja, "id.codCtacontable",
                 DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
                 "txtDescctacontable");
+
         selMoneda.setNullSelectionAllowed(false);
         selMoneda.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
@@ -130,7 +131,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
             }
             viewLogic.setSaldoDelDia();
         });
-
+        container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
         selFiltroCaja.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
                 container.removeContainerFilters("codCtacontable");

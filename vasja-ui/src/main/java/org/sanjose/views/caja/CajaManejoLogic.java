@@ -1,11 +1,13 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.*;
+import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
@@ -20,6 +22,7 @@ import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.sys.SaldoDelDia;
+import org.sanjose.views.sys.Viewing;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -52,11 +55,12 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         cajaView = view;
         view.nuevoComprobante.addClickListener(e -> newComprobante());
         view.nuevaTransferencia.addClickListener(e -> newTransferencia());
-        view.btnEditar.addClickListener(e -> editarComprobante(view.getSelectedRow()));
-        view.btnVerVoucher.addClickListener(e -> generateComprobante());
+        view.btnModificar.addClickListener(e -> editarComprobante(view.getSelectedRow()));
+        view.btnVerImprimir.addClickListener(e -> generateComprobante());
         //
-        view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
-        view.btnImprimir.addClickListener(e -> printComprobante());
+        //view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
+        //view.btnImprimir.addClickListener(e -> printComprobante());
+        view.btnEliminar.addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
         saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null));
         view.btnDetallesSaldos.addClickListener(e -> {
             setSaldos(saldosView.getGridSaldoInicial(), true);
@@ -192,6 +196,52 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         saldosView.getValEurSaldo().setValue(dpf.format(totalEurDiaIng.subtract(totalEurDiaEgr).doubleValue()));
 
         saldosView.gridSaldoDelDia.setColumnExpandRatio(0, 0);
+    }
+
+    void eliminarComprobante(ScpCajabanco savedCajabanco) {
+        if (savedCajabanco == null)
+            return;
+        if (savedCajabanco.isEnviado()) {
+            MessageBox
+                    .createInfo()
+                    .withCaption("Ya enviado a contabilidad")
+                    .withMessage("No se puede eliminar porque ya esta enviado a la contabilidad.")
+                    .withOkButton()
+                    .open();
+            return;
+        }
+        MessageBox
+                .createQuestion()
+                .withCaption("Eliminar")
+                .withMessage("?Esta seguro que quiere eliminar este comprobante?")
+                .withYesButton(() ->  doEliminarComprobante(savedCajabanco))
+                .withNoButton()
+                .open();
+    }
+
+    void doEliminarComprobante(ScpCajabanco savedCajabanco) {
+        try {
+            ScpCajabanco item = savedCajabanco.prepareToEliminar();
+            log.info("Ready to ANULAR: " + item);
+            savedCajabanco = view.getService().getCajabancoRep().save(item);
+            savedCajabanco = null;
+            view.selectMoneda(item.getCodTipomoneda());
+            view.refreshData();
+            MessageBox
+                    .createInfo()
+                    .withCaption("Elminado correctamente")
+                    .withMessage("El comprobante ha sido eliminado.")
+                    .withOkButton()
+                    .open();
+        } catch (Exception ce) {
+            log.info("Got Exception al eliminar comprobante: " + ce.getMessage());
+            MessageBox
+                    .createError()
+                    .withCaption("Error al anular el comprobante:")
+                    .withMessage(ce.getLocalizedMessage())
+                    .withOkButton()
+                    .open();
+        }
     }
 
 }
