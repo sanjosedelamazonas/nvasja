@@ -95,6 +95,10 @@ public class ScpCajabanco extends VsjItem implements Serializable {
 	private String txtSeriecomprobantepago;
 	@Column(name="flg_saldo")
 	private Character flgSaldo='0';
+
+	@ManyToOne(targetEntity = ScpDestino.class)
+	@JoinColumn(name = "cod_destino", insertable = false, updatable = false, nullable = true)
+	private ScpDestino scpDestino;
 /*
 
 	@Column(name="txt_anoproceso")
@@ -437,6 +441,14 @@ public class ScpCajabanco extends VsjItem implements Serializable {
 
 	public void setFlgSaldo(Character flgSaldo) {
 		this.flgSaldo = flgSaldo;
+	}
+
+	public ScpDestino getScpDestino() {
+		return scpDestino;
+	}
+
+	public void setScpDestino(ScpDestino scpDestino) {
+		this.scpDestino = scpDestino;
 	}
 
 	@Override

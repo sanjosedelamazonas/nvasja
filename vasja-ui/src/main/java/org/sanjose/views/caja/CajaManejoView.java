@@ -47,13 +47,13 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
 
     private final CajaManejoLogic viewLogic = new CajaManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
-            "codDestino", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
+            "scpDestino.txtNombredestino", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "codCtacontable", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
     private final String[] HIDDEN_COLUMN_IDS = new String[] {
-            "codDestino", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
+            "codCtacontable", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo"
     };
@@ -93,6 +93,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
 
         //noinspection unchecked
         container = new BeanItemContainer(ScpCajabanco.class, getService().getCajabancoRep().findByFecFechaBetween(filterInitialDate, new Date()));
+        container.addNestedContainerBean("scpDestino");
         gridCaja.setContainerDataSource(container);
         gridCaja.setEditorEnabled(false);
         gridCaja.setSortOrder(Sort.by("fecFecha", SortDirection.DESCENDING).then("txtCorrelativo", SortDirection.DESCENDING).build());
