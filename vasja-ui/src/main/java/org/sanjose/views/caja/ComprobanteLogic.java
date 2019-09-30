@@ -149,8 +149,11 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
             view.getNumVoucher().setValue(savedCajabanco.getTxtCorrelativo());
             view.refreshData(item.getCodTipomoneda());
             switchMode(Viewing.Mode.VIEW);
-            ViewUtil.printComprobante(savedCajabanco);
-            closeWindow();
+            // Open Comprobante only in Gilmer view
+            if (view instanceof CajaManejoView) {
+                ViewUtil.printComprobante(savedCajabanco);
+                closeWindow();
+            }
         } catch (CommitException ce) {
             String errMsg = GenUtil.genErrorMessage(ce.getInvalidFields());
             Notification.show("Error al guardar el comprobante: \n" + errMsg, Notification.Type.ERROR_MESSAGE);

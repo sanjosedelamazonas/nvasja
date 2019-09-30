@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 // @UIScope
 public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorViewing, Viewing, GridViewing {
 
-    public static final String VIEW_NAME = "Operaciones de Caja";
+    public static final String VIEW_NAME = "Operaciones de Caja - Grid";
     public String getWindowTitle() {
         return VIEW_NAME;
     }

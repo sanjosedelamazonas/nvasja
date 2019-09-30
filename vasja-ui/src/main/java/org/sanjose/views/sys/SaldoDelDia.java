@@ -6,4 +6,6 @@ package org.sanjose.views.sys;
 public interface SaldoDelDia {
 
     void setSaldoDelDia();
+
+    void calcFooterSums();
 }

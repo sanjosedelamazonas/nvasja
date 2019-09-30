@@ -28,7 +28,6 @@ import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
-import org.sanjose.views.sys.SumFooter;
 
 import javax.print.PrintException;
 import java.sql.Timestamp;
@@ -162,22 +161,18 @@ public class ViewUtil {
 
 
     public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width) {
-        setupColumnFilters(grid, visible_cols, filter_cols_width, null, null);
+        setupColumnFilters(grid, visible_cols, filter_cols_width, null);
     }
 
     public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width, SaldoDelDia saldoDelDia) {
-        setupColumnFilters(grid, visible_cols, filter_cols_width, saldoDelDia, null);
-    }
-
-    public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width, SaldoDelDia saldoDelDia, SumFooter sumFooter) {
         Map<String, Integer> filCols = new HashMap<>();
         for (int i = 0; i < filter_cols_width.length; i++) {
             filCols.put(visible_cols[i], filter_cols_width[i]);
         }
-        setupColumnFilters(grid, filCols, saldoDelDia, sumFooter);
+        setupColumnFilters(grid, filCols, saldoDelDia);
     }
 
-    private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, SaldoDelDia saldoDelDia, SumFooter sumFooter) {
+    private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, SaldoDelDia saldoDelDia) {
         Grid.HeaderRow filterRow = grid.appendHeaderRow();
         for (Grid.Column column: grid.getColumns()) {
             Object pid = column.getPropertyId();
@@ -196,10 +191,10 @@ public class ViewUtil {
                     if (!GenUtil.objNullOrEmpty(event.getProperty().getValue()))
                         ((Container.Filterable) grid.getContainerDataSource()).addContainerFilter(
                                 new Compare.Equal(pid, event.getProperty().getValue()));
-                    if (saldoDelDia != null)
+                    if (saldoDelDia != null) {
                         saldoDelDia.setSaldoDelDia();
-                    if (sumFooter != null)
-                        sumFooter.calcFooterSums();
+                        saldoDelDia.calcFooterSums();
+                    }
                 });
                 cell.setComponent(filterCombo);
             } else {
@@ -220,10 +215,10 @@ public class ViewUtil {
                                 new SimpleStringFilter(pid,
                                         change.getText(), true, false));
                     }
-                    if (saldoDelDia != null)
+                    if (saldoDelDia != null) {
                         saldoDelDia.setSaldoDelDia();
-                    if (sumFooter != null)
-                        sumFooter.calcFooterSums();
+                        saldoDelDia.calcFooterSums();
+                    }
                 });
                 cell.setComponent(filterField);
             }

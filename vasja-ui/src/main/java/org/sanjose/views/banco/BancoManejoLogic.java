@@ -168,6 +168,7 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
         setSaldoDelDia();
     }
 
+    @Override
     public void setSaldoDelDia() {
         // Total del Dia
         BigDecimal totalSolesDiaIng = new BigDecimal(0.00);
@@ -205,5 +206,9 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
         view.getValEuroSaldo().setValue(dpf.format(totalEurosDiaIng.subtract(totalEurosDiaEgr).doubleValue()));
 
         view.gridSaldoDelDia.setColumnExpandRatio(0, 0);*/
+    }
+
+    @Override
+    public void calcFooterSums() {
     }
 }

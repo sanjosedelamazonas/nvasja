@@ -121,6 +121,8 @@ public class BancoConciliacionLogic implements Serializable, SaldoDelDia {
 
     @Override
     public void setSaldoDelDia() {
-
+    }
+    @Override
+    public void calcFooterSums() {
     }
 }

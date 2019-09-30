@@ -6,6 +6,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.banco.BancoService;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
@@ -31,9 +32,16 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
     private ComprobanteService comprobanteService;
     private Window subWindow;
 
+    public ComprobanteView(){
+    }
 
     public ComprobanteView(ComprobanteService comprobanteService) {
         this.comprobanteService = comprobanteService;
+    }
+
+    public void init(ComprobanteService comprobanteService) {
+        this.comprobanteService = comprobanteService;
+        init();
     }
 
     @Override
@@ -42,6 +50,9 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
         addStyleName("crud-view");
         ViewUtil.setDefaultsForNumberField(numIngreso);
         ViewUtil.setDefaultsForNumberField(numEgreso);
+
+        modificarBtn.setVisible(false);
+        cerrarBtn.setVisible(false);
 
         guardarBtn.setEnabled(false);
         modificarBtn.setEnabled(false);

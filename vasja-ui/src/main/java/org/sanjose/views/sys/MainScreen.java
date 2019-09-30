@@ -31,10 +31,13 @@ public class MainScreen extends HorizontalLayout {
     private PrintHelper printHelper = null;
 
 
-    public MainScreen(MainUI ui, CajaManejoView cajaManejoView, CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
-                      ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView, ComprobanteView comprobanteView,
-                      TransferenciaView transferenciaView, BancoOperView bancoOperView, BancoManejoView bancoManejoView,
-                      BancoConciliacionView bancoConciliacionView, BancoOperacionesView bancoOperacionesView, ReportesView reportesView) {
+    public MainScreen(MainUI ui, CajaManejoView cajaManejoView, ComprobanteView comprobanteView,
+                      TransferenciaView transferenciaView, CajaOperacionesView cajaOperacionesView,
+                      CajaGridView cajaGridView, ConfiguracionCtaCajaBancoView confView,
+                      ConfiguracionCajaView configuracionCajaView, PropiedadView propiedadView,
+                      BancoOperView bancoOperView, BancoManejoView bancoManejoView,
+                      BancoConciliacionView bancoConciliacionView, BancoOperacionesView bancoOperacionesView,
+                      ReportesView reportesView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -61,6 +64,8 @@ public class MainScreen extends HorizontalLayout {
                     CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
         if (Role.isPrivileged()) {
+            menu.addView(cajaOperacionesView, CajaOperacionesView.VIEW_NAME,
+                    CajaOperacionesView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
                     CajaGridView.VIEW_NAME, FontAwesome.EDIT);
         }

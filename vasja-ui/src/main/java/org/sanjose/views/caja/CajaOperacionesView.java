@@ -9,32 +9,32 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
+import org.sanjose.MainUI;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.util.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.Viewing;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
 /**
- * A view for performing create-read-update-delete operations on products.
+ * A view for performing create-read-update-delete operations on Caja
  *
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, NavigatorViewing, Viewing, GridViewing  {
+public class CajaOperacionesView extends CajaOperacionesUI implements CajaManejoViewing, NavigatorViewing, Viewing, GridViewing {
 
-    public static final String VIEW_NAME = "Manejo de Caja";
+    public static final String VIEW_NAME = "Operaciones de Caja";
 
     public String getWindowTitle() {
         return "Registro de caja diario";
     }
 
-    private final CajaManejoLogic viewLogic = new CajaManejoLogic();
+    private final CajaOperacionesLogic viewLogic = new CajaOperacionesLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
             "scpDestino.txtNombredestino", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "codCtacontable", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
@@ -42,7 +42,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
     };
     private final String[] HIDDEN_COLUMN_IDS = new String[] {
-            "codCtacontable", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
+            "scpDestino.txtNombredestino", "codCtacontable", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo"
     };
@@ -67,7 +67,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
 
     private ComprobanteService comprobanteService;
 
-    public CajaManejoView(ComprobanteService comprobanteService) {
+    public CajaOperacionesView(ComprobanteService comprobanteService) {
         this.comprobanteService = comprobanteService;
     }
 
@@ -93,7 +93,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
 
         ViewUtil.alignMontosInGrid(gridCaja);
 
-        gridCaja.setSelectionMode(SelectionMode.SINGLE);
+        gridCaja.setSelectionMode(SelectionMode.MULTI);
 
         // Fecha Desde Hasta
         ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta, this);
@@ -153,8 +153,19 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
         // Set Saldos Inicial
         fechaDesde.addValueChangeListener(ev -> refreshCajas());
         fechaHasta.addValueChangeListener(ev -> refreshCajas());
+        // Inititalize Comprobante View
+        comprobView.init(MainUI.get().getCajaManejoView().getService());
+        comprobView.viewLogic.nuevoComprobante();
 
         viewLogic.init(this);
+
+        btnEnviarContabilidad.addClickListener(e -> {
+            if (!getSelectedRows().isEmpty()) {
+                viewLogic.enviarContabilidad(getSelectedRow());
+                refreshData();
+                gridCaja.deselectAll();
+            }
+        });
     }
 
     private void refreshCajas() {
@@ -176,15 +187,15 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
 
     @Override
     public void filter(Date fechaDesde, Date fechaHasta) {
-       viewLogic.filter(fechaDesde, fechaHasta);
+        viewLogic.filter(fechaDesde, fechaHasta);
     }
 
     private void setItemLogic(ItemClickEvent event) {
-        if (event.isDoubleClick()) {
+//        if (event.isDoubleClick()) {
             Object id = event.getItem().getItemProperty("codCajabanco").getValue();
             ScpCajabanco vcb = getService().getCajabancoRep().findByCodCajabanco((Integer) id);
             viewLogic.editarComprobante(vcb);
-        }
+  //      }
     }
 
     @Override
@@ -292,7 +303,6 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
     }
 
     public ComprobanteView getComprobView() {
-        throw new NotImplementedException();
+        return comprobView;
     }
-
 }

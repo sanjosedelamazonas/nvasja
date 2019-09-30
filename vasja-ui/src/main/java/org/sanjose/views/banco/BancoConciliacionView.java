@@ -101,7 +101,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
         gridBanco.getColumn("txtGlosaitem").setMaximumWidth(400);
 
-        gridBanco.setEditorEnabled(true);
+        gridBanco.setEditorEnabled(false);
         gridBanco.setEditorBuffered(true);
         gridBanco.setEditorSaveCaption("Guardar");
 

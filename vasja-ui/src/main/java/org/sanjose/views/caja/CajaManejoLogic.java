@@ -1,18 +1,16 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
-import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.sort.Sort;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.*;
-import de.steinwedel.messagebox.MessageBox;
-import org.sanjose.MainUI;
+import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.Grid;
 import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
 import org.sanjose.helper.DoubleDecimalFormatter;
-import org.sanjose.helper.NonEditableException;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.render.EmptyZeroNumberRendrer;
@@ -22,11 +20,15 @@ import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.sys.SaldoDelDia;
-import org.sanjose.views.sys.Viewing;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -41,29 +43,29 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
 
 	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);
     private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
-    private CajaManejoView view;
+    protected CajaManejoViewing view;
     private CajaSaldoView saldosView = new CajaSaldoView();
     private Grid.FooterRow saldosFooterInicial=null;
     private Grid.FooterRow saldosFooterFinal=null;
 
-    public void init(CajaManejoView cajaManejoView) {
+    public void init(CajaManejoViewing cajaManejoView) {
         view = cajaManejoView;
         cajaView = view;
-        view.nuevoComprobante.addClickListener(e -> newComprobante());
-        view.nuevaTransferencia.addClickListener(e -> newTransferencia());
-        view.btnModificar.addClickListener(e -> editarComprobante(view.getSelectedRow()));
-        view.btnVerImprimir.addClickListener(e -> generateComprobante());
+        view.getNuevoComprobante().addClickListener(e -> newComprobante());
+        view.getNuevaTransferencia().addClickListener(e -> newTransferencia());
+        view.getBtnModificar().addClickListener(e -> editarComprobante(view.getSelectedRow()));
+        view.getBtnVerImprimir().addClickListener(e -> generateComprobante());
         //
         //view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
         //view.btnImprimir.addClickListener(e -> printComprobante());
-        view.btnEliminar.addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
-        saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null));
-        view.btnReporteImprimirCaja.addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.fechaDesde.getValue(), view.fechaHasta.getValue(), null));
-        view.btnDetallesSaldos.addClickListener(e -> {
+        view.getBtnEliminar().addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
+        saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.getFechaDesde().getValue(), view.getFechaHasta().getValue(), null));
+        view.getBtnReporteImprimirCaja().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.getFechaDesde().getValue(), view.getFechaHasta().getValue(), null));
+        view.getBtnDetallesSaldos().addClickListener(e -> {
             setSaldos(saldosView.getGridSaldoInicial(), true);
             setSaldos(saldosView.getGridSaldoFInal(), false);
             setSaldoDelDia();
-            ViewUtil.openCajaSaldosInNewWindow(saldosView, view.fechaDesde.getValue(), view.fechaHasta.getValue());
+            ViewUtil.openCajaSaldosInNewWindow(saldosView, view.getFechaDesde().getValue(), view.getFechaHasta().getValue());
         });
 
         GridContextMenu gridContextMenu = new GridContextMenu(view.getGridCaja());
@@ -100,6 +102,24 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         setSaldos(saldosView.getGridSaldoFInal(), false);
     }
 
+    // Realize logic from View
+    public void filter(Date fechaDesde, Date fechaHasta) {
+        view.getContainer().removeAllItems();
+        view.setFilterInitialDate(fechaDesde);
+        view.getContainer().addAll(view.getService().getCajabancoRep().findByFecFechaBetween(fechaDesde, fechaHasta));
+        view.getGridCaja().setSortOrder(Sort.by("fecFecha", SortDirection.DESCENDING).then("txtCorrelativo", SortDirection.DESCENDING).build());
+        calcFooterSums();
+    }
+
+    // Realize logic from View
+    public void refreshData() {
+        SortOrder[] sortOrders = view.getGridCaja().getSortOrder().toArray(new SortOrder[1]);
+        filter(view.getFechaDesde().getValue(), view.getFechaHasta().getValue());
+        view.getGridCaja().setSortOrder(Arrays.asList(sortOrders));
+        calcFooterSums();
+        setSaldosFinal();
+    }
+
     public void setSaldos(Grid grid, boolean isInicial) {
         grid.getContainerDataSource().removeAllItems();
         BeanItemContainer<Caja> c = new BeanItemContainer<>(Caja.class);
@@ -111,8 +131,8 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         BigDecimal totalUsd = new BigDecimal(0.00);
         BigDecimal totalEur = new BigDecimal(0.00);
         for (Caja caja : DataUtil.getCajasList(view.getService().getPlanRepo(),
-                (isInicial ? GenUtil.getBeginningOfDay(view.fechaDesde.getValue())
-                        : GenUtil.getEndOfDay(view.fechaHasta.getValue())))) {
+                (isInicial ? GenUtil.getBeginningOfDay(view.getFechaDesde().getValue())
+                        : GenUtil.getEndOfDay(view.getFechaHasta().getValue())))) {
             c.addItem(caja);
             totalSoles = totalSoles.add(caja.getSoles());
             totalUsd = totalUsd.add(caja.getDolares());
@@ -162,10 +182,11 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
             totals.put(GenUtil.PEN, totalSoles);
             totals.put(GenUtil.USD, totalUsd);
             totals.put(GenUtil.EUR, totalEur);
-            view.saldoCaja.setValue(dpf.format(totals.get(view.getMoneda()).doubleValue()));
+            view.getSaldoCaja().setValue(dpf.format(totals.get(view.getMoneda()).doubleValue()));
         }
     }
 
+    @Override
     public void setSaldoDelDia() {
         // Total del Dia
         BigDecimal totalSolesDiaIng = new BigDecimal(0.00);
@@ -175,7 +196,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         BigDecimal totalEurDiaIng = new BigDecimal(0.00);
         BigDecimal totalEurDiaEgr = new BigDecimal(0.00);
 
-        for (Object item : view.gridCaja.getContainerDataSource().getItemIds()) {
+        for (Object item : view.getGridCaja().getContainerDataSource().getItemIds()) {
             ScpCajabanco cajabanco = (ScpCajabanco) item;
             // PEN
             totalSolesDiaEgr = totalSolesDiaEgr.add(cajabanco.getNumHabersol());
@@ -204,6 +225,34 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         saldosView.getValEurSaldo().setValue(dpf.format(totalEurDiaIng.subtract(totalEurDiaEgr).doubleValue()));
 
         saldosView.gridSaldoDelDia.setColumnExpandRatio(0, 0);
+    }
+
+    @Override
+    public void calcFooterSums() {
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        BigDecimal sumDebesol = new BigDecimal(0.00);
+        BigDecimal sumHabersol = new BigDecimal(0.00);
+        BigDecimal sumDebedolar = new BigDecimal(0.00);
+        BigDecimal sumHaberdolar = new BigDecimal(0.00);
+        BigDecimal sumDebemo = new BigDecimal(0.00);
+        BigDecimal sumHabermo = new BigDecimal(0.00);
+        for (ScpCajabanco scp : view.getContainer().getItemIds()) {
+            sumDebesol = sumDebesol.add(scp.getNumDebesol());
+            sumHabersol = sumHabersol.add(scp.getNumHabersol());
+            sumDebedolar = sumDebedolar.add(scp.getNumDebedolar());
+            sumHaberdolar = sumHaberdolar.add(scp.getNumHaberdolar());
+            sumDebemo = sumDebemo.add(scp.getNumDebemo());
+            sumHabermo = sumHabermo.add(scp.getNumHabermo());
+        }
+        view.getGridCajaFooter().getCell("numDebesol").setText(df.format(sumDebesol));
+        view.getGridCajaFooter().getCell("numHabersol").setText(df.format(sumHabersol));
+        view.getGridCajaFooter().getCell("numDebedolar").setText(df.format(sumDebedolar));
+        view.getGridCajaFooter().getCell("numHaberdolar").setText(df.format(sumHaberdolar));
+        view.getGridCajaFooter().getCell("numDebemo").setText(df.format(sumDebemo));
+        view.getGridCajaFooter().getCell("numHabermo").setText(df.format(sumHabermo));
+
+        Arrays.asList(new String[] { "numDebesol", "numDebesol", "numHabersol", "numDebedolar", "numDebemo", "numHabermo"})
+                .forEach( e -> view.getGridCajaFooter().getCell(e).setStyleName("v-align-right strong"));
     }
 
 }

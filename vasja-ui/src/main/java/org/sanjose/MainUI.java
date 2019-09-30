@@ -43,6 +43,7 @@ public class MainUI extends UI {
     private final ConfiguracionCtaCajaBancoView confView;
     private final ConfiguracionCajaView configuracionCajaView;
     private final CajaGridView cajaGridView;
+    private final CajaOperacionesView cajaOperacionesView;
     private final PropiedadView propiedadView;
     private final ComprobanteView comprobanteView;
     private final CajaManejoView cajaManejoView;
@@ -74,6 +75,7 @@ public class MainUI extends UI {
         this.configuracionCajaView = new ConfiguracionCajaView(comprobanteService);
         this.bancoOperView = new BancoOperView(bancoService);
         this.cajaManejoView = new CajaManejoView(comprobanteService);
+        this.cajaOperacionesView = new CajaOperacionesView(comprobanteService);
         this.bancoManejoView = new BancoManejoView(bancoService);
         this.bancoOperacionesView = new BancoOperacionesView(bancoService);
         this.bancoConciliacionView = new BancoConciliacionView(bancoService);
@@ -100,8 +102,8 @@ public class MainUI extends UI {
 
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
-        mainScreen = new MainScreen(MainUI.this, cajaManejoView, cajaGridView, confView, configuracionCajaView,
-                propiedadView, comprobanteView, transferenciaView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView, reportesView);
+        mainScreen = new MainScreen(MainUI.this, cajaManejoView, comprobanteView, transferenciaView, cajaOperacionesView, cajaGridView, confView, configuracionCajaView,
+                propiedadView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView, reportesView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
