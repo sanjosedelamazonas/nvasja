@@ -74,6 +74,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
             final Object itemId = e.getItemId();
             if (itemId == null) {
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
+                gridContextMenu.addItem("Nuevo cargo/abono", k -> newTransferencia());
             } else {
 
                 gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((ScpCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",

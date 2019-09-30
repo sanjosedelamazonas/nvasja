@@ -364,7 +364,7 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
     }
 
     public Label getLblSaldo() {
-        return null;
+        return this.lblSaldo;
     }
 
     @Override

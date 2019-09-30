@@ -46,6 +46,7 @@ public class TransferenciaUI extends CssLayout {
     protected NumberField numIngreso;
     protected NumberField numEgreso;
     protected ComboBox selCaja;
+    protected Label lblSaldo;
     protected TextField saldoCaja;
     protected TextField glosa;
     protected ComboBox selResponsable;

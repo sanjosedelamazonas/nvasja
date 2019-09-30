@@ -19,7 +19,7 @@ import java.util.List;
 @Table(name="scp_bancocabecera")
 @NamedQuery(name="ScpBancocabecera.findAll", query="SELECT v FROM ScpBancocabecera v")
 public class ScpBancocabecera extends VsjBancoItem implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 12323424L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="cod_bancocabecera")
