@@ -26,9 +26,8 @@ public class BancoManejoUI extends VerticalLayout {
     protected DateField fechaDesde;
     protected DateField fechaHasta;
     protected ComboBox selRepMoneda;
-    protected Button btnReporte;
     protected Button btnDetallesSaldos;
-    protected Button btnReporteImprimirCaja;
+    protected Button btnReporte;
     protected VerticalLayout espacio;
     protected ComboBox selFiltroCuenta;
     protected Button btnNuevoCheque;

@@ -7,7 +7,7 @@
  </head>
  <body>
   <vaadin-vertical-layout id="verticalMain" margin>
-   <vaadin-horizontal-layout spacing margin-top margin-bottom _id="horiz1">
+   <vaadin-horizontal-layout spacing margin-top margin-bottom _id="horiz1" :center>
     <vaadin-horizontal-layout spacing :center>
      <vaadin-label size-auto plain-text>
        Operaciones del día: 
@@ -55,21 +55,17 @@
       <vaadin-text-field></vaadin-text-field>
      </vaadin-vertical-layout>
     </vaadin-horizontal-layout>
-    <vaadin-button plain-text _id="btnReporte">
-      Imprimir Reporte 
-    </vaadin-button>
-    <vaadin-button plain-text _id="btnDetallesSaldos">
-      Ver todos los saldos 
-    </vaadin-button>
-    <vaadin-horizontal-layout spacing>
-     <vaadin-button plain-text _id="btnReporteImprimirCaja" :right>
-       Reporte de caja 
+    <vaadin-horizontal-layout :middle>
+     <vaadin-button plain-text _id="btnDetallesSaldos">
+       Ver todos los saldos 
+     </vaadin-button>
+     <vaadin-button plain-text _id="btnReporte">
+       Imprimir Reporte 
      </vaadin-button>
     </vaadin-horizontal-layout>
    </vaadin-horizontal-layout>
-   <vaadin-vertical-layout width-auto height="25px" _id="espacio"></vaadin-vertical-layout>
+   <vaadin-vertical-layout height="25px" _id="espacio"></vaadin-vertical-layout>
    <vaadin-vertical-layout size-auto :center>
-    <vaadin-horizontal-layout></vaadin-horizontal-layout>
     <vaadin-horizontal-layout spacing width-full margin>
      <vaadin-horizontal-layout spacing margin-right>
       <vaadin-label size-auto plain-text>
@@ -89,7 +85,7 @@
      </vaadin-button>
     </vaadin-horizontal-layout>
     <vaadin-horizontal-layout>
-     <vaadin-grid editor-cancel-caption="Anular" width="1100px" height="600px" _id="gridBanco"></vaadin-grid>
+     <vaadin-grid editor-cancel-caption="Anular" width="1650px" height="600px" _id="gridBanco"></vaadin-grid>
      <vaadin-vertical-layout spacing size-auto margin :middle>
       <vaadin-button plain-text _id="btnImprimir">
         Imprimir Voucher 
