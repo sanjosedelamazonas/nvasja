@@ -1,4 +1,4 @@
-package org.sanjose.views.caja;
+package org.sanjose.views.rendicion;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.sort.Sort;
@@ -13,22 +13,23 @@ import org.sanjose.bean.Caja;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpCajabanco;
+import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
+import org.sanjose.views.caja.CajaLogic;
+import org.sanjose.views.caja.CajaManejoViewing;
+import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.sys.SaldoDelDia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -39,26 +40,24 @@ import java.util.Map;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCajabanco>,Serializable, SaldoDelDia {
+public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecera>, Serializable, SaldoDelDia {
 
-	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);
+	private static final Logger log = LoggerFactory.getLogger(RendicionManejoLogic.class);
     private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
-    protected CajaManejoViewing view;
+    protected RendicionManejoView view;
     private CajaSaldoView saldosView = new CajaSaldoView();
     private Grid.FooterRow saldosFooterInicial=null;
     private Grid.FooterRow saldosFooterFinal=null;
 
-    public void init(CajaManejoViewing cajaManejoView) {
-        view = cajaManejoView;
-        cajaView = view;
-        view.getNuevoComprobante().addClickListener(e -> newComprobante());
-        view.getNuevaTransferencia().addClickListener(e -> newTransferencia());
-        view.getBtnModificar().addClickListener(e -> editarComprobante(view.getSelectedRow()));
-        view.getBtnVerImprimir().addClickListener(e -> generateComprobante());
+    public void init(RendicionManejoView rendicionManejoView) {
+        view = rendicionManejoView;
+        //view.getBtnNueva().addClickListener(e -> newComprobante());
+        //view.getBtnModificar().addClickListener(e -> editarComprobante(view.getSelectedRow()));
+        //view.getBtnVerImprimir().addClickListener(e -> generateComprobante());
         //
         //view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
         //view.btnImprimir.addClickListener(e -> printComprobante());
-        view.getBtnEliminar().addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
+        //view.getBtnEliminar().addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
         saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.getFechaDesde().getValue(), view.getFechaHasta().getValue(), null));
         view.getBtnReporteImprimirCaja().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.getFechaDesde().getValue(), view.getFechaHasta().getValue(), null));
         view.getBtnDetallesSaldos().addClickListener(e -> {
@@ -69,36 +68,35 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         });
 
         GridContextMenu gridContextMenu = new GridContextMenu(view.getGridCaja());
-        gridContextMenu.addGridBodyContextMenuListener(e -> {
-            gridContextMenu.removeItems();
-            final Object itemId = e.getItemId();
-            if (itemId == null) {
-                gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
-                gridContextMenu.addItem("Nuevo cargo/abono", k -> newTransferencia());
-            } else {
-
-                gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((ScpCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
-                        k -> editarComprobante((ScpCajabanco) itemId));
-                gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
-                gridContextMenu.addItem("Nuevo cargo/abono", k -> newTransferencia());
-                gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());
-                if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
-
-                if (Role.isPrivileged()) {
-                    gridContextMenu.addItem("Enviar a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId); });
-                }
-            }
-        });
+//        gridContextMenu.addGridBodyContextMenuListener(e -> {
+//            gridContextMenu.removeItems();
+//            final Object itemId = e.getItemId();
+//            if (itemId == null) {
+//                gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
+//                gridContextMenu.addItem("Nuevo cargo/abono", k -> newTransferencia());
+//            } else {
+//
+//                gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((ScpCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
+//                        k -> editarComprobante((ScpCajabanco) itemId));
+//                gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
+//                gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());
+//                if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
+//
+//                if (Role.isPrivileged()) {
+//                    gridContextMenu.addItem("Enviar a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId); });
+//                }
+//            }
+//        });
         setSaldos(saldosView.getGridSaldoFInal(), false);
     }
 
-    private void generateComprobante() {
-        ReportHelper.generateComprobante(view.getSelectedRow());
-    }
-
-    private void printComprobante() {
-        ViewUtil.printComprobante(view.getSelectedRow());
-    }
+//    private void generateComprobante() {
+//        ReportHelper.generateComprobante(view.getSelectedRow());
+//    }
+//
+//    private void printComprobante() {
+//        ViewUtil.printComprobante(view.getSelectedRow());
+//    }
 
     public void setSaldosFinal() {
         setSaldos(saldosView.getGridSaldoFInal(), false);
@@ -108,8 +106,8 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
     public void filter(Date fechaDesde, Date fechaHasta) {
         view.getContainer().removeAllItems();
         view.setFilterInitialDate(fechaDesde);
-        view.getContainer().addAll(view.getService().getCajabancoRep().findByFecFechaBetween(fechaDesde, fechaHasta));
-        view.getGridCaja().setSortOrder(Sort.by("fecFecha", SortDirection.DESCENDING).then("txtCorrelativo", SortDirection.DESCENDING).build());
+        view.getContainer().addAll(view.getService().getRendicioncabeceraRep().findByFecComprobanteBetween(fechaDesde, fechaHasta));
+        view.getGridCaja().setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
         calcFooterSums();
     }
 
@@ -120,6 +118,16 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         view.getGridCaja().setSortOrder(Arrays.asList(sortOrders));
         calcFooterSums();
         setSaldosFinal();
+    }
+
+    @Override
+    public void refreshItems(Collection<ScpRendicioncabecera> rendicioncabeceras) {
+        rendicioncabeceras.forEach(scb -> {
+//            ScpCajabanco newScb = view.getService().getRendicioncabeceraRep().findByCodCajabanco(scb.getCodCajabanco());
+//            view.getGridCaja().getContainerDataSource().removeItem(scb);
+//            view.getGridCaja().getContainerDataSource().addItem(newScb);
+        });
+        view.refreshData();
     }
 
     public void setSaldos(Grid grid, boolean isInicial) {
@@ -226,35 +234,35 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         saldosView.getValEurIng().setValue(dpf.format(totalEurDiaIng.doubleValue()));
         saldosView.getValEurSaldo().setValue(dpf.format(totalEurDiaIng.subtract(totalEurDiaEgr).doubleValue()));
 
-        saldosView.gridSaldoDelDia.setColumnExpandRatio(0, 0);
+//        saldosView.gridSaldoDelDia.setColumnExpandRatio(0, 0);
     }
 
     @Override
     public void calcFooterSums() {
-        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
-        BigDecimal sumDebesol = new BigDecimal(0.00);
-        BigDecimal sumHabersol = new BigDecimal(0.00);
-        BigDecimal sumDebedolar = new BigDecimal(0.00);
-        BigDecimal sumHaberdolar = new BigDecimal(0.00);
-        BigDecimal sumDebemo = new BigDecimal(0.00);
-        BigDecimal sumHabermo = new BigDecimal(0.00);
-        for (ScpCajabanco scp : view.getContainer().getItemIds()) {
-            sumDebesol = sumDebesol.add(scp.getNumDebesol());
-            sumHabersol = sumHabersol.add(scp.getNumHabersol());
-            sumDebedolar = sumDebedolar.add(scp.getNumDebedolar());
-            sumHaberdolar = sumHaberdolar.add(scp.getNumHaberdolar());
-            sumDebemo = sumDebemo.add(scp.getNumDebemo());
-            sumHabermo = sumHabermo.add(scp.getNumHabermo());
-        }
-        view.getGridCajaFooter().getCell("numDebesol").setText(df.format(sumDebesol));
-        view.getGridCajaFooter().getCell("numHabersol").setText(df.format(sumHabersol));
-        view.getGridCajaFooter().getCell("numDebedolar").setText(df.format(sumDebedolar));
-        view.getGridCajaFooter().getCell("numHaberdolar").setText(df.format(sumHaberdolar));
-        view.getGridCajaFooter().getCell("numDebemo").setText(df.format(sumDebemo));
-        view.getGridCajaFooter().getCell("numHabermo").setText(df.format(sumHabermo));
-
-        Arrays.asList(new String[] { "numDebesol", "numDebesol", "numHabersol", "numDebedolar", "numDebemo", "numHabermo"})
-                .forEach( e -> view.getGridCajaFooter().getCell(e).setStyleName("v-align-right strong"));
+//        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+//        BigDecimal sumDebesol = new BigDecimal(0.00);
+//        BigDecimal sumHabersol = new BigDecimal(0.00);
+//        BigDecimal sumDebedolar = new BigDecimal(0.00);
+//        BigDecimal sumHaberdolar = new BigDecimal(0.00);
+//        BigDecimal sumDebemo = new BigDecimal(0.00);
+//        BigDecimal sumHabermo = new BigDecimal(0.00);
+//        for (ScpRendicioncabecera scp  : view.getContainer().getItemIds()) {
+//            sumDebesol = sumDebesol.add(scp.getNum);
+//            sumHabersol = sumHabersol.add(scp.getNumHabersol());
+//            sumDebedolar = sumDebedolar.add(scp.getNumDebedolar());
+//            sumHaberdolar = sumHaberdolar.add(scp.getNumHaberdolar());
+//            sumDebemo = sumDebemo.add(scp.getNumDebemo());
+//            sumHabermo = sumHabermo.add(scp.getNumHabermo());
+//        }
+//        view.getGridCajaFooter().getCell("numDebesol").setText(df.format(sumDebesol));
+//        view.getGridCajaFooter().getCell("numHabersol").setText(df.format(sumHabersol));
+//        view.getGridCajaFooter().getCell("numDebedolar").setText(df.format(sumDebedolar));
+//        view.getGridCajaFooter().getCell("numHaberdolar").setText(df.format(sumHaberdolar));
+//        view.getGridCajaFooter().getCell("numDebemo").setText(df.format(sumDebemo));
+//        view.getGridCajaFooter().getCell("numHabermo").setText(df.format(sumHabermo));
+//
+//        Arrays.asList(new String[] { "numDebesol", "numDebesol", "numHabersol", "numDebedolar", "numDebemo", "numHabermo"})
+//                .forEach( e -> view.getGridCajaFooter().getCell(e).setStyleName("v-align-right strong"));
     }
 
 }

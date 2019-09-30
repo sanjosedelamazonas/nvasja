@@ -22,7 +22,7 @@ import static org.sanjose.util.GenUtil.USD;
  * Date: 23.09.16
  */
 @MappedSuperclass
-public abstract class VsjBancoItem extends VsjItem {
+public abstract class VsjBancoItem extends VsjCajaBancoItem {
 
      @Override
      public VsjBancoItem  prepareToSave() throws FieldGroup.CommitException {

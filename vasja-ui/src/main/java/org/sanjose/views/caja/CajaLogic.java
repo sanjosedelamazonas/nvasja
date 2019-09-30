@@ -4,13 +4,11 @@ import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.NonEditableException;
-import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpCajabanco;
+import org.sanjose.model.VsjCajaBancoItem;
 import org.sanjose.util.GenUtil;
-import org.sanjose.util.ProcUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
-import org.sanjose.views.sys.GridViewing;
 
 import java.util.Collection;
 
@@ -54,7 +52,7 @@ public abstract class CajaLogic implements ItemsRefreshing<ScpCajabanco> {
         }
     }
 
-    public void enviarContabilidad(ScpCajabanco scpCajabanco) {
+    public void enviarContabilidad(VsjCajaBancoItem scpCajabanco) {
         Collection<Object> cajabancosParaEnviar = cajaView.getSelectedRows();
         if (cajabancosParaEnviar.isEmpty() && scpCajabanco!=null)
             cajabancosParaEnviar.add(scpCajabanco);
@@ -65,7 +63,7 @@ public abstract class CajaLogic implements ItemsRefreshing<ScpCajabanco> {
     @Override
     public void refreshItems(Collection<ScpCajabanco> cajabancosToRefresh) {
         cajabancosToRefresh.forEach(scb -> {
-            ScpCajabanco newScb = cajaView.getService().getCajabancoRep().findByCodCajabanco(scb.getCodCajabanco());
+            VsjCajaBancoItem newScb = cajaView.getService().getCajabancoRep().findByCodCajabanco(scb.getCodCajabanco());
             cajaView.getGridCaja().getContainerDataSource().removeItem(scb);
             cajaView.getGridCaja().getContainerDataSource().addItem(newScb);
         });

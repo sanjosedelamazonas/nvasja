@@ -20,10 +20,7 @@ import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.ScpCajabanco;
-import org.sanjose.model.ScpBancocabecera;
-import org.sanjose.model.ScpBancodetalle;
-import org.sanjose.model.VsjItem;
+import org.sanjose.model.*;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.GridViewing;
@@ -43,7 +40,7 @@ import java.util.Map;
  */
 public class ViewUtil {
 
-    public static void printComprobante(VsjItem vcb) {
+    public static void printComprobante(VsjCajaBancoItem vcb) {
         if (ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT")) {
             ViewUtil.doPrintComprobante(vcb);
         } else if (ConfigurationUtil.is("REPORTS_COMPROBANTE_OPEN")) {
@@ -51,7 +48,7 @@ public class ViewUtil {
         }
     }
 
-    public static void doPrintComprobante(VsjItem vcb) {
+    public static void doPrintComprobante(VsjCajaBancoItem vcb) {
         try {
             printComprobanteAndThrow(vcb);
         } catch (JRException | PrintException e) {
@@ -69,7 +66,7 @@ public class ViewUtil {
                 && ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper().isReady();
     }
 
-    private static void printComprobanteAndThrow(VsjItem vcb) throws JRException, PrintException {
+    private static void printComprobanteAndThrow(VsjCajaBancoItem vcb) throws JRException, PrintException {
         JasperPrint jrPrint = ReportHelper.printComprobante(vcb);
         boolean isPrinted = false;
         PrintHelper ph = ((MainUI)MainUI.getCurrent()).getMainScreen().getPrintHelper();
@@ -230,6 +227,10 @@ public class ViewUtil {
         setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, defDesde, defHasta, null);
     }
 
+    public static void setupDateFiltersRendicionesThisMonth(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta, GridViewing viewing) {
+        setupDateFilters(container, "fecComprobante", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(new Date()), GenUtil.getEndOfDay(new Date()), viewing);
+    }
+
     public static void setupDateFiltersThisMonth(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta, GridViewing viewing) {
         setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(new Date()), GenUtil.getEndOfDay(new Date()), viewing);
     }
@@ -304,6 +305,16 @@ public class ViewUtil {
             return "";
         });
     }
+
+    public static void colorizeRowsRendiciones(Grid grid) {
+        grid.setRowStyleGenerator(rowReference -> {
+            if (((ScpRendicioncabecera)rowReference.getItemId()).isEnviado()) {
+                return "enviado";
+            }
+            return "";
+        });
+    }
+
 
     public static void colorizeRows(Grid grid) {
         grid.setRowStyleGenerator(rowReference -> {

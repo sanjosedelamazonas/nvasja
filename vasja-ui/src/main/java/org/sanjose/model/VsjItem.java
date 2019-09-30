@@ -18,15 +18,13 @@ public abstract class VsjItem {
 
     public VsjItem prepareToSave() throws FieldGroup.CommitException {
         SimpleDateFormat sdf = new SimpleDateFormat("MM");
-        this.setCodMes(sdf.format(this.getFecFecha()));
-        sdf = new SimpleDateFormat("yyyy");
-        this.setTxtAnoproceso(sdf.format(this.getFecFecha()));
         if (this.getCodUregistro() == null) this.setCodUregistro(CurrentUser.get());
         if (this.getFecFregistro() == null) this.setFecFregistro(new Timestamp(System.currentTimeMillis()));
         this.setCodUactualiza(CurrentUser.get());
         this.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
         return this;
     }
+
 
     @Column(name="cod_mes")
     private String codMes;
@@ -43,18 +41,8 @@ public abstract class VsjItem {
     @Column(name="fec_factualiza")
     private Timestamp fecFactualiza;
 
-    @NotNull
-    @Column(name="fec_fecha")
-    private Timestamp fecFecha;
-
     @Column(name="fec_fregistro")
     private Timestamp fecFregistro;
-
-    @Column(name="txt_correlativo")
-    private String txtCorrelativo="";
-
-    @Column(name="ind_tipocuenta")
-    private Character indTipocuenta;
     
     @NotNull
     @Column(name="cod_tipomoneda")
@@ -101,36 +89,12 @@ public abstract class VsjItem {
         this.fecFactualiza = fecFactualiza;
     }
 
-    public Timestamp getFecFecha() {
-        return fecFecha;
-    }
-
-    public void setFecFecha(Timestamp fecFecha) {
-        this.fecFecha = fecFecha;
-    }
-
     public Timestamp getFecFregistro() {
         return fecFregistro;
     }
 
     public void setFecFregistro(Timestamp fecFregistro) {
         this.fecFregistro = fecFregistro;
-    }
-
-    public String getTxtCorrelativo() {
-        return txtCorrelativo;
-    }
-
-    public void setTxtCorrelativo(String txtCorrelativo) {
-        this.txtCorrelativo = txtCorrelativo;
-    }
-
-    public Character getIndTipocuenta() {
-        return indTipocuenta;
-    }
-
-    public void setIndTipocuenta(Character indTipocuenta) {
-        this.indTipocuenta = indTipocuenta;
     }
 
     public Character getCodTipomoneda() {
@@ -149,10 +113,7 @@ public abstract class VsjItem {
                 ", codUactualiza='" + codUactualiza + '\'' +
                 ", codUregistro='" + codUregistro + '\'' +
                 ", fecFactualiza=" + fecFactualiza +
-                ", fecFecha=" + fecFecha +
                 ", fecFregistro=" + fecFregistro +
-                ", txtCorrelativo='" + txtCorrelativo + '\'' +
-                ", indTipocuenta=" + indTipocuenta +
                 ", codTipomoneda=" + codTipomoneda +
                 '}';
     }

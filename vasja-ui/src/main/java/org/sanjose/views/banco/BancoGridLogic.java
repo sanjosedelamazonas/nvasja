@@ -11,7 +11,6 @@ import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * VASJA class

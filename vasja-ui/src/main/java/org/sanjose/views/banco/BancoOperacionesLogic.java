@@ -2,26 +2,18 @@ package org.sanjose.views.banco;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.shared.data.sort.SortDirection;
-import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
-import org.sanjose.model.VsjItem;
+import org.sanjose.model.VsjCajaBancoItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.ItemsRefreshing;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -91,9 +83,9 @@ public class BancoOperacionesLogic implements Serializable {
                         gridLogic.enviarContabilidad((ScpBancocabecera)itemId);
                     });
                 }
-                gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));
+                gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjCajaBancoItem)itemId));
                 if (ViewUtil.isPrinterReady())
-                    gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjItem) itemId));
+                    gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajaBancoItem) itemId));
             }
         });
         view.btnImprimir.setVisible(false);

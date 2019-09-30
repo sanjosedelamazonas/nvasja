@@ -25,7 +25,7 @@ import static org.sanjose.util.GenUtil.USD;
 @Entity
 @Table(name="scp_cajabanco")
 @NamedQuery(name="ScpCajabanco.findAll", query="SELECT v FROM ScpCajabanco v")
-public class ScpCajabanco extends VsjItem implements Serializable {
+public class ScpCajabanco extends VsjCajaBancoItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
