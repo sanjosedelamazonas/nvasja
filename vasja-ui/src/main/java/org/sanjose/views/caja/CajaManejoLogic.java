@@ -39,7 +39,6 @@ import java.util.*;
  */
 public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCajabanco>,Serializable, SaldoDelDia {
 
-
 	private static final Logger log = LoggerFactory.getLogger(CajaManejoLogic.class);
     private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
     private CajaManejoView view;
@@ -205,52 +204,6 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         saldosView.getValEurSaldo().setValue(dpf.format(totalEurDiaIng.subtract(totalEurDiaEgr).doubleValue()));
 
         saldosView.gridSaldoDelDia.setColumnExpandRatio(0, 0);
-    }
-
-    void eliminarComprobante(ScpCajabanco savedCajabanco) {
-        if (savedCajabanco == null)
-            return;
-        if (savedCajabanco.isEnviado()) {
-            MessageBox
-                    .createInfo()
-                    .withCaption("Ya enviado a contabilidad")
-                    .withMessage("No se puede eliminar porque ya esta enviado a la contabilidad.")
-                    .withOkButton()
-                    .open();
-            return;
-        }
-        MessageBox
-                .createQuestion()
-                .withCaption("Eliminar")
-                .withMessage("?Esta seguro que quiere eliminar este comprobante?")
-                .withYesButton(() ->  doEliminarComprobante(savedCajabanco))
-                .withNoButton()
-                .open();
-    }
-
-    void doEliminarComprobante(ScpCajabanco savedCajabanco) {
-        try {
-            ScpCajabanco item = savedCajabanco.prepareToEliminar();
-            log.info("Ready to ANULAR: " + item);
-            savedCajabanco = view.getService().getCajabancoRep().save(item);
-            savedCajabanco = null;
-            view.selectMoneda(item.getCodTipomoneda());
-            view.refreshData();
-            MessageBox
-                    .createInfo()
-                    .withCaption("Elminado correctamente")
-                    .withMessage("El comprobante ha sido eliminado.")
-                    .withOkButton()
-                    .open();
-        } catch (Exception ce) {
-            log.info("Got Exception al eliminar comprobante: " + ce.getMessage());
-            MessageBox
-                    .createError()
-                    .withCaption("Error al anular el comprobante:")
-                    .withMessage(ce.getLocalizedMessage())
-                    .withOkButton()
-                    .open();
-        }
     }
 
 }

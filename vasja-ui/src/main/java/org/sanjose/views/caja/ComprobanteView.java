@@ -284,6 +284,10 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
         return txtNumCombrobante;
     }
 
+    public Label getLblSaldo() {
+        return this.lblSaldo;
+    }
+
     public ComprobanteService getService() {
         return comprobanteService;
     }

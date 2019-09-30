@@ -5,15 +5,14 @@ import org.sanjose.MainUI;
 import org.sanjose.bean.Caja;
 import org.sanjose.model.ScpFinanciera;
 import org.sanjose.model.ScpPlancontable;
+import org.sanjose.model.ScpPlancontablePK;
 import org.sanjose.model.Scp_ProyectoPorFinanciera;
 import org.sanjose.repo.ScpFinancieraRep;
 import org.sanjose.repo.ScpPlancontableRep;
 import org.sanjose.repo.Scp_ProyectoPorFinancieraRep;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.sanjose.util.GenUtil.*;
@@ -148,19 +147,26 @@ public class DataUtil {
         return cajas;
     }
 
-    public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date dateInicial, Date datefinal) {
+    public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date dateInicial, Date dateFinal) {
         List<Caja> cajas = new ArrayList<>();
-        List<ScpPlancontable> cajasInicial = getTodasCajas(dateInicial, planRepo);
-        List<ScpPlancontable> cajasFinal = getTodasCajas(datefinal, planRepo);
-        cajasInicial.addAll(cajasFinal);
-        for (ScpPlancontable caja : cajasInicial) {
+        Set<ScpPlancontable> cajasToProcess = new HashSet<>();
+        Set<ScpPlancontablePK> cajaIds = new HashSet<>();
+        for (ScpPlancontable caja : getTodasCajas(dateInicial, planRepo)) {
+            cajaIds.add(caja.getId());
+            cajasToProcess.add(caja);
+        }
+        for (ScpPlancontable caja : getTodasCajas(dateFinal, planRepo)) {
+            if (!cajaIds.contains(caja.getId()))
+                cajasToProcess.add(caja);
+        }
+        for (ScpPlancontable caja : cajasToProcess) {
             Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
             BigDecimal saldoInicial = MainUI.get().getProcUtil().getSaldoCaja(
                     GenUtil.getEndOfDay(GenUtil.dateAddDays(dateInicial,-1)),
                     caja.getId().getCodCtacontable()
                     , moneda);
             BigDecimal saldoFinal = MainUI.get().getProcUtil().getSaldoCaja(
-                    GenUtil.getEndOfDay(datefinal),
+                    GenUtil.getEndOfDay(dateFinal),
                     caja.getId().getCodCtacontable()
                     , moneda);
             // If is closed and has a saldo of "0.00" we can omit it

@@ -520,6 +520,9 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
             } catch (FieldGroup.BindException be) {
             }
             view.getSelCaja().removeAllValidators();
+            view.getSaldoProyPEN().removeStyleName("yield");
+            view.getSaldoProyUSD().removeStyleName("yield");
+            view.getSaldoProyEUR().removeStyleName("yield");
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
@@ -530,7 +533,6 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
                 DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
-                saldoChecker.setSaldoField(view.getSaldoCaja());
                 saldoChecker.setProyectoField(view.getSaldoProyPEN());
             } else if (moneda.equals(USD)) {
                 // Dolares
@@ -542,7 +544,6 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
                 DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
-                saldoChecker.setSaldoField(view.getSaldoCaja());
                 saldoChecker.setProyectoField(view.getSaldoProyUSD());
             } else {
                 // Euro
@@ -554,10 +555,9 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
                 DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHabermo");
                 fieldGroup.bind(view.getNumIngreso(), "numDebemo");
-                saldoChecker.setSaldoField(view.getSaldoCaja());
                 saldoChecker.setProyectoField(view.getSaldoProyEUR());
             }
-            view.getSaldoCaja().setCaption("Saldo de caja ("+ GenUtil.getSymMoneda(getLitMoneda(moneda))+")");
+            view.getLblSaldo().setValue("Saldo de caja ("+ GenUtil.getSymMoneda(getLitMoneda(moneda))+")");
 
             // copy values to new field
             view.getNumEgreso().setValue(oldNumEgreso);
@@ -601,7 +601,9 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
         if (view.getDataFechaComprobante().getValue()!=null && view.getSelCaja().getValue()!=null && view.getSelMoneda().getValue()!=null) {
             BigDecimal saldo = procUtil.getSaldoCaja(view.getDataFechaComprobante().getValue(),
                     view.getSelCaja().getValue().toString(), view.getSelMoneda().getValue().toString().charAt(0));
-            view.getSaldoCaja().setValue(saldo.toString());
+            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+
+            view.getSaldoCaja().setValue(df.format(saldo));
             saldoChecker.setSaldoField(view.getSaldoCaja());
 
             /*if (PEN.equals(view.getSelMoneda().getValue().toString().charAt(0))) {
@@ -861,6 +863,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
             //refreshProyectoYcuentaPorFecha(item.getFecFecha());
             view.setEnableFields(true);
             //setSaldos();
+            setSaldoCaja();
             setSaldoCaja();
             //setTipoProyectoTerceroLogic(null);
             if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {

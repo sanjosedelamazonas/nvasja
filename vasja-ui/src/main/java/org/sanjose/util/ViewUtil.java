@@ -270,17 +270,14 @@ public class ViewUtil {
     public static void filterComprobantes(Container.Filterable container, String propertyId, DateField fechaDesde, DateField fechaHasta, GridViewing viewing) {
         ((Container.SimpleFilterable) container).removeContainerFilters(propertyId);
         Date from, to = null;
+        from = (fechaDesde.getValue() != null ? fechaDesde.getValue() : new Date(0));
+        to = (fechaHasta.getValue() != null ? fechaHasta.getValue() : new Date(Long.MAX_VALUE));
         if (fechaDesde.getValue() != null && viewing != null && viewing.getFilterInitialDate().compareTo(fechaDesde.getValue()) > 0) {
             viewing.filter(fechaDesde.getValue(), new Date());
-        } else {
-            if (fechaDesde.getValue() != null || fechaHasta.getValue() != null) {
-                from = (fechaDesde.getValue() != null ? fechaDesde.getValue() : new Date(0));
-                to = (fechaHasta.getValue() != null ? fechaHasta.getValue() : new Date(Long.MAX_VALUE));
-                container.addContainerFilter(
-                        new Between(propertyId,
-                                from, to));
-            }
         }
+        container.addContainerFilter(
+                new Between(propertyId,
+                        from, to));
     }
 
     public static boolean isParent(Grid.RowReference rowReference) {
@@ -349,7 +346,7 @@ public class ViewUtil {
         Window subWindow = new Window();
         subWindow.setWindowMode(WindowMode.NORMAL);
         int width = component instanceof TransferenciaView ? 1280 : 990;
-        int height = component instanceof TransferenciaView ? 600 : 560;
+        int height = component instanceof TransferenciaView ? 600 : 630;
         String caption = component instanceof TransferenciaView ? "Cargo/Abono" : "Comprobante";
         subWindow.setWidth(width, Sizeable.Unit.PIXELS);
         subWindow.setHeight(height, Sizeable.Unit.PIXELS);

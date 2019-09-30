@@ -97,6 +97,8 @@ public interface ComprobanteViewing {
 
     PopupDateField getDataFechaComprobante();
 
+    Label getLblSaldo();
+
     // Repos
 
     ComprobanteService getService();

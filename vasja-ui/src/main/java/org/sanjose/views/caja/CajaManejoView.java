@@ -177,6 +177,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
                 DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
                 "txtDescctacontable");
         calcFooterSums();
+        viewLogic.setSaldosFinal();
     }
 
     public void refreshData() {
@@ -184,7 +185,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaViewing, Navigat
         filter(fechaDesde.getValue(), fechaHasta.getValue());
         gridCaja.setSortOrder(Arrays.asList(sortOrders));
         calcFooterSums();
-        //viewLogic.setSaldos(gridCaja, false);
+        viewLogic.setSaldosFinal();
     }
 
     @Override

@@ -363,6 +363,10 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
         return nuevaTransBtn;
     }
 
+    public Label getLblSaldo() {
+        return null;
+    }
+
     @Override
     public PopupDateField getDataFechaComprobante() {
         return dataFechaComprobante;
