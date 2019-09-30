@@ -192,7 +192,7 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
         DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
                 null, ConfigurationUtil.get("DECIMAL_FORMAT"));
         // PEN
-        view.getValSolEgr().setValue(dpf.format(totalSolesDiaEgr.doubleValue()));
+       /* view.getValSolEgr().setValue(dpf.format(totalSolesDiaEgr.doubleValue()));
         view.getValSolIng().setValue(dpf.format(totalSolesDiaIng.doubleValue()));
         view.getValSolSaldo().setValue(dpf.format(totalSolesDiaIng.subtract(totalSolesDiaEgr).doubleValue()));
         // USD
@@ -204,6 +204,6 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
         view.getValEuroIng().setValue(dpf.format(totalEurosDiaIng.doubleValue()));
         view.getValEuroSaldo().setValue(dpf.format(totalEurosDiaIng.subtract(totalEurosDiaEgr).doubleValue()));
 
-        view.gridSaldoDelDia.setColumnExpandRatio(0, 0);
+        view.gridSaldoDelDia.setColumnExpandRatio(0, 0);*/
     }
 }

@@ -153,7 +153,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         });
         selFiltroCuenta.setPageLength(20);
 
-        // Set Saldos Inicial
+/*        // Set Saldos Inicial
         fechaDesde.addValueChangeListener(ev -> {
             viewLogic.setSaldos(gridSaldoInicial, true);
             DataFilterUtil.refreshComboBox(selFiltroCuenta, "id.codCtacontable",
@@ -161,15 +161,15 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
                     "txtDescctacontable");}
 
         );
-        fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));
+        fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));*/
 
         DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
         selRepMoneda.select('0');
         selRepMoneda.setNullSelectionAllowed(false);
 
         viewLogic.init(this);
-        viewLogic.setSaldos(gridSaldoInicial, true);
-        viewLogic.setSaldos(gridSaldoFInal, false);
+ /*       viewLogic.setSaldos(gridSaldoInicial, true);
+        viewLogic.setSaldos(gridSaldoFInal, false);*/
     }
 
     @Override
@@ -215,7 +215,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         return bancoService;
     }
 
-    public Label getValSolIng() {
+   /* public Label getValSolIng() {
         return valSolIng;
     }
 
@@ -249,7 +249,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
     public Label getValEuroSaldo() {
         return valEuroSaldo;
-    }
+    }*/
 
     public Grid getGridBanco() {
         return gridBanco;
