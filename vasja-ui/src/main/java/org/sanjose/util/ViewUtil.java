@@ -23,6 +23,7 @@ import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.*;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.views.caja.*;
+import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
 
@@ -392,4 +393,32 @@ public class ViewUtil {
         component.setSubWindow(subWindow);
         UI.getCurrent().addWindow(subWindow);
     }
+
+    public static void openRendicionInNewWindow(RendicionOperView component) {
+        Window subWindow = new Window();
+        subWindow.setWindowMode(WindowMode.NORMAL);
+        int width = 1368;
+        int height = 900;
+//        int height = component instanceof TransferenciaView ? 600 : 630;
+//        String caption = component instanceof TransferenciaView ? "Cargo/Abono" : "Comprobante";
+        subWindow.setWidth(width, Sizeable.Unit.PIXELS);
+        subWindow.setHeight(height, Sizeable.Unit.PIXELS);
+        subWindow.setModal(true);
+        subWindow.setContent((Component)component);
+        if (!ConfigurationUtil.is("DEV_MODE"))
+            subWindow.setClosable(false);
+        subWindow.setDraggable(true);
+        //subWindow.setCaption(caption);
+        //component.setSubWindow(subWindow);
+        // Don't show navigation buttons if opened in subwindow Nuevo Comprobante
+//        if (component instanceof ComprobanteView) {
+//            component.getNuevoComprobante().setVisible(false);
+//            component.getModificarBtn().setVisible(false);
+//            component.getCerrarBtn().setVisible(false);
+//        } else {
+//            ((TransferenciaView)component).getNuevaTransBtn().setVisible(false);
+//        }
+        UI.getCurrent().addWindow(subWindow);
+    }
+
 }

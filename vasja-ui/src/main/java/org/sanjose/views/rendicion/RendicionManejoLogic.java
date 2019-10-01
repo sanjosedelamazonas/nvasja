@@ -8,10 +8,12 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid;
+import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.ReportHelper;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.render.EmptyZeroNumberRendrer;
@@ -30,6 +32,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
+
+import static org.sanjose.views.sys.Viewing.Mode.NEW;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -51,7 +55,7 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
 
     public void init(RendicionManejoView rendicionManejoView) {
         view = rendicionManejoView;
-        //view.getBtnNueva().addClickListener(e -> newComprobante());
+        view.getBtnNueva().addClickListener(e -> newComprobante());
         //view.getBtnModificar().addClickListener(e -> editarComprobante(view.getSelectedRow()));
         //view.getBtnVerImprimir().addClickListener(e -> generateComprobante());
         //
@@ -88,6 +92,15 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
 //            }
 //        });
         setSaldos(saldosView.getGridSaldoFInal(), false);
+    }
+
+
+    protected void newComprobante() {
+        view.clearSelection();
+        //MainUI.get().getRendicionOperView().nuevoComprobante();
+        //MainUI.get().getRendicionOperView().setNavigatorView(cajaView);
+        ViewUtil.openRendicionInNewWindow(MainUI.get().getRendicionOperView());
+        //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
 //    private void generateComprobante() {

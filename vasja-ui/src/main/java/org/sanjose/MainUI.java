@@ -20,6 +20,7 @@ import org.sanjose.util.ProcUtil;
 import org.sanjose.views.banco.*;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.rendicion.RendicionManejoView;
+import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.rendicion.RendicionService;
 import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.PropiedadService;
@@ -55,6 +56,7 @@ public class MainUI extends UI {
     private final BancoConciliacionView bancoConciliacionView;
     private final BancoOperacionesView bancoOperacionesView;
     private final RendicionManejoView rendicionManejoView;
+    private final RendicionOperView rendicionOperView;
     private final ReportesView reportesView;
     private final MsgUsuarioRep msgUsuarioRep;
     private ProcUtil procUtil;
@@ -84,6 +86,7 @@ public class MainUI extends UI {
         this.bancoOperacionesView = new BancoOperacionesView(bancoService);
         this.bancoConciliacionView = new BancoConciliacionView(bancoService);
         this.rendicionManejoView = new RendicionManejoView(rendicionService);
+        this.rendicionOperView = new RendicionOperView(rendicionService);
     }
 
     public static MainUI get() {
@@ -155,5 +158,9 @@ public class MainUI extends UI {
 
     public BancoOperacionesView getBancoOperacionesView() {
         return bancoOperacionesView;
+    }
+
+    public RendicionOperView getRendicionOperView() {
+        return rendicionOperView;
     }
 }

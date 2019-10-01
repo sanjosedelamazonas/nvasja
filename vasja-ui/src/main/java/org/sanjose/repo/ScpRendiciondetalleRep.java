@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface ScpRendiciondetalleRep extends JpaRepository<ScpRendiciondetalle, Long> {
 
-    //List<ScpRendiciondetalle> findByCodDestinoOrCodDestinoitem(String s, String s2);
+    List<ScpRendiciondetalle> findByCodDestino(String s);
 
-//    List<ScpRendiciondetalle> findById_CodBancocabecera(Integer id);
+    List<ScpRendiciondetalle> findById_CodRendicioncabecera(Integer id);
 
-    //List<ScpRendiciondetalle> findById_CodBancocabeceraAndId_NumItemGreaterThan(Integer id, Integer numItem);
+    List<ScpRendiciondetalle> findById_CodRendicioncabeceraAndId_NumNroitemGreaterThan(Integer id, Integer numItem);
 }
