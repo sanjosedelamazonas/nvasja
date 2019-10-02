@@ -1,6 +1,7 @@
 package org.sanjose.util;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.FilterableSortableGridTreeContainer;
 import com.vaadin.data.util.ObjectProperty;
@@ -28,11 +29,12 @@ import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
 
 import javax.print.PrintException;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * VASJA class
@@ -352,6 +354,24 @@ public class ViewUtil {
         }
     }
 
+    public static void setFieldsNullRepresentation(FieldGroup fieldGroup) {
+        for (Field f : fieldGroup.getFields()) {
+            if (f instanceof TextField)
+                ((TextField) f).setNullRepresentation("");
+            if (f instanceof ComboBox)
+                ((ComboBox) f).setPageLength(20);
+        }
+    }
+
+    public static void clearFields(FieldGroup fieldGroup) {
+        if (fieldGroup != null) {
+            new ArrayList<>(fieldGroup.getFields()).stream().forEach(f -> {
+                f.removeAllValidators();
+                fieldGroup.unbind(f);
+                f.setValue(null);
+            });
+        }
+    }
 
     public static void openInNewWindow(ComprobanteViewing component) {
         Window subWindow = new Window();
@@ -402,9 +422,11 @@ public class ViewUtil {
         Window subWindow = new Window();
         subWindow.setWindowMode(WindowMode.NORMAL);
         int width = 1368;
-        int height = 900;
+        int height = 768;
 //        int height = component instanceof TransferenciaView ? 600 : 630;
 //        String caption = component instanceof TransferenciaView ? "Cargo/Abono" : "Comprobante";
+        subWindow.setWidthUndefined();
+        subWindow.setHeightUndefined();
         subWindow.setWidth(width, Sizeable.Unit.PIXELS);
         subWindow.setHeight(height, Sizeable.Unit.PIXELS);
         subWindow.setModal(true);

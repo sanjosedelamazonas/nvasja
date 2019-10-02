@@ -5,20 +5,20 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.ScpRendiciondetalle;
+import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.Viewing;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +45,6 @@ public class RendicionLogic extends RendicionItemLogic {
         super.init(view);
         view.getBtnGuardar().addClickListener(event -> saveCabecera());
         view.getBtnNewItem().addClickListener(event -> nuevoComprobante());
-        view.getBtnModificar().addClickListener(event -> modificarRendicion());
         view.getBtnEliminar().addClickListener(event -> eliminarComprobante());
         view.getBtnAnular().addClickListener(event -> anularComprobante());
         view.getBtnCerrar().addClickListener(event -> cerrarAlManejo());
@@ -73,21 +72,10 @@ public class RendicionLogic extends RendicionItemLogic {
     }
 
     private void clearFields() {
-        if (fieldGroupCabezera != null) {
-            new ArrayList<>(fieldGroupCabezera.getFields()).stream().forEach(f -> {
-                f.removeAllValidators();
-                fieldGroupCabezera.unbind(f);
-                f.setValue(null);
-            });
-        }
-        if (fieldGroup != null) {
-            new ArrayList<>(fieldGroup.getFields()).stream().forEach(f -> {
-                f.removeAllValidators();
-                fieldGroup.unbind(f);
-                f.setValue(null);
-            });
-        }
+        ViewUtil.clearFields(fieldGroupCabezera);
+        ViewUtil.clearFields(fieldGroup);
     }
+
 
     public void editarRendicion(ScpRendicioncabecera rendicioncabecera) {
         view.getContainer().removeAllItems();
@@ -96,6 +84,7 @@ public class RendicionLogic extends RendicionItemLogic {
         clearFields();
         //clearSaldos();
         view.setTotal(null);
+        view.calcFooterSums();
         item = null;
         bindForm(rendicioncabecera);
         addValidators();
@@ -104,7 +93,7 @@ public class RendicionLogic extends RendicionItemLogic {
             viewComprobante();
         });
         if (rendicioncabecera.getCodRendicioncabecera()!=null)
-            switchMode(VIEW);
+            switchMode(EDIT);
     }
 
     private Optional loadDetallesToGrid(ScpRendicioncabecera rendicioncabecera) {
@@ -116,6 +105,7 @@ public class RendicionLogic extends RendicionItemLogic {
             view.getContainer().addAll(bancodetalleList);
             view.getContainer().sort(new Object[]{"numNritem"}, new boolean[]{true});
             view.setTotal(moneda);
+            view.calcFooterSums();
             return Optional.of(bancodetalleList.toArray()[0]);
         }
         return Optional.ofNullable(null);
@@ -126,24 +116,11 @@ public class RendicionLogic extends RendicionItemLogic {
         switchMode(NEW);
         if (rendicioncabecera != null) {
             // cabecera in edit mode
-            log.debug("nuevo Item, cabecera: " + rendicioncabecera);
             bindForm(rendicioncabecera);
             super.nuevoComprobante(rendicioncabecera.getCodTipomoneda());
-            //view.getSelCodAuxiliar().setValue(view.getSelCodAuxCabeza().getValue());
-            //view.getSelResponsable().setValue(view.getSelCodAuxCabeza().getValue());
-            //view.getGlosaDetalle().setValue(view.getGlosaCabeza().getValue());
         } else {
             super.nuevoComprobante(PEN);
         }
-    }
-
-    private void modificarRendicion() {
-//        if (view.getSelectedRow() != null
-//                && !view.getSelectedRow().isAnula()) {
-        //clearSaldos();
-        //bindForm(rencab);
-        switchMode(EDIT);
-//        }
     }
 
     public void viewComprobante() {
@@ -168,15 +145,17 @@ public class RendicionLogic extends RendicionItemLogic {
         beanItem = new BeanItem<>(item);
         fieldGroupCabezera = new FieldGroup(beanItem);
         fieldGroupCabezera.setItemDataSource(beanItem);
+        fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigen");
         fieldGroupCabezera.bind(view.getDataFechaComprobante(), "fecComprobante");
         fieldGroupCabezera.bind(view.getSelResponsable1(), "codDestino");
         fieldGroupCabezera.bind(view.getTxtGlosaCabeza(), "txtGlosa");
         fieldGroupCabezera.bind(view.getSelMoneda(), "codTipomoneda");
         fieldGroupCabezera.bind(view.getDataFechaRegistro(), "fecFregistro");
-
         fieldGroupCabezera.bind(view.getNumTotalAnticipio(), "numTotalanticipo");
-        fieldGroupCabezera.bind(view.getTxtGastoTotal(), "numGastototal");
-        fieldGroupCabezera.bind(view.getTxtSaldoPendiente(), "numSaldopendiente");
+
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        view.getTxtGastoTotal().setValue(df.format(item.getNumGastototal()));
+        view.getTxtSaldoPendiente().setValue(df.format(item.getNumSaldopendiente()));
         fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigen");
         view.getTxtOrigen().setEnabled(false);
 
@@ -191,13 +170,7 @@ public class RendicionLogic extends RendicionItemLogic {
         ScpDestino ingresadoPor = view.getService().getDestinoRepo().findByCodDestino(item.getCodDestino());
         view.getTxtIngresadoPor().setValue(ingresadoPor.getTxtNombredestino());
 
-
-        for (Field f : fieldGroupCabezera.getFields()) {
-            if (f instanceof TextField)
-                ((TextField) f).setNullRepresentation("");
-            if (f instanceof ComboBox)
-                ((ComboBox) f).setPageLength(20);
-        }
+        ViewUtil.setFieldsNullRepresentation(fieldGroupCabezera);
         isEdit = item.getCodRendicioncabecera() != null;
         isLoading = false;
         if (isEdit) {
@@ -207,13 +180,15 @@ public class RendicionLogic extends RendicionItemLogic {
                 //view.getNumVoucher().setValue(item.getCodComprobante());
             }
             view.getNumVoucher().setEnabled(false);
-            setCuentaLogic();
             view.setTotal(moneda);
+            view.calcFooterSums();
         } else {
             view.getNumVoucher().setValue("");
         }
         isEdit = false;
     }
+
+
 
     void eliminarComprobante() {
         ScpRendiciondetalle bancoItem = view.getSelectedRow();
@@ -274,6 +249,7 @@ public class RendicionLogic extends RendicionItemLogic {
                 view.grid.select(rendicionItem);
             }
             view.setTotal(moneda);
+            view.calcFooterSums();
             view.refreshData();
             switchMode(VIEW);
         } catch (Validator.InvalidValueException e) {

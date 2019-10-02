@@ -5,10 +5,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
@@ -18,9 +15,9 @@ import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpBancodetalle;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.rendicion.RendicionLogic;
 import org.sanjose.views.sys.Viewing;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,20 +72,8 @@ public class BancoLogic extends BancoItemLogic {
     }
 
     private void clearFields() {
-        if (fieldGroupCabezera != null) {
-            new ArrayList<>(fieldGroupCabezera.getFields()).stream().forEach(f -> {
-                f.removeAllValidators();
-                fieldGroupCabezera.unbind(f);
-                f.setValue(null);
-            });
-        }
-        if (fieldGroup != null) {
-            new ArrayList<>(fieldGroup.getFields()).stream().forEach(f -> {
-                f.removeAllValidators();
-                fieldGroup.unbind(f);
-                f.setValue(null);
-            });
-        }
+        ViewUtil.clearFields(fieldGroupCabezera);
+        ViewUtil.clearFields(fieldGroup);
     }
 
     public void editarCheque(ScpBancocabecera vsjBancocabecera) {
@@ -184,12 +169,7 @@ public class BancoLogic extends BancoItemLogic {
         fieldGroupCabezera.bind(view.getChkCobrado(), "codMescobrado");
         view.getChkEnviado().setEnabled(false);
 
-        for (Field f : fieldGroupCabezera.getFields()) {
-            if (f instanceof TextField)
-                ((TextField) f).setNullRepresentation("");
-            if (f instanceof ComboBox)
-                ((ComboBox) f).setPageLength(20);
-        }
+        ViewUtil.setFieldsNullRepresentation(fieldGroupCabezera);
         isEdit = item.getCodBancocabecera() != null;
         isLoading = false;
         if (isEdit) {

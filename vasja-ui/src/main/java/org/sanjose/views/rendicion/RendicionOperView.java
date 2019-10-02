@@ -12,8 +12,11 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.converter.ZeroOneToBooleanConverter;
+import org.sanjose.model.ScpCajabanco;
+import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.ScpRendiciondetalle;
 import org.sanjose.model.ScpRendiciondetallePK;
+import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.Viewing;
@@ -21,7 +24,10 @@ import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.USD;
@@ -46,15 +52,19 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
             "fecComprobantepago", "fecPagocomprobantepago",
             "numDebesol", "numHabersol",
             "numDebedolar", "numHaberdolar",
-            //"numDebemo", "numHabermo"
+            "numDebemo", "numHabermo"
     };
     static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
             "Item", "Proyecto", "Fuente", "Partida P.",
             "Lug. Gst.", "Contable", "Actividad", "Rubro Inst",
             "Fecha doc", "Fecha Pago",
             "Gast S/.", "Ingr S/.", "Gast $", "Ingr $",
-            //"Ing €", "Egr €"
+            "Ing €", "Egr €"
     };
+    static final String[] HIDDEN_COLUMN_NAMES_PEN = new String[]{
+            "numDebemo", "numHabermo"
+    };
+
     static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"Item", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
     };
@@ -71,18 +81,18 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
 
     private static final Logger log = LoggerFactory.getLogger(RendicionOperView.class);
 
-    private final Field[] allFields = new Field[]{fechaDoc, txtGlosaCabeza 
-            
-            //numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
-            //selRubroInst, selRubroProy, selFuente, selTipoMov, txtGlosaDetalle, txtSerieDoc, txtNumDoc,
+    private final Field[] allFields = new Field[]{ txtGlosaCabeza, selTipoMov, selCodAuxiliar, fechaPago,
+            selTipoDoc, fechaDoc, txtSerieDoc, txtNumDoc
     };
-    private final Field[] cabezeraFields = new Field[]{dataFechaComprobante, txtGlosaCabeza, selMoneda,
+    private final Field[] cabezeraFields = new Field[]{dataFechaComprobante, txtGlosaCabeza, selResponsable1, selMoneda,
             numTotalAnticipio, dataFechaRegistro};
     
     private RendicionLogic viewLogic = null;
     private BeanItemContainer<ScpRendiciondetalle> container;
     private GeneratedPropertyContainer gpContainer;
     private RendicionService RendicionService;
+
+    public Grid.FooterRow gridFooter;
 
     public RendicionOperView() {
     }
@@ -112,7 +122,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         chkEnviado.setSimpleMode(false);
         chkEnviado.setConverter(new ZeroOneToBooleanConverter());
 
-
         grid.addSelectionListener(new SelectionEvent.SelectionListener() {
             @Override
             public void select(SelectionEvent selectionEvent) {
@@ -120,6 +129,8 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
                 viewLogic.viewComprobante();
             }
         });
+
+        gridFooter = grid.appendFooterRow();
     }
 
     public void initGrid(){
@@ -149,6 +160,9 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         grid.getColumn("Item").setWidth(36);
         ViewUtil.setColumnNames(grid, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
 
+        Arrays.asList(HIDDEN_COLUMN_NAMES_PEN)
+                .forEach( e -> grid.getColumn(e).setHidden(true));
+
         ViewUtil.alignMontosInGrid(grid);
 
         ViewUtil.colorizeRows(grid, ScpRendiciondetalle.class);
@@ -173,10 +187,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
     public void setEnableCabezeraFields(boolean enabled) {
         for (Field f : cabezeraFields) f.setEnabled(enabled);
         btnAuxiliar.setEnabled(enabled);
-    }
-
-    public BeanItemContainer<ScpRendiciondetalle> getContainer() {
-        return container;
     }
 
     private BigDecimal calcTotal(Character locMoneda) {
@@ -226,6 +236,37 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
                 "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)) + calcTotal(locMoneda).toString() + "</span>");
         //getMontoTotal().setValue(calcTotal(locMoneda).toString());
         //getMontoTotal().setCaption("Total " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)));
+    }
+
+    public void calcFooterSums() {
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        BigDecimal sumDebesol = new BigDecimal(0.00);
+        BigDecimal sumHabersol = new BigDecimal(0.00);
+        BigDecimal sumDebedolar = new BigDecimal(0.00);
+        BigDecimal sumHaberdolar = new BigDecimal(0.00);
+        BigDecimal sumDebemo = new BigDecimal(0.00);
+        BigDecimal sumHabermo = new BigDecimal(0.00);
+        for (ScpRendiciondetalle scp : getContainer().getItemIds()) {
+            sumDebesol = sumDebesol.add(scp.getNumDebesol());
+            sumHabersol = sumHabersol.add(scp.getNumHabersol());
+            sumDebedolar = sumDebedolar.add(scp.getNumDebedolar());
+            sumHaberdolar = sumHaberdolar.add(scp.getNumHaberdolar());
+            sumDebemo = sumDebemo.add(scp.getNumDebemo());
+            sumHabermo = sumHabermo.add(scp.getNumHabermo());
+        }
+        getGridFooter().getCell("numDebesol").setText(df.format(sumDebesol));
+        getGridFooter().getCell("numHabersol").setText(df.format(sumHabersol));
+        getGridFooter().getCell("numDebedolar").setText(df.format(sumDebedolar));
+        getGridFooter().getCell("numHaberdolar").setText(df.format(sumHaberdolar));
+        getGridFooter().getCell("numDebemo").setText(df.format(sumDebemo));
+        getGridFooter().getCell("numHabermo").setText(df.format(sumHabermo));
+
+        Arrays.asList(new String[] { "numDebesol", "numDebesol", "numHabersol", "numDebedolar", "numDebemo", "numHabermo"})
+                .forEach( e -> getGridFooter().getCell(e).setStyleName("v-align-right strong"));
+    }
+
+    public BeanItemContainer<ScpRendiciondetalle> getContainer() {
+        return container;
     }
 
     public void refreshData() {
@@ -286,10 +327,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
 
     public CssCheckBox getChkEnviado() {
         return chkEnviado;
-    }
-
-    public Label getOrder_heading() {
-        return order_heading;
     }
 
     public Grid getGrid() {
@@ -390,5 +427,9 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
 
     public void setSubWindow(Window subWindow) {
         this.subWindow = subWindow;
+    }
+
+    public Grid.FooterRow getGridFooter() {
+        return gridFooter;
     }
 }

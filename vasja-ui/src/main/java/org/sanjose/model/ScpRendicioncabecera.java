@@ -69,6 +69,7 @@ public class ScpRendicioncabecera extends VsjItem {
         setFecComprobante(new Timestamp(System.currentTimeMillis()));
         setFlgEnviado('0');
         setFlgIm('1');
+        setCodOrigen("08");
         setNumGastototal(new BigDecimal(0));
         setNumSaldopendiente(new BigDecimal(0));
         setNumTotalanticipo(new BigDecimal(0));
