@@ -111,7 +111,7 @@ public class MainUI extends UI {
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
         mainScreen = new MainScreen(MainUI.this, cajaManejoView, comprobanteView, transferenciaView, cajaOperacionesView, cajaGridView, confView, configuracionCajaView,
-                propiedadView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView, rendicionManejoView, reportesView);
+                propiedadView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView, rendicionManejoView, rendicionOperView, reportesView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
@@ -162,5 +162,9 @@ public class MainUI extends UI {
 
     public RendicionOperView getRendicionOperView() {
         return rendicionOperView;
+    }
+
+    public RendicionManejoView getRendicionManejoView() {
+        return rendicionManejoView;
     }
 }

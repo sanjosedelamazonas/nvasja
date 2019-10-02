@@ -89,7 +89,7 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         gridCaja.setSelectionMode(SelectionMode.SINGLE);
 
         // Fecha Desde Hasta
-        ViewUtil.setupDateFiltersRendicionesThisMonth(container, fechaDesde, fechaHasta, this);
+        ViewUtil.setupDateFiltersRendicionesPreviousMonth(container, fechaDesde, fechaHasta, this);
 
         //gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridCaja.getColumn("fecComprobante").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
@@ -176,7 +176,7 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         if (event.isDoubleClick()) {
             //Object id = event.getItem().getItemProperty("codCajabanco").getValue();
             //ScpRendicioncabecera vcb = getService().getCajabancoRep().findByCodCajabanco((Integer) id);
-            //viewLogic.editarComprobante(vcb);
+            //viewLogic.modificarRendicion(vcb);
         }
     }
 

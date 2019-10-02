@@ -29,7 +29,7 @@ import static org.sanjose.util.GenUtil.USD;
 /**
  * A view for performing create-read-update-delete operations on products.
  * <p>
- * See also {@link ConfiguracionCtaCajaRendicionLogic} for fetching the data, the actual CRUD
+ * See also ... for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
 public class RendicionOperView extends RendicionOperUI implements Viewing {
@@ -38,11 +38,22 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
     public String getWindowTitle() {
         return VIEW_NAME;
     }
-    static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{"Item", "codProyecto",
-            "codContracta", "numDebesol", "numHabersol"
+
+    private Window subWindow;
+    static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{
+            "Item", "codProyecto", "codFinanciera", "codCtaproyecto",
+            "codContraparte", "codCtacontable", "codCtaactividad", "codCtaespecial",
+            "fecComprobantepago", "fecPagocomprobantepago",
+            "numDebesol", "numHabersol",
+            "numDebedolar", "numHaberdolar",
+            //"numDebemo", "numHabermo"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"Item", "Proyecto",
-            "Cuenta", "Ing S/.", "Egr S/."
+    static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
+            "Item", "Proyecto", "Fuente", "Partida P.",
+            "Lug. Gst.", "Contable", "Actividad", "Rubro Inst",
+            "Fecha doc", "Fecha Pago",
+            "Gast S/.", "Ingr S/.", "Gast $", "Ingr $",
+            //"Ing €", "Egr €"
     };
     static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"Item", "codProyecto", "codTercero",
             "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
@@ -93,13 +104,14 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         addStyleName("crud-view");
         ViewUtil.setDefaultsForNumberField(numTotalAnticipio);
 
-        //viewLogic.setupEditComprobanteView();
+        // Grid
+        initGrid();
+
+        viewLogic.setupEditComprobanteView();
 
         chkEnviado.setSimpleMode(false);
         chkEnviado.setConverter(new ZeroOneToBooleanConverter());
 
-        // Grid
-        initGrid();
 
         grid.addSelectionListener(new SelectionEvent.SelectionListener() {
             @Override
@@ -130,10 +142,11 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
                 });
 
         grid.setContainerDataSource(gpContainer);
-        grid.setEditorEnabled(false);
+        grid.setEditorEnabled(true);
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
         grid.sort("fecFregistro", SortDirection.DESCENDING);
 
-        grid.getColumn("Item").setWidth(50);
+        grid.getColumn("Item").setWidth(36);
         ViewUtil.setColumnNames(grid, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
 
         ViewUtil.alignMontosInGrid(grid);
@@ -141,6 +154,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         ViewUtil.colorizeRows(grid, ScpRendiciondetalle.class);
 
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
+        grid.setWidth("100%");
         setTotal(null);
     }
 
@@ -302,14 +316,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         return fechaPago;
     }
 
-    public ComboBox getSelProyecto() {
-        return selProyecto;
-    }
-
-    public ComboBox getSelFuente() {
-        return selFuente;
-    }
-
     public ComboBox getSelCodAuxiliar() {
         return selCodAuxiliar;
     }
@@ -362,6 +368,13 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         return btnVerVoucher;
     }
 
+    public TextField getTxtOrigenlace() {
+        return txtOrigenlace;
+    }
+
+    public TextField getTxtComprobenlace() {
+        return txtComprobenlace;
+    }
 
     @Override
     public void enter(ViewChangeEvent event) {
@@ -369,5 +382,13 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
 
     public RendicionLogic getViewLogic() {
         return viewLogic;
+    }
+
+    public Window getSubWindow() {
+        return subWindow;
+    }
+
+    public void setSubWindow(Window subWindow) {
+        this.subWindow = subWindow;
     }
 }

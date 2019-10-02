@@ -240,6 +240,10 @@ public class ViewUtil {
         setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -60)), GenUtil.getEndOfDay(new Date()), viewing);
     }
 
+    public static void setupDateFiltersRendicionesPreviousMonth(Container.Filterable container, DateField fechaDesde, DateField fechaHasta, GridViewing viewing) {
+        setupDateFilters(container, "fecComprobante", fechaDesde, fechaHasta, GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -60)), GenUtil.getEndOfDay(new Date()), viewing);
+    }
+
     public static void setupDateFiltersThisDay(BeanItemContainer container, DateField fechaDesde, DateField fechaHasta, GridViewing viewing) {
         setupDateFilters(container, "fecFecha", fechaDesde, fechaHasta, GenUtil.getBeginningOfDay(new Date()), GenUtil.getEndOfDay(new Date()), viewing);
     }
@@ -408,6 +412,8 @@ public class ViewUtil {
         if (!ConfigurationUtil.is("DEV_MODE"))
             subWindow.setClosable(false);
         subWindow.setDraggable(true);
+        component.setSubWindow(subWindow);
+
         //subWindow.setCaption(caption);
         //component.setSubWindow(subWindow);
         // Don't show navigation buttons if opened in subwindow Nuevo Comprobante

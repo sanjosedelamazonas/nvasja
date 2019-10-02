@@ -9,11 +9,9 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid;
 import org.sanjose.MainUI;
-import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.render.EmptyZeroNumberRendrer;
@@ -22,18 +20,13 @@ import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
-import org.sanjose.views.caja.CajaLogic;
-import org.sanjose.views.caja.CajaManejoViewing;
+import org.sanjose.views.banco.BancoGridLogic;
 import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.sys.SaldoDelDia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.*;
-
-import static org.sanjose.views.sys.Viewing.Mode.NEW;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -56,7 +49,7 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
     public void init(RendicionManejoView rendicionManejoView) {
         view = rendicionManejoView;
         view.getBtnNueva().addClickListener(e -> newComprobante());
-        //view.getBtnModificar().addClickListener(e -> editarComprobante(view.getSelectedRow()));
+        view.getBtnModificar().addClickListener(e -> editarComprobante(view.getSelectedRow()));
         //view.getBtnVerImprimir().addClickListener(e -> generateComprobante());
         //
         //view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
@@ -81,7 +74,7 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
 //            } else {
 //
 //                gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((ScpCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
-//                        k -> editarComprobante((ScpCajabanco) itemId));
+//                        k -> modificarRendicion((ScpCajabanco) itemId));
 //                gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
 //                gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());
 //                if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
@@ -110,6 +103,17 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
 //    private void printComprobante() {
 //        ViewUtil.printComprobante(view.getSelectedRow());
 //    }
+
+    protected void editarComprobante(ScpRendicioncabecera vcb) {
+        if (vcb==null) return;
+        //MainUI.get().getRendicionOperView().setNavigatorView(view);
+        MainUI.get().getRendicionOperView().getViewLogic().editarRendicion(vcb);
+        ViewUtil.openRendicionInNewWindow(MainUI.get().getRendicionOperView());
+        //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
+        //ViewUtil.openInNewWindow(MainUI.get().getRendicionOperView());
+    }
+
+
 
     public void setSaldosFinal() {
         setSaldos(saldosView.getGridSaldoFInal(), false);

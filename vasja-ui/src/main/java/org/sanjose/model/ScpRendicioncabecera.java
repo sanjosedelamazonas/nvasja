@@ -5,6 +5,7 @@ import org.sanjose.authentication.CurrentUser;
 import org.sanjose.authentication.Role;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -45,17 +46,17 @@ public class ScpRendicioncabecera extends VsjItem {
     @Column(name = "cod_banco")
     private String codBanco;
     @Column(name = "flg_enviado")
-    private String flgEnviado;
+    private Character flgEnviado;
     @Column(name = "cod_origenenlace")
     private String codOrigenenlace;
     @Column(name = "cod_comprobanteenlace")
     private String codComprobanteenlace;
     @Column(name = "num_totalanticipo")
-    private double numTotalanticipo;
+    private BigDecimal numTotalanticipo;
     @Column(name = "num_gastototal")
-    private double numGastototal;
+    private BigDecimal numGastototal;
     @Column(name = "num_saldopendiente")
-    private double numSaldopendiente;
+    private BigDecimal numSaldopendiente;
 
     @Column(name = "flg_im")
     private Character flgIm;
@@ -63,6 +64,15 @@ public class ScpRendicioncabecera extends VsjItem {
     //bi-directional many-to-one association to ScpRendiciondetealles
     @OneToMany(mappedBy = "scpRendicioncabecera")
     private List<ScpRendiciondetalle> scpRendiciondetalles;
+
+    public ScpRendicioncabecera() {
+        setFecComprobante(new Timestamp(System.currentTimeMillis()));
+        setFlgEnviado('0');
+        setFlgIm('1');
+        setNumGastototal(new BigDecimal(0));
+        setNumSaldopendiente(new BigDecimal(0));
+        setNumTotalanticipo(new BigDecimal(0));
+    }
 
 
     public VsjItem prepareToSave() throws FieldGroup.CommitException {
@@ -178,11 +188,11 @@ public class ScpRendicioncabecera extends VsjItem {
         this.codBanco = codBanco;
     }
 
-    public String getFlgEnviado() {
+    public Character getFlgEnviado() {
         return flgEnviado;
     }
 
-    public void setFlgEnviado(String flgEnviado) {
+    public void setFlgEnviado(Character flgEnviado) {
         this.flgEnviado = flgEnviado;
     }
 
@@ -202,27 +212,27 @@ public class ScpRendicioncabecera extends VsjItem {
         this.codComprobanteenlace = codComprobanteenlace;
     }
 
-    public double getNumTotalanticipo() {
+    public BigDecimal getNumTotalanticipo() {
         return numTotalanticipo;
     }
 
-    public void setNumTotalanticipo(double numTotalanticipo) {
+    public void setNumTotalanticipo(BigDecimal numTotalanticipo) {
         this.numTotalanticipo = numTotalanticipo;
     }
 
-    public double getNumGastototal() {
+    public BigDecimal getNumGastototal() {
         return numGastototal;
     }
 
-    public void setNumGastototal(double numGastototal) {
+    public void setNumGastototal(BigDecimal numGastototal) {
         this.numGastototal = numGastototal;
     }
 
-    public double getNumSaldopendiente() {
+    public BigDecimal getNumSaldopendiente() {
         return numSaldopendiente;
     }
 
-    public void setNumSaldopendiente(double numSaldopendiente) {
+    public void setNumSaldopendiente(BigDecimal numSaldopendiente) {
         this.numSaldopendiente = numSaldopendiente;
     }
 
@@ -247,10 +257,7 @@ public class ScpRendicioncabecera extends VsjItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ScpRendicioncabecera that = (ScpRendicioncabecera) o;
-        return Double.compare(that.numTotalanticipo, numTotalanticipo) == 0 &&
-                Double.compare(that.numGastototal, numGastototal) == 0 &&
-                Double.compare(that.numSaldopendiente, numSaldopendiente) == 0 &&
-                Objects.equals(codRendicioncabecera, that.codRendicioncabecera) &&
+        return Objects.equals(codRendicioncabecera, that.codRendicioncabecera) &&
                 Objects.equals(codFilial, that.codFilial) &&
                 Objects.equals(codOrigen, that.codOrigen) &&
                 Objects.equals(codComprobante, that.codComprobante) &&
@@ -263,6 +270,9 @@ public class ScpRendicioncabecera extends VsjItem {
                 Objects.equals(flgEnviado, that.flgEnviado) &&
                 Objects.equals(codOrigenenlace, that.codOrigenenlace) &&
                 Objects.equals(codComprobanteenlace, that.codComprobanteenlace) &&
+                Objects.equals(numTotalanticipo, that.numTotalanticipo) &&
+                Objects.equals(numGastototal, that.numGastototal) &&
+                Objects.equals(numSaldopendiente, that.numSaldopendiente) &&
                 Objects.equals(flgIm, that.flgIm) &&
                 Objects.equals(scpRendiciondetalles, that.scpRendiciondetalles);
     }
@@ -292,7 +302,7 @@ public class ScpRendicioncabecera extends VsjItem {
                 ", numGastototal=" + numGastototal +
                 ", numSaldopendiente=" + numSaldopendiente +
                 ", flgIm=" + flgIm +
-                ", scpRendiciondetalles=" + scpRendiciondetalles +
+                //", scpRendiciondetalles=" + scpRendiciondetalles +
                 '}';
     }
 }

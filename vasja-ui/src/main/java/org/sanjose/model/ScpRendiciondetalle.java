@@ -1,14 +1,12 @@
 package org.sanjose.model;
 
 
-import com.vaadin.data.fieldgroup.FieldGroup;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 @Entity
@@ -140,18 +138,18 @@ public class ScpRendiciondetalle extends VsjItem {
     private java.sql.Timestamp fecRetencion;
     @Column(name = "flg_esactivo")
     private String flgEsactivo;
-    @Column(name = "txt_NroCompSujNoDomi")
-    private String txtNroCompSujNoDomi;
-    @Column(name = "flg_RetieneCuarta")
-    private String flgRetieneCuarta;
+    //@Column(name = "txt_NroCompSujNoDomi")
+    private String txt_Nrocompsujnodomi;
+    //@Column(name = "flg_RetieneCuarta")
+    private String flg_Retienecuarta;
     @Column(name = "cod_gastofijo")
     private String codGastofijo;
     @Column(name = "flg_distribuir")
     private String flgDistribuir;
     @Column(name = "flg_distribuido")
     private String flgDistribuido;
-    @Column(name = "cod_TipoRegistro")
-    private String codTipoRegistro;
+    //@Column(name = "cod_TipoRegistro")
+    private String cod_Tiporegistro;
     @Column(name = "num_tcmc")
     private double numTcmc;
     @Column(name = "num_debemc")
@@ -178,6 +176,23 @@ public class ScpRendiciondetalle extends VsjItem {
     @ManyToOne
     @JoinColumn(name = "cod_rendicioncabecera", insertable = false, updatable = false)
     private ScpRendicioncabecera scpRendicioncabecera;
+
+
+    public ScpRendiciondetalle() {
+        setFecComprobante(new Timestamp(System.currentTimeMillis()));
+        setFlgIm('1');
+        setNumTcmo(0);
+        setNumHabersol(new BigDecimal(0));
+        setNumDebesol(new BigDecimal(0));
+        setNumHaberdolar(new BigDecimal(0));
+        setNumDebedolar(new BigDecimal(0));
+        setNumHabermo(new BigDecimal(0));
+        setNumDebemo(new BigDecimal(0));
+    }
+
+
+
+
 
     public ScpRendiciondetallePK getId() {
         return id;
@@ -603,20 +618,20 @@ public class ScpRendiciondetalle extends VsjItem {
         this.flgEsactivo = flgEsactivo;
     }
 
-    public String getTxtNroCompSujNoDomi() {
-        return txtNroCompSujNoDomi;
+    public String getTxt_Nrocompsujnodomi() {
+        return txt_Nrocompsujnodomi;
     }
 
-    public void setTxtNroCompSujNoDomi(String txtNroCompSujNoDomi) {
-        this.txtNroCompSujNoDomi = txtNroCompSujNoDomi;
+    public void setTxt_Nrocompsujnodomi(String txt_Nrocompsujnodomi) {
+        this.txt_Nrocompsujnodomi = txt_Nrocompsujnodomi;
     }
 
-    public String getFlgRetieneCuarta() {
-        return flgRetieneCuarta;
+    public String getFlg_Retienecuarta() {
+        return flg_Retienecuarta;
     }
 
-    public void setFlgRetieneCuarta(String flgRetieneCuarta) {
-        this.flgRetieneCuarta = flgRetieneCuarta;
+    public void setFlg_Retienecuarta(String flg_Retienecuarta) {
+        this.flg_Retienecuarta = flg_Retienecuarta;
     }
 
     public String getCodGastofijo() {
@@ -643,12 +658,12 @@ public class ScpRendiciondetalle extends VsjItem {
         this.flgDistribuido = flgDistribuido;
     }
 
-    public String getCodTipoRegistro() {
-        return codTipoRegistro;
+    public String getCod_Tiporegistro() {
+        return cod_Tiporegistro;
     }
 
-    public void setCodTipoRegistro(String codTipoRegistro) {
-        this.codTipoRegistro = codTipoRegistro;
+    public void setCod_Tiporegistro(String cod_Tiporegistro) {
+        this.cod_Tiporegistro = cod_Tiporegistro;
     }
 
     public double getNumTcmc() {
@@ -836,12 +851,12 @@ public class ScpRendiciondetalle extends VsjItem {
                 Objects.equals(txtNroretencion, that.txtNroretencion) &&
                 Objects.equals(fecRetencion, that.fecRetencion) &&
                 Objects.equals(flgEsactivo, that.flgEsactivo) &&
-                Objects.equals(txtNroCompSujNoDomi, that.txtNroCompSujNoDomi) &&
-                Objects.equals(flgRetieneCuarta, that.flgRetieneCuarta) &&
+                Objects.equals(txt_Nrocompsujnodomi, that.txt_Nrocompsujnodomi) &&
+                Objects.equals(flg_Retienecuarta, that.flg_Retienecuarta) &&
                 Objects.equals(codGastofijo, that.codGastofijo) &&
                 Objects.equals(flgDistribuir, that.flgDistribuir) &&
                 Objects.equals(flgDistribuido, that.flgDistribuido) &&
-                Objects.equals(codTipoRegistro, that.codTipoRegistro) &&
+                Objects.equals(cod_Tiporegistro, that.cod_Tiporegistro) &&
                 Objects.equals(numDebemc, that.numDebemc) &&
                 Objects.equals(numHabermc, that.numHabermc) &&
                 Objects.equals(txtNombreactividad, that.txtNombreactividad) &&
@@ -853,7 +868,7 @@ public class ScpRendiciondetalle extends VsjItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, codFilial, codOrigen, codComprobante, fecComprobante, txtGlosaitem, codDestino, txtCheque, flgChequecobrado, codMescobr, codTipocomprobantepago, txtRefcomprobantepago, txtRefseriecomprobantepago, txtSeriecomprobantepago, txtComprobantepago, fecComprobantepago, codEvento, numRefnroitem, fecRefcomprobante, codProyecto, codRefcomprobante, codReforigen, codReftipocomprobantepago, codRegistrocompraventa, fecPagocomprobantepago, fecRefcomprobantepago, codCtaactividad, codCtaarea, codCtacontable, codCtacontable79, codCtacontable9, codCtaespecial, codCtaproyecto, codFinanciera, codFlujocaja, numTcmo, numTcvdolar, numDebedolar, numDebemo, numDebesol, numHaberdolar, numHabermo, numHabersol, codMonedaoriginal, flgTcreferencia, flgConversion, codPais, codDepartamento, flgRecuperaigv, porIgv, porIes, numNroitem2, codContraparte, txtNroretencion, fecRetencion, flgEsactivo, txtNroCompSujNoDomi, flgRetieneCuarta, codGastofijo, flgDistribuir, flgDistribuido, codTipoRegistro, numTcmc, numDebemc, numHabermc, txtNombreactividad, fecAnticipo, numImporteanticipo, numSumaanticipo, fecRendicion, numSaldo, flgIm, scpRendicioncabecera);
+        return Objects.hash(id, codFilial, codOrigen, codComprobante, fecComprobante, txtGlosaitem, codDestino, txtCheque, flgChequecobrado, codMescobr, codTipocomprobantepago, txtRefcomprobantepago, txtRefseriecomprobantepago, txtSeriecomprobantepago, txtComprobantepago, fecComprobantepago, codEvento, numRefnroitem, fecRefcomprobante, codProyecto, codRefcomprobante, codReforigen, codReftipocomprobantepago, codRegistrocompraventa, fecPagocomprobantepago, fecRefcomprobantepago, codCtaactividad, codCtaarea, codCtacontable, codCtacontable79, codCtacontable9, codCtaespecial, codCtaproyecto, codFinanciera, codFlujocaja, numTcmo, numTcvdolar, numDebedolar, numDebemo, numDebesol, numHaberdolar, numHabermo, numHabersol, codMonedaoriginal, flgTcreferencia, flgConversion, codPais, codDepartamento, flgRecuperaigv, porIgv, porIes, numNroitem2, codContraparte, txtNroretencion, fecRetencion, flgEsactivo, txt_Nrocompsujnodomi, flg_Retienecuarta, codGastofijo, flgDistribuir, flgDistribuido, cod_Tiporegistro, numTcmc, numDebemc, numHabermc, txtNombreactividad, fecAnticipo, numImporteanticipo, numSumaanticipo, fecRendicion, numSaldo, flgIm, scpRendicioncabecera);
     }
 
     @Override
@@ -915,12 +930,12 @@ public class ScpRendiciondetalle extends VsjItem {
                 ", txtNroretencion='" + txtNroretencion + '\'' +
                 ", fecRetencion=" + fecRetencion +
                 ", flgEsactivo='" + flgEsactivo + '\'' +
-                ", txtNroCompSujNoDomi='" + txtNroCompSujNoDomi + '\'' +
-                ", flgRetieneCuarta='" + flgRetieneCuarta + '\'' +
+                ", txt_Nrocompsujnodomi='" + txt_Nrocompsujnodomi + '\'' +
+                ", flg_Retienecuarta='" + flg_Retienecuarta + '\'' +
                 ", codGastofijo='" + codGastofijo + '\'' +
                 ", flgDistribuir='" + flgDistribuir + '\'' +
                 ", flgDistribuido='" + flgDistribuido + '\'' +
-                ", codTipoRegistro='" + codTipoRegistro + '\'' +
+                ", cod_Tiporegistro='" + cod_Tiporegistro + '\'' +
                 ", numTcmc=" + numTcmc +
                 ", numDebemc=" + numDebemc +
                 ", numHabermc=" + numHabermc +

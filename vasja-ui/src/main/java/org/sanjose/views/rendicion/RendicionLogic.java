@@ -5,10 +5,14 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextField;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.ReportHelper;
+import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.ScpRendiciondetalle;
 import org.sanjose.util.GenUtil;
@@ -41,7 +45,7 @@ public class RendicionLogic extends RendicionItemLogic {
         super.init(view);
         view.getBtnGuardar().addClickListener(event -> saveCabecera());
         view.getBtnNewItem().addClickListener(event -> nuevoComprobante());
-        view.getBtnModificar().addClickListener(event -> editarComprobante());
+        view.getBtnModificar().addClickListener(event -> modificarRendicion());
         view.getBtnEliminar().addClickListener(event -> eliminarComprobante());
         view.getBtnAnular().addClickListener(event -> anularComprobante());
         view.getBtnCerrar().addClickListener(event -> cerrarAlManejo());
@@ -60,11 +64,12 @@ public class RendicionLogic extends RendicionItemLogic {
             else
                 switchMode(VIEW);
         }
+        closeWindow();
     }
 
     public void nuevoCheque() {
         switchMode(NEW);
-        editarCheque(new ScpRendicioncabecera());
+        editarRendicion(new ScpRendicioncabecera());
     }
 
     private void clearFields() {
@@ -84,7 +89,7 @@ public class RendicionLogic extends RendicionItemLogic {
         }
     }
 
-    public void editarCheque(ScpRendicioncabecera rendicioncabecera) {
+    public void editarRendicion(ScpRendicioncabecera rendicioncabecera) {
         view.getContainer().removeAllItems();
         view.grid.select(null);
         moneda = rendicioncabecera.getCodTipomoneda();
@@ -94,8 +99,8 @@ public class RendicionLogic extends RendicionItemLogic {
         item = null;
         bindForm(rendicioncabecera);
         addValidators();
-        loadDetallesToGrid(rendicioncabecera).ifPresent(bancodet -> {
-            view.grid.select(bancodet);
+        loadDetallesToGrid(rendicioncabecera).ifPresent(renddet -> {
+            view.grid.select(renddet);
             viewComprobante();
         });
         if (rendicioncabecera.getCodRendicioncabecera()!=null)
@@ -132,12 +137,12 @@ public class RendicionLogic extends RendicionItemLogic {
         }
     }
 
-    private void editarComprobante() {
+    private void modificarRendicion() {
 //        if (view.getSelectedRow() != null
 //                && !view.getSelectedRow().isAnula()) {
-            //clearSaldos();
-            bindForm(view.getSelectedRow());
-            switchMode(EDIT);
+        //clearSaldos();
+        //bindForm(rencab);
+        switchMode(EDIT);
 //        }
     }
 
@@ -151,30 +156,41 @@ public class RendicionLogic extends RendicionItemLogic {
 
     @Override
     public void cerrarAlManejo() {
-        if (navigatorView == null) navigatorView = MainUI.get().getBancoManejoView();
+        if (navigatorView == null) navigatorView = MainUI.get().getRendicionManejoView();
         navigatorView.refreshData();
         MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
+        closeWindow();
     }
 
     private void bindForm(ScpRendicioncabecera item) {
         isLoading = true;
-        /*clearSaldos();
+        //clearSaldos();
         beanItem = new BeanItem<>(item);
         fieldGroupCabezera = new FieldGroup(beanItem);
         fieldGroupCabezera.setItemDataSource(beanItem);
-        fieldGroupCabezera.bind(view.getDataFechaComprobante(), "fecFecha");
-        fieldGroupCabezera.bind(view.getSelCuenta(), "codCtacontable");
-        fieldGroupCabezera.bind(view.getSelCodAuxCabeza(), "codDestino");
-        fieldGroupCabezera.bind(view.getGlosaCabeza(), "txtGlosa");
-        fieldGroupCabezera.bind(view.getCheque(), "txtCheque");
-        fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigenenlace");
+        fieldGroupCabezera.bind(view.getDataFechaComprobante(), "fecComprobante");
+        fieldGroupCabezera.bind(view.getSelResponsable1(), "codDestino");
+        fieldGroupCabezera.bind(view.getTxtGlosaCabeza(), "txtGlosa");
+        fieldGroupCabezera.bind(view.getSelMoneda(), "codTipomoneda");
+        fieldGroupCabezera.bind(view.getDataFechaRegistro(), "fecFregistro");
+
+        fieldGroupCabezera.bind(view.getNumTotalAnticipio(), "numTotalanticipo");
+        fieldGroupCabezera.bind(view.getTxtGastoTotal(), "numGastototal");
+        fieldGroupCabezera.bind(view.getTxtSaldoPendiente(), "numSaldopendiente");
+        fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigen");
         view.getTxtOrigen().setEnabled(false);
-        fieldGroupCabezera.bind(view.getTxtNumCombrobante(), "codComprobanteenlace");
-        view.getTxtNumCombrobante().setEnabled(false);
+
+        fieldGroupCabezera.bind(view.getNumVoucher(), "codComprobante");
+        view.getNumVoucher().setEnabled(false);
         fieldGroupCabezera.bind(view.getChkEnviado(), "flgEnviado");
-        view.getChkCobrado().setConverter(new MesCobradoToBooleanConverter(item));
-        fieldGroupCabezera.bind(view.getChkCobrado(), "codMescobrado");
         view.getChkEnviado().setEnabled(false);
+
+        fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigenenlace");
+        fieldGroupCabezera.bind(view.getTxtComprobenlace(), "codComprobanteenlace");
+
+        ScpDestino ingresadoPor = view.getService().getDestinoRepo().findByCodDestino(item.getCodDestino());
+        view.getTxtIngresadoPor().setValue(ingresadoPor.getTxtNombredestino());
+
 
         for (Field f : fieldGroupCabezera.getFields()) {
             if (f instanceof TextField)
@@ -186,16 +202,16 @@ public class RendicionLogic extends RendicionItemLogic {
         isLoading = false;
         if (isEdit) {
             // EDITING
-            if (!GenUtil.strNullOrEmpty(item.getTxtCorrelativo())) {
-                log.debug("isEdit cabecera, setting num voucher: " + item.getTxtCorrelativo());
-                view.getNumVoucher().setValue(item.getTxtCorrelativo());
+            if (!GenUtil.strNullOrEmpty(item.getCodComprobante())) {
+                log.debug("isEdit cabecera, setting num voucher: " + item.getCodComprobante());
+                //view.getNumVoucher().setValue(item.getCodComprobante());
             }
             view.getNumVoucher().setEnabled(false);
             setCuentaLogic();
             view.setTotal(moneda);
         } else {
             view.getNumVoucher().setValue("");
-        }*/
+        }
         isEdit = false;
     }
 
@@ -352,5 +368,10 @@ public class RendicionLogic extends RendicionItemLogic {
                 break;
         }
         view.getBtnVerVoucher().setVisible(ViewUtil.isPrinterReady());
+    }
+
+    void closeWindow() {
+        if (view.getSubWindow()!=null)
+            view.getSubWindow().close();
     }
 }

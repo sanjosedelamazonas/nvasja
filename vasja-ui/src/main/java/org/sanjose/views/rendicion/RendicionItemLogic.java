@@ -10,22 +10,24 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.*;
+import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.converter.DateToTimestampConverter;
+import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.ScpRendiciondetalle;
+import org.sanjose.model.VsjConfiguractacajabanco;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ProcUtil;
 import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.validator.SaldoChecker;
+import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.views.sys.ComprobanteWarnGuardar;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
@@ -58,7 +60,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     protected RendicionOperView view;
     private BeanItem<ScpRendiciondetalle> beanItem;
     private ProcUtil procUtil;
-    private SaldoChecker saldoChecker;
 
 
     public void init(RendicionOperView view) {
@@ -89,6 +90,16 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         // Cuenta
         view.getNumVoucher().setEnabled(false);
 
+        // Responsable
+        DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
+                "txtNombredestino");
+
+        // Tipo Moneda
+        DataFilterUtil.bindTipoMonedaOptionGroup(view.getSelMoneda(), "codTipomoneda");
+        //view.getSelMoneda().addValueChangeListener(event -> setMonedaLogic(event.getProperty().getValue().toString().charAt(0)));
+
+
+
 //        DataFilterUtil.bindComboBox(view.getSelCuenta(), "id.codCtacontable",
 //                DataUtil.getRendicionCuentas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo()),
 //                "txtDescctacontable");
@@ -116,28 +127,21 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getSaldoCuenta().setNullRepresentation("0.00");
         view.getGlosaCabeza().setMaxLength(150);
         view.getCheque().setMaxLength(20);
-
+*/
         // ------------ DETALLE
 
 
         view.getNumItem().setEnabled(false);
-        view.getMontoTotal().setValue("0.00");
-
-        view.getTipoProyectoTercero().addValueChangeListener(this::setTipoProyectoTerceroLogic);
+        //view.getMontoTotal().setValue("0.00");
 
 
+        
+        
+        
         // Proyecto
-       *//* DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()),
-                "txtDescproyecto");
-        view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
-
-        // Tercero
-        DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'),
-                "txtNombredestino");
-        view.getSelTercero().addValueChangeListener(this::setTerceroLogic);*//*
 
         // Fuente
-        DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", view.getService().getFinancieraRepo().findAll(),
+       /* DataFilterUtil.bindComboBox(view.getSelFuente(), "codFinanciera", view.getService().getFinancieraRepo().findAll(),
                 "txtDescfinanciera");
 
         view.getNumIngreso().addValueChangeListener(event -> {
@@ -156,28 +160,13 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                     }
                 }
         );
-
-        // Responsable
-        DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
-
-        view.getSelResponsable().addValueChangeListener(valueChangeEvent -> {
-            if (valueChangeEvent.getProperty().getValue() != null)
-                view.getSelCodAuxiliar().setValue(valueChangeEvent.getProperty().getValue());
-        });
-
-        // Lugar de gasto
+                // Lugar de gasto
         DataFilterUtil.bindComboBox(view.getSelLugarGasto(), "codContraparte", view.getService().getContraparteRepo().findAll(),
                 "txtDescContraparte");
 
         // Cod. Auxiliar
         DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
-
-        // Tipo doc
-        DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getService().getComprobantepagoRepo().findAll(),
-                "txtDescripcion");
-
 
         // Cta Contable
         DataFilterUtil.bindComboBox(view.getSelCtaContable(), "id.codCtacontable",
@@ -196,6 +185,16 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                 view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getYear(view.getDataFechaComprobante().getValue())),
                 "txtDescctaproyecto");
 
+*/
+        // Auxiliar
+        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
+                "txtNombredestino");
+
+        // Tipo doc
+        DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getService().getComprobantepagoRepo().findAll(),
+                "txtDescripcion");
+
+
 
         DataFilterUtil.bindComboBox(view.getSelTipoMov(), view.getService().getConfiguractacajabancoRepo().findByActivoAndParaBancoAndParaProyecto(true, true, true), "Tipo Movimiento",
                 "codTipocuenta", "txtTipocuenta", "id");
@@ -204,29 +203,83 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getSelTipoMov().addValueChangeListener(event -> {
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
-                VsjConfiguractacajaRendicion config = view.getService().getConfiguractacajaRendicionRepo().findById(Integer.parseInt(tipoMov));
+                VsjConfiguractacajabanco config = view.getService().getConfiguractacajabancoRepo().findById(Integer.parseInt(tipoMov));
                 if (config != null) {
-                    view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
-                    view.getSelRubroInst().setValue(config.getCodCtaespecial());
+                    //view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
+                    //view.getSelRubroInst().setValue(config.getCodCtaespecial());
                 }
             }
         });
-        view.getGlosaDetalle().setMaxLength(70);
-        view.getSerieDoc().setMaxLength(5);
-        view.getNumDoc().setMaxLength(20);
+        view.getTxtGlosaDetalle().setMaxLength(70);
+        view.getTxtSerieDoc().setMaxLength(5);
+        view.getTxtNumDoc().setMaxLength(20);
+
+        
+        // DETALLE - GRID
+
+        // Fecha Pago
+        PopupDateField pdf = new PopupDateField();
+        pdf.setPropertyDataSource(prop);
+        pdf.setConverter(DateToTimestampConverter.INSTANCE);
+        pdf.setResolution(Resolution.MINUTE);
+        view.grid.getColumn("fecPagocomprobantepago").setEditorField(pdf);
+        view.grid.getColumn("fecPagocomprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+
+        // Fecha Doc
+        pdf = new PopupDateField();
+        pdf.setPropertyDataSource(prop);
+        pdf.setConverter(DateToTimestampConverter.INSTANCE);
+        pdf.setResolution(Resolution.MINUTE);
+        view.grid.getColumn("fecComprobantepago").setEditorField(pdf);
+        view.grid.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+
+        // Proyecto
+        ComboBox selProyecto = new ComboBox();
+        DataFilterUtil.bindComboBox(selProyecto, "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()), "Sel Proyecto", "txtDescproyecto");
+        //view.grid.getColumn("codProyecto").setEditorField(selProyecto);
+
+        // Cta Contable
+        ComboBox selCtacontable = new ComboBox();
+        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable",view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+        view.grid.getColumn("codCtacontable").setEditorField(selCtacontable);
+
+        // Rubro inst
+        ComboBox selCtaespecial = new ComboBox();
+        DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial",
+               view.getService().getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
+                "Sel cta especial", "txtDescctaespecial");
+        view.grid.getColumn("codCtaespecial").setEditorField(selCtaespecial);
+
+        ComboBox selLugarGasto = new ComboBox();
+        DataFilterUtil.bindComboBox(selLugarGasto, "codContraparte",view.getService().getContraparteRepo().findAll(),
+                "Sel Lugar de Gasto", "txtDescContraparte");
+        view.grid.getColumn("codContraparte").setEditorField(selLugarGasto);
+
+        // Rubro Proy
+        ComboBox selPlanproyecto = new ComboBox();
+        DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
+               view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getCurYear()),
+                "Sel Rubro proy", "txtDescctaproyecto");
+        view.grid.getColumn("codCtaproyecto").setEditorField(selPlanproyecto);
+
+        // Fuente
+        ComboBox selFinanciera = new ComboBox();
+        DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera",view.getService().getFinancieraRepo().findAll(),
+                "Sel Fuente", "txtDescfinanciera");
+        view.grid.getColumn("codFinanciera").setEditorField(selFinanciera);
+
 
         addValidators();
         // Editing Destino
-        view.getBtnDestino().addClickListener(event -> editDestino(view.getSelCodAuxiliar()));
-        view.getBtnResponsable().addClickListener(event -> editDestino(view.getSelResponsable()));
-        view.getBtnAuxiliar().addClickListener(event -> editDestino(view.getSelCodAuxCabeza()));
-        view.getTipoProyectoTercero().select(GenUtil.T_PROY);*/
+        view.getBtnResponsable().addClickListener(event -> editDestino(view.getSelResponsable1()));
+        view.getBtnAuxiliar().addClickListener(event -> editDestino(view.getSelCodAuxiliar()));
     }
 
     public void addValidators() {
         // Validators
-        view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecFecha"));
+        view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecComprobante"));
         view.getFechaDoc().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecComprobantepago"));
+        view.getDataFechaRegistro().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecFregistro"));
         //view.getSelProyectoTercero().addValidator(new TwoCombosValidator(view.getSelTercero(), true, null));
         //view.getSelTercero().addValidator(new TwoCombosValidator(view.getSelProyectoTercero(), true, null));
 //        view.getNumIngreso().setDescription("Ingreso");
@@ -520,24 +573,25 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         }
         ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
         ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
-        fieldGroup.bind(view.getGlosaDetalle(), "txtGlosaitem");
-        fieldGroup.bind(view.getSelResponsable(), "codDestino");
-        fieldGroup.bind(view.getSelLugarGasto(), "codContraparte");
-        fieldGroup.bind(view.getSelCodAuxiliar(), "codDestinoitem");
+*/
+        fieldGroup.bind(view.getTxtGlosaDetalle(), "txtGlosaitem");
+        fieldGroup.bind(view.getSelCodAuxiliar(), "codDestino");
         fieldGroup.bind(view.getSelTipoDoc(), "codTipocomprobantepago");
-        fieldGroup.bind(view.getSerieDoc(), "txtSeriecomprobantepago");
-        fieldGroup.bind(view.getNumDoc(), "txtComprobantepago");
+        fieldGroup.bind(view.getTxtSerieDoc(), "txtSeriecomprobantepago");
+        fieldGroup.bind(view.getTxtNumDoc(), "txtComprobantepago");
         fieldGroup.bind(view.getFechaDoc(), "fecComprobantepago");
-        fieldGroup.bind(view.getSelCtaContable(), "codContracta");
-        fieldGroup.bind(view.getSelRubroInst(), "codCtaespecial");
-        fieldGroup.bind(view.getSelRubroProy(), "codCtaproyecto");
-        fieldGroup.bind(view.getSelFuente(), "codFinanciera");
+        //fieldGroup.bind(view.getSelFuente(), "codFinanciera");
         fieldGroup.bind(view.getSelTipoMov(), "codTipomov");
-        if (!GenUtil.strNullOrEmpty(item.getCodTercero())) {
-            fieldGroup.bind(view.getSelProyectoTercero(), "codTercero");
-        } else {
-            fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
-        }
+
+//        fieldGroup.bind(view.getSelLugarGasto(), "codContraparte");
+//        fieldGroup.bind(view.getSelCtaContable(), "codContracta");
+//        fieldGroup.bind(view.getSelRubroInst(), "codCtaespecial");
+//        fieldGroup.bind(view.getSelRubroProy(), "codCtaproyecto");
+//        if (!GenUtil.strNullOrEmpty(item.getCodTercero())) {
+//            fieldGroup.bind(view.getSelProyectoTercero(), "codTercero");
+//        } else {
+//            fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
+//        }
 
         for (Field f : fieldGroup.getFields()) {
             if (f instanceof TextField)
@@ -545,8 +599,8 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
             if (f instanceof ComboBox)
                 ((ComboBox) f).setPageLength(25);
         }
-        view.getTipoProyectoTercero().setEnabled(true);
-        view.getSelProyectoTercero().setEnabled(true);
+//        view.getTipoProyectoTercero().setEnabled(true);
+//        view.getSelProyectoTercero().setEnabled(true);
         //view.getSelTercero().setEnabled(true);
         view.getDataFechaComprobante().setEnabled(true);
 
@@ -556,20 +610,21 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
             log.debug("is Edit in bindForm");
             setNumVoucher(item);
             setCuentaLogic();
-            if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {
-                setEditorProyectoLogic(item.getCodProyecto());
-            } else {
-                setEditorTerceroLogic(item.getCodTercero());
-            }
-        } else if (item.getScpRendicioncabecera() != null) {
-            if (item.getId() == null && item.getScpRendicioncabecera().getTxtCorrelativo() != null) {
-                log.debug("is NOT Edit in bindForm but ID is null");
-                view.getNumVoucher().setValue(item.getScpRendicioncabecera().getTxtCorrelativo());
-                view.getNumItem().setValue(String.valueOf(view.getContainer().size() + 1));
-            }
+//            if (!GenUtil.objNullOrEmpty(item.getCodProyecto())) {
+//                setEditorProyectoLogic(item.getCodProyecto());
+//            } else {
+//                setEditorTerceroLogic(item.getCodTercero());
+//            }
         }
-        setSaldos();
-        isEdit = false;*/
+//        else if (item.getScpRendicioncabecera() != null) {
+//            if (item.getId() == null && item.getScpRendicioncabecera().getTxtCorrelativo() != null) {
+//                log.debug("is NOT Edit in bindForm but ID is null");
+//                view.getNumVoucher().setValue(item.getScpRendicioncabecera().getTxtCorrelativo());
+//                view.getNumItem().setValue(String.valueOf(view.getContainer().size() + 1));
+//            }
+//        }
+//        setSaldos();
+        isEdit = false;
     }
 
     protected void setNumVoucher(ScpRendiciondetalle item) {
