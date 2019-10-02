@@ -8,3 +8,24 @@ update [SCP].[dbo].[scp_cajabanco]    set cod_destino='10053714841' where cod_de
 update [SCP].[dbo].[scp_cajabanco] set cod_destino='V090' where cod_destino='V90';
 update [SCP].[dbo].[scp_cajabanco]  set cod_destino='10053444348' where cod_destino='1005344434';
 update [SCP].[dbo].[scp_cajabanco] set cod_destino='V090' FROM [SCP].[dbo].[scp_cajabanco]  where cod_destino in (SELECT sc.cod_destino FROM scp_cajabanco sc LEFT JOIN scp_destino sd on sc.cod_destino = sd.cod_destino WHERE sd.cod_destino IS NULL);
+
+
+ update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V090'  where cod_destino='45604121';
+ update [SCP].[dbo].[scp_bancodetalle] set cod_destino='05344434'  where cod_destino='V057';
+  update [SCP].[dbo].[scp_bancodetalle] set cod_destino='10053714841'  where cod_destino='V046';
+   update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V022'  where cod_destino='179';
+   update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100017491'  where cod_destino='2010017491';
+   update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V345'  where cod_destino='125';
+    update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V268'  where cod_destino='V90';
+  update [SCP].[dbo].[scp_bancodetalle] set cod_destino='05311887'  where cod_destino='291';
+    update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100043140'  where cod_destino='40519799';
+	  update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100043140'  where cod_destino='';
+
+  update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100043140'  where cod_destino in ('167','20493573643','V128');
+
+
+
+  --------------------------------------CONFIGURACION ----------------------
+   update [SCP].[dbo].[scp_plancontable]
+    set flg_estadocuenta='1' where txt_anoproceso='2019'
+    and cod_ctacontable in ('1040101','1040102','1040104','1040105','1040106','1040201','1040202','1040203','1060101','1060102','1060103','1060108','1060109');
