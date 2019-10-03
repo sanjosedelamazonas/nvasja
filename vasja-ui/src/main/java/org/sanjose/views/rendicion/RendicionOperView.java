@@ -138,26 +138,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         //noinspection unchecked
         container = new BeanItemContainer(ScpRendiciondetalle.class, new ArrayList());
         container.addNestedContainerBean("id");
-        //container.addNestedContainerBean(ScpRendiciondetallePK.class);
-/*
-        gpContainer = new GeneratedPropertyContainer(container);
-        gpContainer.addGeneratedProperty("Item",
-                new PropertyValueGenerator<String>() {
-                    @Override
-                    public String getValue(Item item, Object itemId,
-                                           Object propertyId) {
-                        //if ((ScpRendiciondetallePK) item.getItemProperty("id").getValue()!=null)
-                        return String.valueOf(((ScpRendiciondetallePK) item.getItemProperty("id").getValue()).getNumNroitem());
-                    }
-
-                    @Override
-                    public Class<String> getType() {
-                        return String.class;
-                    }
-                });
-
-        grid.setContainerDataSource(gpContainer);
-*/
         grid.setContainerDataSource(container);
         grid.setEditorEnabled(true);
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);

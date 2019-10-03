@@ -2,7 +2,6 @@ package org.sanjose.model;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import org.hibernate.validator.constraints.NotBlank;
-import org.sanjose.authentication.CurrentUser;
 import org.sanjose.authentication.Role;
 
 import javax.persistence.*;
@@ -11,7 +10,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "scp_rendicioncabecera")
@@ -270,30 +268,16 @@ public class ScpRendicioncabecera extends VsjItem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         ScpRendicioncabecera that = (ScpRendicioncabecera) o;
-        return Objects.equals(codRendicioncabecera, that.codRendicioncabecera) &&
-                Objects.equals(codFilial, that.codFilial) &&
-                Objects.equals(codOrigen, that.codOrigen) &&
-                Objects.equals(codComprobante, that.codComprobante) &&
-                Objects.equals(fecComprobante, that.fecComprobante) &&
-                Objects.equals(codTipooperacion, that.codTipooperacion) &&
-                Objects.equals(codMediopago, that.codMediopago) &&
-                Objects.equals(txtGlosa, that.txtGlosa) &&
-                Objects.equals(codDestino, that.codDestino) &&
-                Objects.equals(codBanco, that.codBanco) &&
-                Objects.equals(flgEnviado, that.flgEnviado) &&
-                Objects.equals(codOrigenenlace, that.codOrigenenlace) &&
-                Objects.equals(codComprobanteenlace, that.codComprobanteenlace) &&
-                Objects.equals(numTotalanticipo, that.numTotalanticipo) &&
-                Objects.equals(numGastototal, that.numGastototal) &&
-                Objects.equals(numSaldopendiente, that.numSaldopendiente) &&
-                Objects.equals(flgIm, that.flgIm) &&
-                Objects.equals(scpRendiciondetalles, that.scpRendiciondetalles);
+
+        return getCodRendicioncabecera() != null ? getCodRendicioncabecera().equals(that.getCodRendicioncabecera()) : that.getCodRendicioncabecera() == null;
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codRendicioncabecera, codFilial, codOrigen, codComprobante, fecComprobante, codTipooperacion, codMediopago, txtGlosa, codDestino, codBanco, flgEnviado, codOrigenenlace, codComprobanteenlace, numTotalanticipo, numGastototal, numSaldopendiente, flgIm, scpRendiciondetalles);
+        return getCodRendicioncabecera() != null ? getCodRendicioncabecera().hashCode() : 0;
     }
 
     @Override

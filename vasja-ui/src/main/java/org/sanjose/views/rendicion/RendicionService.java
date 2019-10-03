@@ -154,11 +154,10 @@ public class RendicionService {
         }
         //cabecera = rendicioncabeceraRep.save(cabecera);
         if (rendicionItem!=null) {
-
-            if (!GenUtil.objNullOrEmpty(rendicionItem.getCodTipomov())) {
+            if (!GenUtil.objNullOrEmpty(rendicionItem.getCodTipomov()) && rendicionItem.getCodTipomov()>0) {
                 VsjConfiguractacajabanco codTipoMov = configuractacajabancoRepo.findById(rendicionItem.getCodTipomov());
                 if (codTipoMov == null) {
-                    throw new FieldGroup.CommitException("No se puede encontrar el Codigo Tipo Gasto - por favor verifica la configuracion de Caja y Rendicions");
+                    throw new FieldGroup.CommitException("No se puede encontrar el Codigo Tipo Gasto (" + rendicionItem.getCodTipomov() + ") - por favor verifica la configuracion de Caja y Rendicions");
                 }
                 //rendicionItem.setCodTipogasto(codTipoMov.getCodTipocuenta());
             }
@@ -180,9 +179,11 @@ public class RendicionService {
             rendicionItem = rendiciondetalleRep.save(rendicionItem);
         } else {
             rendicionItem = new ScpRendiciondetalle();
+            rendicionItem.setCodTipomoneda(cabecera.getCodTipomoneda());
             ScpRendiciondetallePK id = new ScpRendiciondetallePK();
             id.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
             rendicionItem.setId(id);
+            rendicionItem.setCodComprobante(cabecera.getCodComprobante());
         }
         rendicionItem.setScpRendicioncabecera(cabecera);
         return rendicionItem;

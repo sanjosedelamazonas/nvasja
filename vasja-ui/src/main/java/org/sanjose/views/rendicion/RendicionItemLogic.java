@@ -4,6 +4,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Sizeable;
@@ -116,12 +117,9 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                 VsjConfiguractacajabanco config = view.getService().getConfiguractacajabancoRepo().findById(Integer.parseInt(tipoMov));
                 if (config != null && view.getContainer().getItem(item)!=null) {
                     ScpRendiciondetalle sr = view.getContainer().getItem(item).getBean();
-                    view.getContainer().removeItem(item);
                     sr.setCodCtacontable(config.getCodCtacontablegasto());
                     sr.setCodCtaespecial(config.getCodCtaespecial());
-                    view.getContainer().addBean(sr);
-                    //view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
-                    //view.getSelRubroInst().setValue(config.getCodCtaespecial());
+                    view.grid.refreshRows(sr);
                 }
             }
         });
@@ -129,7 +127,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getTxtSerieDoc().setMaxLength(5);
         view.getTxtNumDoc().setMaxLength(20);
 
-        
         // DETALLE - GRID
 
         // Fecha Pago
@@ -425,5 +422,55 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     @Override
     public void addWarningToGuardarBtn(boolean isWarn) {
         //TODO Implement Warning when Saving!!!
+    }
+
+    protected void addCommitHandlerToGrid(){
+        log.debug("Add commit");
+        view.grid.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent itemClickEvent) {
+                try {
+                    fieldGroup.commit();
+                    log.debug("Item click");
+                } catch (FieldGroup.CommitException ce) {
+                    Notification.show("Por favor rellena los datos necessarios en la parte a la derecha primero!", Notification.Type.ERROR_MESSAGE);
+                    log.warn("Got Commit Exception: " + ce);
+                }
+            }
+        });
+
+        view.grid.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
+            @Override
+            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+
+
+            }
+            @Override
+            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+                Object item = view.grid.getContainerDataSource().getItem(view.grid.getEditedItemId());
+                try {
+                    if (item != null) {
+                        ScpRendiciondetalle vcb = (ScpRendiciondetalle) ((BeanItem) item).getBean();
+                        final ScpRendiciondetalle vcbToSave = (ScpRendiciondetalle) vcb.prepareToSave();
+                        fieldGroup.commit();
+                        commitEvent.getFieldBinder();
+//                    if (vcb.isEnviado()) {
+//                        MessageBox
+//                                .createQuestion()
+//                                .withCaption("Esta operacion ya esta enviado")
+//                                .withMessage("?Esta seguro que quiere guardar los cambios?")
+//                                .withYesButton(() -> view.getService().getCajabancoRep().save(vcbToSave))
+//                                .withNoButton()
+//                                .open();
+//                    } else
+                        view.getService().getRendiciondetalleRep().save(vcbToSave);
+                        bindForm(vcb);
+                    }
+                } catch (FieldGroup.CommitException ce) {
+                    Notification.show("No se puede guarder el item: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                    log.warn("Got Commit Exception: " + ce);
+                }
+            }
+        });
     }
 }

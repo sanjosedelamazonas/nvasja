@@ -6,7 +6,6 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
-import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpDestino;
@@ -22,7 +21,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Optional;
 
-import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.verifyNumMoneda;
 import static org.sanjose.views.sys.Viewing.Mode.*;
 
@@ -45,56 +43,25 @@ public class RendicionLogic extends RendicionItemLogic {
         view.getBtnGuardar().addClickListener(event -> saveCabecera());
         view.getBtnNewItem().addClickListener(event -> nuevoItem());
  //       view.getBtnEliminar().addClickListener(event -> eliminarComprobante());
-//        view.getBtnAnular().addClickListener(event -> anularComprobante());
+        view.getBtnAnular().addClickListener(event -> anularComprobante());
         view.getBtnCerrar().addClickListener(event -> cerrarAlManejo());
         view.getBtnVerVoucher().addClickListener(event -> ReportHelper.generateComprobante(beanItem.getBean()));
         switchMode(EMPTY);
-
-        log.debug("Adding Commit Handler");
-        // Add Guardar handler
-        view.grid.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
-            @Override
-            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                System.out.println("hello PRE!");
-
-            }
-            @Override
-            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                System.out.println("hello POST!");
-                Object item = view.grid.getContainerDataSource().getItem(view.grid.getEditedItemId());
-                if (item!=null) {
-                    ScpRendiciondetalle vcb = (ScpRendiciondetalle) ((BeanItem) item).getBean();
-                    final ScpRendiciondetalle vcbToSave = (ScpRendiciondetalle)vcb.prepareToSave();
-//                    if (vcb.isEnviado()) {
-//                        MessageBox
-//                                .createQuestion()
-//                                .withCaption("Esta operacion ya esta enviado")
-//                                .withMessage("?Esta seguro que quiere guardar los cambios?")
-//                                .withYesButton(() -> view.getService().getCajabancoRep().save(vcbToSave))
-//                                .withNoButton()
-//                                .open();
-//                    } else
-                    view.getService().getRendiciondetalleRep().save(vcbToSave);
-                    bindForm(vcb);
-                }
-            }
-        });
-        log.debug("Added Commit Handler " + view.grid.getEditorFieldGroup());
     }
-//
-//    private void anularComprobante() {
-//        if (view.grid.getSelectedRow() != null) {
-//            viewComprobante();
-//            fieldGroupCabezera.discard();
-//        } else {
-//            clearFields();
-//            if (view.getContainer().getItemIds().isEmpty())
-//                switchMode(EMPTY);
-//            else
-//                switchMode(VIEW);
-//        }
-//        closeWindow();
-//    }
+
+    private void anularComprobante() {
+        if (view.grid.getSelectedRow() != null) {
+            viewComprobante();
+            fieldGroupCabezera.discard();
+        } else {
+            clearFields();
+            if (view.getContainer().getItemIds().isEmpty())
+                switchMode(EMPTY);
+            else
+                switchMode(VIEW);
+        }
+        closeWindow();
+    }
 
     public void nuevaRendicion() {
         switchMode(NEW);
@@ -120,10 +87,11 @@ public class RendicionLogic extends RendicionItemLogic {
         addValidators();
         loadDetallesToGrid(rendicioncabecera).ifPresent(renddet -> {
             view.grid.select(renddet);
-            viewComprobante();
+            //viewComprobante();
         });
         if (rendicioncabecera.getCodRendicioncabecera()!=null)
             switchMode(EDIT);
+        addCommitHandlerToGrid();
     }
 
     private Optional loadDetallesToGrid(ScpRendicioncabecera rendicioncabecera) {
@@ -232,6 +200,11 @@ public class RendicionLogic extends RendicionItemLogic {
             if (!verifyNumMoneda(cabecera.getCodTipomoneda()))
                 throw new FieldGroup.CommitException("Moneda no esta de tipo numeral");
             log.debug("cabezera ready: " + cabecera);
+
+            // Committing detalle
+            if (rendicionItem!=null) {
+                fieldGroup.commit();
+            }
 
             rendicionItem = view.getService().saveRendicionOperacion(cabecera, rendicionItem);
             rendicioncabecera = rendicionItem.getScpRendicioncabecera();

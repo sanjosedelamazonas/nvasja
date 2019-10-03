@@ -44,12 +44,15 @@ public class ScpRendiciondetallePK implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         ScpRendiciondetallePK that = (ScpRendiciondetallePK) o;
         return codRendicioncabecera == that.codRendicioncabecera &&
-                numNroitem == that.numNroitem;
+                numNroitem.equals(that.numNroitem);
     }
 
-    @Override
     public int hashCode() {
-        return Objects.hash(codRendicioncabecera, numNroitem);
+        final int prime = 31;
+        long hash = 17;
+        hash = hash * prime + this.numNroitem;
+        hash = hash * prime + this.codRendicioncabecera;
+        return Long.valueOf(hash).intValue();
     }
 
     @Override

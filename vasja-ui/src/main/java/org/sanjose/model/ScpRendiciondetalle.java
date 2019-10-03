@@ -181,6 +181,10 @@ public class ScpRendiciondetalle extends VsjItem {
 
     public ScpRendiciondetalle prepareToSave() throws FieldGroup.CommitException {
         super.prepareToSave();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM");
+        this.setCodMes(sdf.format(this.getFecComprobante()));
+        sdf = new SimpleDateFormat("yyyy");
+        this.setTxtAnoproceso(sdf.format(this.getFecComprobante()));
         setCodOrigen(getScpRendicioncabecera().getCodOrigen());
         setCodFilial(getScpRendicioncabecera().getCodFilial());
         return this;
@@ -798,87 +802,13 @@ public class ScpRendiciondetalle extends VsjItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ScpRendiciondetalle that = (ScpRendiciondetalle) o;
-        return Double.compare(that.numTcmo, numTcmo) == 0 &&
-                Double.compare(that.numTcvdolar, numTcvdolar) == 0 &&
-                Double.compare(that.porIgv, porIgv) == 0 &&
-                Double.compare(that.porIes, porIes) == 0 &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(codFilial, that.codFilial) &&
-                Objects.equals(codOrigen, that.codOrigen) &&
-                Objects.equals(codComprobante, that.codComprobante) &&
-                Objects.equals(fecComprobante, that.fecComprobante) &&
-                Objects.equals(codTipomov, that.codTipomov) &&
-                Objects.equals(txtGlosaitem, that.txtGlosaitem) &&
-                Objects.equals(codDestino, that.codDestino) &&
-                Objects.equals(txtCheque, that.txtCheque) &&
-                Objects.equals(flgChequecobrado, that.flgChequecobrado) &&
-                Objects.equals(codMescobr, that.codMescobr) &&
-                Objects.equals(codTipocomprobantepago, that.codTipocomprobantepago) &&
-                Objects.equals(txtRefcomprobantepago, that.txtRefcomprobantepago) &&
-                Objects.equals(txtRefseriecomprobantepago, that.txtRefseriecomprobantepago) &&
-                Objects.equals(txtSeriecomprobantepago, that.txtSeriecomprobantepago) &&
-                Objects.equals(txtComprobantepago, that.txtComprobantepago) &&
-                Objects.equals(fecComprobantepago, that.fecComprobantepago) &&
-                Objects.equals(codEvento, that.codEvento) &&
-                Objects.equals(numRefnroitem, that.numRefnroitem) &&
-                Objects.equals(fecRefcomprobante, that.fecRefcomprobante) &&
-                Objects.equals(codProyecto, that.codProyecto) &&
-                Objects.equals(codRefcomprobante, that.codRefcomprobante) &&
-                Objects.equals(codReforigen, that.codReforigen) &&
-                Objects.equals(codReftipocomprobantepago, that.codReftipocomprobantepago) &&
-                Objects.equals(codRegistrocompraventa, that.codRegistrocompraventa) &&
-                Objects.equals(fecPagocomprobantepago, that.fecPagocomprobantepago) &&
-                Objects.equals(fecRefcomprobantepago, that.fecRefcomprobantepago) &&
-                Objects.equals(codCtaactividad, that.codCtaactividad) &&
-                Objects.equals(codCtaarea, that.codCtaarea) &&
-                Objects.equals(codCtacontable, that.codCtacontable) &&
-                Objects.equals(codCtacontable79, that.codCtacontable79) &&
-                Objects.equals(codCtacontable9, that.codCtacontable9) &&
-                Objects.equals(codCtaespecial, that.codCtaespecial) &&
-                Objects.equals(codCtaproyecto, that.codCtaproyecto) &&
-                Objects.equals(codFinanciera, that.codFinanciera) &&
-                Objects.equals(codFlujocaja, that.codFlujocaja) &&
-                Objects.equals(numDebedolar, that.numDebedolar) &&
-                Objects.equals(numDebemo, that.numDebemo) &&
-                Objects.equals(numDebesol, that.numDebesol) &&
-                Objects.equals(numHaberdolar, that.numHaberdolar) &&
-                Objects.equals(numHabermo, that.numHabermo) &&
-                Objects.equals(numHabersol, that.numHabersol) &&
-                Objects.equals(codMonedaoriginal, that.codMonedaoriginal) &&
-                Objects.equals(flgTcreferencia, that.flgTcreferencia) &&
-                Objects.equals(flgConversion, that.flgConversion) &&
-                Objects.equals(codPais, that.codPais) &&
-                Objects.equals(codDepartamento, that.codDepartamento) &&
-                Objects.equals(flgRecuperaigv, that.flgRecuperaigv) &&
-                Objects.equals(numNroitem2, that.numNroitem2) &&
-                Objects.equals(codContraparte, that.codContraparte) &&
-                Objects.equals(txtNroretencion, that.txtNroretencion) &&
-                Objects.equals(fecRetencion, that.fecRetencion) &&
-                Objects.equals(flgEsactivo, that.flgEsactivo) &&
-                Objects.equals(txt_Nrocompsujnodomi, that.txt_Nrocompsujnodomi) &&
-                Objects.equals(flg_Retienecuarta, that.flg_Retienecuarta) &&
-                Objects.equals(codGastofijo, that.codGastofijo) &&
-                Objects.equals(flgDistribuir, that.flgDistribuir) &&
-                Objects.equals(flgDistribuido, that.flgDistribuido) &&
-                Objects.equals(cod_Tiporegistro, that.cod_Tiporegistro) &&
-                Objects.equals(numTcmc, that.numTcmc) &&
-                Objects.equals(numDebemc, that.numDebemc) &&
-                Objects.equals(numHabermc, that.numHabermc) &&
-                Objects.equals(txtNombreactividad, that.txtNombreactividad) &&
-                Objects.equals(fecAnticipo, that.fecAnticipo) &&
-                Objects.equals(numImporteanticipo, that.numImporteanticipo) &&
-                Objects.equals(numSumaanticipo, that.numSumaanticipo) &&
-                Objects.equals(fecRendicion, that.fecRendicion) &&
-                Objects.equals(numSaldo, that.numSaldo) &&
-                Objects.equals(flgIm, that.flgIm) &&
-                Objects.equals(scpRendicioncabecera, that.scpRendicioncabecera);
+        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, codFilial, codOrigen, codComprobante, fecComprobante, codTipomov, txtGlosaitem, codDestino, txtCheque, flgChequecobrado, codMescobr, codTipocomprobantepago, txtRefcomprobantepago, txtRefseriecomprobantepago, txtSeriecomprobantepago, txtComprobantepago, fecComprobantepago, codEvento, numRefnroitem, fecRefcomprobante, codProyecto, codRefcomprobante, codReforigen, codReftipocomprobantepago, codRegistrocompraventa, fecPagocomprobantepago, fecRefcomprobantepago, codCtaactividad, codCtaarea, codCtacontable, codCtacontable79, codCtacontable9, codCtaespecial, codCtaproyecto, codFinanciera, codFlujocaja, numTcmo, numTcvdolar, numDebedolar, numDebemo, numDebesol, numHaberdolar, numHabermo, numHabersol, codMonedaoriginal, flgTcreferencia, flgConversion, codPais, codDepartamento, flgRecuperaigv, porIgv, porIes, numNroitem2, codContraparte, txtNroretencion, fecRetencion, flgEsactivo, txt_Nrocompsujnodomi, flg_Retienecuarta, codGastofijo, flgDistribuir, flgDistribuido, cod_Tiporegistro, numTcmc, numDebemc, numHabermc, txtNombreactividad, fecAnticipo, numImporteanticipo, numSumaanticipo, fecRendicion, numSaldo, flgIm, scpRendicioncabecera);
+        return getId() != null ? getId().hashCode() : 0;
     }
-
     @Override
     public String toString() {
         return "ScpRendiciondetalle{" +
