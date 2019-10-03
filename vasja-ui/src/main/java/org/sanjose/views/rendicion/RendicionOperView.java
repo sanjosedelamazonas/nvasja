@@ -47,7 +47,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
 
     private Window subWindow;
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{
-            "Item", "codProyecto", "codFinanciera", "codCtaproyecto",
+            "id.numNroitem", "codProyecto", "codFinanciera", "codCtaproyecto",
             "codContraparte", "codCtacontable", "codCtaactividad", "codCtaespecial",
             "fecComprobantepago", "fecPagocomprobantepago",
             "numDebesol", "numHabersol",
@@ -82,7 +82,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
     private static final Logger log = LoggerFactory.getLogger(RendicionOperView.class);
 
     private final Field[] allFields = new Field[]{ txtGlosaCabeza, selTipoMov, selCodAuxiliar, fechaPago,
-            selTipoDoc, fechaDoc, txtSerieDoc, txtNumDoc
+            selTipoDoc, fechaDoc, txtSerieDoc, txtNumDoc, txtGlosaDetalle
     };
     private final Field[] cabezeraFields = new Field[]{dataFechaComprobante, txtGlosaCabeza, selResponsable1, selMoneda,
             numTotalAnticipio, dataFechaRegistro};
@@ -137,12 +137,16 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         // Grid
         //noinspection unchecked
         container = new BeanItemContainer(ScpRendiciondetalle.class, new ArrayList());
+        container.addNestedContainerBean("id");
+        //container.addNestedContainerBean(ScpRendiciondetallePK.class);
+/*
         gpContainer = new GeneratedPropertyContainer(container);
         gpContainer.addGeneratedProperty("Item",
                 new PropertyValueGenerator<String>() {
                     @Override
                     public String getValue(Item item, Object itemId,
                                            Object propertyId) {
+                        //if ((ScpRendiciondetallePK) item.getItemProperty("id").getValue()!=null)
                         return String.valueOf(((ScpRendiciondetallePK) item.getItemProperty("id").getValue()).getNumNroitem());
                     }
 
@@ -153,11 +157,13 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
                 });
 
         grid.setContainerDataSource(gpContainer);
+*/
+        grid.setContainerDataSource(container);
         grid.setEditorEnabled(true);
-        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.sort("fecFregistro", SortDirection.DESCENDING);
 
-        grid.getColumn("Item").setWidth(36);
+        //grid.getColumn("Item").setWidth(36);
         ViewUtil.setColumnNames(grid, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
 
         Arrays.asList(HIDDEN_COLUMN_NAMES_PEN)
@@ -166,14 +172,13 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         ViewUtil.alignMontosInGrid(grid);
 
         ViewUtil.colorizeRows(grid, ScpRendiciondetalle.class);
-
-        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.setWidth("100%");
         setTotal(null);
     }
 
     public ScpRendiciondetalle getSelectedRow() {
-        return (ScpRendiciondetalle) grid.getSelectedRow();
+        if (grid.getSelectedRows().isEmpty()) return null;
+        return grid.getSelectedRows().toArray(new ScpRendiciondetalle[0])[0];
     }
 
     public void setEnableDetalleFields(boolean enabled) {
@@ -192,7 +197,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
     private BigDecimal calcTotal(Character locMoneda) {
         BigDecimal total = new BigDecimal(0.00);
         for (ScpRendiciondetalle cajaRendicion : container.getItemIds()) {
-            log.debug("calcTotal: " + cajaRendicion);
+            //log.debug("calcTotal: " + cajaRendicion);
             if (locMoneda.equals(PEN)) {
                 total = total.add(cajaRendicion.getNumDebesol()).subtract(cajaRendicion.getNumHabersol());
             } else if (locMoneda.equals(USD))

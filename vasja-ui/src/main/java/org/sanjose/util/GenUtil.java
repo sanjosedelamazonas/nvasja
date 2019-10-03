@@ -58,9 +58,14 @@ public class GenUtil {
         return false;
     }
 
+
     public static String getTxtCorrelativo(Integer id) {
+        return getTxtCorrelativoLen(id, 8);
+    }
+
+    public static String getTxtCorrelativoLen(Integer id, int maxLen) {
         StringBuilder sb = new StringBuilder();
-        for (int i=0;i<8-id.toString().length();i++) {
+        for (int i=0;i<maxLen-id.toString().length();i++) {
             sb.append("0");
         }
         sb.append(id.toString());

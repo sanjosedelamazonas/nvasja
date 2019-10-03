@@ -71,10 +71,10 @@ public class BancoOperacionesLogic implements Serializable {
             gridContextMenu.removeItems();
             final Object itemId = e.getItemId();
             if (itemId == null) {
-                //  gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
+                //  gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevaRendicion());
             } else {
                 // gridContextMenu.addItem("Editar", k -> gridLogic.editarRendicion((ScpBancocabecera) itemId));
-                // gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevoCheque());
+                // gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevaRendicion());
                 if (!((ScpBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
                     gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque((ScpBancocabecera) itemId));
                 }

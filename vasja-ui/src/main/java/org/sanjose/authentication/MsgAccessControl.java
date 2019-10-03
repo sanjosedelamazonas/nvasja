@@ -1,5 +1,6 @@
 package org.sanjose.authentication;
 
+import org.sanjose.util.GenUtil;
 import org.sanjose.util.Rot10;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.repo.MsgUsuarioRep;
@@ -18,11 +19,16 @@ public class MsgAccessControl implements AccessControl {
 
     private boolean devMode = false;
 
+    private String devUser = null;
+
     private final Map<String, String> roles = new HashMap<>();
 
-    public MsgAccessControl(MsgUsuarioRep repo, boolean devMode) {
+    public MsgAccessControl(MsgUsuarioRep repo, boolean devMode, String devUser) {
         this.msgUsuarioRep = repo;
         this.devMode = devMode;
+        this.devUser = devUser;
+        if (!GenUtil.strNullOrEmpty(devUser))
+            signIn(devUser, null);
     }
 
     @Override

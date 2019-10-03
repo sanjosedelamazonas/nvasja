@@ -77,8 +77,8 @@ public class DataFilterUtil {
 
 		Map<Character, String> valMap = new HashMap<>();
 		valMap.put('0', "Soles");
-		valMap.put('1',"Dolares");
-		valMap.put('2',"Euros");
+		valMap.put('1', "Dolares");
+		valMap.put('2', "Euros");
 		IndexedContainer c = new IndexedContainer();
 		c.addContainerProperty(column, String.class, "");
 

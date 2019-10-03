@@ -31,9 +31,11 @@ public class ConfigurationUtil {
 		//defaultParamMap.put("CSS_STYLE", "iso3166");
 		//defaultParamMap.put("THEME", "mytheme");
 		defaultParamMap.put("DEV_MODE", "1");
+		defaultParamMap.put("DEV_USER", "");
+
 		defaultParamMap.put("ALLOW_OVERDRAW", "TRUE");
 		//defaultParamMap.put("IMPORTS_ENCODING", "UTF-8");
-		
+
 		/* Reports */
 		defaultParamMap.put("REPORTS_SOURCE_URL", "reports/");
 		defaultParamMap.put("REPORTS_SOURCE_FOLDER","");

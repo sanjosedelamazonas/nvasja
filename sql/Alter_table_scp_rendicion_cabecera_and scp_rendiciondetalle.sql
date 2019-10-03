@@ -60,6 +60,9 @@ ALTER TABLE dbo.scp_rendiciondetalle ADD
 	cod_rendicioncabecera int NOT NULL DEFAULT 0
 GO
 
+ALTER TABLE SCP.dbo.scp_rendicioncabecera ALTER COLUMN cod_comprobante varchar(6)
+GO
+
 ALTER TABLE [dbo].[scp_rendiciondetalle] DROP CONSTRAINT [PK_scp_rendiciondetalle] WITH ( ONLINE = OFF )
 GO
 

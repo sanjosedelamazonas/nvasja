@@ -97,7 +97,7 @@ public class MainUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         //accessControl = new BasicAccessControl();
         ConfigurationUtil.setPropiedadRepo(propiedadView.repo);
-        accessControl = new MsgAccessControl(msgUsuarioRep, ConfigurationUtil.is("DEV_MODE"));
+        accessControl = new MsgAccessControl(msgUsuarioRep, ConfigurationUtil.is("DEV_MODE"), ConfigurationUtil.get("DEV_USER"));
         Responsive.makeResponsive(this);
         setLocale(ConfigurationUtil.getLocale());
         getPage().setTitle("Vicariato San Jose del Amazonas - Sistema de Gestion de Caja y Bancos");

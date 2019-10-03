@@ -9,6 +9,8 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.renderers.HtmlRenderer;
+import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.*;
@@ -63,7 +65,7 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         this.comprobanteService = comprobanteService;
     }
 
-    public Grid.FooterRow gridCajaFooter;
+    public Grid.FooterRow gridFooter;
 
     private Character moneda ='0';
 
@@ -112,50 +114,22 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
 //                        DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
 //                        "txtDescctacontable");
             }
-            viewLogic.setSaldoDelDia();
-            viewLogic.setSaldosFinal();
         });
         container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
-        /*selFiltroCaja.addValueChangeListener(e -> {
-            if (e.getProperty().getValue() != null) {
-                container.removeContainerFilters("codCtacontable");
-                container.addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
-            } else {
-                container.removeContainerFilters("codCtacontable");
-            }
-            viewLogic.setSaldoDelDia();
-            viewLogic.setSaldosFinal();
-            viewLogic.calcFooterSums();
-        });
-*/
         gridCaja.addItemClickListener(this::setItemLogic);
-        //gridCaja.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
-        //gridCaja.getColumn("flgEnviado").setHidden(true);
+        gridCaja.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridCaja.getColumn("flgEnviado").setHidden(true);
 
         // Add filters
-        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
+        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecComprobante", fechaDesde, fechaHasta, this);
 
         ViewUtil.colorizeRowsRendiciones(gridCaja);
 
-        gridCajaFooter = gridCaja.appendFooterRow();
-        //viewLogic.calcFooterSums();
-
-        // Set Saldos Inicial
-        fechaDesde.addValueChangeListener(ev -> refreshCajas());
-        fechaHasta.addValueChangeListener(ev -> refreshCajas());
-
+        gridFooter = gridCaja.appendFooterRow();
         viewLogic.init(this);
-    }
-
-    private void refreshCajas() {
-//        DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
-//                DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
-//                "txtDescctacontable");
-        viewLogic.calcFooterSums();
-        viewLogic.setSaldosFinal();
     }
 
     public void refreshData() {
@@ -271,8 +245,8 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         return container;
     }
 
-    public Grid.FooterRow getGridCajaFooter() {
-        return gridCajaFooter;
+    public Grid.FooterRow getGridFooter() {
+        return gridFooter;
     }
 
     public Button getBtnNueva() {

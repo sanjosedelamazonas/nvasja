@@ -14,10 +14,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.converter.DateToTimestampConverter;
-import org.sanjose.model.ScpDestino;
-import org.sanjose.model.ScpRendicioncabecera;
-import org.sanjose.model.ScpRendiciondetalle;
-import org.sanjose.model.VsjConfiguractacajabanco;
+import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.views.sys.ComprobanteWarnGuardar;
@@ -26,6 +23,7 @@ import org.sanjose.views.sys.NavigatorViewing;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,7 +55,10 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     }
 
     public void setupEditComprobanteView() {
-        // Fecha
+
+        //--------- CABEZA
+
+        // Fecha Comprobante
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         ObjectProperty<Timestamp> prop = new ObjectProperty<>(ts);
         view.getDataFechaComprobante().setPropertyDataSource(prop);
@@ -73,10 +74,16 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
             refreshProyectoYcuentaPorFecha((Date)event.getProperty().getValue());
         });
 
-        //--------- CABEZA
+        // Fecha registro
 
-        // Cuenta
-        view.getNumVoucher().setEnabled(false);
+        ts = new Timestamp(System.currentTimeMillis());
+        prop = new ObjectProperty<>(ts);
+        view.getDataFechaRegistro().setPropertyDataSource(prop);
+        view.getDataFechaRegistro().setConverter(DateToTimestampConverter.INSTANCE);
+        view.getDataFechaRegistro().setResolution(Resolution.DAY);
+        view.getDataFechaRegistro().setValue(new Date());
+
+        //view.getNumVoucher().setEnabled(false);
 
         // Responsable
         DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
@@ -99,8 +106,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getService().getComprobantepagoRepo().findAll(),
                 "txtDescripcion");
 
-
-
         DataFilterUtil.bindComboBox(view.getSelTipoMov(), view.getService().getConfiguractacajabancoRepo().findByActivoAndParaBancoAndParaProyecto(true, true, true), "Tipo Movimiento",
                 "codTipocuenta", "txtTipocuenta", "id");
 
@@ -109,9 +114,12 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
             if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
                 String tipoMov = event.getProperty().getValue().toString();
                 VsjConfiguractacajabanco config = view.getService().getConfiguractacajabancoRepo().findById(Integer.parseInt(tipoMov));
-                if (config != null) {
-                    item.setCodCtacontable(config.getCodCtacontablegasto());
-                    item.setCodCtaespecial(config.getCodCtaespecial());
+                if (config != null && view.getContainer().getItem(item)!=null) {
+                    ScpRendiciondetalle sr = view.getContainer().getItem(item).getBean();
+                    view.getContainer().removeItem(item);
+                    sr.setCodCtacontable(config.getCodCtacontablegasto());
+                    sr.setCodCtaespecial(config.getCodCtaespecial());
+                    view.getContainer().addBean(sr);
                     //view.getSelCtaContable().setValue(config.getCodCtacontablegasto());
                     //view.getSelRubroInst().setValue(config.getCodCtaespecial());
                 }
@@ -180,6 +188,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         // Editing Destino
         view.getBtnResponsable().addClickListener(event -> editDestino(view.getSelResponsable1()));
         view.getBtnAuxiliar().addClickListener(event -> editDestino(view.getSelCodAuxiliar()));
+
     }
 
     public void addValidators() {
@@ -378,17 +387,24 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
 
-    void nuevoComprobante(Character moneda) {
-        ScpRendiciondetalle vcb = new ScpRendiciondetalle();
+    void nuevoItem(ScpRendiciondetalle vcb) {
         if (rendicioncabecera != null)
             vcb.setScpRendicioncabecera(rendicioncabecera);
-        vcb.setCodTipomoneda(moneda);
-        vcb.setFecComprobante(new Timestamp(System.currentTimeMillis()));
+        //vcb.setCodTipomoneda(moneda);
+        //vcb.setFecComprobante(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
         bindForm(vcb);
         item = vcb;
         view.setEnableCabezeraFields(true);
-        view.setEnableDetalleFields(false);
+        view.setEnableDetalleFields(true);
+        if (item.getId().getNumNroitem()==null)
+            item.getId().setNumNroitem(view.getContainer().size()+1);
+        List<ScpRendiciondetalle> items = new ArrayList<>();
+        items.add(item);
+        view.getContainer().addAll(items);
+        view.getContainer().sort(new Object[]{"numNritem"}, new boolean[]{true});
+        view.grid.select(item);
+        view.getGrid().setEditorEnabled(true);
     }
 
     public void setNavigatorView(NavigatorViewing navigatorView) {

@@ -1,6 +1,7 @@
 package org.sanjose.views.rendicion;
 
-import org.sanjose.model.ScpCajabanco;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import org.sanjose.model.*;
 import org.sanjose.repo.*;
 import org.sanjose.util.GenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,5 +139,52 @@ public class RendicionService {
 
     public EntityManager getEm() {
         return em;
+    }
+
+    
+    @Transactional(readOnly = false)
+    public ScpRendiciondetalle saveRendicionOperacion(ScpRendicioncabecera cabecera, ScpRendiciondetalle rendicionItem) throws FieldGroup.CommitException {
+        //cabecera.setCodTipomoneda(moneda);
+        cabecera.prepareToSave();
+        System.out.println("saving: " + cabecera);
+        cabecera = rendicioncabeceraRep.save(cabecera);
+        if (GenUtil.strNullOrEmpty(cabecera.getCodComprobante())) {
+            cabecera.setCodComprobante(GenUtil.getTxtCorrelativoLen(cabecera.getCodRendicioncabecera(), 6));
+            cabecera = rendicioncabeceraRep.save(cabecera);
+        }
+        //cabecera = rendicioncabeceraRep.save(cabecera);
+        if (rendicionItem!=null) {
+
+            if (!GenUtil.objNullOrEmpty(rendicionItem.getCodTipomov())) {
+                VsjConfiguractacajabanco codTipoMov = configuractacajabancoRepo.findById(rendicionItem.getCodTipomov());
+                if (codTipoMov == null) {
+                    throw new FieldGroup.CommitException("No se puede encontrar el Codigo Tipo Gasto - por favor verifica la configuracion de Caja y Rendicions");
+                }
+                //rendicionItem.setCodTipogasto(codTipoMov.getCodTipocuenta());
+            }
+            //rendicionItem.setCodTipomoneda(moneda);
+            rendicionItem.prepareToSave();
+            rendicionItem.setFecComprobante(cabecera.getFecComprobante());
+            rendicionItem.setScpRendicioncabecera(cabecera);
+            if (rendicionItem.getId() == null) {
+                ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+                id.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
+                id.setNumNroitem(rendiciondetalleRep.findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera()).size() + 1);
+                rendicionItem.setId(id);
+            }
+
+            rendicionItem.setScpRendicioncabecera(cabecera);
+            if (GenUtil.strNullOrEmpty(rendicionItem.getCodComprobante())) {
+                rendicionItem.setCodComprobante(cabecera.getCodComprobante());
+            }
+            rendicionItem = rendiciondetalleRep.save(rendicionItem);
+        } else {
+            rendicionItem = new ScpRendiciondetalle();
+            ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+            id.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
+            rendicionItem.setId(id);
+        }
+        rendicionItem.setScpRendicioncabecera(cabecera);
+        return rendicionItem;
     }
 }

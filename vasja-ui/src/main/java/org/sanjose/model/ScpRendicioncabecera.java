@@ -1,10 +1,12 @@
 package org.sanjose.model;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import org.hibernate.validator.constraints.NotBlank;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.authentication.Role;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -30,13 +32,14 @@ public class ScpRendicioncabecera extends VsjItem {
     @Column(name = "cod_comprobante")
     private String codComprobante;
 
-
     @Column(name = "fec_comprobante")
     private java.sql.Timestamp fecComprobante;
     @Column(name = "cod_tipooperacion")
     private String codTipooperacion;
     @Column(name = "cod_mediopago")
     private String codMediopago;
+    @NotBlank
+    @Size(min = 2, max = 70)
     @Column(name = "txt_glosa")
     private String txtGlosa;
 
@@ -67,9 +70,19 @@ public class ScpRendicioncabecera extends VsjItem {
 
     public ScpRendicioncabecera() {
         setFecComprobante(new Timestamp(System.currentTimeMillis()));
+        setFecFregistro(new Timestamp(System.currentTimeMillis()));
+        setTxtGlosa("TEST");
+        setCodDestino("V003");
         setFlgEnviado('0');
         setFlgIm('1');
         setCodOrigen("08");
+        setCodFilial("01");
+        setCodTipooperacion("");
+        setCodMediopago("");
+        setCodComprobanteenlace("");
+        setCodOrigenenlace("");
+        setCodTipomoneda('0');
+        setCodBanco("");
         setNumGastototal(new BigDecimal(0));
         setNumSaldopendiente(new BigDecimal(0));
         setNumTotalanticipo(new BigDecimal(0));
@@ -296,14 +309,14 @@ public class ScpRendicioncabecera extends VsjItem {
                 ", txtGlosa='" + txtGlosa + '\'' +
                 ", codDestino='" + codDestino + '\'' +
                 ", codBanco='" + codBanco + '\'' +
-                ", flgEnviado='" + flgEnviado + '\'' +
+                ", flgEnviado=" + flgEnviado +
                 ", codOrigenenlace='" + codOrigenenlace + '\'' +
                 ", codComprobanteenlace='" + codComprobanteenlace + '\'' +
                 ", numTotalanticipo=" + numTotalanticipo +
                 ", numGastototal=" + numGastototal +
                 ", numSaldopendiente=" + numSaldopendiente +
                 ", flgIm=" + flgIm +
-                //", scpRendiciondetalles=" + scpRendiciondetalles +
+                ", " + super.toString() +
                 '}';
     }
 }

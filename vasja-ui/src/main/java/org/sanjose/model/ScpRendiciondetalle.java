@@ -1,12 +1,14 @@
 package org.sanjose.model;
 
 
+import com.vaadin.data.fieldgroup.FieldGroup;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 @Entity
@@ -151,7 +153,7 @@ public class ScpRendiciondetalle extends VsjItem {
     //@Column(name = "cod_TipoRegistro")
     private String cod_Tiporegistro;
     @Column(name = "num_tcmc")
-    private double numTcmc;
+    private BigDecimal numTcmc;
     @Column(name = "num_debemc")
     private BigDecimal numDebemc;
     @Column(name = "num_habermc")
@@ -161,13 +163,13 @@ public class ScpRendiciondetalle extends VsjItem {
     @Column(name = "fec_anticipo")
     private java.sql.Timestamp fecAnticipo;
     @Column(name = "num_importeanticipo")
-    private double numImporteanticipo;
+    private BigDecimal numImporteanticipo;
     @Column(name = "num_sumaanticipo")
-    private double numSumaanticipo;
+    private BigDecimal numSumaanticipo;
     @Column(name = "fec_rendicion")
     private java.sql.Timestamp fecRendicion;
     @Column(name = "num_saldo")
-    private double numSaldo;
+    private BigDecimal numSaldo;
 
     @Column(name = "flg_im")
     private Character flgIm;
@@ -177,11 +179,20 @@ public class ScpRendiciondetalle extends VsjItem {
     @JoinColumn(name = "cod_rendicioncabecera", insertable = false, updatable = false)
     private ScpRendicioncabecera scpRendicioncabecera;
 
+    public ScpRendiciondetalle prepareToSave() throws FieldGroup.CommitException {
+        super.prepareToSave();
+        setCodOrigen(getScpRendicioncabecera().getCodOrigen());
+        setCodFilial(getScpRendicioncabecera().getCodFilial());
+        return this;
+    }
 
     public ScpRendiciondetalle() {
         setFecComprobante(new Timestamp(System.currentTimeMillis()));
         setFlgIm('1');
+        setCodFilial("01");
+        setCodCtaactividad("");
         setNumTcmo(0);
+        setNumHabermo(new BigDecimal(0));
         setNumHabersol(new BigDecimal(0));
         setNumDebesol(new BigDecimal(0));
         setNumHaberdolar(new BigDecimal(0));
@@ -189,10 +200,6 @@ public class ScpRendiciondetalle extends VsjItem {
         setNumHabermo(new BigDecimal(0));
         setNumDebemo(new BigDecimal(0));
     }
-
-
-
-
 
     public ScpRendiciondetallePK getId() {
         return id;
@@ -666,11 +673,11 @@ public class ScpRendiciondetalle extends VsjItem {
         this.cod_Tiporegistro = cod_Tiporegistro;
     }
 
-    public double getNumTcmc() {
+    public BigDecimal getNumTcmc() {
         return numTcmc;
     }
 
-    public void setNumTcmc(double numTcmc) {
+    public void setNumTcmc(BigDecimal numTcmc) {
         this.numTcmc = numTcmc;
     }
 
@@ -706,19 +713,19 @@ public class ScpRendiciondetalle extends VsjItem {
         this.fecAnticipo = fecAnticipo;
     }
 
-    public double getNumImporteanticipo() {
+    public BigDecimal getNumImporteanticipo() {
         return numImporteanticipo;
     }
 
-    public void setNumImporteanticipo(double numImporteanticipo) {
+    public void setNumImporteanticipo(BigDecimal numImporteanticipo) {
         this.numImporteanticipo = numImporteanticipo;
     }
 
-    public double getNumSumaanticipo() {
+    public BigDecimal getNumSumaanticipo() {
         return numSumaanticipo;
     }
 
-    public void setNumSumaanticipo(double numSumaanticipo) {
+    public void setNumSumaanticipo(BigDecimal numSumaanticipo) {
         this.numSumaanticipo = numSumaanticipo;
     }
 
@@ -730,11 +737,11 @@ public class ScpRendiciondetalle extends VsjItem {
         this.fecRendicion = fecRendicion;
     }
 
-    public double getNumSaldo() {
+    public BigDecimal getNumSaldo() {
         return numSaldo;
     }
 
-    public void setNumSaldo(double numSaldo) {
+    public void setNumSaldo(BigDecimal numSaldo) {
         this.numSaldo = numSaldo;
     }
 
@@ -795,15 +802,12 @@ public class ScpRendiciondetalle extends VsjItem {
                 Double.compare(that.numTcvdolar, numTcvdolar) == 0 &&
                 Double.compare(that.porIgv, porIgv) == 0 &&
                 Double.compare(that.porIes, porIes) == 0 &&
-                Double.compare(that.numTcmc, numTcmc) == 0 &&
-                Double.compare(that.numImporteanticipo, numImporteanticipo) == 0 &&
-                Double.compare(that.numSumaanticipo, numSumaanticipo) == 0 &&
-                Double.compare(that.numSaldo, numSaldo) == 0 &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(codFilial, that.codFilial) &&
                 Objects.equals(codOrigen, that.codOrigen) &&
                 Objects.equals(codComprobante, that.codComprobante) &&
                 Objects.equals(fecComprobante, that.fecComprobante) &&
+                Objects.equals(codTipomov, that.codTipomov) &&
                 Objects.equals(txtGlosaitem, that.txtGlosaitem) &&
                 Objects.equals(codDestino, that.codDestino) &&
                 Objects.equals(txtCheque, that.txtCheque) &&
@@ -857,18 +861,22 @@ public class ScpRendiciondetalle extends VsjItem {
                 Objects.equals(flgDistribuir, that.flgDistribuir) &&
                 Objects.equals(flgDistribuido, that.flgDistribuido) &&
                 Objects.equals(cod_Tiporegistro, that.cod_Tiporegistro) &&
+                Objects.equals(numTcmc, that.numTcmc) &&
                 Objects.equals(numDebemc, that.numDebemc) &&
                 Objects.equals(numHabermc, that.numHabermc) &&
                 Objects.equals(txtNombreactividad, that.txtNombreactividad) &&
                 Objects.equals(fecAnticipo, that.fecAnticipo) &&
+                Objects.equals(numImporteanticipo, that.numImporteanticipo) &&
+                Objects.equals(numSumaanticipo, that.numSumaanticipo) &&
                 Objects.equals(fecRendicion, that.fecRendicion) &&
+                Objects.equals(numSaldo, that.numSaldo) &&
                 Objects.equals(flgIm, that.flgIm) &&
                 Objects.equals(scpRendicioncabecera, that.scpRendicioncabecera);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, codFilial, codOrigen, codComprobante, fecComprobante, txtGlosaitem, codDestino, txtCheque, flgChequecobrado, codMescobr, codTipocomprobantepago, txtRefcomprobantepago, txtRefseriecomprobantepago, txtSeriecomprobantepago, txtComprobantepago, fecComprobantepago, codEvento, numRefnroitem, fecRefcomprobante, codProyecto, codRefcomprobante, codReforigen, codReftipocomprobantepago, codRegistrocompraventa, fecPagocomprobantepago, fecRefcomprobantepago, codCtaactividad, codCtaarea, codCtacontable, codCtacontable79, codCtacontable9, codCtaespecial, codCtaproyecto, codFinanciera, codFlujocaja, numTcmo, numTcvdolar, numDebedolar, numDebemo, numDebesol, numHaberdolar, numHabermo, numHabersol, codMonedaoriginal, flgTcreferencia, flgConversion, codPais, codDepartamento, flgRecuperaigv, porIgv, porIes, numNroitem2, codContraparte, txtNroretencion, fecRetencion, flgEsactivo, txt_Nrocompsujnodomi, flg_Retienecuarta, codGastofijo, flgDistribuir, flgDistribuido, cod_Tiporegistro, numTcmc, numDebemc, numHabermc, txtNombreactividad, fecAnticipo, numImporteanticipo, numSumaanticipo, fecRendicion, numSaldo, flgIm, scpRendicioncabecera);
+        return Objects.hash(id, codFilial, codOrigen, codComprobante, fecComprobante, codTipomov, txtGlosaitem, codDestino, txtCheque, flgChequecobrado, codMescobr, codTipocomprobantepago, txtRefcomprobantepago, txtRefseriecomprobantepago, txtSeriecomprobantepago, txtComprobantepago, fecComprobantepago, codEvento, numRefnroitem, fecRefcomprobante, codProyecto, codRefcomprobante, codReforigen, codReftipocomprobantepago, codRegistrocompraventa, fecPagocomprobantepago, fecRefcomprobantepago, codCtaactividad, codCtaarea, codCtacontable, codCtacontable79, codCtacontable9, codCtaespecial, codCtaproyecto, codFinanciera, codFlujocaja, numTcmo, numTcvdolar, numDebedolar, numDebemo, numDebesol, numHaberdolar, numHabermo, numHabersol, codMonedaoriginal, flgTcreferencia, flgConversion, codPais, codDepartamento, flgRecuperaigv, porIgv, porIes, numNroitem2, codContraparte, txtNroretencion, fecRetencion, flgEsactivo, txt_Nrocompsujnodomi, flg_Retienecuarta, codGastofijo, flgDistribuir, flgDistribuido, cod_Tiporegistro, numTcmc, numDebemc, numHabermc, txtNombreactividad, fecAnticipo, numImporteanticipo, numSumaanticipo, fecRendicion, numSaldo, flgIm, scpRendicioncabecera);
     }
 
     @Override
@@ -946,7 +954,6 @@ public class ScpRendiciondetalle extends VsjItem {
                 ", fecRendicion=" + fecRendicion +
                 ", numSaldo=" + numSaldo +
                 ", flgIm=" + flgIm +
-                ", scpRendicioncabecera=" + scpRendicioncabecera +
                 '}';
     }
 

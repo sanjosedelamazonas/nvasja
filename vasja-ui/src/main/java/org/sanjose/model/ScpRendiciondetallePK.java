@@ -17,12 +17,12 @@ public class ScpRendiciondetallePK implements Serializable {
     private int codRendicioncabecera;
 
     @Column(name = "num_nroitem")
-    private long numNroitem;
+    private Long numNroitem;
 
     public ScpRendiciondetallePK() {
     }
 
-    public long getNumNroitem() {
+    public Long getNumNroitem() {
         return this.numNroitem;
     }
 
