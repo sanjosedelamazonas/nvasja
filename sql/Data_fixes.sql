@@ -10,20 +10,33 @@ update [SCP].[dbo].[scp_cajabanco]  set cod_destino='10053444348' where cod_dest
 update [SCP].[dbo].[scp_cajabanco] set cod_destino='V090' FROM [SCP].[dbo].[scp_cajabanco]  where cod_destino in (SELECT sc.cod_destino FROM scp_cajabanco sc LEFT JOIN scp_destino sd on sc.cod_destino = sd.cod_destino WHERE sd.cod_destino IS NULL);
 
 
- update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V090'  where cod_destino='45604121';
- update [SCP].[dbo].[scp_bancodetalle] set cod_destino='05344434'  where cod_destino='V057';
-  update [SCP].[dbo].[scp_bancodetalle] set cod_destino='10053714841'  where cod_destino='V046';
-   update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V022'  where cod_destino='179';
-   update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100017491'  where cod_destino='2010017491';
-   update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V345'  where cod_destino='125';
-    update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V268'  where cod_destino='V90';
-  update [SCP].[dbo].[scp_bancodetalle] set cod_destino='05311887'  where cod_destino='291';
-    update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100043140'  where cod_destino='40519799';
-	  update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100043140'  where cod_destino='';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V090'  where cod_destino='45604121';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='05344434'  where cod_destino='V057';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='10053714841'  where cod_destino='V046';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V022'  where cod_destino='179';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100017491'  where cod_destino='2010017491';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V345'  where cod_destino='125';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='V268'  where cod_destino='V90';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='05311887'  where cod_destino='291';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100043140'  where cod_destino='40519799';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100043140'  where cod_destino='';
+update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100043140'  where cod_destino in ('167','20493573643','V128');
 
-  update [SCP].[dbo].[scp_bancodetalle] set cod_destino='20100043140'  where cod_destino in ('167','20493573643','V128');
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='V090'  where cod_destino='45604121';
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='05344434'  where cod_destino='V057';
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='10053714841'  where cod_destino='V046';
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='V022'  where cod_destino='179';
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='20100017491'  where cod_destino='2010017491';
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='V345'  where cod_destino='125';
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='V268'  where cod_destino='V90';
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='05311887'  where cod_destino='291';
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='20100043140'  where cod_destino='40519799';
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='20100043140'  where cod_destino='';
+update [SCP].[dbo].[scp_bancocabecera] set cod_destino='20100043140'  where cod_destino in ('167','20493573643','V128');
 
-
+update [SCP].[dbo].[scp_plancontable] set ind_tipomoneda='N' where cod_ctacontable in ('1040101','1040102','1040103','1040104','1040201') and txt_anoproceso='2014';
+update [SCP].[dbo].[scp_plancontable] set ind_tipomoneda='D' where cod_ctacontable in ('1040105','1040202') and txt_anoproceso='2014';
+update [SCP].[dbo].[scp_plancontable] set ind_tipomoneda='E'  where cod_ctacontable in ('1060104','1060105') and txt_anoproceso='2014';
 
   --------------------------------------CONFIGURACION ----------------------
    update [SCP].[dbo].[scp_plancontable]
