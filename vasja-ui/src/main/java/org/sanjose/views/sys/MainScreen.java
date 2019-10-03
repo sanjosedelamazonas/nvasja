@@ -75,12 +75,12 @@ public class MainScreen extends HorizontalLayout {
         if (Role.isBanco()) {
             bancoOperView.init();
             menu.addSeparator("Banco");
-/*            menu.addView(bancoOperView, BancoOperView.VIEW_NAME,
-                    BancoOperView.VIEW_NAME, FontAwesome.EDIT);*/
             menu.addView(bancoManejoView, BancoManejoView.VIEW_NAME,
                     BancoManejoView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(bancoConciliacionView, BancoConciliacionView.VIEW_NAME,
                     BancoConciliacionView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(bancoOperView, BancoOperView.VIEW_NAME,
+                    BancoOperView.VIEW_NAME, FontAwesome.EDIT);
         }
         if (Role.isPrivileged()) {
             menu.addView(bancoOperacionesView, BancoOperacionesView.VIEW_NAME,

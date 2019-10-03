@@ -30,6 +30,7 @@ public class BancoManejoUI extends VerticalLayout {
     protected Button btnReporte;
     protected VerticalLayout espacio;
     protected ComboBox selFiltroCuenta;
+    protected Button btnMarcarCobrado;
     protected Button btnNuevoCheque;
     protected Grid gridBanco;
     protected Button btnImprimir;

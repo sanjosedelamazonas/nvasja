@@ -1,15 +1,12 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.addon.contextmenu.GridContextMenu;
-import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Grid;
-import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
@@ -17,19 +14,15 @@ import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.VsjCajaBancoItem;
-import org.sanjose.model.VsjItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.sys.SaldoDelDia;
 
-import javax.swing.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.*;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -66,6 +59,14 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
             ReportHelper.generateDiarioBanco(view.getSelRepMoneda().getValue().toString().charAt(0),
                     view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
         });
+
+        view.getBtnDetallesSaldos().addClickListener(e -> {
+            setSaldos(view.getSaldosView().getGridSaldoInicial(), true);
+            setSaldos(view.getSaldosView().getGridSaldoFinal(), false);
+            setSaldoDelDia();
+            ViewUtil.openCajaSaldosInNewWindow(view.getSaldosView(), view.getFechaDesde().getValue(), view.getFechaHasta().getValue());
+        });
+
 
         view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
@@ -194,19 +195,19 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
         DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
                 null, ConfigurationUtil.get("DECIMAL_FORMAT"));
         // PEN
-       /* view.getValSolEgr().setValue(dpf.format(totalSolesDiaEgr.doubleValue()));
-        view.getValSolIng().setValue(dpf.format(totalSolesDiaIng.doubleValue()));
-        view.getValSolSaldo().setValue(dpf.format(totalSolesDiaIng.subtract(totalSolesDiaEgr).doubleValue()));
+        view.getSaldosView().getValSolEgr().setValue(dpf.format(totalSolesDiaEgr.doubleValue()));
+        view.getSaldosView().getValSolIng().setValue(dpf.format(totalSolesDiaIng.doubleValue()));
+        view.getSaldosView().getValSolSaldo().setValue(dpf.format(totalSolesDiaIng.subtract(totalSolesDiaEgr).doubleValue()));
         // USD
-        view.getValDolEgr().setValue(dpf.format(totalUsdDiaEgr.doubleValue()));
-        view.getValDolIng().setValue(dpf.format(totalUsdDiaIng.doubleValue()));
-        view.getValDolSaldo().setValue(dpf.format(totalUsdDiaIng.subtract(totalUsdDiaEgr).doubleValue()));
+        view.getSaldosView().getValDolEgr().setValue(dpf.format(totalUsdDiaEgr.doubleValue()));
+        view.getSaldosView().getValDolIng().setValue(dpf.format(totalUsdDiaIng.doubleValue()));
+        view.getSaldosView().getValDolSaldo().setValue(dpf.format(totalUsdDiaIng.subtract(totalUsdDiaEgr).doubleValue()));
         // EUR
-        view.getValEuroEgr().setValue(dpf.format(totalEurosDiaEgr.doubleValue()));
-        view.getValEuroIng().setValue(dpf.format(totalEurosDiaIng.doubleValue()));
-        view.getValEuroSaldo().setValue(dpf.format(totalEurosDiaIng.subtract(totalEurosDiaEgr).doubleValue()));
+        view.getSaldosView().getValEurEgr().setValue(dpf.format(totalEurosDiaEgr.doubleValue()));
+        view.getSaldosView().getValEurIng().setValue(dpf.format(totalEurosDiaIng.doubleValue()));
+        view.getSaldosView().getValEurSaldo().setValue(dpf.format(totalEurosDiaIng.subtract(totalEurosDiaEgr).doubleValue()));
 
-        view.gridSaldoDelDia.setColumnExpandRatio(0, 0);*/
+        view.getSaldosView().getGridSaldoDelDia().setColumnExpandRatio(0, 0);
     }
 
     @Override

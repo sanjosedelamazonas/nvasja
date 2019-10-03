@@ -3,14 +3,10 @@ package org.sanjose.views.rendicion;
 import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.sort.Sort;
 import com.vaadin.data.sort.SortOrder;
-import com.vaadin.external.org.slf4j.Logger;
-import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.Grid;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
@@ -72,7 +68,7 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
         view.clearSelection();
         MainUI.get().getRendicionOperView().getViewLogic().nuevaRendicion();
         MainUI.get().getRendicionOperView().getViewLogic().setNavigatorView(view);
-        ViewUtil.openRendicionInNewWindow(MainUI.get().getRendicionOperView());
+        ViewUtil.openViewInNewWindow(MainUI.get().getRendicionOperView());
         //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
@@ -88,7 +84,7 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
         if (vcb==null) return;
         //MainUI.get().getRendicionOperView().setNavigatorView(view);
         MainUI.get().getRendicionOperView().getViewLogic().editarRendicion(vcb);
-        ViewUtil.openRendicionInNewWindow(MainUI.get().getRendicionOperView());
+        ViewUtil.openViewInNewWindow(MainUI.get().getRendicionOperView());
     }
 
     // Realize logic from View

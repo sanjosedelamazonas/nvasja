@@ -17,6 +17,7 @@ import org.sanjose.model.ScpBancodetallePK;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
+import org.sanjose.views.sys.SubWindowing;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
@@ -33,7 +34,7 @@ import static org.sanjose.util.GenUtil.USD;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class BancoOperView extends BancoOperUI implements Viewing {
+public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing {
 
     public static final String VIEW_NAME = "Cheques";
     public String getWindowTitle() {
@@ -71,6 +72,7 @@ public class BancoOperView extends BancoOperUI implements Viewing {
     private BeanItemContainer<ScpBancodetalle> container;
     private GeneratedPropertyContainer gpContainer;
     private BancoService bancoService;
+    private Window subWindow;
 
     public BancoOperView() {
     }
@@ -414,5 +416,15 @@ public class BancoOperView extends BancoOperUI implements Viewing {
 
     public BancoLogic getViewLogic() {
         return viewLogic;
+    }
+
+    @Override
+    public Window getSubWindow() {
+        return subWindow;
+    }
+
+    @Override
+    public void setSubWindow(Window subWindow) {
+        this.subWindow = subWindow;
     }
 }

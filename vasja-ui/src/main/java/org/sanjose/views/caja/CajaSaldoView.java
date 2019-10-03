@@ -94,8 +94,12 @@ public class CajaSaldoView extends CajaSaldoUI {
         return gridSaldoInicial;
     }
 
-    public Grid getGridSaldoFInal() {
-        return gridSaldoFInal;
+    public Grid getGridSaldoFinal() {
+        return gridSaldoFinal;
+    }
+
+    public GridLayout getGridSaldoDelDia() {
+        return gridSaldoDelDia;
     }
 
     public Window getSubWindow() {

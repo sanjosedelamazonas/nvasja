@@ -146,7 +146,8 @@ public class BancoLogic extends BancoItemLogic {
     public void cerrarAlManejo() {
         if (navigatorView == null) navigatorView = MainUI.get().getBancoManejoView();
         navigatorView.refreshData();
-        MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
+        view.getSubWindow().close();
+        //MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
 
     private void bindForm(ScpBancocabecera item) {

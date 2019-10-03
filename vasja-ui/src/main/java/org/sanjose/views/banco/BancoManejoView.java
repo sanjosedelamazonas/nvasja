@@ -6,10 +6,8 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.MainUI;
@@ -18,6 +16,7 @@ import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.util.*;
+import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.Viewing;
@@ -72,6 +71,8 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
     public BancoManejoView(BancoService bancoService) {
         this.bancoService = bancoService;
     }
+
+    private CajaSaldoView saldosView = new CajaSaldoView();
 
     @Override
     public void init() {
@@ -133,7 +134,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
                 "txtDescctacontable");
-
+        selFiltroCuenta.setEnabled(true);
         selFiltroCuenta.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
                 container.removeContainerFilters("codCtacontable");
@@ -168,8 +169,8 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         selRepMoneda.setNullSelectionAllowed(false);
 
         viewLogic.init(this);
- /*       viewLogic.setSaldos(gridSaldoInicial, true);
-        viewLogic.setSaldos(gridSaldoFInal, false);*/
+        viewLogic.setSaldos(getSaldosView().getGridSaldoInicial(), true);
+        viewLogic.setSaldos(getSaldosView().getGridSaldoFinal(), false);
     }
 
     @Override
@@ -213,6 +214,10 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
     public BancoService getService() {
         return bancoService;
+    }
+
+    public Button getBtnMarcarCobrado() {
+        return btnMarcarCobrado;
     }
 
    /* public Label getValSolIng() {
@@ -273,4 +278,21 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
     public void setFilterInitialDate(Date fecha) {
         this.filterInitialDate = fecha;
     }
+
+    public Button getBtnDetallesSaldos() {
+        return btnDetallesSaldos;
+    }
+
+    public CajaSaldoView getSaldosView() {
+        return saldosView;
+    }
+
+    public DateField getFechaDesde() {
+        return fechaDesde;
+    }
+
+    public DateField getFechaHasta() {
+        return fechaHasta;
+    }
+
 }

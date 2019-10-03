@@ -16,6 +16,7 @@ import org.sanjose.model.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.SubWindowing;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
@@ -37,7 +38,7 @@ import static org.sanjose.util.GenUtil.USD;
  * See also ... for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class RendicionOperView extends RendicionOperUI implements Viewing {
+public class RendicionOperView extends RendicionOperUI implements Viewing, SubWindowing {
 
     public static final String VIEW_NAME = "Rendiciones";
     public String getWindowTitle() {
@@ -425,10 +426,12 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         return viewLogic;
     }
 
+    @Override
     public Window getSubWindow() {
         return subWindow;
     }
 
+    @Override
     public void setSubWindow(Window subWindow) {
         this.subWindow = subWindow;
     }

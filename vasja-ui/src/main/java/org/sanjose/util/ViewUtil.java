@@ -27,6 +27,7 @@ import org.sanjose.views.caja.*;
 import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
+import org.sanjose.views.sys.SubWindowing;
 
 import javax.print.PrintException;
 import java.math.BigDecimal;
@@ -418,34 +419,19 @@ public class ViewUtil {
         UI.getCurrent().addWindow(subWindow);
     }
 
-    public static void openRendicionInNewWindow(RendicionOperView component) {
+    public static void openViewInNewWindow(SubWindowing component) {
         Window subWindow = new Window();
         subWindow.setWindowMode(WindowMode.NORMAL);
-        int width = 1368;
-        int height = 768;
-//        int height = component instanceof TransferenciaView ? 600 : 630;
-//        String caption = component instanceof TransferenciaView ? "Cargo/Abono" : "Comprobante";
-        subWindow.setWidthUndefined();
-        subWindow.setHeightUndefined();
-        subWindow.setWidth(width, Sizeable.Unit.PIXELS);
-        subWindow.setHeight(height, Sizeable.Unit.PIXELS);
+        subWindow.setWidth(100, Sizeable.Unit.PERCENTAGE);
+        subWindow.setHeight(100, Sizeable.Unit.PERCENTAGE);
         subWindow.setModal(true);
         subWindow.setContent((Component)component);
         if (!ConfigurationUtil.is("DEV_MODE"))
             subWindow.setClosable(false);
         subWindow.setDraggable(true);
         component.setSubWindow(subWindow);
-
         //subWindow.setCaption(caption);
         //component.setSubWindow(subWindow);
-        // Don't show navigation buttons if opened in subwindow Nuevo Comprobante
-//        if (component instanceof ComprobanteView) {
-//            component.getNuevoComprobante().setVisible(false);
-//            component.getModificarBtn().setVisible(false);
-//            component.getCerrarBtn().setVisible(false);
-//        } else {
-//            ((TransferenciaView)component).getNuevaTransBtn().setVisible(false);
-//        }
         UI.getCurrent().addWindow(subWindow);
     }
 

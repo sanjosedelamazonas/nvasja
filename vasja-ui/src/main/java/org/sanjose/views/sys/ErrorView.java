@@ -12,7 +12,7 @@ import com.vaadin.ui.themes.Reindeer;
  * 
  * 
  */
-public class ErrorView extends VerticalLayout implements View {
+public class ErrorView extends VerticalLayout implements View, Viewing {
 
     private final Label explanation;
 
@@ -31,5 +31,15 @@ public class ErrorView extends VerticalLayout implements View {
         explanation.setValue(String.format(
                 "You tried to navigate to a view ('%s') that does not exist.",
                 event.getViewName()));
+    }
+
+    @Override
+    public void init() {
+
+    }
+
+    @Override
+    public String getWindowTitle() {
+        return "Error";
     }
 }

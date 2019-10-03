@@ -66,6 +66,10 @@ public class ScpRendicioncabecera extends VsjItem {
     @OneToMany(mappedBy = "scpRendicioncabecera")
     private List<ScpRendiciondetalle> scpRendiciondetalles;
 
+//    @ManyToOne(targetEntity = ScpDestino.class)
+//    @JoinColumn(name = "cod_destino", insertable = false, updatable = false)
+//    private ScpDestino scpDestino;
+
     public ScpRendicioncabecera() {
         setFecComprobante(new Timestamp(System.currentTimeMillis()));
         setFecFregistro(new Timestamp(System.currentTimeMillis()));

@@ -26,7 +26,7 @@ public class CajaSaldoUI extends VerticalLayout {
     protected VerticalLayout verticalSaldoInicial;
     protected Grid gridSaldoInicial;
     protected VerticalLayout verticalSaldoFinal;
-    protected Grid gridSaldoFInal;
+    protected Grid gridSaldoFinal;
     protected VerticalLayout verticalButtons;
     protected GridLayout gridSaldoDelDia;
     protected Label lblIng;

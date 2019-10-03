@@ -63,7 +63,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         view.getBtnReporteImprimirCaja().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.getFechaDesde().getValue(), view.getFechaHasta().getValue(), null));
         view.getBtnDetallesSaldos().addClickListener(e -> {
             setSaldos(saldosView.getGridSaldoInicial(), true);
-            setSaldos(saldosView.getGridSaldoFInal(), false);
+            setSaldos(saldosView.getGridSaldoFinal(), false);
             setSaldoDelDia();
             ViewUtil.openCajaSaldosInNewWindow(saldosView, view.getFechaDesde().getValue(), view.getFechaHasta().getValue());
         });
@@ -89,7 +89,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
                 }
             }
         });
-        setSaldos(saldosView.getGridSaldoFInal(), false);
+        setSaldos(saldosView.getGridSaldoFinal(), false);
     }
 
     private void generateComprobante() {
@@ -101,7 +101,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
     }
 
     public void setSaldosFinal() {
-        setSaldos(saldosView.getGridSaldoFInal(), false);
+        setSaldos(saldosView.getGridSaldoFinal(), false);
     }
 
     // Realize logic from View
