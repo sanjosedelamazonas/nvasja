@@ -503,7 +503,8 @@ public class ScpBancodetalle extends VsjBancoItem implements Serializable, Clone
 				", txtGlosaitem='" + txtGlosaitem + '\'' +
 				", txtSeriecomprobantepago='" + txtSeriecomprobantepago + '\'' +
 				", codTipomov=" + codTipomov +
-				", vsjBancocabecera=" + vsjBancocabecera +
+
+
 				'}';
 	}
 }

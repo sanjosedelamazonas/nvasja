@@ -9,7 +9,7 @@ import java.util.Objects;
  * The primary key class for the scp_comprobantedetalle database table.
  */
 @Embeddable
-public class ScpRendiciondetallePK implements Serializable {
+public class ScpRendiciondetallePK implements Serializable, Cloneable {
     //default serial version id, required for serializable classes.
     private static final long serialVersionUID = 14357658632554L;
 
