@@ -82,3 +82,15 @@ KIEDYS:
 - ekran comprobante guzik przy responsable y auxiliar powinien byc Nuevo (nie Edit) i powodowac dodanie nowego nie edycje
 - ekran manjeo de caja nie sumuje opercji w USD i Eur
 - ekran manejo de caja - po wyelimienowaniu/dodaniu comprobante w danej walucie i dacie powienien wracac do listy z focusem na tej operacji w tej walucie i dacie
+
+- en manejo de operaciones despues de enviar a contabilidad no muestra en el detalle que la operacion esta enviada (corregir dibujo enviado a contabilidad?)
+- nuevo cheque - ventana flotante, no toda la pantalla
+- manejo de cheques - suma en la tabla ingresos y egresos
+- manejo de cheques - filtr moneda nie dziala
+- manejo de cheques - nie potrzebne kolumny: auxiliar codigo,
+- manejjo de cheques - powinien chowac kolumny S/., USD, Eur w zaleznosci od moneda de cuenta
+-
+
+
+sonando para el futuro:
+1. Cuando envia a contabilidad y no hay tipo de cambo para el dia, lo premita anadir
