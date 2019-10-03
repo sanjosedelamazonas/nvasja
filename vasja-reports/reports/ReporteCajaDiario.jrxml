@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2018-10-26T00:47:12 -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCajaDiario" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="571" leftMargin="12" rightMargin="12" topMargin="12" bottomMargin="12" uuid="cbf7024d-2a36-4fa2-8a1d-19d9bb8950a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="271"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="192.168.1.114"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="vasjasqlserver"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
 	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
@@ -80,6 +79,10 @@
 	</parameter>
 	<parameter name="STR_FECHA_MIN" class="java.lang.String"/>
 	<parameter name="STR_FECHA_MAX" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="STR_SALDO_FECHA_MIN" class="java.lang.String"/>
+	<parameter name="STR_SALDO_FECHA_MAX" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false"/>
@@ -293,14 +296,14 @@
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/M/ yyyy">
+			<textField pattern="dd/MM/yyyy">
 				<reportElement x="267" y="36" width="73" height="22" uuid="d6ad3d03-193c-4907-af16-81c8c0802f06"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DIARIO_FECHA_MIN}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/M/ yyyy">
+			<textField pattern="dd/MM/yyyy">
 				<reportElement x="369" y="36" width="96" height="22" uuid="77258a7b-42c2-42ed-b918-372c4884b9d2"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
@@ -480,11 +483,11 @@
 				<text><![CDATA[Saldos finales de caja al]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="352" y="3" width="66" height="17" uuid="c0cedafa-a63c-4dd0-9095-9e9c40d0f946"/>
+				<reportElement x="352" y="3" width="50" height="17" uuid="c0cedafa-a63c-4dd0-9095-9e9c40d0f946"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{STR_FECHA_MAX}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{STR_SALDO_FECHA_MAX}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="88" y="3" width="69" height="17" uuid="dd2565cc-55fe-41af-94c5-568d073a464a"/>
@@ -498,7 +501,7 @@
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{STR_FECHA_MIN}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{STR_SALDO_FECHA_MIN}]]></textFieldExpression>
 			</textField>
 			<componentElement>
 				<reportElement x="73" y="20" width="340" height="30" isRemoveLineWhenBlank="true" uuid="94293a8a-9088-4062-977d-9ba71ef6233a">

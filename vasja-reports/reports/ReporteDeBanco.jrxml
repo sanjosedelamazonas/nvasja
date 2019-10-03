@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-03T12:12:14 -->
-<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="ReporteCuentaMulti" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814"
-              leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="10"
-              uuid="530bc955-f80a-423b-a66e-90376ac24862">
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteCuentaMulti" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="814" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="10" uuid="530bc955-f80a-423b-a66e-90376ac24862">
 	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="393"/>
@@ -44,58 +38,57 @@
 	<parameter name="ANO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT 
-  vsj_bancocabecera.cod_ctacontable AS cuenta_NUMERO,
+  scp_bancocabecera.cod_ctacontable AS cuenta_NUMERO,
   scp_plancontable.txt_descctacontable AS cuenta_NOMBRE,
-  vsj_bancodetalle.cod_bancocabecera AS cheque_ID,
-  vsj_bancocabecera.txt_correlativo AS cheque_CORRELATIVO,
-  vsj_bancocabecera.fec_fecha AS cheque_FECHA,
-  vsj_bancocabecera.num_debesol AS cheque_DEBESOL,
-  vsj_bancocabecera.num_habersol AS cheque_HABERSOL,
-  vsj_bancocabecera.num_debedolar AS cheque_DEBEDOLAR,
-  vsj_bancocabecera.num_haberdolar AS cheque_HABERDOLAR,
-  vsj_bancocabecera.num_debemo AS cheque_DEBEMO,
-  vsj_bancocabecera.num_habermo AS cheque_HABERMO,
-  vsj_bancocabecera.txt_cheque AS cheque_CHEQUENUMERO,
-  vsj_bancocabecera.flg_enviado AS cheque_ENVIADO,
-  vsj_bancodetalle.cod_proyecto AS operacion_PROYECTO,
-  vsj_bancodetalle.cod_tercero AS operacion_TERCERO,
-  vsj_bancodetalle.cod_financiera AS operacion_FINANCIERA,
-  vsj_bancodetalle.cod_ctaproyecto AS operacion_RUBRO_PROY,
-  vsj_bancodetalle.cod_contracta AS operacion_CTA_CONTABLE,
-  vsj_bancodetalle.cod_ctaespecial AS operacion_RUBRO_INST,
-  vsj_bancodetalle.cod_contraparte AS operacion_LUGAR_GASTO,
-  vsj_bancodetalle.txt_glosaitem AS operacion_DESCRIPCION,
-  vsj_bancodetalle.num_debesol AS operacion_DEBESOL,
-  vsj_bancodetalle.num_habersol AS operacion_HABERSOL,
-  vsj_bancodetalle.num_debedolar AS operacion_DEBEDOLAR,
-  vsj_bancodetalle.num_haberdolar AS operacion_HABERDOLAR, 
-  vsj_bancodetalle.num_debemo AS operacion_DEBEMO,
-  vsj_bancodetalle.num_habermo AS operacion_HABERMO,
-  vsj_bancodetalle.cod_tipomoneda AS banco_MONEDA,
+  scp_bancodetalle.cod_bancocabecera AS cheque_ID,
+  scp_bancocabecera.txt_correlativo AS cheque_CORRELATIVO,
+  scp_bancocabecera.fec_fecha AS cheque_FECHA,
+  scp_bancocabecera.num_debesol AS cheque_DEBESOL,
+  scp_bancocabecera.num_habersol AS cheque_HABERSOL,
+  scp_bancocabecera.num_debedolar AS cheque_DEBEDOLAR,
+  scp_bancocabecera.num_haberdolar AS cheque_HABERDOLAR,
+  scp_bancocabecera.num_debemo AS cheque_DEBEMO,
+  scp_bancocabecera.num_habermo AS cheque_HABERMO,
+  scp_bancocabecera.txt_cheque AS cheque_CHEQUENUMERO,
+  scp_bancocabecera.flg_enviado AS cheque_ENVIADO,
+  scp_bancodetalle.cod_proyecto AS operacion_PROYECTO,
+  scp_bancodetalle.cod_tercero AS operacion_TERCERO,
+  scp_bancodetalle.cod_financiera AS operacion_FINANCIERA,
+  scp_bancodetalle.cod_ctaproyecto AS operacion_RUBRO_PROY,
+  scp_bancodetalle.cod_contracta AS operacion_CTA_CONTABLE,
+  scp_bancodetalle.cod_ctaespecial AS operacion_RUBRO_INST,
+  scp_bancodetalle.cod_contraparte AS operacion_LUGAR_GASTO,
+  scp_bancodetalle.txt_glosaitem AS operacion_DESCRIPCION,
+  scp_bancodetalle.num_debesol AS operacion_DEBESOL,
+  scp_bancodetalle.num_habersol AS operacion_HABERSOL,
+  scp_bancodetalle.num_debedolar AS operacion_DEBEDOLAR,
+  scp_bancodetalle.num_haberdolar AS operacion_HABERDOLAR, 
+  scp_bancodetalle.num_debemo AS operacion_DEBEMO,
+  scp_bancodetalle.num_habermo AS operacion_HABERMO,
+  scp_bancodetalle.cod_tipomoneda AS banco_MONEDA,
   dest1.txt_nombredestino AS operacion_BENEFICIARIO,
   dest2.txt_nombredestino AS cheque_BENEFICIARIO,
   fun_scp_vsj_GetSaldosAlDiaBanco.saldo AS cuenta_SALDO  
 FROM
-	vsj_bancodetalle 
-	INNER JOIN vsj_bancocabecera ON vsj_bancodetalle.cod_bancocabecera = vsj_bancocabecera.cod_bancocabecera
-	INNER JOIN scp_plancontable ON vsj_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable
-	 AND vsj_bancocabecera.txt_anoproceso = scp_plancontable.txt_anoproceso
-	INNER JOIN scp_destino dest1 ON vsj_bancodetalle.cod_destino = dest1.cod_destino
-	INNER JOIN scp_destino dest2 ON vsj_bancocabecera.cod_destino = dest2.cod_destino
-  	INNER JOIN fun_scp_vsj_GetSaldosAlDiaBanco($P{STR_FECHA_MIN},$P{MONEDA}) ON vsj_bancocabecera.cod_ctacontable = fun_scp_vsj_GetSaldosAlDiaBanco.cuenta
+	scp_bancodetalle 
+	INNER JOIN scp_bancocabecera ON scp_bancodetalle.cod_bancocabecera = scp_bancocabecera.cod_bancocabecera
+	INNER JOIN scp_plancontable ON scp_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable 
+	INNER JOIN scp_destino dest1 ON scp_bancodetalle.cod_destino = dest1.cod_destino
+	INNER JOIN scp_destino dest2 ON scp_bancocabecera.cod_destino = dest2.cod_destino
+  	INNER JOIN fun_scp_vsj_GetSaldosAlDiaBanco($P{STR_FECHA_MIN},$P{MONEDA}) ON scp_bancocabecera.cod_ctacontable = fun_scp_vsj_GetSaldosAlDiaBanco.cuenta
 WHERE
 	scp_plancontable.txt_anoproceso = $P{ANO}
 AND
-     vsj_bancocabecera.fec_fecha BETWEEN 
+     scp_bancocabecera.fec_fecha BETWEEN 
      $P{STR_FECHA_MIN}
 AND 
     $P{STR_FECHA_MAX}
 AND
-	vsj_bancodetalle.cod_tipomoneda = $P{MONEDA}
+	scp_bancodetalle.cod_tipomoneda = $P{MONEDA}
 ORDER BY
      scp_plancontable.cod_ctacontable,
-     vsj_bancocabecera.txt_correlativo,
-     vsj_bancodetalle.num_item
+     scp_bancocabecera.txt_correlativo,
+     scp_bancodetalle.num_item
       ASC]]>
 	</queryString>
 	<field name="cuenta_NUMERO" class="java.lang.String"/>
@@ -201,7 +194,7 @@ ORDER BY
 				<staticText>
 					<reportElement x="590" y="2" width="60" height="13" uuid="515c9ab8-d490-4361-a1b9-5c71763d539a"/>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Calibri" isBold="false"/>
+						<font fontName="Arial" isBold="false"/>
 					</textElement>
 					<text><![CDATA[Total]]></text>
 				</staticText>

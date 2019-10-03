@@ -258,6 +258,11 @@ public class ReportHelper {
 		if (fechaMax!=null) paramMap.put("STR_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
 		logger.debug("STR_FECHA_MIN=" + paramMap.get("STR_FECHA_MIN"));
 		logger.debug("STR_FECHA_MAX=" + paramMap.get("STR_FECHA_MAX"));
+
+		sdf = new SimpleDateFormat("yyyy-MM-dd");
+		paramMap.put("STR_SALDO_FECHA_MIN", sdf.format(ConfigurationUtil.getBeginningOfDay(fechaMin)));
+		if (fechaMax!=null) paramMap.put("STR_SALDO_FECHA_MAX", sdf.format(ConfigurationUtil.getEndOfDay(fechaMax)));
+
 		MsgUsuario usuario = MainUI.get().getMsgUsuarioRep().findByTxtUsuario(CurrentUser.get());
 		paramMap.put("REPORTE_PREPARADO_POR", usuario.getTxtNombre());
 		paramMap.put("REPORTE_REVISADOR_POR", revisado);

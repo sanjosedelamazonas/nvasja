@@ -67,25 +67,29 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
             setSaldoDelDia();
             ViewUtil.openCajaSaldosInNewWindow(view.getSaldosView(), view.getFechaDesde().getValue(), view.getFechaHasta().getValue());
         });
+        view.getSaldosView().getBtnReporte().addClickListener(e -> {
+            ReportHelper.generateDiarioBanco(view.getSelRepMoneda().getValue().toString().charAt(0),
+                    view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
+        });
         view.getBtnMarcarCobrado().addClickListener(clickEvent -> { gridLogic.setMesCobrado(true); });
         view.getBtnMarcarNoCobrado().addClickListener(clickEvent -> { gridLogic.setMesCobrado(false); });
 
-        view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
-            @Override
-            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-            }
-
-            @Override
-            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                Object item = view.gridBanco.getContainerDataSource().getItem(view.gridBanco.getEditedItemId());
-                if (item != null) {
-                    ScpBancocabecera vcb = (ScpBancocabecera) ((BeanItem) item).getBean();
-                    vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
-                            .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
-                    view.getService().updateCobradoInCabecera(vcb);
-                }
-            }
-        });
+//        view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
+//            @Override
+//            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+//            }
+//
+//            @Override
+//            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+//                Object item = view.gridBanco.getContainerDataSource().getItem(view.gridBanco.getEditedItemId());
+//                if (item != null) {
+//                    ScpBancocabecera vcb = (ScpBancocabecera) ((BeanItem) item).getBean();
+//                    vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
+//                            .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
+//                    view.getService().updateCobradoInCabecera(vcb);
+//                }
+//            }
+//        });
 
         GridContextMenu gridContextMenu = new GridContextMenu(view.getGridBanco());
         gridContextMenu.addGridBodyContextMenuListener(e -> {
@@ -116,9 +120,10 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
             view.getNumSaldoFinalSegBancos().setValue("");
             view.getNumSaldoInicialLibro().setValue("");
             view.getNumSaldoInicialSegBancos().setValue("");
+        } else {
+            view.getNumSaldoInicialLibro().setValue(GenUtil.numFormat(DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaDesde().getValue())));
+            view.getNumSaldoFinalLibro().setValue(GenUtil.numFormat(DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaHasta().getValue())));
         }
-        view.getNumSaldoInicialLibro().setValue(GenUtil.numFormat(DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaDesde().getValue())));
-        view.getNumSaldoFinalLibro().setValue(GenUtil.numFormat(DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaHasta().getValue())));
     }
 
     public void setSaldos(Grid grid, boolean isInicial) {
