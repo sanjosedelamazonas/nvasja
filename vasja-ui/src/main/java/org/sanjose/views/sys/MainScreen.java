@@ -3,6 +3,7 @@ package org.sanjose.views.sys;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.CssLayout;
@@ -20,6 +21,7 @@ import org.sanjose.views.caja.*;
 import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,11 +52,15 @@ public class MainScreen extends HorizontalLayout {
 
         final Navigator navigator = new Navigator(ui, viewContainer);
         navigator.setErrorView(ErrorView.class);
+
+        List<View> viewsToIgnoreWhenInit = new ArrayList<>();
         menu = new Menu(navigator);
         if (Role.isCaja()) {
             menu.addSeparator("Caja");
             comprobanteView.init();
+            viewsToIgnoreWhenInit.add(comprobanteView);
             transferenciaView.init();
+            viewsToIgnoreWhenInit.add(transferenciaView);
 /*
             menu.addView(comprobanteView, ComprobanteView.VIEW_NAME,
                     ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
@@ -74,6 +80,7 @@ public class MainScreen extends HorizontalLayout {
 
         if (Role.isBanco()) {
             bancoOperView.init();
+            viewsToIgnoreWhenInit.add(bancoOperView);
             menu.addSeparator("Banco");
             menu.addView(bancoManejoView, BancoManejoView.VIEW_NAME,
                     BancoManejoView.VIEW_NAME, FontAwesome.EDIT);
@@ -93,6 +100,7 @@ public class MainScreen extends HorizontalLayout {
         }
         if (Role.isDigitador()) {
             rendicionOperView.init();
+            viewsToIgnoreWhenInit.add(rendicionOperView);
             menu.addSeparator("Rendiciones");
             menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
                     RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
@@ -117,7 +125,8 @@ public class MainScreen extends HorizontalLayout {
             printHelper.init();
 
         for (Viewing view : menu.getViews()) {
-            view.init();
+            if (!viewsToIgnoreWhenInit.contains(view))
+                view.init();
         }
         addComponent(menu);
         // Disable Menu for "Gilmer" and open Caja Manejo
