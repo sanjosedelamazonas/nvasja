@@ -159,7 +159,8 @@ public class RendicionService {
                 if (codTipoMov == null) {
                     throw new FieldGroup.CommitException("No se puede encontrar el Codigo Tipo Gasto (" + rendicionItem.getCodTipomov() + ") - por favor verifica la configuracion de Caja y Rendicions");
                 }
-                //rendicionItem.setCodTipogasto(codTipoMov.getCodTipocuenta());
+                //else if ((rendicionItem.getCodTipomov()>0)
+                //rendicionItem.set(codTipoMov.getCodTipocuenta());
             }
             //rendicionItem.setCodTipomoneda(moneda);
             rendicionItem.prepareToSave();

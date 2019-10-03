@@ -187,8 +187,8 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
         if (locMoneda == null) {
             //viewLogic.item.getCodTipomoneda()
             log.debug("in setSaldo - moneda = NULL");
-            saldoTotal.setValue("Total:" +
-                    "<span class=\"order-sum\"> S./ 0.00</span>");
+//            saldoTotal.setValue("Total:" +
+//                    "<span class=\"order-sum\"> S./ 0.00</span>");
             getMontoTotal().setValue("0.00");
             return;
         }
@@ -211,9 +211,9 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
         ViewUtil.alignMontosInGrid(gridBanco);
         getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
 
-        saldoTotal.setContentMode(ContentMode.HTML);
-        saldoTotal.setValue("Total:" +
-                "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)) + calcTotal(locMoneda).toString() + "</span>");
+//        saldoTotal.setContentMode(ContentMode.HTML);
+//        saldoTotal.setValue("Total:" +
+//                "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)) + calcTotal(locMoneda).toString() + "</span>");
         getMontoTotal().setValue(calcTotal(locMoneda).toString());
         getMontoTotal().setCaption("Total " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)));
     }
@@ -318,9 +318,9 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
         return numDoc;
     }
 
-    public Label getSaldoTotal() {
-        return saldoTotal;
-    }
+//    public Label getSaldoTotal() {
+//        return saldoTotal;
+//    }
 
     public Button getCerrarBtn() {
         return cerrarBtn;
@@ -408,6 +408,10 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
 
     public OptionGroup getTipoProyectoTercero() {
         return tipoProyectoTercero;
+    }
+
+    public HorizontalLayout getTopButtons() {
+        return topButtons;
     }
 
     @Override

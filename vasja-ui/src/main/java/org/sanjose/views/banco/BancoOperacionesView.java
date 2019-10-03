@@ -174,6 +174,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         });
         selFiltroCuenta.setPageLength(20);
         bancoOperView.init(MainUI.get().getBancoManejoView().getService());
+        // Make the top buttons panel invisible if in this grid view
+        bancoOperView.getTopButtons().setVisible(false);
         bancoOperView.getViewLogic().nuevoCheque();
         BancoOperacionesView bancoOperacionesView = this;
         gridBanco.addSelectionListener(new SelectionEvent.SelectionListener() {

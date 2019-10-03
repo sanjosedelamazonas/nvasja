@@ -87,10 +87,12 @@ public class BancoService {
         }
         bancoItem.setCodCtacontable(cabecera.getCodCtacontable());
         VsjConfiguractacajabanco codTipoMov = configuractacajabancoRepo.findById(bancoItem.getCodTipomov());
-        if (codTipoMov==null) {
+        if (bancoItem.getCodTipomov() > 0 && codTipoMov == null) {
             throw new FieldGroup.CommitException("No se puede encontrar el Codigo Tipo Gasto - por favor verifica la configuracion de Caja y Bancos");
         }
-        bancoItem.setCodTipogasto(codTipoMov.getCodTipocuenta());
+        if (bancoItem.getCodTipomov() > 0) {
+            bancoItem.setCodTipogasto(codTipoMov.getCodTipocuenta());
+        }
         bancoItem.setCodTipomoneda(moneda);
         bancoItem = bancoItem.prepareToSave();
         bancoItem.setFecFecha(cabecera.getFecFecha());

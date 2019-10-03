@@ -254,7 +254,7 @@ public class BancoLogic extends BancoItemLogic {
             view.setEnableCabezeraFields(true);
             view.setEnableDetalleFields(true);
         } catch (FieldGroup.CommitException ce) {
-            Notification.show("Error al guardar el cheque: \n" + GenUtil.genErrorMessage(ce.getInvalidFields()), Notification.Type.ERROR_MESSAGE);
+            Notification.show("Error al guardar el cheque: \n" + GenUtil.genErrorMessage(ce.getInvalidFields()) + "\n" + ce.getMessage(), Notification.Type.ERROR_MESSAGE);
             view.setEnableCabezeraFields(true);
             view.setEnableDetalleFields(true);
         } catch (RuntimeException re) {
