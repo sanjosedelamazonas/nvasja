@@ -253,7 +253,7 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         view.getGridCajaFooter().getCell("numDebemo").setText(df.format(sumDebemo));
         view.getGridCajaFooter().getCell("numHabermo").setText(df.format(sumHabermo));
 
-        Arrays.asList(new String[] { "numDebesol", "numDebesol", "numHabersol", "numDebedolar", "numDebemo", "numHabermo"})
+        Arrays.asList(new String[] { "numDebesol", "numHabersol", "numHaberdolar", "numDebedolar", "numDebemo", "numHabermo"})
                 .forEach( e -> view.getGridCajaFooter().getCell(e).setStyleName("v-align-right strong"));
     }
 

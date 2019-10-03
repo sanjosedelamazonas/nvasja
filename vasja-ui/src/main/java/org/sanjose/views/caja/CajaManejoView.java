@@ -10,6 +10,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import org.sanjose.model.ScpCajabanco;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
@@ -114,7 +115,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
                 container.removeContainerFilters("codTipomoneda");
                 container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
                 ViewUtil.filterColumnsByMoneda(gridCaja, moneda);
-
+                viewLogic.calcFooterSums();
                 DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
                         DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
                         "txtDescctacontable");
@@ -148,7 +149,6 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
         ViewUtil.colorizeRows(gridCaja);
 
         gridCajaFooter = gridCaja.appendFooterRow();
-        //viewLogic.calcFooterSums();
 
         // Set Saldos Inicial
         fechaDesde.addValueChangeListener(ev -> refreshCajas());
@@ -172,6 +172,16 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
     @Override
     public void selectMoneda(Character moneda) {
         selMoneda.select(moneda);
+    }
+
+    @Override
+    public void selectItem(VsjItem item) {
+        for (Object vcb : container.getItemIds()) {
+            if (((ScpCajabanco)vcb).getCodCajabanco().equals(((ScpCajabanco)item).getCodCajabanco())) {
+                gridCaja.select(vcb);
+                return;
+            }
+        }
     }
 
     @Override

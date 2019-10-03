@@ -15,6 +15,11 @@ public interface ScpPlancontableRep extends JpaRepository<ScpPlancontable, Long>
 			Character activa, Character mov, String ano, String codcta,
             Character activa2, Character mov2, String ano2, String codcta2);
 
+	List<ScpPlancontable> findByIndTipomonedaAndFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike (
+			Character moneda, Character activa, Character mov, String ano, String codcta,
+			Character activa2, Character mov2, String ano2, String codcta2);
+
+
 	List<ScpPlancontable> findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike(
 			Character mov, String ano, String codcta,
 			Character mov2, String ano2, String codcta2);

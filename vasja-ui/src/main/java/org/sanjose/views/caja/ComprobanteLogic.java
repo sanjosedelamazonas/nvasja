@@ -148,7 +148,10 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
 
             view.getNumVoucher().setValue(savedCajabanco.getTxtCorrelativo());
             view.refreshData(item.getCodTipomoneda());
+
             switchMode(Viewing.Mode.VIEW);
+            navigatorView.selectMoneda(savedCajabanco.getCodTipomoneda());
+            navigatorView.selectItem(savedCajabanco);
             // Open Comprobante only in Gilmer view
             if (view instanceof CajaManejoView) {
                 ViewUtil.printComprobante(savedCajabanco);

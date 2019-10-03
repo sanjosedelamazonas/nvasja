@@ -17,6 +17,7 @@ import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.GridViewing;
@@ -224,6 +225,11 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         SortOrder[] sortOrders = gridBanco.getSortOrder().toArray(new SortOrder[1]);
         filter(fechaDesde.getValue(), fechaHasta.getValue());
         gridBanco.setSortOrder(Arrays.asList(sortOrders));
+    }
+
+    @Override
+    public void selectItem(VsjItem item) {
+        gridBanco.select(item);
     }
 
     @Override

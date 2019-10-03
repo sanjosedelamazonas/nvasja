@@ -17,6 +17,7 @@ import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpPlancontable;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
@@ -43,24 +44,24 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
     private final BancoManejoLogic viewLogic = new BancoManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
             "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
-            "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
+            "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula", "codBancocabecera"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
             "Cobr", "Fecha", "Numero", "Cuenta",
-            "Auxiliar", "Nombre", "Cheque", "Glosa",
+            "Nombre", "Cheque", "Glosa",
             "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
             "Orig", "Comprob.", "Env", "Anul", "Codigo"
     };
     private final int[] FILTER_WIDTH = new int[]{
             1, 4, 4, 4,
-            6, 10, 4, 12,
+            10, 4, 12,
             3, 3, 3, 3, 3, 3,
             1, 4, 1, 1, 4
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codCtacontable",
-            "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
+            "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula", "codBancocabecera"};
 
@@ -75,6 +76,10 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
     }
 
     private CajaSaldoView saldosView = new CajaSaldoView();
+
+    private Character moneda = GenUtil.PEN;
+
+    public Grid.FooterRow gridFooter;
 
     @Override
     public void init() {
@@ -107,6 +112,8 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
         gridBanco.getColumn("txtGlosa").setMaximumWidth(400);
 
+        gridBanco.getColumn("scpDestino.txtNombredestino").setMaximumWidth(200);
+
         CssCheckBox cobradoChkBox = new CssCheckBox();
         cobradoChkBox.setSimpleMode(false);
         cobradoChkBox.setAnimated(false);
@@ -135,31 +142,6 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
         ViewUtil.colorizeRows(gridBanco, ScpBancocabecera.class);
 
-        DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
-                DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
-                "txtDescctacontable");
-        selFiltroCuenta.setEnabled(true);
-        selFiltroCuenta.addValueChangeListener(e -> {
-            if (e.getProperty().getValue() != null) {
-                container.removeContainerFilters("codCtacontable");
-                container.addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
-                ScpPlancontable cuenta = getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
-                        GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
-                selRepMoneda.select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
-                ViewUtil.filterColumnsByMoneda(gridBanco, GenUtil.getNumMoneda(cuenta.getIndTipomoneda()).charValue());
-                gridBanco.getColumn("txtGlosa").setMaximumWidth(500);
-                viewLogic.setSaldoCuenta(cuenta);
-            } else {
-                container.removeContainerFilters("codCtacontable");
-                selRepMoneda.select('0');
-                ViewUtil.filterColumnsByMoneda(gridBanco, 'A');
-                gridBanco.getColumn("txtGlosa").setMaximumWidth(400);
-                viewLogic.setSaldoCuenta(null);
-            }
-            viewLogic.setSaldoDelDia();
-        });
-        selFiltroCuenta.setPageLength(20);
-
 /*        // Set Saldos Inicial
         fechaDesde.addValueChangeListener(ev -> {
             viewLogic.setSaldos(gridSaldoInicial, true);
@@ -173,6 +155,51 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
         selRepMoneda.select('0');
         selRepMoneda.setNullSelectionAllowed(false);
+
+        DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "cod_tipomoneda", "Moneda", false);
+        selRepMoneda.select(moneda);
+        ViewUtil.filterColumnsByMoneda(gridBanco, moneda);
+
+        selRepMoneda.setNullSelectionAllowed(false);
+        selRepMoneda.addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                moneda = (Character)e.getProperty().getValue();
+                container.removeContainerFilters("codTipomoneda");
+                container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
+                ViewUtil.filterColumnsByMoneda(gridBanco, moneda);
+                viewLogic.calcFooterSums();
+                DataFilterUtil.refreshComboBox(selFiltroCuenta, "id.codCtacontable",
+                        DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
+                        "txtDescctacontable");
+            }
+            viewLogic.setSaldoDelDia();
+        });
+
+        DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
+                DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
+                "txtDescctacontable");
+        selFiltroCuenta.setEnabled(true);
+        selFiltroCuenta.addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                container.removeContainerFilters("codCtacontable");
+                container.addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
+                ScpPlancontable cuenta = getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
+                        GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
+                //selRepMoneda.select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+                gridBanco.getColumn("txtGlosa").setMaximumWidth(500);
+                viewLogic.calcFooterSums();
+                viewLogic.setSaldoCuenta(cuenta);
+            } else {
+                container.removeContainerFilters("codCtacontable");
+                ViewUtil.filterColumnsByMoneda(gridBanco, moneda);
+                gridBanco.getColumn("txtGlosa").setMaximumWidth(400);
+                viewLogic.setSaldoCuenta(null);
+            }
+            viewLogic.setSaldoDelDia();
+        });
+        selFiltroCuenta.setPageLength(20);
+
+        gridFooter = gridBanco.appendFooterRow();
 
         viewLogic.init(this);
         viewLogic.setSaldos(getSaldosView().getGridSaldoInicial(), true);
@@ -192,6 +219,11 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         SortOrder[] sortOrders = gridBanco.getSortOrder().toArray(new SortOrder[1]);
         filter(fechaDesde.getValue(), fechaHasta.getValue());
         gridBanco.setSortOrder(Arrays.asList(sortOrders));
+    }
+
+    @Override
+    public void selectItem(VsjItem item) {
+        gridBanco.select(item);
     }
 
     @Override
@@ -329,4 +361,11 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         return btnMarcarNoCobrado;
     }
 
+    public BeanItemContainer<ScpBancocabecera> getContainer() {
+        return container;
+    }
+
+    public Grid.FooterRow getGridFooter() {
+        return gridFooter;
+    }
 }

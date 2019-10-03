@@ -291,6 +291,11 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
     }
 
     @Override
+    public void selectItem(VsjItem item) {
+        gridBanco.select(item);
+    }
+
+    @Override
     public void selectMoneda(Character moneda) {
         // Not implemented here
     }

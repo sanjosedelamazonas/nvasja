@@ -11,6 +11,7 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import org.sanjose.MainUI;
 import org.sanjose.model.ScpCajabanco;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
@@ -160,11 +161,19 @@ public class CajaOperacionesView extends CajaOperacionesUI implements CajaManejo
         viewLogic.init(this);
 
         btnEnviarContabilidad.addClickListener(e -> {
+            ScpCajabanco item = null;
             if (!getSelectedRows().isEmpty()) {
+                item = getSelectedRow();
                 viewLogic.enviarContabilidad(getSelectedRow());
                 refreshData();
+                for (Object vcb : container.getItemIds()) {
+                    if (((ScpCajabanco)vcb).getCodCajabanco().equals(((ScpCajabanco)item).getCodCajabanco())) {
+                        viewLogic.editarComprobante((ScpCajabanco)vcb);
+                    }
+                }
                 gridCaja.deselectAll();
             }
+
         });
     }
 
@@ -179,6 +188,12 @@ public class CajaOperacionesView extends CajaOperacionesUI implements CajaManejo
     public void refreshData() {
         viewLogic.refreshData();
     }
+
+    @Override
+    public void selectItem(VsjItem item) {
+        gridCaja.select(item);
+    }
+
 
     @Override
     public void selectMoneda(Character moneda) {

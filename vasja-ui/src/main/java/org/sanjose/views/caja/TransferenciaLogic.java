@@ -191,7 +191,10 @@ public class TransferenciaLogic extends ComprobanteLogic {
         tView.getContainer().removeAllItems();
         tView.getContainer().addAll(savedOperaciones);
         view.refreshData(moneda);
+        navigatorView.selectMoneda(moneda);
         state.save();
+        if (!savedOperaciones.isEmpty())
+            navigatorView.selectItem(savedOperaciones.get(0));
         switchMode(Viewing.Mode.VIEW);
     }
 

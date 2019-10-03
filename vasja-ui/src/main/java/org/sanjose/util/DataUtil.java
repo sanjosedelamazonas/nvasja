@@ -100,7 +100,7 @@ public class DataUtil {
 
     public static List<Caja> getBancoCuentasList(ScpPlancontableRep planRepo, Date date) {
         List<Caja> cajas = new ArrayList<>();
-        for (ScpPlancontable caja : getBancoCuentas(date, planRepo)) {
+        for (ScpPlancontable caja : getBancoCuentas(date, planRepo, null)) {
             Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
             if (moneda.equals('9')) {
                 // Problem - TipoMoneda not set
@@ -202,8 +202,17 @@ public class DataUtil {
     }
 
     public static List<ScpPlancontable> getBancoCuentas(Date ano, ScpPlancontableRep planRepo) {
-        return planRepo.findByFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike(
+        return getBancoCuentas(ano, planRepo, null);
+    }
+
+    public static List<ScpPlancontable> getBancoCuentas(Date ano, ScpPlancontableRep planRepo, Character moneda) {
+        if (moneda==null)
+            return planRepo.findByFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike(
                 '0','N', GenUtil.getYear(ano), "104%",
                 '0','N', GenUtil.getYear(ano), "106%");
+        else
+            return planRepo.findByIndTipomonedaAndFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike(
+                    GenUtil.getLitMoneda(moneda),'0','N', GenUtil.getYear(ano), "104%",
+                    '0','N', GenUtil.getYear(ano), "106%");
     }
 }

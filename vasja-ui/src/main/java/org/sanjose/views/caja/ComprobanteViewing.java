@@ -1,6 +1,7 @@
 package org.sanjose.views.caja;
 
 import com.vaadin.ui.*;
+import org.sanjose.model.ScpCajabanco;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
 

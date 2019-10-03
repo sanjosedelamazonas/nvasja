@@ -13,6 +13,7 @@ import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.VsjCajaBancoItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
@@ -24,6 +25,9 @@ import org.sanjose.views.sys.SaldoDelDia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -229,6 +233,30 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
 
     @Override
     public void calcFooterSums() {
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        BigDecimal sumDebesol = new BigDecimal(0.00);
+        BigDecimal sumHabersol = new BigDecimal(0.00);
+        BigDecimal sumDebedolar = new BigDecimal(0.00);
+        BigDecimal sumHaberdolar = new BigDecimal(0.00);
+        BigDecimal sumDebemo = new BigDecimal(0.00);
+        BigDecimal sumHabermo = new BigDecimal(0.00);
+        for (ScpBancocabecera scp : view.getContainer().getItemIds()) {
+            sumDebesol = sumDebesol.add(scp.getNumDebesol());
+            sumHabersol = sumHabersol.add(scp.getNumHabersol());
+            sumDebedolar = sumDebedolar.add(scp.getNumDebedolar());
+            sumHaberdolar = sumHaberdolar.add(scp.getNumHaberdolar());
+            sumDebemo = sumDebemo.add(scp.getNumDebemo());
+            sumHabermo = sumHabermo.add(scp.getNumHabermo());
+        }
+        view.getGridFooter().getCell("numDebesol").setText(df.format(sumDebesol));
+        view.getGridFooter().getCell("numHabersol").setText(df.format(sumHabersol));
+        view.getGridFooter().getCell("numDebedolar").setText(df.format(sumDebedolar));
+        view.getGridFooter().getCell("numHaberdolar").setText(df.format(sumHaberdolar));
+        view.getGridFooter().getCell("numDebemo").setText(df.format(sumDebemo));
+        view.getGridFooter().getCell("numHabermo").setText(df.format(sumHabermo));
+
+        Arrays.asList(new String[] { "numDebesol", "numHabersol", "numHaberdolar", "numDebedolar", "numDebemo", "numHabermo"})
+                .forEach( e -> view.getGridFooter().getCell(e).setStyleName("v-align-right strong"));
     }
 
     public BancoGridLogic getGridLogic() {

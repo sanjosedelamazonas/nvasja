@@ -22,10 +22,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
-import org.sanjose.model.ScpCajabanco;
-import org.sanjose.model.ScpFinanciera;
-import org.sanjose.model.ScpPlanproyecto;
-import org.sanjose.model.Scp_ProyectoPorFinanciera;
+import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.views.sys.GridViewing;
@@ -296,6 +293,11 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
     @Override
     public void selectMoneda(Character moneda) {
         selMoneda.select(moneda);
+    }
+
+    @Override
+    public void selectItem(VsjItem item) {
+        gridCaja.select(item);
     }
 
     @Override

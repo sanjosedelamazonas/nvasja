@@ -12,6 +12,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpRendicioncabecera;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.GridViewing;
@@ -136,6 +137,12 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
     public void refreshData() {
         viewLogic.refreshData();
     }
+
+    @Override
+    public void selectItem(VsjItem item) {
+        gridCaja.select(item);
+    }
+
 
     @Override
     public void selectMoneda(Character moneda) {
