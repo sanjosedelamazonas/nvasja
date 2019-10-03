@@ -120,6 +120,8 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         gridCaja.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
         gridCaja.getColumn("flgEnviado").setHidden(true);
 
+        viewLogic.init(this);
+
         // Add filters
         ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
@@ -129,7 +131,6 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         ViewUtil.colorizeRowsRendiciones(gridCaja);
 
         gridFooter = gridCaja.appendFooterRow();
-        viewLogic.init(this);
     }
 
     public void refreshData() {

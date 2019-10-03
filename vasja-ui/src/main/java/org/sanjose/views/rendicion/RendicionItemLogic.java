@@ -1,5 +1,6 @@
 package org.sanjose.views.rendicion;
 
+import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
@@ -27,6 +28,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -94,6 +96,8 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         DataFilterUtil.bindTipoMonedaOptionGroup(view.getSelMoneda(), "codTipomoneda");
         //view.getSelMoneda().addValueChangeListener(event -> setMonedaLogic(event.getProperty().getValue().toString().charAt(0)));
 
+        view.getNumTotalAnticipio().addBlurListener(event -> view.setTotal((Character)view.getSelMoneda().getValue()));
+
 
         // ------------ DETALLE
 
@@ -147,6 +151,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 
         // Proyecto
         ComboBox selProyecto = new ComboBox();
+        selProyecto.addValueChangeListener(this::setProyectoLogic);
         DataFilterUtil.bindComboBox(selProyecto, "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()), "Sel Proyecto", "txtDescproyecto");
         view.grid.getColumn("codProyecto").setEditorField(selProyecto);
 
@@ -180,6 +185,11 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                 "Sel Fuente", "txtDescfinanciera");
         view.grid.getColumn("codFinanciera").setEditorField(selFinanciera);
 
+        // Tipo Moneda
+        ComboBox selTipomoneda = new ComboBox();
+        DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "codTipomoneda", "Moneda");
+        view.grid.getColumn("codTipomoneda").setEditorField(selTipomoneda);
+
 
         addValidators();
         // Editing Destino
@@ -207,6 +217,51 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 //        // Check saldos and warn
 //        saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN(), this);
     }
+
+    private void setProyectoLogic(Property.ValueChangeEvent event) {
+        if (event.getProperty().getValue()!=null)
+            setEditorLogic(event.getProperty().getValue().toString());
+        ComboBox selProyecto = (ComboBox)view.grid.getColumn("codProyecto").getEditorField();
+        selProyecto.getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
+    }
+
+    private void setEditorLogic(String codProyecto) {
+        ComboBox selFinanciera = (ComboBox)view.grid.getColumn("codFinanciera").getEditorField();
+        ComboBox selPlanproyecto = (ComboBox) view.grid.getColumn("codCtaproyecto").getEditorField();
+
+        if (codProyecto!=null && !codProyecto.isEmpty()) {
+            DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
+                    view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
+                            "N", GenUtil.getCurYear(), codProyecto),
+                    "Sel Rubro proy", "txtDescctaproyecto");
+            List<Scp_ProyectoPorFinanciera>
+                    proyectoPorFinancieraList = view.getService().getProyectoPorFinancieraRepo().findById_CodProyecto(codProyecto);
+
+            // Filter financiera if exists in Proyecto Por Financiera
+            List<ScpFinanciera> financieraList = view.getService().getFinancieraRepo().findAll();
+            List<ScpFinanciera> financieraEfectList = new ArrayList<>();
+            if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
+                List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
+
+                for (ScpFinanciera financiera : financieraList) {
+                    if (financiera.getCodFinanciera()!=null &&
+                            codFinancieraList.contains(financiera.getCodFinanciera())) {
+                        financieraEfectList.add(financiera);
+                    }
+                }
+            } else {
+                financieraEfectList = financieraList;
+            }
+            DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
+                    "Sel Fuente", "txtDescfinanciera");
+        } else {
+            DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", new ArrayList<ScpFinanciera>(),
+                    "-------", null);
+            DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto", new ArrayList<ScpPlanproyecto>(),
+                    "-------", null);
+        }
+    }
+
 
     private void editDestino(ComboBox comboBox) {
         Window destinoWindow = new Window();

@@ -73,6 +73,7 @@ public class MainScreen extends HorizontalLayout {
                     }
 
         if (Role.isBanco()) {
+            bancoOperView.init();
             menu.addSeparator("Banco");
 /*            menu.addView(bancoOperView, BancoOperView.VIEW_NAME,
                     BancoOperView.VIEW_NAME, FontAwesome.EDIT);*/

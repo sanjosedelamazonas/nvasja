@@ -26,7 +26,7 @@ import static org.sanjose.util.GenUtil.USD;
 @Table(name="scp_bancodetalle")
 @NamedQuery(name="ScpBancodetalle.findAll", query="SELECT v FROM ScpBancodetalle v")
 public class ScpBancodetalle extends VsjBancoItem implements Serializable, Cloneable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 56576757531L;
 	@EmbeddedId
 	private ScpBancodetallePK id;
 	@Column(name="cod_contracta")

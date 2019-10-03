@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Objects;
 
 @Entity
@@ -203,6 +204,22 @@ public class ScpRendiciondetalle extends VsjItem {
         setNumDebedolar(new BigDecimal(0));
         setNumHabermo(new BigDecimal(0));
         setNumDebemo(new BigDecimal(0));
+    }
+    
+    public BigDecimal getDebe() {
+        HashMap<Character, BigDecimal> debes = new HashMap<>();
+        debes.put('0', getNumDebesol());
+        debes.put('1', getNumDebedolar());
+        debes.put('2', getNumDebemo());
+        return debes.get(getCodTipomoneda());
+    }
+
+    public BigDecimal getHaber() {
+        HashMap<Character, BigDecimal> habers = new HashMap<>();
+        habers.put('0', getNumHabersol());
+        habers.put('1', getNumHaberdolar());
+        habers.put('2', getNumHabermo());
+        return habers.get(getCodTipomoneda());
     }
 
     public ScpRendiciondetallePK getId() {
@@ -887,4 +904,8 @@ public class ScpRendiciondetalle extends VsjItem {
                 '}';
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

@@ -7,8 +7,10 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid;
+import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.ReportHelper;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
@@ -39,7 +41,7 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
         //
         //view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
         //view.btnImprimir.addClickListener(e -> printComprobante());
-        //view.getBtnEliminar().addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
+        view.getBtnEliminar().addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
         saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.getFechaDesde().getValue(), view.getFechaHasta().getValue(), null));
         view.getBtnReporteImprimirCaja().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.getFechaDesde().getValue(), view.getFechaHasta().getValue(), null));
 
@@ -115,5 +117,47 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
 //            view.getGridCaja().getContainerDataSource().addItem(newScb);
         });
         view.refreshData();
+    }
+
+    void eliminarComprobante(ScpRendicioncabecera rendicioncabecera) {
+        if (rendicioncabecera == null)
+            return;
+        if (rendicioncabecera.isEnviado()) {
+            MessageBox
+                    .createInfo()
+                    .withCaption("Ya enviado a contabilidad")
+                    .withMessage("No se puede eliminar porque ya esta enviado a la contabilidad.")
+                    .withOkButton()
+                    .open();
+            return;
+        }
+        MessageBox
+                .createQuestion()
+                .withCaption("Eliminar")
+                .withMessage("?Esta seguro que quiere eliminar esta rendicion?")
+                .withYesButton(() ->  doEliminarComprobante(rendicioncabecera))
+                .withNoButton()
+                .open();
+    }
+
+    void doEliminarComprobante(ScpRendicioncabecera rendicioncabecera) {
+        try {
+            view.getService().deleteRendicion(rendicioncabecera);
+            view.refreshData();
+            MessageBox
+                    .createInfo()
+                    .withCaption("Elminado correctamente")
+                    .withMessage("La rendicion ha sido eliminado.")
+                    .withOkButton()
+                    .open();
+        } catch (Exception ce) {
+            //log.info("Got Exception al eliminar comprobante: " + ce.getMessage());
+            MessageBox
+                    .createError()
+                    .withCaption("Error al eliminar la rendicion:")
+                    .withMessage(ce.getLocalizedMessage())
+                    .withOkButton()
+                    .open();
+        }
     }
 }

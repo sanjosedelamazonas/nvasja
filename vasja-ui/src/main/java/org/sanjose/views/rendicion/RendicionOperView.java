@@ -12,10 +12,7 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.converter.ZeroOneToBooleanConverter;
-import org.sanjose.model.ScpCajabanco;
-import org.sanjose.model.ScpRendicioncabecera;
-import org.sanjose.model.ScpRendiciondetalle;
-import org.sanjose.model.ScpRendiciondetallePK;
+import org.sanjose.model.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
@@ -26,6 +23,8 @@ import tm.kod.widgets.numberfield.NumberField;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -48,21 +47,24 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
     private Window subWindow;
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{
             "id.numNroitem", "codProyecto", "codFinanciera", "codCtaproyecto",
-            "codContraparte", "codCtacontable", "codCtaactividad", "codCtaespecial",
+            "codContraparte", "codCtacontable", "codCtaactividad", "codCtaarea", "codCtaespecial",
             "fecComprobantepago", "fecPagocomprobantepago",
+            "codTipomoneda", "numTcvdolar",
             "numDebesol", "numHabersol",
             "numDebedolar", "numHaberdolar",
-            "numDebemo", "numHabermo"
+            "numTcmo", "numDebemo", "numHabermo"
     };
     static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
             "Item", "Proyecto", "Fuente", "Partida P.",
-            "Lug. Gst.", "Contable", "Actividad", "Rubro Inst",
+            "Lug. Gst.", "Contable", "Actividad", "Area", "Rubro Inst",
             "Fecha doc", "Fecha Pago",
-            "Gast S/.", "Ingr S/.", "Gast $", "Ingr $",
-            "Ing €", "Egr €"
+            "Mon", "TC $",
+            "Gast S/.", "Ingr S/.",
+            "Gast $", "Ingr $",
+            "TC €", "Ing €", "Egr €"
     };
     static final String[] HIDDEN_COLUMN_NAMES_PEN = new String[]{
-            "numDebemo", "numHabermo"
+            "codCtaarea", "numDebemo", "numHabermo", "codTipomoneda", "numTcvdolar", "numTcmo"
     };
 
     static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"Item", "codProyecto", "codTercero",
@@ -91,6 +93,8 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
     private BeanItemContainer<ScpRendiciondetalle> container;
     private GeneratedPropertyContainer gpContainer;
     private RendicionService RendicionService;
+
+    public boolean isVistaFull = false;
 
     public Grid.FooterRow gridFooter;
 
@@ -131,6 +135,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         });
 
         gridFooter = grid.appendFooterRow();
+        getNumTotalAnticipio().setValue(GenUtil.numFormat(new BigDecimal(0.00)));
     }
 
     public void initGrid(){
@@ -156,6 +161,13 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         setTotal(null);
     }
 
+    public void toggleVista() {
+        isVistaFull = !isVistaFull;
+        Arrays.asList(HIDDEN_COLUMN_NAMES_PEN)
+                    .forEach( e -> grid.getColumn(e).setHidden(!isVistaFull));
+
+    }
+
     public ScpRendiciondetalle getSelectedRow() {
         if (grid.getSelectedRows().isEmpty()) return null;
         return grid.getSelectedRows().toArray(new ScpRendiciondetalle[0])[0];
@@ -174,29 +186,11 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         btnAuxiliar.setEnabled(enabled);
     }
 
-    private BigDecimal calcTotal(Character locMoneda) {
-        BigDecimal total = new BigDecimal(0.00);
-        for (ScpRendiciondetalle cajaRendicion : container.getItemIds()) {
-            //log.debug("calcTotal: " + cajaRendicion);
-            if (locMoneda.equals(PEN)) {
-                total = total.add(cajaRendicion.getNumDebesol()).subtract(cajaRendicion.getNumHabersol());
-            } else if (locMoneda.equals(USD))
-                total = total.add(cajaRendicion.getNumDebedolar()).subtract(cajaRendicion.getNumHaberdolar());
-            else
-                total = total.add(cajaRendicion.getNumDebemo()).subtract(cajaRendicion.getNumHabermo());
-        }
-        return total;
-    }
-
     public void setTotal(Character locMoneda) {
         if (locMoneda == null) {
-            //viewLogic.item.getCodTipomoneda()
-            log.debug("in setSaldo - moneda = NULL");
-            saldoTotal.setValue("Total:" +
-                    "<span class=\"order-sum\"> S./ 0.00</span>");
-            //getSaldoTotal().setValue("0.00");
             return;
         }
+
         if (locMoneda.equals(PEN)) {
             order_summary_layout.removeStyleName("order-summary-layout-usd");
             order_summary_layout.removeStyleName("order-summary-layout-eur");
@@ -217,10 +211,31 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
         getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
 
         saldoTotal.setContentMode(ContentMode.HTML);
+
+        BigDecimal gastoTotal = calcTotal(locMoneda);
         saldoTotal.setValue("Total:" +
-                "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)) + calcTotal(locMoneda).toString() + "</span>");
+                "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)) + gastoTotal.toString() + "</span>");
+        getTxtGastoTotal().setValue(GenUtil.numFormat(gastoTotal));
+        NumberFormat nf = NumberFormat.getInstance(ConfigurationUtil.getLocale());
+        try {
+            BigDecimal totalAnticipo = new BigDecimal(nf.parse(getNumTotalAnticipio().getValue()).toString());
+            if (viewLogic.rendicioncabecera!=null) {
+                viewLogic.rendicioncabecera.setNumSaldopendiente(totalAnticipo.subtract(gastoTotal));
+            }
+            getTxtSaldoPendiente().setValue(GenUtil.numFormat(totalAnticipo.subtract(gastoTotal)));
+        } catch (ParseException pe) {
+            log.debug("Problem parsing total anticipo");
+        }
         //getMontoTotal().setValue(calcTotal(locMoneda).toString());
         //getMontoTotal().setCaption("Total " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)));
+    }
+
+    private BigDecimal calcTotal(Character locMoneda) {
+        BigDecimal total = new BigDecimal(0.00);
+        for (ScpRendiciondetalle det: container.getItemIds()) {
+            total = total.add(det.getDebe()).subtract(det.getHaber());
+        }
+        return total;
     }
 
     public void calcFooterSums() {
@@ -396,6 +411,10 @@ public class RendicionOperView extends RendicionOperUI implements Viewing {
 
     public TextField getTxtComprobenlace() {
         return txtComprobenlace;
+    }
+
+    public Button getBtnToggleVista() {
+        return btnToggleVista;
     }
 
     @Override

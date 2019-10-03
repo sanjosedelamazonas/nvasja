@@ -32,6 +32,7 @@ public class RendicionOperUI extends CssLayout {
     protected TextField txtOrigen;
     protected TextField numVoucher;
     protected PopupDateField dataFechaComprobante;
+    protected Button btnToggleVista;
     protected TextField txtGlosaCabeza;
     protected ComboBox selResponsable1;
     protected Button btnResponsable;

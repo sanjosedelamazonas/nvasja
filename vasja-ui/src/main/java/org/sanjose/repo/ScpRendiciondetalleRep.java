@@ -11,5 +11,5 @@ public interface ScpRendiciondetalleRep extends JpaRepository<ScpRendiciondetall
 
     List<ScpRendiciondetalle> findById_CodRendicioncabecera(Integer id);
 
-    List<ScpRendiciondetalle> findById_CodRendicioncabeceraAndId_NumNroitemGreaterThan(Integer id, Integer numItem);
+    List<ScpRendiciondetalle> findById_CodRendicioncabeceraAndId_NumNroitemGreaterThan(Integer id, Long numItem);
 }

@@ -188,4 +188,65 @@ public class RendicionService {
         rendicionItem.setScpRendicioncabecera(cabecera);
         return rendicionItem;
     }
+
+
+    @Transactional
+    public void deleteRendicion(ScpRendicioncabecera cabecera) {
+        cabecera = rendicioncabeceraRep.findByCodRendicioncabecera(cabecera.getCodRendicioncabecera());
+        for (ScpRendiciondetalle det : cabecera.getScpRendiciondetalles()) {
+            rendiciondetalleRep.delete(det);
+        }
+        rendicioncabeceraRep.delete(cabecera);
+    }
+
+    @Transactional(readOnly = false)
+    public void deleteRendicionOperacion(ScpRendicioncabecera cabecera, ScpRendiciondetalle rendicionItem) {
+        long delNumItem = rendicionItem.getId().getNumNroitem();
+        rendiciondetalleRep.delete(rendicionItem);
+        for (ScpRendiciondetalle it : rendiciondetalleRep
+                .findById_CodRendicioncabeceraAndId_NumNroitemGreaterThan(cabecera.getCodRendicioncabecera(), delNumItem)) {
+            try {
+                ScpRendiciondetalle newRendicionDetalle = (ScpRendiciondetalle) it.clone();
+                ScpRendiciondetallePK id = (ScpRendiciondetallePK) it.getId().clone();
+                id.setNumNroitem(it.getId().getNumNroitem() - 1);
+                newRendicionDetalle.setId(id);
+                rendiciondetalleRep.delete(it);
+                rendiciondetalleRep.save(newRendicionDetalle);
+            } catch (CloneNotSupportedException cle) {
+                cle.printStackTrace();
+            }
+        }
+        BigDecimal saldoHabersol = new BigDecimal(0);
+        BigDecimal saldoHaberdolar = new BigDecimal(0);
+        BigDecimal saldoHabermo = new BigDecimal(0);
+        BigDecimal saldoDebesol = new BigDecimal(0);
+        BigDecimal saldoDebedolar = new BigDecimal(0);
+        BigDecimal saldoDebemo = new BigDecimal(0);
+        for (ScpRendiciondetalle it : rendiciondetalleRep
+                .findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera())) {
+            saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
+            saldoDebemo = saldoDebemo.add(it.getNumDebemo());
+            saldoDebesol = saldoDebesol.add(it.getNumDebesol());
+            saldoHaberdolar = saldoHaberdolar.add(it.getNumHaberdolar());
+            saldoHabermo = saldoHabermo.add(it.getNumHabermo());
+            saldoHabersol = saldoHabersol.add(it.getNumHabersol());
+        }
+        BigDecimal gastoTotal;
+        switch (cabecera.getCodTipomoneda()) {
+            case '0':
+                gastoTotal = saldoDebesol.subtract(saldoHabersol);
+                break;
+            case '1':
+                gastoTotal = saldoDebedolar.subtract(saldoHaberdolar);
+                break;
+            case '2':
+                gastoTotal = saldoDebemo.subtract(saldoHabermo);
+                break;
+            default:
+                throw new RuntimeException(cabecera.getCodTipomoneda() + " - Unknown currency - this shouldn't happen");
+        }
+        cabecera.setNumGastototal(gastoTotal);
+        cabecera.setNumSaldopendiente(cabecera.getNumTotalanticipo().subtract(gastoTotal));
+        rendicioncabeceraRep.save(cabecera);
+    }
 }

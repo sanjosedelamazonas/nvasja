@@ -10,7 +10,7 @@ public interface ScpRendicioncabeceraRep extends JpaRepository<ScpRendicioncabec
 
     List<ScpRendicioncabecera> findByCodDestino(String s);
 
-    //ScpRendicioncabecera findByCodBancocabecera(Integer id);
+    ScpRendicioncabecera findByCodRendicioncabecera(Integer id);
 
     List<ScpRendicioncabecera> findByFecComprobanteBetween(Date from, Date to);
 

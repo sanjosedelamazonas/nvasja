@@ -11,6 +11,8 @@ import org.sanjose.model.VsjBancoItem;
 import org.sanjose.model.VsjItem;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -239,6 +241,11 @@ public class GenUtil {
             }
         }
         return sb.toString();
+    }
+
+    public static String numFormat(BigDecimal bd) {
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        return df.format(bd);
     }
 
 }

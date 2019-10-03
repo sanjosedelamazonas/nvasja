@@ -6,6 +6,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
+import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpDestino;
@@ -42,14 +43,15 @@ public class RendicionLogic extends RendicionItemLogic {
         super.init(view);
         view.getBtnGuardar().addClickListener(event -> saveCabecera());
         view.getBtnNewItem().addClickListener(event -> nuevoItem());
- //       view.getBtnEliminar().addClickListener(event -> eliminarComprobante());
-        view.getBtnAnular().addClickListener(event -> anularComprobante());
+        view.getBtnEliminar().addClickListener(event -> eliminarItem());
+        view.getBtnAnular().addClickListener(event -> anular());
         view.getBtnCerrar().addClickListener(event -> cerrarAlManejo());
         view.getBtnVerVoucher().addClickListener(event -> ReportHelper.generateComprobante(beanItem.getBean()));
+        view.getBtnToggleVista().addClickListener(event -> view.toggleVista());
         switchMode(EMPTY);
     }
 
-    private void anularComprobante() {
+    private void anular() {
         if (view.grid.getSelectedRow() != null) {
             viewComprobante();
             fieldGroupCabezera.discard();
@@ -245,10 +247,7 @@ public class RendicionLogic extends RendicionItemLogic {
         return rendicionItem;
     }
 
-
-/*
-
-    void eliminarComprobante() {
+    void eliminarItem() {
         ScpRendiciondetalle bancoItem = view.getSelectedRow();
         if (bancoItem  == null)
             return;
@@ -271,15 +270,13 @@ public class RendicionLogic extends RendicionItemLogic {
                 .open();
     }
 
-
     private void doEliminarComprobante() {
-        ScpRendiciondetalle bancoItem = view.getSelectedRow();
-        log.info("Eliminando: " + rendicioncabecera.getCodRendicioncabecera() + "-" + bancoItem.getId().getNumNroitem());
-        //view.getService().deleteBancoOperacion(bancocabecera, bancoItem);
-        loadDetallesToGrid(rendicioncabecera);
-        view.refreshData();
+        ScpRendiciondetalle rendiciondetalle = view.getSelectedRow();
+        ScpRendicioncabecera rendcab = rendiciondetalle.getScpRendicioncabecera();
+        view.getService().deleteRendicionOperacion(rendiciondetalle.getScpRendicioncabecera(), rendiciondetalle);
+        loadDetallesToGrid(rendcab);
+        //view.refreshData();
     }
-*/
 
     private void switchMode(Viewing.Mode newMode) {
         switch (newMode) {
