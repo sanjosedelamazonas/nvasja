@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -15,7 +16,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "scp_rendiciondetalle")
 @NamedQuery(name = "ScpRendiciondetalle.findAll", query = "SELECT v FROM ScpRendiciondetalle v")
-public class ScpRendiciondetalle extends VsjItem {
+public class ScpRendiciondetalle extends VsjItem implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1232342435798744L;
 
@@ -197,6 +198,7 @@ public class ScpRendiciondetalle extends VsjItem {
         setCodFilial("01");
         setCodCtaactividad("");
         setNumTcmo(0);
+        setNumTcvdolar(0);
         setNumHabermo(new BigDecimal(0));
         setNumHabersol(new BigDecimal(0));
         setNumDebesol(new BigDecimal(0));
