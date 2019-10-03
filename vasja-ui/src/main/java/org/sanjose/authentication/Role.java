@@ -16,6 +16,7 @@ public class Role {
 
     public final static String BANCO = "ROL006";
 
+    public final static String DIGITADOR = "ROL001";
 
     public static boolean isAdmin() {
         return MainUI.get().getAccessControl().isUserInRole(Role.ADMIN);
@@ -37,4 +38,7 @@ public class Role {
         return MainUI.get().getAccessControl().isUserInRole(Role.CAJA);
     }
 
+    public static boolean isDigitador() {
+        return isPrivileged() || MainUI.get().getAccessControl().isUserInRole(Role.DIGITADOR);
+    }
 }

@@ -70,14 +70,12 @@ public class MainScreen extends HorizontalLayout {
                     CajaOperacionesView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
                     CajaGridView.VIEW_NAME, FontAwesome.EDIT);
-            rendicionOperView.init();
-            menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
-                    RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
-        }
+                    }
+
         if (Role.isBanco()) {
             menu.addSeparator("Banco");
-            menu.addView(bancoOperView, BancoOperView.VIEW_NAME,
-                    BancoOperView.VIEW_NAME, FontAwesome.EDIT);
+/*            menu.addView(bancoOperView, BancoOperView.VIEW_NAME,
+                    BancoOperView.VIEW_NAME, FontAwesome.EDIT);*/
             menu.addView(bancoManejoView, BancoManejoView.VIEW_NAME,
                     BancoManejoView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(bancoConciliacionView, BancoConciliacionView.VIEW_NAME,
@@ -92,6 +90,13 @@ public class MainScreen extends HorizontalLayout {
             menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
                     ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
         }
+        if (Role.isDigitador()) {
+            rendicionOperView.init();
+            menu.addSeparator("Rendiciones");
+            menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
+                    RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
+        }
+
         if (Role.isAdmin()) {
             menu.addSeparator("Sistema");
             menu.addView(reportesView, ReportesView.VIEW_NAME,
