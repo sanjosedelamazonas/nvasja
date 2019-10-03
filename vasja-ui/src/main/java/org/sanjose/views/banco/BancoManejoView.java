@@ -4,6 +4,7 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.*;
@@ -14,6 +15,7 @@ import org.sanjose.MainUI;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.CajaSaldoView;
@@ -110,17 +112,19 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         cobradoChkBox.setAnimated(false);
         cobradoChkBox.setCaption("");
         cobradoChkBox.setBigPreset(false);
-        gridBanco.setEditorFieldGroup(
-                new BeanFieldGroup<>(ScpBancocabecera.class));
-        gridBanco.setEditorEnabled(true);
-        gridBanco.setEditorBuffered(true);
+//        gridBanco.setEditorFieldGroup(
+//                new BeanFieldGroup<>(ScpBancocabecera.class));
+//        gridBanco.setEditorEnabled(false);
+//        gridBanco.setEditorBuffered(true);
 
-        gridBanco.setEditorSaveCaption("Guardar");
+        //gridBanco.setEditorSaveCaption("Guardar");
 
         gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
         gridBanco.getColumn("flgCobrado").setEditable(true);
         gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
         gridBanco.getColumn("codBancocabecera").setHidden(true);
+
+        gridBanco.addItemClickListener(this::setItemLogic);
 
         // Add filters
         ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
@@ -144,11 +148,13 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
                 selRepMoneda.select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
                 ViewUtil.filterColumnsByMoneda(gridBanco, GenUtil.getNumMoneda(cuenta.getIndTipomoneda()).charValue());
                 gridBanco.getColumn("txtGlosa").setMaximumWidth(500);
+                viewLogic.setSaldoCuenta(cuenta);
             } else {
                 container.removeContainerFilters("codCtacontable");
                 selRepMoneda.select('0');
                 ViewUtil.filterColumnsByMoneda(gridBanco, 'A');
                 gridBanco.getColumn("txtGlosa").setMaximumWidth(400);
+                viewLogic.setSaldoCuenta(null);
             }
             viewLogic.setSaldoDelDia();
         });
@@ -171,6 +177,14 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         viewLogic.init(this);
         viewLogic.setSaldos(getSaldosView().getGridSaldoInicial(), true);
         viewLogic.setSaldos(getSaldosView().getGridSaldoFinal(), false);
+    }
+
+    private void setItemLogic(ItemClickEvent event) {
+        if (event.isDoubleClick()) {
+            Object id = event.getItem().getItemProperty("codBancocabecera").getValue();
+            ScpBancocabecera vcb = getService().getBancocabeceraRep().findByCodBancocabecera((Integer) id);
+            viewLogic.getGridLogic().editarCheque((ScpBancocabecera) vcb);
+        }
     }
 
     @Override
@@ -293,6 +307,26 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
     public DateField getFechaHasta() {
         return fechaHasta;
+    }
+
+    public TextField getNumSaldoInicialSegBancos() {
+        return numSaldoInicialSegBancos;
+    }
+
+    public TextField getNumSaldoInicialLibro() {
+        return numSaldoInicialLibro;
+    }
+
+    public TextField getNumSaldoFinalSegBancos() {
+        return numSaldoFinalSegBancos;
+    }
+
+    public TextField getNumSaldoFinalLibro() {
+        return numSaldoFinalLibro;
+    }
+
+    public Button getBtnMarcarNoCobrado() {
+        return btnMarcarNoCobrado;
     }
 
 }

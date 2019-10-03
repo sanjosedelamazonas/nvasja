@@ -60,6 +60,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
     private ProcUtil procUtil;
     private SaldoChecker saldoChecker;
 
+    private Property.ValueChangeListener selProyectoTerceroValueChangeListener;
 
     public void init(BancoOperView view) {
         this.view = view;
@@ -92,7 +93,16 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         DataFilterUtil.bindComboBox(view.getSelCuenta(), "id.codCtacontable",
                 DataUtil.getBancoCuentas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo()),
                 "txtDescctacontable");
-        view.getSelCuenta().addValueChangeListener(ev -> setCuentaLogic());
+        view.getSelCuenta().addValueChangeListener(ev -> {
+                    setCuentaLogic();
+                    selProyectoTerceroValueChangeListener = new Property.ValueChangeListener() {
+                        @Override
+                        public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                            setProyectoLogic(valueChangeEvent);
+                        }
+                    };
+                    view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroValueChangeListener);
+        });
         // Fecha Doc
         prop = new ObjectProperty<>(ts);
         view.getFechaDoc().setPropertyDataSource(prop);
@@ -361,16 +371,28 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         if (isProyecto()) {
             beanItem.getBean().setCodTercero("");
             fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
-            view.getSelProyectoTercero().removeValueChangeListener(this::setTerceroLogic);
-            view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
+            view.getSelProyectoTercero().removeValueChangeListener(selProyectoTerceroValueChangeListener);
+            selProyectoTerceroValueChangeListener = new Property.ValueChangeListener() {
+                @Override
+                public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                    setProyectoLogic(valueChangeEvent);
+                }
+            };
+            view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroValueChangeListener);
             DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().
                             findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(view.getDataFechaComprobante().getValue(), view.getDataFechaComprobante().getValue(), GenUtil.getBegin20thCent()),
                     "Sel Proyecto", "txtDescproyecto");
         } else if (isTercero()) {
             beanItem.getBean().setCodProyecto("");
             fieldGroup.bind(view.getSelProyectoTercero(), "codTercero");
-            view.getSelProyectoTercero().removeValueChangeListener(this::setProyectoLogic);
-            view.getSelProyectoTercero().addValueChangeListener(this::setTerceroLogic);
+            view.getSelProyectoTercero().removeValueChangeListener(selProyectoTerceroValueChangeListener);
+            selProyectoTerceroValueChangeListener = new Property.ValueChangeListener() {
+                @Override
+                public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                    setTerceroLogic(valueChangeEvent);
+                }
+            };
+            view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroValueChangeListener);
             DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
                     "txtNombredestino");
         }

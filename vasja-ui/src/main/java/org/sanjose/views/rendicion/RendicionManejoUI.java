@@ -7,7 +7,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 
@@ -27,12 +26,8 @@ public class RendicionManejoUI extends VerticalLayout {
     protected DateField fechaDesde;
     protected DateField fechaHasta;
     protected ComboBox selMoneda;
-    protected TextField saldoCaja;
-    protected Button btnDetallesSaldos;
-    protected Button btnReporteImprimirCaja;
     protected HorizontalLayout horiz4;
     protected HorizontalLayout horiz3;
-    protected ComboBox selFiltroCaja;
     protected Button btnNueva;
     protected Grid gridCaja;
     protected Button btnVerImprimir;

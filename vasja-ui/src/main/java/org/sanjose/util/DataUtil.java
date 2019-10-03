@@ -98,7 +98,6 @@ public class DataUtil {
         return cajas;
     }
 
-
     public static List<Caja> getBancoCuentasList(ScpPlancontableRep planRepo, Date date) {
         List<Caja> cajas = new ArrayList<>();
         for (ScpPlancontable caja : getBancoCuentas(date, planRepo)) {
@@ -122,6 +121,22 @@ public class DataUtil {
             ));
         }
         return cajas;
+    }
+    
+    public static BigDecimal getBancoCuentaSaldos(ScpPlancontable cuenta, Date date) {
+        Character moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
+        if (moneda.equals('9')) {
+            // Problem - TipoMoneda not set
+            System.out.println("ERROR: TipoMoneda not set for BancoCuenta: " + cuenta.getCodCta4() + " " + cuenta.getTxtDescctacontable());
+        }
+        BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(
+                GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)),
+                cuenta.getId().getCodCtacontable()
+                , moneda);
+        // If is closed and has a saldo of "0.00" we can omit it
+        if (!cuenta.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
+            return null;
+        return saldo;
     }
 
     public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {

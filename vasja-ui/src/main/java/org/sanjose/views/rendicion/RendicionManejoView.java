@@ -206,22 +206,6 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         return selMoneda;
     }
 
-    public TextField getSaldoCaja() {
-        return saldoCaja;
-    }
-
-    public Button getBtnDetallesSaldos() {
-        return btnDetallesSaldos;
-    }
-
-    public Button getBtnReporteImprimirCaja() {
-        return btnReporteImprimirCaja;
-    }
-
-    public ComboBox getSelFiltroCaja() {
-        return selFiltroCaja;
-    }
-
     public Grid getGridCaja() {
         return gridCaja;
     }

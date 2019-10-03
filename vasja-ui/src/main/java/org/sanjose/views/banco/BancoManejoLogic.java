@@ -13,6 +13,7 @@ import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.VsjCajaBancoItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.ConfigurationUtil;
@@ -66,7 +67,8 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
             setSaldoDelDia();
             ViewUtil.openCajaSaldosInNewWindow(view.getSaldosView(), view.getFechaDesde().getValue(), view.getFechaHasta().getValue());
         });
-
+        view.getBtnMarcarCobrado().addClickListener(clickEvent -> { gridLogic.setMesCobrado(true); });
+        view.getBtnMarcarNoCobrado().addClickListener(clickEvent -> { gridLogic.setMesCobrado(false); });
 
         view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
@@ -107,6 +109,16 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
                     gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajaBancoItem) itemId));
             }
         });
+    }
+    public void setSaldoCuenta(ScpPlancontable cuenta) {
+        if (cuenta==null) {
+            view.getNumSaldoFinalLibro().setValue("");
+            view.getNumSaldoFinalSegBancos().setValue("");
+            view.getNumSaldoInicialLibro().setValue("");
+            view.getNumSaldoInicialSegBancos().setValue("");
+        }
+        view.getNumSaldoInicialLibro().setValue(GenUtil.numFormat(DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaDesde().getValue())));
+        view.getNumSaldoFinalLibro().setValue(GenUtil.numFormat(DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaHasta().getValue())));
     }
 
     public void setSaldos(Grid grid, boolean isInicial) {
@@ -212,5 +224,9 @@ public class BancoManejoLogic implements Serializable, SaldoDelDia {
 
     @Override
     public void calcFooterSums() {
+    }
+
+    public BancoGridLogic getGridLogic() {
+        return gridLogic;
     }
 }

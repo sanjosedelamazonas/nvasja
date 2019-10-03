@@ -1,16 +1,20 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
+import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * VASJA class
@@ -95,6 +99,20 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera> {
             view.getGridBanco().getContainerDataSource().addItem(newScb);
         });
         view.refreshData();
+    }
+
+    protected void setMesCobrado(boolean isCobrado) {
+        for (Object item : view.getGridBanco().getSelectedRows()) {
+            if (item != null) {
+                ScpBancocabecera vcb = (ScpBancocabecera) item;
+                vcb.setFlgCobrado(isCobrado);
+                vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
+                        .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
+                view.getService().updateCobradoInCabecera(vcb);
+            }
+        }
+        view.refreshData();
+        //view.getGridBanco().select(null);
     }
 }
 
