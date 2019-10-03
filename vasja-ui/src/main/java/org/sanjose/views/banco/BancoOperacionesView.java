@@ -40,27 +40,51 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         return VIEW_NAME;
     }
     private final BancoOperacionesLogic viewLogic = new BancoOperacionesLogic();
-    private final String[] VISIBLE_COLUMN_IDS = new String[]{
+    private final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{
             "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
-            "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
-            "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
+             "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
+            "numDebesol", "numHabersol",
             "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"
     };
-    private final String[] VISIBLE_COLUMN_NAMES = new String[]{
+    private final String[] VISIBLE_COLUMN_IDS_USD = new String[]{
+            "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
+             "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
+         "numDebedolar", "numHaberdolar",
+            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"
+    };
+    private final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{
+            "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
+             "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
+             "numDebemo", "numHabermo",
+            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"
+    };
+    private final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
             "Cobr.", "Fecha", "Numero", "Cuenta",
-            "Auxiliar", "Nombre", "Cheque", "Glosa",
-            "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
+            "Auxiliar",  "Cheque", "Glosa",
+            "Ing S/.", "Egr S/.",
+            "Orig", "Comprob.", "Env", "Anul."
+    };
+    private final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{
+            "Cobr.", "Fecha", "Numero", "Cuenta",
+            "Auxiliar", "Cheque", "Glosa",
+             "Ing $", "Egr $",
+            "Orig", "Comprob.", "Env", "Anul."
+    };
+    private final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{
+            "Cobr.", "Fecha", "Numero", "Cuenta",
+            "Auxiliar", "Cheque", "Glosa",
+            "Ing €", "Egr €",
             "Orig", "Comprob.", "Env", "Anul."
     };
     private final int[] FILTER_WIDTH = new int[]{
             2, 4, 4, 4,
-            6, 10, 4, 12,
-            3, 3, 3, 3, 3, 3,
+            10, 6, 14,
+            3, 3,
             1, 4, 1, 1
     };
-    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codCtacontable",
-            "codDestino", "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
-            "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
+    private final String[] NONEDITABLE_COLUMN_IDS_PEN = new String[]{"fecFecha", "txtCorrelativo", "codCtacontable",
+            "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
+            "numDebesol", "numHabersol",
             "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"};
 
     private BeanItemContainer<ScpBancocabecera> container;
@@ -85,7 +109,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         gridBanco.setEditorEnabled(false);
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
 
-        ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
+        ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS_PEN);
 
         ViewUtil.alignMontosInGrid(gridBanco);
 
@@ -103,6 +127,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
         gridBanco.getColumn("flg_Anula").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridBanco.getColumn("txtCorrelativo").setHidden(true);
         gridBanco.getColumn("flgEnviado").setHidden(true);
         gridBanco.getColumn("flg_Anula").setHidden(true);
 
@@ -122,7 +147,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
         // Add filters
-        ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, null);
+        ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS_PEN, FILTER_WIDTH, null);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);

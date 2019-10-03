@@ -11,9 +11,9 @@
   <meta name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
  </head>
  <body>
-  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive width-full>
-   <vaadin-vertical-layout>
-    <vaadin-horizontal-layout spacing width-full _id="topButtons">
+  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive>
+   <vaadin-vertical-layout _id="topVertLayout">
+    <vaadin-horizontal-layout spacing _id="topButtons" :right>
      <vaadin-horizontal-layout spacing margin :right>
       <vaadin-button visible="false" width="130px" plain-text _id="newChequeBtn">
         Nuevo Cheque 
@@ -64,9 +64,17 @@
       </vaadin-label>
       <vaadin-text-field description="Numero de comprobante en contabilidad" enabled="false" style-name="form-textfield" responsive width="115px" _id="txtNumCombrobante"></vaadin-text-field>
      </vaadin-horizontal-layout>
+     <vaadin-horizontal-layout :right>
+      <vaadin-button plain-text _id="btnPrevio">
+        &lt; 
+      </vaadin-button>
+      <vaadin-button plain-text _id="btnSiguiente">
+        &gt; 
+      </vaadin-button>
+     </vaadin-horizontal-layout>
     </vaadin-horizontal-layout>
    </vaadin-vertical-layout>
-   <vaadin-vertical-layout size-auto>
+   <vaadin-vertical-layout size-auto _id="bodyVertLayout">
     <vaadin-horizontal-layout>
      <vaadin-vertical-layout size-auto>
       <vaadin-vertical-layout style-name="billing-formlayout" spacing _id="encabezadoVertLayout">
@@ -95,6 +103,31 @@
         </vaadin-label>
         <vaadin-text-field caption-as-html input-prompt="Glosa" width="575px" _id="glosaCabeza"></vaadin-text-field>
        </vaadin-horizontal-layout>
+      </vaadin-vertical-layout>
+      <vaadin-vertical-layout style-name="billing-formlayout" responsive size-auto _id="itemsVertLayout">
+       <vaadin-horizontal-layout spacing :right>
+        <vaadin-button plain-text _id="guardarBtn">
+          Guardar 
+        </vaadin-button>
+        <vaadin-button plain-text _id="newItemBtn">
+          Nuevo Item 
+        </vaadin-button>
+        <vaadin-button plain-text _id="modificarBtn">
+          Modificar 
+        </vaadin-button>
+        <vaadin-button plain-text _id="anularBtn">
+          Anular 
+        </vaadin-button>
+        <vaadin-button plain-text _id="eliminarBtn">
+          Eliminar 
+        </vaadin-button>
+       </vaadin-horizontal-layout>
+       <vaadin-form-layout spacing="false" responsive size-auto margin-top="false" margin-bottom="false" _id="order_summary_layout">
+        <vaadin-label style-name="header-label-small" plain-text _id="order_heading">
+          Operaciones de cheque 
+        </vaadin-label>
+        <vaadin-grid width="900px" height="200px" tabindex="50" _id="gridBanco"></vaadin-grid>
+       </vaadin-form-layout>
       </vaadin-vertical-layout>
       <vaadin-form-layout style-name="billing-formlayout" spacing="false" responsive size-auto margin-top="false" margin-bottom="false" _id="detallesFormLayout">
        <vaadin-horizontal-layout description="Proyecto" spacing>
@@ -185,31 +218,6 @@
          </vaadin-horizontal-layout>
         </vaadin-vertical-layout>
        </vaadin-horizontal-layout>
-      </vaadin-form-layout>
-     </vaadin-vertical-layout>
-     <vaadin-vertical-layout style-name="billing-formlayout" responsive size-auto _id="billing_form6">
-      <vaadin-horizontal-layout spacing :right>
-       <vaadin-button plain-text _id="guardarBtn">
-         Guardar 
-       </vaadin-button>
-       <vaadin-button plain-text _id="newItemBtn">
-         Nuevo Item 
-       </vaadin-button>
-       <vaadin-button plain-text _id="modificarBtn">
-         Modificar 
-       </vaadin-button>
-       <vaadin-button plain-text _id="anularBtn">
-         Anular 
-       </vaadin-button>
-       <vaadin-button plain-text _id="eliminarBtn">
-         Eliminar 
-       </vaadin-button>
-      </vaadin-horizontal-layout>
-      <vaadin-form-layout spacing="false" responsive size-auto margin-top="false" margin-bottom="false" _id="order_summary_layout">
-       <vaadin-label style-name="header-label-small" plain-text _id="order_heading">
-         Operaciones de cheque 
-       </vaadin-label>
-       <vaadin-grid width="700px" height="300px" tabindex="50" _id="gridBanco"></vaadin-grid>
       </vaadin-form-layout>
      </vaadin-vertical-layout>
     </vaadin-horizontal-layout>

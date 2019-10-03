@@ -25,13 +25,13 @@ public class BancoOperacionesUI extends VerticalLayout {
     protected HorizontalLayout horizontalFechasLayout;
     protected DateField fechaDesde;
     protected DateField fechaHasta;
-    protected ComboBox selFiltroCuenta;
     protected Button btnNuevoCheque;
     protected Button btnEditar;
     protected Button btnImprimir;
     protected Button btnVerVoucher;
     protected ComboBox selRepMoneda;
     protected Button btnReporte;
+    protected ComboBox selFiltroCuenta;
     protected Grid gridBanco;
     protected BancoOperView bancoOperView;
 
