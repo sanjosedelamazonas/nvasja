@@ -1,7 +1,3 @@
-USE [SCP]
-
-GO
-
 SET ANSI_PADDING ON
 
 

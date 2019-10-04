@@ -30,16 +30,15 @@ public class CajaOperacionesUI extends VerticalLayout {
     protected TextField saldoCaja;
     protected Button btnDetallesSaldos;
     protected Button btnReporteImprimirCaja;
-    protected HorizontalLayout horiz4;
     protected HorizontalLayout horiz3;
     protected ComboBox selFiltroCaja;
+    protected Button btnVerImprimir;
+    protected Button btnModificar;
+    protected Button btnEliminar;
     protected Button nuevaTransferencia;
     protected Button nuevoComprobante;
     protected Button btnEnviarContabilidad;
     protected Grid gridCaja;
-    protected Button btnVerImprimir;
-    protected Button btnModificar;
-    protected Button btnEliminar;
     protected ComprobanteView comprobView;
 
     public CajaOperacionesUI() {

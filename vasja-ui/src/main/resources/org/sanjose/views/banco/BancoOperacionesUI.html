@@ -7,7 +7,7 @@
   <meta name="package-mapping" content="org_sanjose_views_banco:org.sanjose.views.banco">
  </head>
  <body>
-  <vaadin-vertical-layout id="verticalTopMain" height="962px" margin>
+  <vaadin-vertical-layout id="verticalTopMain" size-full margin>
    <vaadin-horizontal-layout spacing height="40px" margin _id="horizontalFechasLayout" :middle :center>
     <vaadin-label size-auto plain-text>
       Operaciones desde 
@@ -38,7 +38,7 @@
       Imprimir Reporte 
     </vaadin-button>
    </vaadin-horizontal-layout>
-   <vaadin-horizontal-layout height="22px">
+   <vaadin-horizontal-layout width-full height="22px">
     <vaadin-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" item-caption-mode="id" width="300px" _id="selFiltroCuenta">
      <option>Option 1</option>
      <option>Option 2</option>
@@ -46,9 +46,10 @@
     </vaadin-combo-box>
    </vaadin-horizontal-layout>
    <vaadin-horizontal-layout size-full :expand>
-    <vaadin-grid editor-cancel-caption="Anular" height="900px" _id="gridBanco" :expand></vaadin-grid>
-    <org_sanjose_views_banco-banco-oper-view width="550px" height="900px" _id="bancoOperView" :middle :right></org_sanjose_views_banco-banco-oper-view>
+    <vaadin-grid editor-cancel-caption="Anular" size-full _id="gridBanco" :expand></vaadin-grid>
+    <org_sanjose_views_banco-banco-oper-view width="810px" height-full _id="bancoOperView" :right></org_sanjose_views_banco-banco-oper-view>
    </vaadin-horizontal-layout>
+   <vaadin-horizontal-layout width-full height="30px"></vaadin-horizontal-layout>
   </vaadin-vertical-layout>
  </body>
 </html>
