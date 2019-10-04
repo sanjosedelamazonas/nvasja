@@ -90,6 +90,9 @@ DONE - manejo de cheques - filtr moneda nie dziala
 DONE - manejo de cheques - nie potrzebne kolumny: auxiliar codigo,
 DONE - manejjo de cheques - powinien chowac kolumny S/., USD, Eur w zaleznosci od moneda de cuenta
 
+- manejo de cheques - ekran dla Vero - no debe tener enviar a contabilidad (chyba ze uzaleznimy od roli?)
+- operaciones de cheques - ekran dla Jorge, debe tener botones Enviar a contabilidad, Marcar cobrado, Marcar no cobrado - ver que pasa con marcar cobrado cuando esta enviado a contabilidad
+
 
 - Procedura getSaldoAlDiaBanco - Segun Banco
 
