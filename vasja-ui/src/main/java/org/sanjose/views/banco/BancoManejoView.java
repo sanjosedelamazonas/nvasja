@@ -1,6 +1,7 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare;
@@ -213,6 +214,8 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
             ScpBancocabecera vcb = getService().getBancocabeceraRep().findByCodBancocabecera((Integer) id);
             viewLogic.getGridLogic().editarCheque((ScpBancocabecera) vcb);
         }
+        gridBanco.deselectAll();
+        gridBanco.select(event.getItemId());
     }
 
     @Override

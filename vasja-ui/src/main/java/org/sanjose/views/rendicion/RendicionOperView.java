@@ -141,7 +141,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         container.addNestedContainerBean("id");
         grid.setContainerDataSource(container);
         grid.setEditorEnabled(true);
-        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
         grid.sort("fecFregistro", SortDirection.DESCENDING);
 
         //grid.getColumn("Item").setWidth(36);
@@ -408,6 +408,42 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         return btnToggleVista;
     }
 
+    public ComboBox getSetAllProyecto() {
+        return setAllProyecto;
+    }
+
+    public ComboBox getSetAllFuente() {
+        return setAllFuente;
+    }
+
+    public ComboBox getSetAllPartida() {
+        return setAllPartida;
+    }
+
+    public ComboBox getSetAllLugarGasto() {
+        return setAllLugarGasto;
+    }
+
+    public ComboBox getSetAllContable() {
+        return setAllContable;
+    }
+
+    public ComboBox getSetAllRubrInst() {
+        return setAllRubrInst;
+    }
+
+    public DateField getSetAllFechaDoc() {
+        return setAllFechaDoc;
+    }
+
+    public DateField getSetAllFechaPago() {
+        return setAllFechaPago;
+    }
+
+    public Button getBtnSetAll() {
+        return btnSetAll;
+    }
+
     @Override
     public void enter(ViewChangeEvent event) {
     }
@@ -429,4 +465,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
     public Grid.FooterRow getGridFooter() {
         return gridFooter;
     }
+
+
 }

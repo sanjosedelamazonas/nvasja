@@ -329,30 +329,22 @@ public class RendicionLogic extends RendicionItemLogic {
             case VIEW:
                 view.getBtnGuardar().setEnabled(false);
                 view.getBtnAnular().setEnabled(false);
-/*
-                if ((view.getSelectedRow() != null && view.getSelectedRow().isAnula()) ||
-                        (bancocabecera != null && (bancocabecera.isAnula()
-                                || (bancocabecera.isEnviado() && !Role.isPrivileged())))) {
-                    view.getBtnModificar().setEnabled(false);
-                    view.getBtnEliminar().setEnabled(false);
-                } else {
-                    view.getBtnModificar().setEnabled(true);
-                    if (view.getContainer().size() > 1) view.getBtnEliminar().setEnabled(true);
-                    else view.getBtnEliminar().setEnabled(false);
-                }
-                view.getBtnCerrar()CerrarBtn().setEnabled(true);
-                if (ViewUtil.isPrinterReady()) view.getBtnVerVoucher().setEnabled(true);
+//                if ((view.getSelectedRow() != null && view.getSelectedRow().isAnula()) ||
+//                        (bancocabecera != null && (bancocabecera.isAnula()
+//                                || (bancocabecera.isEnviado() && !Role.isPrivileged())))) {
+//                    view.getBtnModificar().setEnabled(false);
+//                    view.getBtnEliminar().setEnabled(false);
+//                } else {
+//                    view.getBtnModificar().setEnabled(true);
+//                    if (view.getContainer().size() > 1) view.getBtnEliminar().setEnabled(true);
+//                    else view.getBtnEliminar().setEnabled(false);
+//                }
+                view.getBtnCerrar().setEnabled(true);
+                //if (ViewUtil.isPrinterReady()) view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnVerVoucher().setEnabled(true);
-                if (bancocabecera != null && ((bancocabecera.isEnviado() && !Role.isPrivileged())
-                        || bancocabecera.isAnula())) {
-                    view.getBtnNewItem().setEnabled(false);
-                } else {
-                    view.getBtnNewItem().setEnabled(true);
-                }
-                view.getNewChequeBtn().setEnabled(true);
+                //view.getNewChequeBtn().setEnabled(true);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
-*/
                 break;
         }
         view.getBtnVerVoucher().setVisible(ViewUtil.isPrinterReady());

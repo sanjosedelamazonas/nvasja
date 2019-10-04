@@ -94,7 +94,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 
         // Tipo Moneda
         DataFilterUtil.bindTipoMonedaOptionGroup(view.getSelMoneda(), "codTipomoneda");
-        //view.getSelMoneda().addValueChangeListener(event -> setMonedaLogic(event.getProperty().getValue().toString().charAt(0)));
+        view.getSelMoneda().addValueChangeListener(event -> { if (event.getProperty().getValue()!=null) setMonedaLogic(event.getProperty().getValue().toString().charAt(0));});
 
         view.getNumTotalAnticipio().addBlurListener(event -> view.setTotal((Character)view.getSelMoneda().getValue()));
 
@@ -196,7 +196,71 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getBtnResponsable().addClickListener(event -> editDestino(view.getSelResponsable1()));
         view.getBtnAuxiliar().addClickListener(event -> editDestino(view.getSelCodAuxiliar()));
 
+
+
+
+        /// FILTROS APLICAR A TODOS
+        // Proyecto
+        //view.getSetAllProyecto().addValueChangeListener(e -> this.updateItemProperty("codProyecto", e.getProperty().getValue()));
+        DataFilterUtil.bindComboBox(view.getSetAllProyecto(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()), "Sel Proyecto", "txtDescproyecto");
+
+        DataFilterUtil.bindComboBox(view.getSetAllContable(), "id.codCtacontable",view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+
+        // Rubro inst
+        DataFilterUtil.bindComboBox(view.getSetAllRubrInst(), "id.codCtaespecial",
+                view.getService().getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
+                "Sel cta especial", "txtDescctaespecial");
+
+        DataFilterUtil.bindComboBox(view.getSetAllLugarGasto(), "codContraparte",view.getService().getContraparteRepo().findAll(),
+                "Sel Lugar de Gasto", "txtDescContraparte");
+
+        // Fuente
+        DataFilterUtil.bindComboBox(view.getSetAllFuente(), "codFinanciera",view.getService().getFinancieraRepo().findAll(),
+                "Sel Fuente", "txtDescfinanciera");
+
+        view.getBtnSetAll().addClickListener(clickEvent -> {
+            updateProperty(view.getSetAllProyecto(), "codProyecto");
+            updateProperty(view.getSetAllContable(), "codCtacontable");
+            updateProperty(view.getSetAllRubrInst(), "codCtaespecial");
+            updateProperty(view.getSetAllLugarGasto(), "codContraparte");
+            updateProperty(view.getSetAllFuente(), "codFinanciera");
+            //updateProperty(view.getSetAllFechaDoc(), "fecComprobantepago");
+            //updateProperty(view.getSetAllFechaPago(), "fecPagocomprobantepago");
+        });
     }
+
+
+
+
+    private void setMonedaLogic(Character moneda) {
+        updateItemProperty("codTipomoneda", moneda);
+        for (ScpRendiciondetalle item : view.getContainer().getItemIds()) {
+            ScpRendiciondetalle sr = view.getContainer().getItem(item).getBean();
+
+
+
+            //view.getContainer().getItem(item).getItemProperty(itemProperty).setValue(newVal);
+            //detsToRefresh.add(sr);
+        }
+
+    }
+
+    private void updateProperty(Field f, String itemProperty) {
+        if (!GenUtil.objNullOrEmpty(f.getValue()))
+            updateItemProperty(itemProperty, f.getValue());
+    }
+
+
+    private void updateItemProperty(String itemProperty, Object newVal) {
+        List<ScpRendiciondetalle> detsToRefresh = new ArrayList<>();
+        for (Object item : view.grid.getSelectedRows()) {
+            ScpRendiciondetalle sr = (ScpRendiciondetalle) item;
+            view.getContainer().getItem(item).getItemProperty(itemProperty).setValue(newVal);
+            detsToRefresh.add(sr);
+        }
+        detsToRefresh.forEach(e -> view.grid.refreshRows(e));
+    }
+
 
     public void addValidators() {
         // Validators
@@ -487,6 +551,8 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                 try {
                     fieldGroup.commit();
                     log.debug("Item click");
+                    view.grid.deselectAll();
+                    view.grid.select(itemClickEvent.getItemId());
                 } catch (FieldGroup.CommitException ce) {
                     Notification.show("Por favor rellena los datos necessarios en la parte a la derecha primero!", Notification.Type.ERROR_MESSAGE);
                     log.warn("Got Commit Exception: " + ce);
