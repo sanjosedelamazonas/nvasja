@@ -160,7 +160,7 @@ public class ProcUtil {
 */
     //@Transactional(readOnly = false)
 
-    private boolean existeTipoDeCambio(Date fecha, Character moneda, ScpTipocambioRep tipocambioRep) {
+    public static boolean existeTipoDeCambio(Date fecha, Character moneda, ScpTipocambioRep tipocambioRep) {
         List<ScpTipocambio> tipocambios = tipocambioRep.findById_FecFechacambio(
                 GenUtil.getBeginningOfDay(fecha));
         BigDecimal tcval = new BigDecimal(0);

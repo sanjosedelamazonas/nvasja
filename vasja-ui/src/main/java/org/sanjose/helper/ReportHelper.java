@@ -416,7 +416,7 @@ public class ReportHelper {
 		JasperPrint jasperPrint = JasperFillManager.fillReport(
 				ConfigurationUtil.getReportsSourceFolder() + reportName
 						+ ".jasper", paramMap, get().getSqlConnection());
-		JRHtmlExporter htmlExporter = new JRHtmlExporter();
+		JRExporter htmlExporter = new HtmlExporter();
 		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
 
 		htmlExporter

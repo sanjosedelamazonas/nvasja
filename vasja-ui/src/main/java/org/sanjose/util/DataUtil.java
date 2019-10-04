@@ -70,7 +70,6 @@ public class DataUtil {
             cajas.add(caja);
         }
         return cajas;
-
     }
 
     public static List<ScpPlancontable> getCajas(Date ano, ScpPlancontableRep planRepo) {

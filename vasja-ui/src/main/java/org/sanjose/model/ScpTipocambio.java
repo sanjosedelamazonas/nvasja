@@ -1,9 +1,13 @@
 package org.sanjose.model;
 
+import com.vaadin.data.fieldgroup.FieldGroup;
+import org.sanjose.authentication.CurrentUser;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 
 /**
@@ -44,6 +48,13 @@ public class ScpTipocambio implements Serializable {
 	private BigDecimal numTcveuro;
 
 	public ScpTipocambio() {
+	}
+	public void prepareToSave() {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM");
+		if (this.getCodUregistro() == null) this.setCodUregistro(CurrentUser.get());
+		if (this.getFecFregistro() == null) this.setFecFregistro(new Timestamp(System.currentTimeMillis()));
+		this.setCodUactualiza(CurrentUser.get());
+		this.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
 	}
 
 	public ScpTipocambioPK getId() {
