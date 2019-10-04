@@ -75,6 +75,7 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera> {
             cabecerasParaEnviar.add(scpBancocabecera);
         MainUI.get().getProcUtil().enviarContabilidadBanco(cabecerasParaEnviar, view.getService(),this);
         view.getGridBanco().deselectAll();
+        view.refreshData();
     }
 
     public void generateComprobante() {

@@ -50,7 +50,6 @@ public class ScpTipocambio implements Serializable {
 	public ScpTipocambio() {
 	}
 	public void prepareToSave() {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM");
 		if (this.getCodUregistro() == null) this.setCodUregistro(CurrentUser.get());
 		if (this.getFecFregistro() == null) this.setFecFregistro(new Timestamp(System.currentTimeMillis()));
 		this.setCodUactualiza(CurrentUser.get());

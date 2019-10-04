@@ -44,15 +44,15 @@
       <vaadin-label size-auto plain-text :center>
         Inicial 
       </vaadin-label>
-      <vaadin-text-field></vaadin-text-field>
-      <vaadin-text-field></vaadin-text-field>
+      <vaadin-text-field enabled="false" _id="numSaldoInicialSegBancos"></vaadin-text-field>
+      <vaadin-text-field enabled="false" _id="numSaldoInicialLibro"></vaadin-text-field>
      </vaadin-vertical-layout>
      <vaadin-vertical-layout size-auto>
       <vaadin-label size-auto plain-text :center>
         Final 
       </vaadin-label>
-      <vaadin-text-field></vaadin-text-field>
-      <vaadin-text-field height="20px"></vaadin-text-field>
+      <vaadin-text-field enabled="false" _id="numSaldoFinalSegBancos"></vaadin-text-field>
+      <vaadin-text-field enabled="false" height="20px" _id="numSaldoFinalLibro"></vaadin-text-field>
      </vaadin-vertical-layout>
     </vaadin-horizontal-layout>
     <vaadin-horizontal-layout :middle>
@@ -80,6 +80,9 @@
      <vaadin-horizontal-layout :center>
       <vaadin-button plain-text _id="btnMarcarCobrado" :center>
         Marcar cobrado 
+      </vaadin-button>
+      <vaadin-button plain-text _id="btnMarcarNoCobrado">
+        Marcar no cobrado 
       </vaadin-button>
      </vaadin-horizontal-layout>
      <vaadin-button plain-text _id="btnNuevoCheque" :center>

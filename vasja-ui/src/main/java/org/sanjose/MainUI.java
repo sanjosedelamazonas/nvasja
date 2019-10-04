@@ -13,8 +13,10 @@ import org.sanjose.authentication.AccessControl;
 import org.sanjose.authentication.LoginScreen;
 import org.sanjose.authentication.LoginScreen.LoginListener;
 import org.sanjose.authentication.MsgAccessControl;
+import org.sanjose.authentication.Role;
 import org.sanjose.repo.MsgUsuarioRep;
 import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.TipoCambioUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ProcUtil;
 import org.sanjose.views.banco.*;
@@ -27,6 +29,8 @@ import org.sanjose.views.sys.PropiedadService;
 import org.sanjose.views.sys.PropiedadView;
 import org.sanjose.views.sys.ReportesView;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 /**
  * Main UI class of the application that shows either the login screen or the
@@ -106,6 +110,8 @@ public class MainUI extends UI {
         } else {
             showMainView();
         }
+        if (Role.isPrivileged())
+            TipoCambioUtil.checkTipoCambio(new Date(), this.getBancoOperacionesView().getService().getScpTipocambioRep());
     }
 
     protected void showMainView() {

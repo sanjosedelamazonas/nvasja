@@ -204,6 +204,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         viewLogic.init(this);
         viewLogic.setSaldos(getSaldosView().getGridSaldoInicial(), true);
         viewLogic.setSaldos(getSaldosView().getGridSaldoFinal(), false);
+        viewLogic.calcFooterSums();
     }
 
     private void setItemLogic(ItemClickEvent event) {
