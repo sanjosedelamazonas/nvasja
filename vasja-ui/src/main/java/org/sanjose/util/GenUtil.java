@@ -115,6 +115,10 @@ public class GenUtil {
         return getTimeOfDay(date, "00:00:00");
     }
 
+    public static Date getBeginningOfWorkingDay(Date date) {
+        return getTimeOfDay(date, "08:00:00");
+    }
+
     public static Date getEndOfDay(Date date) {
         return getTimeOfDay(date, "23:59:59");
     }
