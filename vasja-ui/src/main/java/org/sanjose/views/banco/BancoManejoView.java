@@ -224,7 +224,12 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
     @Override
     public void selectItem(VsjItem item) {
-        gridBanco.select(item);
+        for (Object vcb : container.getItemIds()) {
+            if (((ScpBancocabecera)vcb).getCodBancocabecera().equals(((ScpBancocabecera)item).getCodBancocabecera())) {
+                gridBanco.select(vcb);
+                return;
+            }
+        }
     }
 
     @Override

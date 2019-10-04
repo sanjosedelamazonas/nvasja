@@ -229,7 +229,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
 
     @Override
     public void selectItem(VsjItem item) {
-        gridBanco.select(item);
+        if (container.containsId(item))
+            gridBanco.select(item);
     }
 
     @Override

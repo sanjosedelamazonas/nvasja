@@ -292,7 +292,12 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
     @Override
     public void selectItem(VsjItem item) {
-        gridBanco.select(item);
+        for (Object vcb : container.getItemIds()) {
+            if (((ScpBancocabecera)vcb).getCodBancocabecera().equals(((ScpBancocabecera)item).getCodBancocabecera())) {
+                gridBanco.select(vcb);
+                return;
+            }
+        }
     }
 
     @Override

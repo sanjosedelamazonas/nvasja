@@ -29,9 +29,13 @@ public class TipoCambioUtil {
 
     public static void checkTipoCambio(Date fecha, ScpTipocambioRep tipocambioRep) {
         try {
-           boolean existsUSD = ProcUtil.existeTipoDeCambio(fecha, GenUtil.USD, tipocambioRep);
-           boolean existsEUR = ProcUtil.existeTipoDeCambio(fecha, GenUtil.EUR, tipocambioRep);
-           if (!existsEUR || !existsUSD) {
+            if (fecha.before(GenUtil.getBeginningOfWorkingDay(new Date()))) {
+                log.info("Todavia no hay nuevos tipos de cambio para hoy dia");
+                return;
+            }
+            boolean existsUSD = ProcUtil.existeTipoDeCambio(fecha, GenUtil.USD, tipocambioRep);
+            boolean existsEUR = ProcUtil.existeTipoDeCambio(fecha, GenUtil.EUR, tipocambioRep);
+            if (!existsEUR || !existsUSD) {
                Map<Character, TipoCambio> rates = actualizaTipoCambioNubes();
                List<ScpTipocambio> tipocambios = tipocambioRep.findById_FecFechacambio(
                        GenUtil.getBeginningOfDay(fecha));
@@ -60,14 +64,12 @@ public class TipoCambioUtil {
                    tipocambio.setNumTcceuro(rates.get(GenUtil.EUR).getCompra());
                    tipocambioRep.save(tipocambio);
                }
-           }
-           log.info("Tipo cambio esta actual");
+            }
+            log.info("Tipo cambio esta actual");
         } catch (NumberFormatException | IOException e) {
             log.info("Problema al conseguir tipo de cambio: " + e.getMessage());
         }
-
     }
-
 
     public static Map<Character, BigDecimal> actualizaTipoCambioExchangeOpen(Date curDate) {
         Map<Character, BigDecimal> rates = new HashMap<>();

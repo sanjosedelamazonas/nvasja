@@ -41,7 +41,10 @@ public class RendicionLogic extends RendicionItemLogic {
     @Override
     public void init(RendicionOperView view) {
         super.init(view);
-        view.getBtnGuardar().addClickListener(event -> saveCabecera());
+        view.getBtnGuardar().addClickListener(event -> {
+            saveCabecera();
+            switchMode(VIEW);
+        });
         view.getBtnNewItem().addClickListener(event -> nuevoItem());
         view.getBtnEliminar().addClickListener(event -> eliminarItem());
         view.getBtnAnular().addClickListener(event -> anular());
@@ -294,7 +297,7 @@ public class RendicionLogic extends RendicionItemLogic {
                 break;
 
             case NEW:
-                view.getBtnGuardar().setEnabled(true);
+                view.getBtnGuardar().setEnabled(false);
                 view.getBtnAnular().setEnabled(true);
                 view.getBtnEliminar().setEnabled(false);
                 view.getBtnModificar().setEnabled(false);

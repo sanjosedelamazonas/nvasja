@@ -297,7 +297,12 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
 
     @Override
     public void selectItem(VsjItem item) {
-        gridCaja.select(item);
+        for (Object vcb : container.getItemIds()) {
+            if (((ScpCajabanco)vcb).getCodCajabanco().equals(((ScpCajabanco)item).getCodCajabanco())) {
+                gridCaja.select(vcb);
+                return;
+            }
+        }
     }
 
     @Override

@@ -191,7 +191,12 @@ public class CajaOperacionesView extends CajaOperacionesUI implements CajaManejo
 
     @Override
     public void selectItem(VsjItem item) {
-        gridCaja.select(item);
+        for (Object vcb : container.getItemIds()) {
+            if (((ScpCajabanco)vcb).getCodCajabanco().equals(((ScpCajabanco)item).getCodCajabanco())) {
+                gridCaja.select(vcb);
+                return;
+            }
+        }
     }
 
 

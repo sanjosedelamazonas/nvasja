@@ -11,6 +11,7 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
@@ -140,7 +141,12 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
 
     @Override
     public void selectItem(VsjItem item) {
-        gridCaja.select(item);
+        gridCaja.select(item);        for (Object vcb : container.getItemIds()) {
+            if (((ScpRendicioncabecera)vcb).getCodRendicioncabecera().equals(((ScpRendicioncabecera)item).getCodRendicioncabecera())) {
+                gridCaja.select(vcb);
+                return;
+            }
+        }
     }
 
 

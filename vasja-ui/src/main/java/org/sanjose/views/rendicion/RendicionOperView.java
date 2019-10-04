@@ -65,20 +65,15 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
             "TC €", "Ing €", "Egr €"
     };
     static final String[] HIDDEN_COLUMN_NAMES_PEN = new String[]{
-            "codCtaarea", "numDebemo", "numHabermo", "codTipomoneda", "numTcvdolar", "numTcmo"
+            "codCtaarea", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo", "codTipomoneda", "numTcvdolar", "numTcmo"
     };
 
-    static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"Item", "codProyecto", "codTercero",
-            "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
+    static final String[] HIDDEN_COLUMN_NAMES_USD = new String[]{
+            "codCtaarea", "numDebesol", "numHabersol", "numDebemo", "numHabermo", "codTipomoneda", "numTcvdolar", "numTcmo"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Item", "Proyecto", "Tercero",
-            "Cuenta", "Glosa", "Ing $", "Egr $"
-    };
-    static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"Item", "codProyecto", "codTercero",
-            "codContracta", "txtGlosaitem", "numDebemo", "numHabermo"
-    };
-    static final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{"Item", "Proyecto", "Tercero",
-            "Cuenta", "Glosa", "Ing €", "Egr €"
+
+    static final String[] HIDDEN_COLUMN_NAMES_EUR = new String[]{
+            "codCtaarea", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda", "numTcvdolar", "numTcmo"
     };
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
 
@@ -92,7 +87,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
     
     private RendicionLogic viewLogic = null;
     private BeanItemContainer<ScpRendiciondetalle> container;
-    private GeneratedPropertyContainer gpContainer;
+    //private GeneratedPropertyContainer gpContainer;
     private RendicionService RendicionService;
 
     public boolean isVistaFull = false;
@@ -191,23 +186,18 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         if (locMoneda == null) {
             return;
         }
-
         if (locMoneda.equals(PEN)) {
             order_summary_layout.removeStyleName("order-summary-layout-usd");
             order_summary_layout.removeStyleName("order-summary-layout-eur");
-            ViewUtil.setColumnNames(grid, RendicionOperView.VISIBLE_COLUMN_NAMES_PEN,
-                    RendicionOperView.VISIBLE_COLUMN_IDS_PEN, RendicionOperView.NONEDITABLE_COLUMN_IDS);
         } else if (locMoneda.equals(USD)) {
             order_summary_layout.removeStyleName("order-summary-layout-eur");
             order_summary_layout.addStyleName("order-summary-layout-usd");
-            ViewUtil.setColumnNames(grid, RendicionOperView.VISIBLE_COLUMN_NAMES_USD,
-                    RendicionOperView.VISIBLE_COLUMN_IDS_USD, RendicionOperView.NONEDITABLE_COLUMN_IDS);
         } else {
             order_summary_layout.removeStyleName("order-summary-layout-usd");
             order_summary_layout.addStyleName("order-summary-layout-eur");
-            ViewUtil.setColumnNames(grid, RendicionOperView.VISIBLE_COLUMN_NAMES_EUR,
-                    RendicionOperView.VISIBLE_COLUMN_IDS_EUR, RendicionOperView.NONEDITABLE_COLUMN_IDS);
         }
+
+        ViewUtil.filterColumnsByMoneda(grid, locMoneda);
         ViewUtil.alignMontosInGrid(grid);
         getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
 

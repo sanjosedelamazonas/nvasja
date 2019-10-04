@@ -161,6 +161,10 @@ public class Menu extends CssLayout {
             selected.addStyleName("selected");
         }
         menuPart.removeStyleName(VALO_MENU_VISIBLE);
+        // Refresh grid
+        if  (navigator.getCurrentView() instanceof NavigatorViewing) {
+            ((NavigatorViewing)navigator.getCurrentView()).refreshData();
+        }
         windowTitle.setValue(winTitle + " - " + ((Viewing)navigator.getCurrentView()).getWindowTitle());
     }
 
