@@ -3,13 +3,11 @@ package org.sanjose.util;
 import com.vaadin.ui.ComboBox;
 import org.sanjose.MainUI;
 import org.sanjose.bean.Caja;
-import org.sanjose.model.ScpFinanciera;
-import org.sanjose.model.ScpPlancontable;
-import org.sanjose.model.ScpPlancontablePK;
-import org.sanjose.model.Scp_ProyectoPorFinanciera;
+import org.sanjose.model.*;
 import org.sanjose.repo.ScpFinancieraRep;
 import org.sanjose.repo.ScpPlancontableRep;
 import org.sanjose.repo.Scp_ProyectoPorFinancieraRep;
+import org.sanjose.views.banco.BancoService;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -213,5 +211,42 @@ public class DataUtil {
             return planRepo.findByIndTipomonedaAndFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike(
                     GenUtil.getLitMoneda(moneda),'0','N', GenUtil.getYear(ano), "104%",
                     '0','N', GenUtil.getYear(ano), "106%");
+    }
+
+    public static Boolean isCobrado(ScpBancocabecera cab, BancoService service) {
+        String codMescobrado = checkMesCobrado(cab, service);
+        return isCobrado(codMescobrado);
+    }
+
+    public static Boolean isCobrado(String codMescobrado) {
+        return codMescobrado!=null && !GenUtil.strNullOrEmpty(codMescobrado.trim());
+    }
+
+    public static String checkMesCobrado(ScpBancocabecera cab, BancoService service) {
+        //ScpBancocabecera cab = detalle.getScpBancocabecera();
+        if (!cab.isEnviado())
+            return cab.getCodMescobrado();
+        // If enviado a contabilidad
+        // Check flag on ComprobanteDetalle
+        List<ScpComprobantedetalle> comprobantedetalles = service.getScpComprobantedetalleRep()
+                .findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobanteAndCodCtacontable(
+                cab.getTxtAnoproceso(), cab.getCodMes(), cab.getCodOrigenenlace(),
+                cab.getCodComprobanteenlace(), cab.getCodCtacontable());
+        for (ScpComprobantedetalle det : comprobantedetalles) {
+            if (det.getFlgChequecobrado()=='1')
+                return det.getCodMescobr();
+            break;
+        }
+        // Now check if it is not in Chequependiente..
+        List<ScpChequependiente> pendientes = service.getScpChequependienteRep().
+                findById_CodCtacontableAndId_TxtChequeAndId_CodOrigenAndId_CodComprobanteAndFecComprobante(
+                        cab.getCodCtacontable(), cab.getTxtCheque(), cab.getCodOrigenenlace(),
+                        cab.getCodComprobanteenlace(), cab.getFecFecha());
+        for (ScpChequependiente pendiente : pendientes) {
+            if (pendiente.getFlgChequecobrado()=='1')
+                return pendiente.getCodMescobrado();
+            break;
+        }
+        return null;
     }
 }

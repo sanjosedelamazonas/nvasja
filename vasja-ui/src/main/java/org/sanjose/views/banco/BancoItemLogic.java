@@ -127,6 +127,8 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getGlosaCabeza().setMaxLength(150);
         view.getCheque().setMaxLength(20);
 
+        view.getChkCobrado().setEnabled(false);
+
         // ------------ DETALLE
 
 

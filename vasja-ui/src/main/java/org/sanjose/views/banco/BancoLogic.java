@@ -13,9 +13,9 @@ import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpBancodetalle;
+import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.rendicion.RendicionLogic;
 import org.sanjose.views.sys.Viewing;
 
 import java.util.List;
@@ -166,8 +166,12 @@ public class BancoLogic extends BancoItemLogic {
         fieldGroupCabezera.bind(view.getTxtNumCombrobante(), "codComprobanteenlace");
         view.getTxtNumCombrobante().setEnabled(false);
         fieldGroupCabezera.bind(view.getChkEnviado(), "flgEnviado");
-        view.getChkCobrado().setConverter(new MesCobradoToBooleanConverter(item));
-        fieldGroupCabezera.bind(view.getChkCobrado(), "codMescobrado");
+        //view.getChkCobrado().setConverter(new MesCobradoToBooleanConverter(item));
+
+        String mesCobr = DataUtil.checkMesCobrado(item, view.getService());
+        view.getChkCobrado().setEnabled(false);
+        view.getChkCobrado().setValue(DataUtil.isCobrado(mesCobr));
+        view.getCodMescobrado().setValue(mesCobr!=null ? mesCobr : "");
         view.getChkEnviado().setEnabled(false);
 
         ViewUtil.setFieldsNullRepresentation(fieldGroupCabezera);

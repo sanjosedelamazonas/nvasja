@@ -419,11 +419,26 @@ public class ViewUtil {
         UI.getCurrent().addWindow(subWindow);
     }
 
+
+    public static void openViewInNewWindowBanco(SubWindowing component) {
+        openViewInNewWindow(component, 800, 600);
+    }
+
     public static void openViewInNewWindow(SubWindowing component) {
+        openViewInNewWindow(component, 0, 0);
+    }
+
+    public static void openViewInNewWindow(SubWindowing component, int width, int height) {
         Window subWindow = new Window();
         subWindow.setWindowMode(WindowMode.NORMAL);
-        subWindow.setWidth(100, Sizeable.Unit.PERCENTAGE);
-        subWindow.setHeight(100, Sizeable.Unit.PERCENTAGE);
+        if (width==0)
+            subWindow.setWidth(100, Sizeable.Unit.PERCENTAGE);
+        else
+            subWindow.setWidth(width, Sizeable.Unit.PIXELS);
+        if (height==0)
+            subWindow.setHeight(100, Sizeable.Unit.PERCENTAGE);
+        else
+            subWindow.setHeight(height, Sizeable.Unit.PIXELS);
         subWindow.setModal(true);
         subWindow.setContent((Component)component);
         if (!ConfigurationUtil.is("DEV_MODE"))

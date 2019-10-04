@@ -43,9 +43,11 @@ public class BancoService {
     private final EntityManager em;
     private final ScpBancocabeceraRep bancocabeceraRep;
     private final ScpBancodetalleRep bancodetalleRep;
+    private final ScpTipocambioRep scpTipocambioRep;
+    private final ScpComprobantedetalleRep scpComprobantedetalleRep;
+    private final ScpChequependienteRep scpChequependienteRep;
+
     private final Logger log = LoggerFactory.getLogger(BancoService.class);
-    private ScpTipocambioRep scpTipocambioRep;
-    private ScpComprobantedetalleRep scpComprobantedetalleRep;
 
     @Autowired
     public BancoService(ScpBancocabeceraRep bancocabeceraRep, ScpBancodetalleRep bancodetalleRep,
@@ -55,7 +57,8 @@ public class BancoService {
                         ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                         Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
                         ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo,
-                        ScpComprobantedetalleRep scpComprobantedetalleRep, ScpTipocambioRep scpTipocambioRep, EntityManager em) {
+                        ScpComprobantedetalleRep scpComprobantedetalleRep, ScpTipocambioRep scpTipocambioRep,
+                        ScpChequependienteRep scpChequependienteRep, EntityManager em) {
         this.bancocabeceraRep = bancocabeceraRep;
         this.bancodetalleRep = bancodetalleRep;
         this.configuractacajabancoRepo = configuractacajabancoRepo;
@@ -73,6 +76,7 @@ public class BancoService {
         this.tipodocumentoRepo = tipodocumentoRepo;
         this.scpComprobantedetalleRep = scpComprobantedetalleRep;
         this.scpTipocambioRep = scpTipocambioRep;
+        this.scpChequependienteRep = scpChequependienteRep;
         this.em = em;
     }
 
@@ -232,17 +236,39 @@ public class BancoService {
     }
 
     @Transactional(readOnly = false)
-    public void updateCobradoInCabecera(ScpBancocabecera bancocabecera) {
-        if (bancocabecera.isEnviado()) {
+    public void updateCobradoInCabecera(ScpBancocabecera cab) {
+        if (cab.isEnviado()) {
             // UPDATE in contabilidad
-            List<ScpComprobantedetalle> comprobantedetalles = scpComprobantedetalleRep.findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobante(
-                    bancocabecera.getTxtAnoproceso(), bancocabecera.getCodMes(), bancocabecera.getCodOrigenenlace(),
-                    bancocabecera.getCodComprobanteenlace()); //, bancocabecera.getCodCtacontable());
+            // First check in ChequePendiente if is not from previous year
+            boolean foundInPendiente = false;
+            List<ScpChequependiente> pendientes = scpChequependienteRep.
+                    findById_CodCtacontableAndId_TxtChequeAndId_CodOrigenAndId_CodComprobanteAndFecComprobante(
+                            cab.getCodCtacontable(), cab.getTxtCheque(), cab.getCodOrigenenlace(),
+                            cab.getCodComprobanteenlace(), cab.getFecFecha());
+            for (ScpChequependiente pendiente : pendientes) {
+                foundInPendiente = true;
+                if (cab.getFlgCobrado() != null && cab.getFlgCobrado()) {
+                    pendiente.setFlgChequecobrado('1');
+                    pendiente.setCodMescobrado(cab.getCodMescobrado());
+                } else {
+                    pendiente.setFlgChequecobrado('0');
+                    pendiente.setCodMescobrado("");
+                }
+                scpChequependienteRep.save(pendiente);
+            }
+            // if found in pendiente then update only there
+            if (foundInPendiente)
+                return;
+            // if however not found then change in CombrobanteDetalle
+            List<ScpComprobantedetalle> comprobantedetalles = scpComprobantedetalleRep.
+            findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobanteAndCodCtacontable(
+                        cab.getTxtAnoproceso(), cab.getCodMes(), cab.getCodOrigenenlace(),
+                        cab.getCodComprobanteenlace(), cab.getCodCtacontable());
             log.info("Will update comprodets: " + comprobantedetalles.size());
             for (ScpComprobantedetalle det : comprobantedetalles) {
-                if (bancocabecera.getFlgCobrado() != null && bancocabecera.getFlgCobrado()) {
+                if (cab.getFlgCobrado() != null && cab.getFlgCobrado()) {
                     det.setFlgChequecobrado('1');
-                    det.setCodMescobr(bancocabecera.getCodMescobrado());
+                    det.setCodMescobr(cab.getCodMescobrado());
                 } else {
                     det.setFlgChequecobrado('0');
                     det.setCodMescobr("");
@@ -250,7 +276,7 @@ public class BancoService {
                 scpComprobantedetalleRep.save(det);
             }
         }
-        bancocabeceraRep.save(bancocabecera);
+        bancocabeceraRep.save(cab);
     }
 
     @Transactional(readOnly = false)
@@ -343,5 +369,13 @@ public class BancoService {
 
     public EntityManager getEm() {
         return em;
+    }
+
+    public ScpComprobantedetalleRep getScpComprobantedetalleRep() {
+        return scpComprobantedetalleRep;
+    }
+
+    public ScpChequependienteRep getScpChequependienteRep() {
+        return scpChequependienteRep;
     }
 }

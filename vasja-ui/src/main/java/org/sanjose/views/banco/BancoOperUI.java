@@ -40,6 +40,7 @@ public class BancoOperUI extends CssLayout {
     protected HorizontalLayout datosPrincipalesHorizLayout;
     protected TextField numVoucher;
     protected CssCheckBox chkCobrado;
+    protected TextField codMescobrado;
     protected CssCheckBox chkEnviado;
     protected TextField txtOrigen;
     protected TextField txtNumCombrobante;

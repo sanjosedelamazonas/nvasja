@@ -58,7 +58,6 @@ public class RendicionOperUI extends CssLayout {
     protected FormLayout order_summary_layout;
     protected Label order_heading;
     protected Grid grid;
-    protected Label saldoTotal;
     protected FormLayout billing_form2;
     protected TextField numItem;
     protected TextField txtGlosaDetalle;

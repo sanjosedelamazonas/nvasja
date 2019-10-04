@@ -40,7 +40,7 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
         view.getBtnEliminar().addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
         saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.getFechaDesde().getValue(), view.getFechaHasta().getValue(), null));
 
-        GridContextMenu gridContextMenu = new GridContextMenu(view.getGridCaja());
+//        GridContextMenu gridContextMenu = new GridContextMenu(view.getGridCaja());
 //        gridContextMenu.addGridBodyContextMenuListener(e -> {
 //            gridContextMenu.removeItems();
 //            final Object itemId = e.getItemId();

@@ -55,7 +55,7 @@ public class RendicionLogic extends RendicionItemLogic {
     }
 
     private void anular() {
-        if (view.grid.getSelectedRow() != null) {
+        if (!view.grid.getSelectedRows().isEmpty()) {
             viewComprobante();
             fieldGroupCabezera.discard();
         } else {
@@ -128,9 +128,8 @@ public class RendicionLogic extends RendicionItemLogic {
     }
 
     public void viewComprobante() {
-        if (view.getSelectedRow() != null) {
-            //clearSaldos();
-            bindForm(view.getSelectedRow());
+        if (!view.grid.getSelectedRows().isEmpty()) {
+            bindForm((ScpRendiciondetalle)view.grid.getSelectedRows().toArray()[0]);
         }
         //switchMode(VIEW);
         switchMode(EDIT);

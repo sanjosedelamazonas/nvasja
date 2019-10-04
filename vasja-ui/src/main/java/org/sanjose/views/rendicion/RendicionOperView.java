@@ -201,11 +201,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         ViewUtil.alignMontosInGrid(grid);
         getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
 
-        saldoTotal.setContentMode(ContentMode.HTML);
-
         BigDecimal gastoTotal = calcTotal(locMoneda);
-        saldoTotal.setValue("Total:" +
-                "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)) + gastoTotal.toString() + "</span>");
         getTxtGastoTotal().setValue(GenUtil.numFormat(gastoTotal));
         NumberFormat nf = NumberFormat.getInstance(ConfigurationUtil.getLocale());
         try {
@@ -322,10 +318,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
 
     public Grid getGrid() {
         return grid;
-    }
-
-    public Label getSaldoTotal() {
-        return saldoTotal;
     }
 
     public TextField getNumItem() {

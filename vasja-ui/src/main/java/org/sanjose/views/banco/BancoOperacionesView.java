@@ -1,8 +1,12 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.sort.SortOrder;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.SelectionEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -15,9 +19,7 @@ import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.MainUI;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
-import org.sanjose.model.ScpPlancontable;
-import org.sanjose.model.ScpBancocabecera;
-import org.sanjose.model.VsjItem;
+import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.GridViewing;
@@ -42,21 +44,9 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
     }
     private final BancoOperacionesLogic viewLogic = new BancoOperacionesLogic();
     private final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{
-            "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
+            "checkMesCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
              "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol",
-            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"
-    };
-    private final String[] VISIBLE_COLUMN_IDS_USD = new String[]{
-            "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
-             "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
-         "numDebedolar", "numHaberdolar",
-            "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"
-    };
-    private final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{
-            "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
-             "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
-             "numDebemo", "numHabermo",
             "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"
     };
     private final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
@@ -65,18 +55,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
             "Ing S/.", "Egr S/.",
             "Orig", "Comprob.", "Env", "Anul."
     };
-    private final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{
-            "Cobr.", "Fecha", "Numero", "Cuenta",
-            "Auxiliar", "Cheque", "Glosa",
-             "Ing $", "Egr $",
-            "Orig", "Comprob.", "Env", "Anul."
-    };
-    private final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{
-            "Cobr.", "Fecha", "Numero", "Cuenta",
-            "Auxiliar", "Cheque", "Glosa",
-            "Ing €", "Egr €",
-            "Orig", "Comprob.", "Env", "Anul."
-    };
+
     private final int[] FILTER_WIDTH = new int[]{
             2, 4, 4, 4,
             10, 6, 14,
@@ -94,6 +73,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
 
     private BancoService bancoService;
 
+    private GeneratedPropertyContainer gpContainer;
+
     public BancoOperacionesView(BancoService bancoService) {
         this.bancoService = bancoService;
     }
@@ -106,13 +87,35 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         //noinspection unchecked
         container = new BeanItemContainer(ScpBancocabecera.class, getService().findByFecFechaBetween(filterInitialDate, new Date()));
         container.addNestedContainerBean("scpDestino");
-        gridBanco.setContainerDataSource(container);
+
+        gpContainer = new GeneratedPropertyContainer(container);
+        gpContainer.addGeneratedProperty("checkMesCobrado",
+                new PropertyValueGenerator<Boolean>() {
+                    @Override
+                    public Boolean getValue(Item item, Object itemId,
+                                           Object propertyId) {
+
+                        return DataUtil.isCobrado((ScpBancocabecera) ((BeanItem)item).getBean(), getService());
+                        //return String.valueOf(((ScpBancodetallePK) item.getItemProperty("id").getValue()).getNumItem());
+                    }
+
+                    @Override
+                    public Class<Boolean> getType() {
+                        return Boolean.class;
+                    }
+                });
+
+
+        gridBanco.setContainerDataSource(gpContainer);
         gridBanco.setEditorEnabled(false);
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
 
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS_PEN);
 
         ViewUtil.alignMontosInGrid(gridBanco);
+
+        gridBanco.getColumn("txtGlosa").setMaximumWidth(200);
+        gridBanco.getColumn("scpDestino.txtNombredestino").setMaximumWidth(130);
 
         gridBanco.setSelectionMode(SelectionMode.SINGLE);
 
@@ -143,9 +146,9 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         gridBanco.setEditorEnabled(true);
         gridBanco.setEditorBuffered(true);
 
-        gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
-        gridBanco.getColumn("flgCobrado").setEditable(true);
-        gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        //gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
+        //gridBanco.getColumn("flgCobrado").setEditable(true);
+        gridBanco.getColumn("checkMesCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
         // Add filters
         ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS_PEN, FILTER_WIDTH, null);

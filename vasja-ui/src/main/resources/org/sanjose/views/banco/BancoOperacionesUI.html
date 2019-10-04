@@ -7,7 +7,7 @@
   <meta name="package-mapping" content="org_sanjose_views_banco:org.sanjose.views.banco">
  </head>
  <body>
-  <vaadin-vertical-layout id="verticalTopMain" width-auto height="962px" margin>
+  <vaadin-vertical-layout id="verticalTopMain" height="962px" margin>
    <vaadin-horizontal-layout spacing height="40px" margin _id="horizontalFechasLayout" :middle :center>
     <vaadin-label size-auto plain-text>
       Operaciones desde 
@@ -45,9 +45,9 @@
      <option>Option 3</option>
     </vaadin-combo-box>
    </vaadin-horizontal-layout>
-   <vaadin-horizontal-layout width="1500px" height-full :expand>
-    <vaadin-grid editor-cancel-caption="Anular" width="1000px" height="900px" _id="gridBanco"></vaadin-grid>
-    <org_sanjose_views_banco-banco-oper-view width="500px" height="900px" _id="bancoOperView" :right></org_sanjose_views_banco-banco-oper-view>
+   <vaadin-horizontal-layout size-full :expand>
+    <vaadin-grid editor-cancel-caption="Anular" height="900px" _id="gridBanco" :expand></vaadin-grid>
+    <org_sanjose_views_banco-banco-oper-view width="550px" height="900px" _id="bancoOperView" :middle :right></org_sanjose_views_banco-banco-oper-view>
    </vaadin-horizontal-layout>
   </vaadin-vertical-layout>
  </body>

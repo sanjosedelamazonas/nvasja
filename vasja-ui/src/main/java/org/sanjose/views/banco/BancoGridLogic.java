@@ -34,14 +34,14 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera> {
         view.clearSelection();
         view.getBancoOperView().getViewLogic().nuevoCheque();
         view.getBancoOperView().getViewLogic().setNavigatorView(view);
-        ViewUtil.openViewInNewWindow(view.getBancoOperView());
+        ViewUtil.openViewInNewWindowBanco(view.getBancoOperView());
         //MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
     }
 
     public void editarCheque(ScpBancocabecera vcb) {
         view.getBancoOperView().getViewLogic().editarCheque(vcb);
         view.getBancoOperView().getViewLogic().setNavigatorView(view);
-        ViewUtil.openViewInNewWindow(view.getBancoOperView());
+        ViewUtil.openViewInNewWindowBanco(view.getBancoOperView());
         //MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
     }
 

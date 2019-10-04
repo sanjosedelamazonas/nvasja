@@ -72,7 +72,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosaDetalle, serieDoc, numDoc,
     };
-    private final Field[] cabezeraFields = new Field[]{chkCobrado, dataFechaComprobante, selCuenta, selCodAuxCabeza,
+    private final Field[] cabezeraFields = new Field[]{/*chkCobrado, */ dataFechaComprobante, selCuenta, selCodAuxCabeza,
             glosaCabeza, cheque};
     private BancoLogic viewLogic = null;
     private BeanItemContainer<ScpBancodetalle> container;
@@ -418,6 +418,10 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
 
     public HorizontalLayout getTopButtons() {
         return topButtons;
+    }
+
+    public TextField getCodMescobrado() {
+        return codMescobrado;
     }
 
     @Override
