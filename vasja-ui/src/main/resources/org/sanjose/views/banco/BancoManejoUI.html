@@ -34,7 +34,7 @@
         Saldo de cuenta: 
       </vaadin-label>
       <vaadin-label size-auto plain-text :right>
-        Según banco: 
+        Saldo del mes X seg banco: 
       </vaadin-label>
       <vaadin-label size-auto plain-text :right>
         Segun libro bancos: 
@@ -78,16 +78,25 @@
       </vaadin-combo-box>
      </vaadin-horizontal-layout>
      <vaadin-horizontal-layout :center>
+      <vaadin-combo-box input-prompt="Mes cobrado" _id="selMesCobrado">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
       <vaadin-button plain-text _id="btnMarcarCobrado" :center>
         Marcar cobrado 
       </vaadin-button>
+     </vaadin-horizontal-layout>
+     <vaadin-horizontal-layout>
       <vaadin-button plain-text _id="btnMarcarNoCobrado">
         Marcar no cobrado 
       </vaadin-button>
      </vaadin-horizontal-layout>
-     <vaadin-button plain-text _id="btnNuevoCheque" :center>
-       Nuevo cheque 
-     </vaadin-button>
+     <vaadin-horizontal-layout>
+      <vaadin-button plain-text _id="btnNuevoCheque">
+        Nuevo cheque 
+      </vaadin-button>
+     </vaadin-horizontal-layout>
     </vaadin-horizontal-layout>
     <vaadin-horizontal-layout size-full :expand>
      <vaadin-horizontal-layout>
