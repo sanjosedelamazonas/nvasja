@@ -20,6 +20,7 @@
 		</locales>
 		-->
 	</fontFamily>
+		
 	
 	<fontFamily name="Arial Black">
 	  <normal>net/sf/jasperreports/fonts/arial/ariblk.ttf</normal>
@@ -42,4 +43,18 @@
 			<export key="net.sf.jasperreports.xhtml">Arial, Helvetica, sans-serif</export>
 		</exportFonts>
 	</fontFamily>
+	
+	<!--<fontFamily name="Calibri">
+		<normal>net/sf/jasperreports/fonts/calibri/calibri.ttf</normal>
+		<bold>net/sf/jasperreports/fonts/calibri/calibrib.ttf</bold>
+		<italic>net/sf/jasperreports/fonts/calibri/calibrii.ttf</italic>
+		<boldItalic>net/sf/jasperreports/fonts/calibri/calibriz.ttf</boldItalic>
+		<pdfEncoding>Identity-H</pdfEncoding>
+		<pdfEmbedded>true</pdfEmbedded>
+		<exportFonts>
+			<export key="net.sf.jasperreports.html">Calibri</export>
+			<export key="net.sf.jasperreports.xhtml">Calibri</export>
+		</exportFonts>
+	</fontFamily>-->
+
 </fontFamilies>

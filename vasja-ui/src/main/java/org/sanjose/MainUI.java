@@ -4,6 +4,8 @@ import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Viewport;
 import com.vaadin.annotations.Widgetset;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -16,7 +18,7 @@ import org.sanjose.authentication.MsgAccessControl;
 import org.sanjose.authentication.Role;
 import org.sanjose.repo.MsgUsuarioRep;
 import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.TipoCambioUtil;
+import org.sanjose.util.TipoCambio;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ProcUtil;
 import org.sanjose.views.banco.*;
@@ -30,6 +32,7 @@ import org.sanjose.views.sys.PropiedadView;
 import org.sanjose.views.sys.ReportesView;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -66,6 +69,8 @@ public class MainUI extends UI {
     private ProcUtil procUtil;
     private AccessControl accessControl;
     private MainScreen mainScreen;
+
+    private static final Logger log = LoggerFactory.getLogger(MainUI.class);
 
     @Autowired
     private MainUI(PropiedadService propiedadService,
@@ -110,8 +115,14 @@ public class MainUI extends UI {
         } else {
             showMainView();
         }
-        if (Role.isPrivileged())
-            TipoCambioUtil.checkTipoCambio(new Date(), this.getBancoOperacionesView().getService().getScpTipocambioRep());
+        if (Role.isPrivileged()) {
+            try {
+                TipoCambio.checkTipoCambio(new Date(), this.getBancoOperacionesView().getService().getScpTipocambioRep());
+            } catch (TipoCambio.TipoCambioNoExiste e) {
+                log.info(e.getMessage());
+            }
+        }
+
     }
 
     protected void showMainView() {

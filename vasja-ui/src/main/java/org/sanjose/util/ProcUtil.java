@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
 import javax.persistence.StoredProcedureQuery;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -178,7 +178,7 @@ public class ProcUtil {
     public void enviarContabilidad(Collection<Object> vcbs, ComprobanteService service, ItemsRefreshing<ScpCajabanco> itemsRefreshing) {
         Set<ScpCajabanco> cajabancosAEnviar = new HashSet<>();
         try{
-            Set<ScpCajabanco> cajaBancosFaltaTipoCambio = new HashSet<>();
+            Map<ScpCajabanco, String> cajaBancosFaltaTipoCambio = new HashMap<>();
             for (Object objVcb : vcbs) {
                 ScpCajabanco vcb = (ScpCajabanco) objVcb;
                 if (vcb.isEnviado()) {
@@ -188,14 +188,18 @@ public class ProcUtil {
                 cajabancosAEnviar.add(vcb);
                 // Falta Tipo de cambio?
                 if (!existeTipoDeCambio(vcb.getFecFecha(), vcb.getCodTipomoneda(), service.getTipocambioRep())) {
-                    cajaBancosFaltaTipoCambio.add(vcb);
+                    try {
+                        TipoCambio.checkTipoCambio(vcb.getFecFecha(), service.getTipocambioRep());
+                    } catch (TipoCambio.TipoCambioNoExiste e) {
+                        cajaBancosFaltaTipoCambio.put(vcb, e.getMessage());
+                    }
                 }
             }
             if (!cajaBancosFaltaTipoCambio.isEmpty()) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 StringBuffer sb = new StringBuffer();
-                cajaBancosFaltaTipoCambio.forEach(scpCajabanco -> {
-                    sb.append("\n").append(scpCajabanco.getTxtCorrelativo()).append(" fecha: ").append(sdf.format(scpCajabanco.getFecFecha()));});
+                for (ScpCajabanco scpCajabanco : cajaBancosFaltaTipoCambio.keySet())
+                    sb.append("\n").append(scpCajabanco.getTxtCorrelativo()).append(" fecha: ").append(sdf.format(scpCajabanco.getFecFecha()));
                 MessageBox
                         .createQuestion()
                         .withCaption("Falta tipo de cambio")
@@ -234,7 +238,7 @@ public class ProcUtil {
     public void enviarContabilidadBanco(Collection<Object> vcbs, BancoService service, ItemsRefreshing<ScpBancocabecera> itemsRefreshing) {
         try{
             Set<ScpBancocabecera> bancosAEnviar = new HashSet<>();
-            Set<ScpBancocabecera> bancosFaltaTipoCambio = new HashSet<>();
+            Map<ScpBancocabecera, String> bancosFaltaTipoCambio = new HashMap<>();
             for (Object objVcb : vcbs) {
                 curBancoCabecera = (ScpBancocabecera) objVcb;
                 if (curBancoCabecera.isEnviado()) {
@@ -244,18 +248,25 @@ public class ProcUtil {
                 bancosAEnviar.add(curBancoCabecera);
                 // Falta Tipo de cambio?
                 if (!existeTipoDeCambio(curBancoCabecera.getFecFecha(), curBancoCabecera.getCodTipomoneda(), service.getScpTipocambioRep())) {
-                    bancosFaltaTipoCambio.add(curBancoCabecera);
+                    try {
+                        TipoCambio.checkTipoCambio(curBancoCabecera.getFecFecha(), service.getScpTipocambioRep());
+                    } catch (TipoCambio.TipoCambioNoExiste e) {
+                        bancosFaltaTipoCambio.put(curBancoCabecera, e.getMessage());
+                    }
                 }
             }
             if (!bancosFaltaTipoCambio.isEmpty()) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 StringBuffer sb = new StringBuffer();
-                bancosFaltaTipoCambio.forEach(scpBanco -> {
-                    sb.append("\n").append(scpBanco.getTxtCorrelativo()).append(" fecha: ").append(sdf.format(scpBanco.getFecFecha()));});
+                for (ScpBancocabecera cab : bancosFaltaTipoCambio.keySet())
+                    sb.append("\n").append(cab.getTxtCorrelativo()).append(" fecha: ").append(sdf.format(cab.getFecFecha()))
+                            .append("\n")
+                            .append(bancosFaltaTipoCambio.get(cab));
                 MessageBox
                         .createQuestion()
                         .withCaption("Falta tipo de cambio")
-                        .withMessage("Falta tipo de cambio para operaciones: " + sb.toString() +"\n?Continuar o ignorar esta operacion?\n")
+                        .withMessage("No se podia conseguir el tipo de cambio para operaciones: " + sb.toString()
+                                + "\n?Continuar o ignorar esta operacion?\n")
                         .withYesButton(() -> {
                             try {
                                 itemsRefreshing.refreshItems(enviarContabilidadBancoInTransaction(bancosAEnviar, service));

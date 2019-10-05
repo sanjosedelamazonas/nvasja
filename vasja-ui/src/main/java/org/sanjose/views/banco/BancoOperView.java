@@ -115,7 +115,8 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
             @Override
             public void select(SelectionEvent selectionEvent) {
                 if (selectionEvent.getSelected().isEmpty()) return;
-                viewLogic.viewComprobante();
+                //viewLogic.viewComprobante();
+                viewLogic.editarComprobante();
             }
         });
     }

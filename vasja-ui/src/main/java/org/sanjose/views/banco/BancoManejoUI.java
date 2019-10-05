@@ -48,4 +48,5 @@ public class BancoManejoUI extends VerticalLayout {
     public BancoManejoUI() {
         Design.read(this);
     }
+
 }

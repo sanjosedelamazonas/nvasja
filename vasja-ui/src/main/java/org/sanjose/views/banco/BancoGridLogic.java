@@ -10,6 +10,7 @@ import org.sanjose.authentication.Role;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpPlancontable;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
@@ -17,6 +18,7 @@ import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,12 +36,16 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera> {
         view.getBancoOperView().getViewLogic().setNavigatorView(view);
     }
 
-    public void nuevoCheque() {
+    public void nuevoCheque(ScpPlancontable bancoCuenta) {
         view.clearSelection();
-        view.getBancoOperView().getViewLogic().nuevoCheque();
+        view.getBancoOperView().getViewLogic().nuevoCheque(bancoCuenta);
         view.getBancoOperView().getViewLogic().setNavigatorView(view);
         ViewUtil.openViewInNewWindowBanco(view.getBancoOperView());
         //MainUI.get().getNavigator().navigateTo(BancoOperView.VIEW_NAME);
+    }
+
+    public void nuevoCheque() {
+        nuevoCheque(null);
     }
 
     public void editarCheque(ScpBancocabecera vcb) {
@@ -75,11 +81,16 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera> {
 
     public void enviarContabilidad(ScpBancocabecera scpBancocabecera) {
         Collection<Object> cabecerasParaEnviar = view.getSelectedRows();
-        if (cabecerasParaEnviar.isEmpty() && scpBancocabecera!=null)
+        Collection<ScpBancocabecera> cabecerasParaRefresh = new ArrayList<>();
+        if (cabecerasParaEnviar.isEmpty() && scpBancocabecera!=null) {
             cabecerasParaEnviar.add(scpBancocabecera);
+            cabecerasParaRefresh.add(scpBancocabecera);
+        }
+        cabecerasParaEnviar.forEach(e -> cabecerasParaRefresh.add((ScpBancocabecera)e));
         MainUI.get().getProcUtil().enviarContabilidadBanco(cabecerasParaEnviar, view.getService(),this);
         view.getGridBanco().deselectAll();
-        view.refreshData();
+        //view.getGridBanco().refreshAllRows();
+        refreshItems(cabecerasParaRefresh);
     }
 
     public void generateComprobante() {
