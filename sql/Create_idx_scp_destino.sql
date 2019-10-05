@@ -1,8 +1,3 @@
-SET ANSI_PADDING ON
-
-
-GO
-
 CREATE NONCLUSTERED INDEX [TipoDestino] ON [dbo].[scp_destino]
 (
 	[ind_tipodestino] ASC
