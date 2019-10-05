@@ -50,7 +50,7 @@ public class BancoManejoLogic extends BancoGridLogic implements Serializable, Sa
     }
 
     public void init() {
-        mView.btnNuevoCheque.addClickListener(e -> nuevoCheque());
+        mView.btnNuevoCheque.addClickListener(e -> nuevoCheque(mView.getBancoCuenta()));
         mView.btnEditar.addClickListener(e -> {
             for (Object obj : mView.getSelectedRows()) {
                 editarCheque((ScpBancocabecera) obj);
@@ -74,6 +74,12 @@ public class BancoManejoLogic extends BancoGridLogic implements Serializable, Sa
             ReportHelper.generateDiarioBanco(mView.getSelRepMoneda().getValue().toString().charAt(0),
                     mView.fechaDesde.getValue(), mView.fechaHasta.getValue(), null);
         });
+        mView.getBtnEliminar().addClickListener(clickEvent -> {
+            for (Object row : mView.getSelectedRows()) {
+                anularCheque((ScpBancocabecera)row);
+                return;
+            }
+        });
         mView.getBtnMarcarCobrado().addClickListener(clickEvent -> { setMesCobrado(true); });
         mView.getBtnMarcarNoCobrado().addClickListener(clickEvent -> { setMesCobrado(false); });
 
@@ -82,10 +88,10 @@ public class BancoManejoLogic extends BancoGridLogic implements Serializable, Sa
             gridContextMenu.removeItems();
             final Object itemId = e.getItemId();
             if (itemId == null) {
-                gridContextMenu.addItem("Nuevo cheque", k -> nuevoCheque());
+                gridContextMenu.addItem("Nuevo cheque", k -> nuevoCheque(mView.getBancoCuenta()));
             } else {
                 gridContextMenu.addItem("Ver detalle", k -> editarCheque((ScpBancocabecera) itemId));
-                gridContextMenu.addItem("Nuevo cheque", k -> nuevoCheque());
+                gridContextMenu.addItem("Nuevo cheque", k -> nuevoCheque(mView.getBancoCuenta()));
                 if (!((ScpBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
                     gridContextMenu.addItem("Anular cheque", k -> anularCheque((ScpBancocabecera) itemId));
                 }

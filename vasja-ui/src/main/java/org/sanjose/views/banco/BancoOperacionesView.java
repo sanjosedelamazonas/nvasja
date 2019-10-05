@@ -209,52 +209,11 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
             //viewLogic.setSaldoDelDia();
         });
 
-
-        /*
-        selFiltroCuenta.addValueChangeListener(e -> {
-            if (e.getProperty().getValue() != null) {
-                container.removeContainerFilters("codCtacontable");
-                container.addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
-                ScpPlancontable cuenta = getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
-                        GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
-                gridBanco.getColumn("numHabersol").setHidden(true);
-                gridBanco.getColumn("numDebesol").setHidden(true);
-                gridBanco.getColumn("numHaberdolar").setHidden(true);
-                gridBanco.getColumn("numDebedolar").setHidden(true);
-                gridBanco.getColumn("numHabermo").setHidden(true);
-                gridBanco.getColumn("numDebemo").setHidden(true);
-                switch (GenUtil.getNumMoneda(cuenta.getIndTipomoneda()).charValue()) {
-                    case '0':
-                        gridBanco.getColumn("numHabersol").setHidden(false);
-                        gridBanco.getColumn("numDebesol").setHidden(false);
-                        break;
-                    case '1':
-                        gridBanco.getColumn("numHaberdolar").setHidden(false);
-                        gridBanco.getColumn("numDebedolar").setHidden(false);
-                        break;
-                    case '2':
-                        gridBanco.getColumn("numHabermo").setHidden(false);
-                        gridBanco.getColumn("numDebemo").setHidden(false);
-                        break;
-                }
-                selRepMoneda.select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
-            } else {
-                gridBanco.getColumn("numHabersol").setHidden(false);
-                gridBanco.getColumn("numDebesol").setHidden(false);
-                gridBanco.getColumn("numHaberdolar").setHidden(false);
-                gridBanco.getColumn("numDebedolar").setHidden(false);
-                gridBanco.getColumn("numHabermo").setHidden(false);
-                gridBanco.getColumn("numDebemo").setHidden(false);
-                container.removeContainerFilters("codCtacontable");
-                selRepMoneda.select('0');
-            }
-            //viewLogic.setSaldoDelDia();
-        });*/
         selFiltroCuenta.setPageLength(20);
         bancoOperView.init(MainUI.get().getBancoManejoView().getService());
         // Make the top buttons panel invisible if in this grid view
         bancoOperView.getTopButtons().setVisible(false);
-        bancoOperView.getViewLogic().nuevoCheque();
+        bancoOperView.getViewLogic().nuevoCheque(null);
         BancoOperacionesView bancoOperacionesView = this;
         gridBanco.addSelectionListener(new SelectionEvent.SelectionListener() {
             @Override

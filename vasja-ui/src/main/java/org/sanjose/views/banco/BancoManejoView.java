@@ -359,4 +359,11 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         return fecMesCobrado;
     }
 
+    public Button getBtnEliminar() {
+        return btnEliminar;
+    }
+
+    public ScpPlancontable getBancoCuenta() {
+        return bancoCuenta;
+    }
 }

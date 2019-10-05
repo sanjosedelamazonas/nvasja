@@ -233,7 +233,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 
 
     private void setMonedaLogic(Character moneda) {
-        updateItemProperty("codTipomoneda", moneda);
+        //updateItemProperty("codTipomoneda", moneda);
         for (ScpRendiciondetalle item : view.getContainer().getItemIds()) {
             ScpRendiciondetalle sr = view.getContainer().getItem(item).getBean();
 

@@ -13,6 +13,7 @@ import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpBancodetalle;
+import org.sanjose.model.ScpPlancontable;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
@@ -41,7 +42,7 @@ public class BancoLogic extends BancoItemLogic {
     @Override
     public void init(BancoOperView view) {
         super.init(view);
-        view.getNewChequeBtn().addClickListener(ev -> nuevoCheque());
+        view.getNewChequeBtn().addClickListener(ev -> nuevoCheque(null));
         view.getGuardarBtn().addClickListener(event -> saveCabecera());
         view.getNewItemBtn().addClickListener(event -> nuevoComprobante());
         view.getModificarBtn().addClickListener(event -> editarComprobante());
@@ -69,9 +70,11 @@ public class BancoLogic extends BancoItemLogic {
         }
     }
 
-    public void nuevoCheque() {
+    public void nuevoCheque(ScpPlancontable bancoCuenta) {
         switchMode(NEW);
         editarCheque(new ScpBancocabecera());
+        if (bancoCuenta!=null)
+            view.getSelCuenta().select(bancoCuenta.getId().getCodCtacontable());
     }
 
     private void clearFields() {
@@ -129,7 +132,7 @@ public class BancoLogic extends BancoItemLogic {
         }
     }
 
-    private void editarComprobante() {
+    public void editarComprobante() {
         if (view.getSelectedRow() != null
                 && !view.getSelectedRow().isAnula()) {
             clearSaldos();
@@ -277,6 +280,7 @@ public class BancoLogic extends BancoItemLogic {
     private void switchMode(Viewing.Mode newMode) {
         switch (newMode) {
             case EMPTY:
+                view.getAnularChequeBtn().setEnabled(false);
                 view.getGuardarBtn().setEnabled(false);
                 view.getAnularBtn().setEnabled(false);
                 view.getEliminarBtn().setEnabled(false);
@@ -307,6 +311,7 @@ public class BancoLogic extends BancoItemLogic {
                 break;
 
             case EDIT:
+                view.getAnularChequeBtn().setEnabled(true);
                 view.getGuardarBtn().setEnabled(true);
                 view.getAnularBtn().setEnabled(true);
                 if (view.getContainer().size() > 1) view.getEliminarBtn().setEnabled(true);
@@ -322,6 +327,7 @@ public class BancoLogic extends BancoItemLogic {
                 break;
 
             case VIEW:
+                view.getAnularChequeBtn().setEnabled(true);
                 view.getGuardarBtn().setEnabled(false);
                 view.getAnularBtn().setEnabled(false);
                 if ((view.getSelectedRow() != null && view.getSelectedRow().isAnula()) ||
