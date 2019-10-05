@@ -159,7 +159,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
     }
 
     public void setEnableDetalleFields(boolean enabled) {
-        log.debug("enabling detalle fields");
+      //  log.debug("enabling detalle fields");
         for (Field f : allFields) f.setEnabled(enabled);
         btnResponsable.setEnabled(enabled);
         btnDestino.setEnabled(enabled);
@@ -178,7 +178,6 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
     private BigDecimal calcTotal(Character locMoneda) {
         BigDecimal total = new BigDecimal(0.00);
         for (ScpBancodetalle cajabanco : container.getItemIds()) {
-            log.debug("calcTotal: " + cajabanco);
             if (locMoneda.equals(PEN)) {
                 total = total.add(cajabanco.getNumDebesol()).subtract(cajabanco.getNumHabersol());
             } else if (locMoneda.equals(USD))
@@ -190,11 +189,8 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
     }
 
     public void setTotal(Character locMoneda) {
+        log.debug("Setting total");
         if (locMoneda == null) {
-            //viewLogic.item.getCodTipomoneda()
-//            log.debug("in setSaldo - moneda = NULL");
-//            saldoTotal.setValue("Total:" +
-//                    "<span class=\"order-sum\"> S./ 0.00</span>");
             getMontoTotal().setValue("0.00");
             return;
         }
@@ -216,11 +212,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
         }
         ViewUtil.alignMontosInGrid(gridBanco);
         getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
-
-//        saldoTotal.setContentMode(ContentMode.HTML);
-//        saldoTotal.setValue("Total:" +
-//                "<span class=\"order-sum\"> " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)) + calcTotal(locMoneda).toString() + "</span>");
-        getMontoTotal().setValue(calcTotal(locMoneda).toString());
+        getMontoTotal().setValue(GenUtil.numFormat(calcTotal(locMoneda)));
         getMontoTotal().setCaption("Total " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)));
     }
 
@@ -422,6 +414,10 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
 
     public TextField getCodMescobrado() {
         return codMescobrado;
+    }
+
+    public Button getAnularChequeBtn() {
+        return anularChequeBtn;
     }
 
     @Override

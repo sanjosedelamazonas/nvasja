@@ -99,9 +99,9 @@ BEGIN
 	Group By a.cod_tipomoneda,a.cod_tercero
 END
 
-Print 'Inicial  PEN:'+CONVERT(char(14),@SaldoPEN_inicial ,121)
-+' USD:'+CONVERT(char(14),@SaldoUSD_inicial ,121)
-+' EUR:'+CONVERT(char(14),@SaldoEUR_inicial ,121)
+--Print 'Inicial  PEN:'+CONVERT(char(14),@SaldoPEN_inicial ,121)
+--+' USD:'+CONVERT(char(14),@SaldoUSD_inicial ,121)
+--+' EUR:'+CONVERT(char(14),@SaldoEUR_inicial ,121)
 END
 /*
 

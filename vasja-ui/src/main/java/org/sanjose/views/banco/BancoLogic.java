@@ -50,13 +50,16 @@ public class BancoLogic extends BancoItemLogic {
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
         view.getImprimirVoucherBtn().addClickListener(event -> ViewUtil.printComprobante(beanItem.getBean()));
         view.getVerVoucherBtn().addClickListener(event -> ReportHelper.generateComprobante(beanItem.getBean()));
+        view.getAnularChequeBtn().addClickListener(clickEvent -> anularCheque(bancocabecera));
         switchMode(EMPTY);
     }
 
     private void anularComprobante() {
         if (view.gridBanco.getSelectedRow() != null) {
-            viewComprobante();
-            fieldGroupCabezera.discard();
+            //fieldGroupCabezera.discard();
+            //fieldGroup.discard();
+            // Load again from disk
+            loadDetallesToGrid(bancocabecera);
         } else {
             clearFields();
             if (view.getContainer().getItemIds().isEmpty())
@@ -80,17 +83,18 @@ public class BancoLogic extends BancoItemLogic {
         view.getContainer().removeAllItems();
         view.gridBanco.select(null);
         moneda = vsjBancocabecera.getCodTipomoneda();
+        isLoading=true;
         clearFields();
         //clearSaldos();
         view.setTotal(null);
         item = null;
         bancocabecera = vsjBancocabecera;
         bindForm(vsjBancocabecera);
-        addValidators();
         loadDetallesToGrid(vsjBancocabecera).ifPresent(bancodet -> {
             view.gridBanco.select(bancodet);
-            viewComprobante();
+            //viewComprobante();
         });
+        addValidators();
         if (vsjBancocabecera.getCodBancocabecera()!=null)
             switchMode(VIEW);
     }
@@ -114,7 +118,7 @@ public class BancoLogic extends BancoItemLogic {
         switchMode(NEW);
         if (bancocabecera != null) {
             // cabecera in edit mode
-            log.debug("nuevo Item, cabecera: " + bancocabecera);
+            //log.debug("nuevo Item, cabecera: " + bancocabecera);
             bindForm(bancocabecera);
             super.nuevoComprobante(bancocabecera.getCodTipomoneda());
             view.getSelCodAuxiliar().setValue(view.getSelCodAuxCabeza().getValue());
@@ -184,8 +188,8 @@ public class BancoLogic extends BancoItemLogic {
                 view.getNumVoucher().setValue(item.getTxtCorrelativo());
             }
             view.getNumVoucher().setEnabled(false);
-            setCuentaLogic();
-            view.setTotal(moneda);
+            //setCuentaLogic();
+            //view.setTotal(moneda);
         } else {
             view.getNumVoucher().setValue("");
         }
@@ -345,5 +349,30 @@ public class BancoLogic extends BancoItemLogic {
                 break;
         }
         view.getImprimirVoucherBtn().setVisible(ViewUtil.isPrinterReady());
+    }
+
+    public void anularCheque(ScpBancocabecera cabeceraToAnular) {
+        if (cabeceraToAnular.isEnviado() && !Role.isPrivileged()) {
+            Notification.show("!No se puede eliminar este cheque porque ya esta enviado a contabilidad!", Notification.Type.WARNING_MESSAGE);
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder("?Esta seguro que quiere eliminar cheque numero: \n"
+                + cabeceraToAnular.getTxtCheque() + " cod operacion: " + cabeceraToAnular.getCodBancocabecera());
+        MessageBox
+                .createQuestion()
+                .withCaption("Eliminar cheque")
+                .withMessage(sb.toString())
+                .withYesButton(() -> {
+                    try {
+                        view.getService().anularCheque(cabeceraToAnular);
+                        view.refreshData();
+                        editarCheque(cabeceraToAnular);
+                    } catch (FieldGroup.CommitException ce) {
+                        Notification.show("Error al anular: " + ce.getMessage());
+                    }
+                })
+                .withNoButton()
+                .open();
     }
 }

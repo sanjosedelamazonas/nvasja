@@ -208,9 +208,9 @@ public class DataUtil {
                 '0','N', GenUtil.getYear(ano), "104%",
                 '0','N', GenUtil.getYear(ano), "106%");
         else
-            return planRepo.findByIndTipomonedaAndFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike(
+            return planRepo.findByIndTipomonedaAndFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrIndTipomonedaAndFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike(
                     GenUtil.getLitMoneda(moneda),'0','N', GenUtil.getYear(ano), "104%",
-                    '0','N', GenUtil.getYear(ano), "106%");
+                    GenUtil.getLitMoneda(moneda), '0','N', GenUtil.getYear(ano), "106%");
     }
 
     public static Boolean isCobrado(ScpBancocabecera cab, BancoService service) {
