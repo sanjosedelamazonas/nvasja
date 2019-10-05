@@ -17,10 +17,7 @@ import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.VsjCajaBancoItem;
 import org.sanjose.render.EmptyZeroNumberRendrer;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.DataUtil;
-import org.sanjose.util.GenUtil;
-import org.sanjose.util.ViewUtil;
+import org.sanjose.util.*;
 import org.sanjose.views.sys.SaldoDelDia;
 
 import java.io.Serializable;
@@ -111,8 +108,12 @@ public class BancoManejoLogic extends BancoGridLogic implements Serializable, Sa
             mView.getNumSaldoInicialLibro().setValue("");
             mView.getNumSaldoInicialSegBancos().setValue("");
         } else {
-            mView.getNumSaldoInicialLibro().setValue(GenUtil.numFormat(DataUtil.getBancoCuentaSaldos(cuenta, mView.getFechaDesde().getValue())));
-            mView.getNumSaldoFinalLibro().setValue(GenUtil.numFormat(DataUtil.getBancoCuentaSaldos(cuenta, mView.getFechaHasta().getValue())));
+            ProcUtil.SaldosBanco saldosIni = DataUtil.getBancoCuentaSaldos(cuenta, mView.getFechaDesde().getValue());
+            ProcUtil.SaldosBanco saldosFin = DataUtil.getBancoCuentaSaldos(cuenta, mView.getFechaHasta().getValue());
+            mView.getNumSaldoInicialLibro().setValue(GenUtil.numFormat(saldosIni.getSegLibro()));
+            mView.getNumSaldoInicialSegBancos().setValue(GenUtil.numFormat(saldosIni.getSegBanco()));
+            mView.getNumSaldoFinalLibro().setValue(GenUtil.numFormat(saldosFin.getSegLibro()));
+            mView.getNumSaldoFinalSegBancos().setValue(GenUtil.numFormat(saldosFin.getSegBanco()));
         }
     }
 

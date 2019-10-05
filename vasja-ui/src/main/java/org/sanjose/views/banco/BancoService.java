@@ -91,7 +91,7 @@ public class BancoService {
         }
         bancoItem.setCodCtacontable(cabecera.getCodCtacontable());
         VsjConfiguractacajabanco codTipoMov = configuractacajabancoRepo.findById(bancoItem.getCodTipomov());
-        if (bancoItem.getCodTipomov() > 0 && codTipoMov == null) {
+        if (bancoItem.getCodTipomov()!=null && bancoItem.getCodTipomov() > 0 && codTipoMov == null) {
             throw new FieldGroup.CommitException("No se puede encontrar el Codigo Tipo Gasto - por favor verifica la configuracion de Caja y Bancos");
         }
         if (bancoItem.getCodTipomov() > 0) {
@@ -277,7 +277,7 @@ public class BancoService {
             }
         }
         bancocabeceraRep.save(cab);
-        }
+    }
 
     @Transactional(readOnly = false)
     public void anularCheque(ScpBancocabecera vcb) throws FieldGroup.CommitException {

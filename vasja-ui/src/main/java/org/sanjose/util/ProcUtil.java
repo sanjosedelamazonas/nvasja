@@ -89,7 +89,7 @@ public class ProcUtil {
 
     // moneda { 0, 1, 2 }
     @Transactional
-    public BigDecimal getSaldoBanco(Date fecha, String codCtabanco, Character moneda) {
+    public SaldosBanco getSaldoBanco(Date fecha, String codCtabanco, Character moneda) {
         StoredProcedureQuery getSaldoAlDiaCajaQuery = em.createNamedStoredProcedureQuery("getSaldoAlDiaBanco");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //log.info("running getSaldoBanco for: " + sdf.format(fecha) + " " + codCtabanco + " " + moneda);
@@ -97,10 +97,13 @@ public class ProcUtil {
         getSaldoAlDiaCajaQuery.setParameter(2, codCtabanco);
         getSaldoAlDiaCajaQuery.setParameter(3, moneda.toString());
         getSaldoAlDiaCajaQuery.execute();
-        BigDecimal res = (BigDecimal) getSaldoAlDiaCajaQuery.getOutputParameterValue(4);
-        res = res.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal saldoLibro = (BigDecimal) getSaldoAlDiaCajaQuery.getOutputParameterValue(4);
+        BigDecimal saldoBanco = (BigDecimal) getSaldoAlDiaCajaQuery.getOutputParameterValue(5);
+        SaldosBanco sb = new SaldosBanco();
+        sb.setSegLibro(saldoLibro.setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        if (saldoBanco!=null) sb.setSegBanco(saldoBanco.setScale(2, BigDecimal.ROUND_HALF_EVEN));
         em.close();
-        return res;
+        return sb;
     }
 
     @Transactional(readOnly = false)
@@ -318,13 +321,41 @@ public class ProcUtil {
         return vsjBancocabecerasEnviados;
     }
 
+    public class SaldosBanco {
+
+        private BigDecimal segLibro;
+        private BigDecimal segBanco;
+
+        public BigDecimal getSegLibro() {
+            return segLibro;
+        }
+
+        public void setSegLibro(BigDecimal segLibro) {
+            this.segLibro = segLibro;
+        }
+
+        public BigDecimal getSegBanco() {
+            return segBanco;
+        }
+
+        public void setSegBanco(BigDecimal segBanco) {
+            this.segBanco = segBanco;
+        }
+
+        @Override
+        public String toString() {
+            return "SaldosBanco{" +
+                    "segLibro=" + segLibro +
+                    ", segBanco=" + segBanco +
+                    '}';
+        }
+    }
+
 
     public class Saldos {
 
         private BigDecimal saldoPEN;
-
         private BigDecimal saldoUSD;
-
         private BigDecimal saldoEUR;
 
         public Saldos(BigDecimal saldoPEN, BigDecimal saldoUSD, BigDecimal saldoEUR) {

@@ -5,7 +5,8 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 drop PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]
-go
+GO
+
 CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]
 (@Tipo int, -- 1 proyecto, 2 tercero
  @FechaInicial varchar(10),
@@ -124,9 +125,9 @@ BEGIN
 	Group By a.cod_tipomoneda,a.cod_tercero
 END
 
-Print 'Contabilidad  PEN:'+CONVERT(char(14),@SaldoPEN_contabilidad ,121)
-+' USD:'+CONVERT(char(14),@SaldoUSD_contabilidad ,121)
-+' EUR:'+CONVERT(char(14),@SaldoEUR_contabilidad ,121)
+--Print 'Contabilidad  PEN:'+CONVERT(char(14),@SaldoPEN_contabilidad ,121)
+--+' USD:'+CONVERT(char(14),@SaldoUSD_contabilidad ,121)
+--+' EUR:'+CONVERT(char(14),@SaldoEUR_contabilidad ,121)
 END
 /*
 

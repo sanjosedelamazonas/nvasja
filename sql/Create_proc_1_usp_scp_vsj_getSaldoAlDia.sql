@@ -56,9 +56,9 @@ Select @SaldoPEN=@SaldoPEN_inicial+@SaldoPEN_contabilidad-@SaldoPEN_caja-@SaldoP
 Select @SaldoUSD=@SaldoUSD_inicial+@SaldoUSD_contabilidad-@SaldoUSD_caja-@SaldoUSD_banco
 Select @SaldoEUR=@SaldoEUR_inicial+@SaldoEUR_contabilidad-@SaldoEUR_caja-@SaldoEUR_banco
 
-Print 'Total PEN:'+CONVERT(char(14),@SaldoPEN,14)
-+' USD:'+CONVERT(char(14),@SaldoUSD,121)
-+' EUR:'+CONVERT(char(14),@SaldoEUR,121)
+--Print 'Total PEN:'+CONVERT(char(14),@SaldoPEN,14)
+--+' USD:'+CONVERT(char(14),@SaldoUSD,121)
+--+' EUR:'+CONVERT(char(14),@SaldoEUR,121)
 
 /* 
 

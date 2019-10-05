@@ -48,8 +48,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
     private BancoOperacionesLogic viewLogic;
     private final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{
             "checkMesCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
-             "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
-            "numDebesol", "numHabersol",
+            "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
+            "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula"
     };
     private final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
@@ -81,6 +81,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
     public BancoOperacionesView(BancoService bancoService) {
         this.bancoService = bancoService;
     }
+
+    private Character moneda = GenUtil.PEN;
 
     @Override
     public void init() {
@@ -125,7 +127,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta, this);
         fechaDesde.addValueChangeListener(ev -> {
             DataFilterUtil.refreshComboBox(selFiltroCuenta, "id.codCtacontable",
-                    DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
+                    DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
                     "txtDescctacontable");
         });
 
@@ -167,7 +169,48 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
                 "txtDescctacontable");
+        DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
+        selRepMoneda.select('0');
+        selRepMoneda.setNullSelectionAllowed(false);
+        selRepMoneda.addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                moneda = (Character)e.getProperty().getValue();
+                container.removeContainerFilters("codTipomoneda");
+                container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
+                ViewUtil.filterColumnsByMoneda(gridBanco, moneda);
+                //viewLogic.calcFooterSums();
+                DataFilterUtil.refreshComboBox(selFiltroCuenta, "id.codCtacontable",
+                        DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
+                        "txtDescctacontable");
+            }
+            //viewLogic.setSaldoDelDia();
+        });
 
+        DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
+                DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
+                "txtDescctacontable");
+        selFiltroCuenta.setEnabled(true);
+        selFiltroCuenta.addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                container.removeContainerFilters("codCtacontable");
+                container.addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
+                ScpPlancontable cuenta = getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
+                        GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
+                //selRepMoneda.select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+                gridBanco.getColumn("txtGlosa").setMaximumWidth(500);
+              //  viewLogic.calcFooterSums();
+              //  viewLogic.setSaldoCuenta(cuenta);
+            } else {
+                container.removeContainerFilters("codCtacontable");
+                ViewUtil.filterColumnsByMoneda(gridBanco, moneda);
+                gridBanco.getColumn("txtGlosa").setMaximumWidth(400);
+               // viewLogic.setSaldoCuenta(null);
+            }
+            //viewLogic.setSaldoDelDia();
+        });
+
+
+        /*
         selFiltroCuenta.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
                 container.removeContainerFilters("codCtacontable");
@@ -206,7 +249,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
                 selRepMoneda.select('0');
             }
             //viewLogic.setSaldoDelDia();
-        });
+        });*/
         selFiltroCuenta.setPageLength(20);
         bancoOperView.init(MainUI.get().getBancoManejoView().getService());
         // Make the top buttons panel invisible if in this grid view
@@ -222,13 +265,9 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
                 bancoOperView.getViewLogic().editarCheque(cabeceraSelected);
             }
         });
-        DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
-        selRepMoneda.select('0');
-        selRepMoneda.setNullSelectionAllowed(false);
         bancoOperView.getCerrarBtn().setVisible(false);
         viewLogic = new BancoOperacionesLogic(this);
     }
-
 
     public void refreshData() {
         SortOrder[] sortOrders = gridBanco.getSortOrder().toArray(new SortOrder[1]);

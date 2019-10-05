@@ -24,6 +24,13 @@ spring:
   jpa:
     show_sql: false
     database-platform: org.hibernate.dialect.SQLServerDialect
+
+
+    hibernate:
+      cache:
+        use_second_level_cache: true
+        region:
+          factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
 #    hibernate:
 #      connection:
 #        release_mode: after_statement

@@ -61,6 +61,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
     private SaldoChecker saldoChecker;
 
     private Property.ValueChangeListener selProyectoTerceroValueChangeListener;
+    private Property.ValueChangeListener selTipoProyectoTerceroValueChangeListener;
 
     public void init(BancoOperView view) {
         this.view = view;
@@ -80,8 +81,10 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
                 DataFilterUtil.refreshComboBox(view.getSelCuenta(), "id.codCtacontable",
                     DataUtil.getBancoCuentas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo()),
                     "txtDescctacontable");
-            setCuentaLogic();
-            setSaldos();
+            if (!isLoading && view.getDataFechaComprobante().getValue()==null) {
+                setCuentaLogic();
+                setSaldos();
+            }
             refreshProyectoYcuentaPorFecha((Date)event.getProperty().getValue());
         });
 
@@ -95,6 +98,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
                 "txtDescctacontable");
         view.getSelCuenta().addValueChangeListener(ev -> {
                     setCuentaLogic();
+                    view.getSelProyectoTercero().removeValueChangeListener(selProyectoTerceroValueChangeListener);
                     selProyectoTerceroValueChangeListener = new Property.ValueChangeListener() {
                         @Override
                         public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
@@ -135,7 +139,14 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getNumItem().setEnabled(false);
         view.getMontoTotal().setValue("0.00");
 
-        view.getTipoProyectoTercero().addValueChangeListener(this::setTipoProyectoTerceroLogic);
+        view.getTipoProyectoTercero().removeValueChangeListener(selTipoProyectoTerceroValueChangeListener);
+        selTipoProyectoTerceroValueChangeListener = new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                setTipoProyectoTerceroLogic(valueChangeEvent);
+            }
+        };
+        view.getTipoProyectoTercero().addValueChangeListener(selTipoProyectoTerceroValueChangeListener);
 
 
         // Proyecto
@@ -384,7 +395,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().
                             findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(view.getDataFechaComprobante().getValue(), view.getDataFechaComprobante().getValue(), GenUtil.getBegin20thCent()),
                     "Sel Proyecto", "txtDescproyecto");
-        } else if (isTercero()) {
+        } else {
             beanItem.getBean().setCodProyecto("");
             fieldGroup.bind(view.getSelProyectoTercero(), "codTercero");
             view.getSelProyectoTercero().removeValueChangeListener(selProyectoTerceroValueChangeListener);
@@ -402,10 +413,11 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
 
     protected void setCuentaLogic() {
         if (view.getDataFechaComprobante().getValue() != null && view.getSelCuenta().getValue() != null) {
+            log.debug("In setCuentaLogic - starting");
             ScpPlancontable cuenta = view.getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
                     GenUtil.getYear(view.getDataFechaComprobante().getValue()), view.getSelCuenta().getValue().toString());
             BigDecimal saldo = procUtil.getSaldoBanco(GenUtil.getEndOfDay(GenUtil.dateAddDays(view.getDataFechaComprobante().getValue(),-1)),
-                    view.getSelCuenta().getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+                    view.getSelCuenta().getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda())).getSegLibro();
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             view.getSaldoCuenta().setCaption(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
             log.debug("In setCuentaLogic: " + df.format(saldo));
@@ -476,17 +488,17 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
     }
 
     private void setSaldos() {
-        if (view.getDataFechaComprobante().getValue() != null) {
+        Object proyTerc = view.getSelProyectoTercero().getValue();
+        if (view.getDataFechaComprobante().getValue() != null && !GenUtil.objNullOrEmpty(proyTerc)) {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             ProcUtil.Saldos res = null;
-            if (isProyecto() && !GenUtil.objNullOrEmpty(view.getSelProyectoTercero().getValue())) {
-                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), view.getSelProyectoTercero().getValue().toString(), null);
+            if (isProyecto()) {
+                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), proyTerc.toString(), null);
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue(df.format(res.getSaldoEUR()));
-            }
-            if (isTercero() && !GenUtil.objNullOrEmpty(view.getSelProyectoTercero().getValue())) {
-                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), null, view.getSelProyectoTercero().getValue().toString());
+            } else {
+                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), null, proyTerc.toString());
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue(df.format(res.getSaldoEUR()));
@@ -525,7 +537,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
                 view.getSelRubroInst().setValue("");
                 view.getSelRubroProy().setValue("");
             }
-            setSaldos();
+            if (!isLoading) setSaldos();
         }
     }
 
@@ -551,7 +563,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             view.getSelTipoMov().setEnabled(true);
             view.getSelRubroInst().setEnabled(true);
             view.getSelCtaContable().setEnabled(true);
-            setSaldos();
+            if (!isLoading) setSaldos();
         } else {
             //log.info("disabling fin y planproy");
             view.getSelFuente().setEnabled(false);
@@ -639,7 +651,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
                 view.getNumItem().setValue(String.valueOf(view.getContainer().size() + 1));
             }
         }
-        setSaldos();
+        //setSaldos();
         isEdit = false;
     }
 

@@ -99,9 +99,9 @@ BEGIN
 	Group By B.cod_tercero,A.cod_tipomoneda
 END
 
-Print 'Bancos PEN: '+CONVERT(char(14),@SaldoPEN_banco ,121)
-+' USD: '+CONVERT(char(14),@SaldoUSD_banco ,121)
-+' EUR: '+CONVERT(char(14),@SaldoEUR_banco ,121)
+--Print 'Bancos PEN: '+CONVERT(char(14),@SaldoPEN_banco ,121)
+--+' USD: '+CONVERT(char(14),@SaldoUSD_banco ,121)
+--+' EUR: '+CONVERT(char(14),@SaldoEUR_banco ,121)
 END
 /*
 

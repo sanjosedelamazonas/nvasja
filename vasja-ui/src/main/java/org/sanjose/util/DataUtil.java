@@ -106,7 +106,7 @@ public class DataUtil {
             BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(
                     GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)),
                     caja.getId().getCodCtacontable()
-                    , moneda);
+                    , moneda).getSegLibro();
             // If is closed and has a saldo of "0.00" we can omit it
             if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
                 continue;
@@ -120,20 +120,20 @@ public class DataUtil {
         return cajas;
     }
     
-    public static BigDecimal getBancoCuentaSaldos(ScpPlancontable cuenta, Date date) {
+    public static ProcUtil.SaldosBanco getBancoCuentaSaldos(ScpPlancontable cuenta, Date date) {
         Character moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
         if (moneda.equals('9')) {
             // Problem - TipoMoneda not set
             System.out.println("ERROR: TipoMoneda not set for BancoCuenta: " + cuenta.getCodCta4() + " " + cuenta.getTxtDescctacontable());
         }
-        BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(
+        ProcUtil.SaldosBanco saldos = MainUI.get().getProcUtil().getSaldoBanco(
                 GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)),
                 cuenta.getId().getCodCtacontable()
                 , moneda);
         // If is closed and has a saldo of "0.00" we can omit it
-        if (!cuenta.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
+        if (!cuenta.isNotClosedCuenta() && saldos.getSegLibro().compareTo(new BigDecimal(0)) == 0)
             return null;
-        return saldo;
+        return saldos;
     }
 
     public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
@@ -208,9 +208,9 @@ public class DataUtil {
                 '0','N', GenUtil.getYear(ano), "104%",
                 '0','N', GenUtil.getYear(ano), "106%");
         else
-            return planRepo.findByIndTipomonedaAndFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike(
+            return planRepo.findByIndTipomonedaAndFlgEstadocuentaLikeAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLikeOrIndTipomonedaAndFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableLike(
                     GenUtil.getLitMoneda(moneda),'0','N', GenUtil.getYear(ano), "104%",
-                    '0','N', GenUtil.getYear(ano), "106%");
+                    GenUtil.getLitMoneda(moneda), '0','N', GenUtil.getYear(ano), "106%");
     }
 
     public static Boolean isCobrado(ScpBancocabecera cab, BancoService service) {
