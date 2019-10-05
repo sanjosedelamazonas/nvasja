@@ -67,6 +67,7 @@ import java.math.BigDecimal;
 						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
 						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
 						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class),
 						@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class)
 				}
 		)
