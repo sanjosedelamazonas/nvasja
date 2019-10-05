@@ -1,5 +1,6 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import org.sanjose.views.sys.NavigatorViewing;
 
@@ -21,4 +22,6 @@ public interface BancoViewing extends NavigatorViewing {
     BancoOperView getBancoOperView();
 
     Grid getGridBanco();
+
+    DateField getFecMesCobrado();
 }

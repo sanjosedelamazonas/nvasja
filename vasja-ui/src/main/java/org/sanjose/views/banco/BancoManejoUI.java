@@ -35,7 +35,7 @@ public class BancoManejoUI extends VerticalLayout {
     protected Button btnReporte;
     protected VerticalLayout espacio;
     protected ComboBox selFiltroCuenta;
-    protected ComboBox selMesCobrado;
+    protected DateField fecMesCobrado;
     protected Button btnMarcarCobrado;
     protected Button btnMarcarNoCobrado;
     protected Button btnNuevoCheque;
@@ -48,5 +48,4 @@ public class BancoManejoUI extends VerticalLayout {
     public BancoManejoUI() {
         Design.read(this);
     }
-
 }

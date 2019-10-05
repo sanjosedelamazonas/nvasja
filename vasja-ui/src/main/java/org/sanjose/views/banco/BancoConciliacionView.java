@@ -9,6 +9,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -23,6 +24,7 @@ import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import org.vaadin.gridtree.GridTree;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -280,6 +282,10 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         }
     }
 
+    public Button getExpandirContraerBtn() {
+        return expandirContraerBtn;
+    }
+
     @Override
     public void refreshData() {
         SortOrder[] sortOrders = gridBanco.getSortOrder().toArray(new SortOrder[1]);
@@ -302,7 +308,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
     @Override
     public void selectMoneda(Character moneda) {
-        // Not implemented here
+        throw new NotImplementedException();
     }
 
 
@@ -311,10 +317,12 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         refreshData();
     }
 
+    @Override
     public void clearSelection() {
         gridBanco.getSelectionModel().reset();
     }
 
+    @Override
     public Collection<Object> getSelectedRows() {
 
         Collection<Object> selected = gridBanco.getSelectedRows();
@@ -326,6 +334,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         return VIEW_NAME;
     }
 
+    @Override
     public BancoService getService() {
         return bancoService;
     }
@@ -335,11 +344,14 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         return MainUI.get().getBancoOperView();
     }
 
+    @Override
     public Grid getGridBanco() {
         return gridBanco;
     }
 
-    public Button getExpandirContraerBtn() {
-        return expandirContraerBtn;
+    @Override
+    public DateField getFecMesCobrado() {
+        throw new NotImplementedException();
     }
+
 }

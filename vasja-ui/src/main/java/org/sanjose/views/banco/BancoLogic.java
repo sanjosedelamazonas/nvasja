@@ -81,7 +81,7 @@ public class BancoLogic extends BancoItemLogic {
         view.gridBanco.select(null);
         moneda = vsjBancocabecera.getCodTipomoneda();
         clearFields();
-        clearSaldos();
+        //clearSaldos();
         view.setTotal(null);
         item = null;
         bancocabecera = vsjBancocabecera;
@@ -180,7 +180,7 @@ public class BancoLogic extends BancoItemLogic {
         if (isEdit) {
             // EDITING
             if (!GenUtil.strNullOrEmpty(item.getTxtCorrelativo())) {
-                log.debug("isEdit cabecera, setting num voucher: " + item.getTxtCorrelativo());
+                //log.debug("isEdit cabecera, setting num voucher: " + item.getTxtCorrelativo());
                 view.getNumVoucher().setValue(item.getTxtCorrelativo());
             }
             view.getNumVoucher().setEnabled(false);

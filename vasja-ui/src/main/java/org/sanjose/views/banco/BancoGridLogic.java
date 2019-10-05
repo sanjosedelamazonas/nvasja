@@ -2,6 +2,7 @@ package org.sanjose.views.banco;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
@@ -10,9 +11,12 @@ import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.util.DataUtil;
+import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 
@@ -105,15 +109,32 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera> {
     protected void setMesCobrado(boolean isCobrado) {
         for (Object item : view.getGridBanco().getSelectedRows()) {
             if (item != null) {
-                ScpBancocabecera vcb = (ScpBancocabecera) item;
-                vcb.setFlgCobrado(isCobrado);
-                vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
-                        .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
-                view.getService().updateCobradoInCabecera(vcb);
+                ScpBancocabecera cab = (ScpBancocabecera) item;
+                //vcb.setFlgCobrado(isCobrado);
+                String mescob = DataUtil.checkMesCobrado(cab, view.getService());
+                if (DataUtil.isCobrado(mescob)==isCobrado)
+                    // Don't change anything if already is as it should be - so not to override mes cobrado
+                    return;
+                cab.setFlgCobrado(isCobrado);
+                if (isCobrado) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM");
+                    cab.setCodMescobrado(sdf.format(view.getFecMesCobrado().getValue()));
+                }
+                view.getService().updateCobradoInCabecera(cab);
             }
         }
         view.refreshData();
-        //view.getGridBanco().select(null);
+    }
+
+    // Single click - select row in grids
+    void setItemLogic(ItemClickEvent event) {
+        if (event.isDoubleClick()) {
+            Object id = event.getItem().getItemProperty("codBancocabecera").getValue();
+            ScpBancocabecera vcb = view.getService().getBancocabeceraRep().findByCodBancocabecera((Integer) id);
+            editarCheque((ScpBancocabecera) vcb);
+        }
+        view.getGridBanco().deselectAll();
+        view.getGridBanco().select(event.getItemId());
     }
 }
 

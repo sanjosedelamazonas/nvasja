@@ -32,6 +32,9 @@ public class BancoOperacionesUI extends VerticalLayout {
     protected ComboBox selRepMoneda;
     protected Button btnReporte;
     protected ComboBox selFiltroCuenta;
+    protected DateField fecMesCobrado;
+    protected Button btnMarcarCobrado;
+    protected Button btnMarcarNoCobrado;
     protected Grid gridBanco;
     protected BancoOperView bancoOperView;
 

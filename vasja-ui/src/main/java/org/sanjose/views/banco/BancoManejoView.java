@@ -1,13 +1,18 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.sort.SortOrder;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -42,9 +47,9 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
     public String getWindowTitle() {
         return VIEW_NAME;
     }
-    private final BancoManejoLogic viewLogic = new BancoManejoLogic();
+    private BancoManejoLogic viewLogic;
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
-            "flgCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
+            "checkMesCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
             "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "codOrigenenlace", "codComprobanteenlace", "flgEnviado", "flg_Anula", "codBancocabecera"
@@ -82,6 +87,10 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
     public Grid.FooterRow gridFooter;
 
+    private GeneratedPropertyContainer gpContainer;
+
+    private BancoOperView bancoOperView;
+
     @Override
     public void init() {
         setSizeFull();
@@ -90,7 +99,23 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         //noinspection unchecked
         container = new BeanItemContainer(ScpBancocabecera.class, getService().findByFecFechaBetween(filterInitialDate, new Date()));
         container.addNestedContainerBean("scpDestino");
-        gridBanco.setContainerDataSource(container);
+        gpContainer = new GeneratedPropertyContainer(container);
+        gpContainer.addGeneratedProperty("checkMesCobrado",
+                new PropertyValueGenerator<Boolean>() {
+                    @Override
+                    public Boolean getValue(Item item, Object itemId,
+                                            Object propertyId) {
+
+                        return DataUtil.isCobrado((ScpBancocabecera) ((BeanItem)item).getBean(), getService());
+                    }
+                    @Override
+                    public Class<Boolean> getType() {
+                        return Boolean.class;
+                    }
+                });
+
+
+        gridBanco.setContainerDataSource(gpContainer);
         gridBanco.setEditorEnabled(false);
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
 
@@ -115,43 +140,23 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
         gridBanco.getColumn("scpDestino.txtNombredestino").setMaximumWidth(200);
 
-        CssCheckBox cobradoChkBox = new CssCheckBox();
-        cobradoChkBox.setSimpleMode(false);
-        cobradoChkBox.setAnimated(false);
-        cobradoChkBox.setCaption("");
-        cobradoChkBox.setBigPreset(false);
-//        gridBanco.setEditorFieldGroup(
-//                new BeanFieldGroup<>(ScpBancocabecera.class));
-//        gridBanco.setEditorEnabled(false);
-//        gridBanco.setEditorBuffered(true);
-
-        //gridBanco.setEditorSaveCaption("Guardar");
-
-        gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
-        gridBanco.getColumn("flgCobrado").setEditable(true);
-        gridBanco.getColumn("flgCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        gridBanco.getColumn("checkMesCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
         gridBanco.getColumn("codBancocabecera").setHidden(true);
 
-        gridBanco.addItemClickListener(this::setItemLogic);
+        // Single click selects, double click opens
+        gridBanco.addItemClickListener(e -> viewLogic.setItemLogic(e));
 
         // Add filters
         ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
-
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
         ViewUtil.colorizeRows(gridBanco, ScpBancocabecera.class);
 
-/*        // Set Saldos Inicial
-        fechaDesde.addValueChangeListener(ev -> {
-            viewLogic.setSaldos(gridSaldoInicial, true);
-            DataFilterUtil.refreshComboBox(selFiltroCuenta, "id.codCtacontable",
-                    DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
-                    "txtDescctacontable");}
-
-        );
-        fechaHasta.addValueChangeListener(ev -> viewLogic.setSaldos(gridSaldoFInal, false));*/
+        // CABECA
+        getFecMesCobrado().setResolution(Resolution.MONTH);
+        getFecMesCobrado().setValue(new Date());
 
         DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
         selRepMoneda.select('0');
@@ -201,21 +206,14 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         selFiltroCuenta.setPageLength(20);
 
         gridFooter = gridBanco.appendFooterRow();
+        // Initialize Comprobante View
+        bancoOperView = new BancoOperView();
+        bancoOperView.init(getService());
 
-        viewLogic.init(this);
+        viewLogic = new BancoManejoLogic(this);
         viewLogic.setSaldos(getSaldosView().getGridSaldoInicial(), true);
         viewLogic.setSaldos(getSaldosView().getGridSaldoFinal(), false);
         viewLogic.calcFooterSums();
-    }
-
-    private void setItemLogic(ItemClickEvent event) {
-        if (event.isDoubleClick()) {
-            Object id = event.getItem().getItemProperty("codBancocabecera").getValue();
-            ScpBancocabecera vcb = getService().getBancocabeceraRep().findByCodBancocabecera((Integer) id);
-            viewLogic.getGridLogic().editarCheque((ScpBancocabecera) vcb);
-        }
-        gridBanco.deselectAll();
-        gridBanco.select(event.getItemId());
     }
 
     @Override
@@ -237,7 +235,6 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
     @Override
     public void selectMoneda(Character moneda) {
-        // TODO Check if that is correct
         selRepMoneda.select(moneda);
     }
 
@@ -275,42 +272,6 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         return btnMarcarCobrado;
     }
 
-   /* public Label getValSolIng() {
-        return valSolIng;
-    }
-
-    public Label getValSolEgr() {
-        return valSolEgr;
-    }
-
-    public Label getValSolSaldo() {
-        return valSolSaldo;
-    }
-
-    public Label getValDolIng() {
-        return valDolIng;
-    }
-
-    public Label getValDolEgr() {
-        return valDolEgr;
-    }
-
-    public Label getValDolSaldo() {
-        return valDolSaldo;
-    }
-
-    public Label getValEuroIng() {
-        return valEuroIng;
-    }
-
-    public Label getValEuroEgr() {
-        return valEuroEgr;
-    }
-
-    public Label getValEuroSaldo() {
-        return valEuroSaldo;
-    }*/
-
     public Grid getGridBanco() {
         return gridBanco;
     }
@@ -321,7 +282,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
     @Override
     public BancoOperView getBancoOperView() {
-        return MainUI.get().getBancoOperView();
+        return bancoOperView;
     }
 
     @Override
@@ -377,4 +338,9 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
     public Grid.FooterRow getGridFooter() {
         return gridFooter;
     }
+
+    public DateField getFecMesCobrado() {
+        return fecMesCobrado;
+    }
+
 }

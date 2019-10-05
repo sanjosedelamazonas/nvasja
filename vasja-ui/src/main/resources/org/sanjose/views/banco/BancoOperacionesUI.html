@@ -38,12 +38,22 @@
       Imprimir Reporte 
     </vaadin-button>
    </vaadin-horizontal-layout>
-   <vaadin-horizontal-layout width-full height="22px">
+   <vaadin-horizontal-layout height="22px">
     <vaadin-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" item-caption-mode="id" width="300px" _id="selFiltroCuenta">
      <option>Option 1</option>
      <option>Option 2</option>
      <option>Option 3</option>
     </vaadin-combo-box>
+    <vaadin-label width="50px" plain-text></vaadin-label>
+    <vaadin-horizontal-layout spacing height="25px">
+     <vaadin-date-field _id="fecMesCobrado"></vaadin-date-field>
+     <vaadin-button plain-text _id="btnMarcarCobrado">
+       Marcar cobrado 
+     </vaadin-button>
+     <vaadin-button plain-text _id="btnMarcarNoCobrado">
+       Marcar no cobrado 
+     </vaadin-button>
+    </vaadin-horizontal-layout>
    </vaadin-horizontal-layout>
    <vaadin-horizontal-layout size-full :expand>
     <vaadin-grid editor-cancel-caption="Anular" size-full _id="gridBanco" :expand></vaadin-grid>

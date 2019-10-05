@@ -11,7 +11,10 @@ import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.SelectionEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.shared.ui.datefield.Resolution;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -42,7 +45,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
     public String getWindowTitle() {
         return VIEW_NAME;
     }
-    private final BancoOperacionesLogic viewLogic = new BancoOperacionesLogic();
+    private BancoOperacionesLogic viewLogic;
     private final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{
             "checkMesCobrado", "fecFecha", "txtCorrelativo", "codCtacontable",
              "scpDestino.txtNombredestino", "txtCheque", "txtGlosa",
@@ -96,9 +99,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
                                            Object propertyId) {
 
                         return DataUtil.isCobrado((ScpBancocabecera) ((BeanItem)item).getBean(), getService());
-                        //return String.valueOf(((ScpBancodetallePK) item.getItemProperty("id").getValue()).getNumItem());
                     }
-
                     @Override
                     public Class<Boolean> getType() {
                         return Boolean.class;
@@ -117,7 +118,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         gridBanco.getColumn("txtGlosa").setMaximumWidth(200);
         gridBanco.getColumn("scpDestino.txtNombredestino").setMaximumWidth(130);
 
-        gridBanco.setSelectionMode(SelectionMode.SINGLE);
+        gridBanco.setSelectionMode(SelectionMode.MULTI);
 
         // Fecha Desde Hasta
         //ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta);
@@ -146,9 +147,9 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         gridBanco.setEditorEnabled(true);
         gridBanco.setEditorBuffered(true);
 
-        //gridBanco.getColumn("flgCobrado").setEditorField(cobradoChkBox);
-        //gridBanco.getColumn("flgCobrado").setEditable(true);
         gridBanco.getColumn("checkMesCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+
+        gridBanco.addItemClickListener(e -> viewLogic.setItemLogic(e));
 
         // Add filters
         ViewUtil.setupColumnFilters(gridBanco, VISIBLE_COLUMN_IDS_PEN, FILTER_WIDTH, null);
@@ -157,6 +158,11 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
         ViewUtil.colorizeRows(gridBanco, ScpBancocabecera.class);
+
+        // CABECA
+
+        getFecMesCobrado().setResolution(Resolution.MONTH);
+        getFecMesCobrado().setValue(new Date());
 
         DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
@@ -220,7 +226,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         selRepMoneda.select('0');
         selRepMoneda.setNullSelectionAllowed(false);
         bancoOperView.getCerrarBtn().setVisible(false);
-        viewLogic.init(this);
+        viewLogic = new BancoOperacionesLogic(this);
     }
 
 
@@ -281,6 +287,18 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
 
     public ComboBox getSelRepMoneda() {
         return selRepMoneda;
+    }
+
+    public DateField getFecMesCobrado() {
+        return fecMesCobrado;
+    }
+
+    public Button getBtnMarcarCobrado() {
+        return btnMarcarCobrado;
+    }
+
+    public Button getBtnMarcarNoCobrado() {
+        return btnMarcarNoCobrado;
     }
 
     @Override

@@ -192,7 +192,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
     public void setTotal(Character locMoneda) {
         if (locMoneda == null) {
             //viewLogic.item.getCodTipomoneda()
-            log.debug("in setSaldo - moneda = NULL");
+//            log.debug("in setSaldo - moneda = NULL");
 //            saldoTotal.setValue("Total:" +
 //                    "<span class=\"order-sum\"> S./ 0.00</span>");
             getMontoTotal().setValue("0.00");

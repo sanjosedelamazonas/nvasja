@@ -3,6 +3,7 @@ package org.sanjose.views.banco;
 import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.sanjose.authentication.Role;
@@ -24,48 +25,35 @@ import java.io.Serializable;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class BancoOperacionesLogic implements Serializable {
+public class BancoOperacionesLogic extends BancoGridLogic implements Serializable {
 
 
-    private static final Logger log = LoggerFactory.getLogger(BancoOperacionesLogic.class);
-    private BancoOperacionesView view;
-    private BancoGridLogic gridLogic;
+    private BancoOperacionesView oView;
 
+    public BancoOperacionesLogic(BancoOperacionesView view) {
+        super(view);
+        oView = view;
+        init();
+    }
 
-    public void init(BancoOperacionesView bancoOperacionesView) {
-        view = bancoOperacionesView;
-        gridLogic = new BancoGridLogic(view);
-        view.btnNuevoCheque.addClickListener(e -> gridLogic.nuevoCheque());
-        view.btnEditar.addClickListener(e -> {
-            for (Object obj : view.getSelectedRows()) {
-                gridLogic.editarCheque((ScpBancocabecera) obj);
+    public void init() {
+        oView.btnNuevoCheque.addClickListener(e -> nuevoCheque());
+        oView.btnEditar.addClickListener(e -> {
+            for (Object obj : oView.getSelectedRows()) {
+                editarCheque((ScpBancocabecera) obj);
                 break;
             }
         });
-        view.btnVerVoucher.addClickListener(e -> gridLogic.generateComprobante());
-        view.btnImprimir.addClickListener(e -> gridLogic.printComprobante());
-        view.btnReporte.addClickListener(e -> {
-            ReportHelper.generateDiarioBanco(view.getSelRepMoneda().getValue().toString().charAt(0),
-                    view.fechaDesde.getValue(), view.fechaHasta.getValue(), null);
+        oView.btnVerVoucher.addClickListener(e -> generateComprobante());
+        oView.btnImprimir.addClickListener(e -> printComprobante());
+        oView.btnReporte.addClickListener(e -> {
+            ReportHelper.generateDiarioBanco(oView.getSelRepMoneda().getValue().toString().charAt(0),
+                    oView.fechaDesde.getValue(), oView.fechaHasta.getValue(), null);
         });
-        view.gridBanco.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
-            @Override
-            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-            }
+        oView.getBtnMarcarCobrado().addClickListener(clickEvent -> { setMesCobrado(true); });
+        oView.getBtnMarcarNoCobrado().addClickListener(clickEvent -> { setMesCobrado(false); });
 
-            @Override
-            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                Object item = view.gridBanco.getContainerDataSource().getItem(view.gridBanco.getEditedItemId());
-                if (item != null) {
-                    ScpBancocabecera vcb = (ScpBancocabecera) ((BeanItem) item).getBean();
-                    vcb.setCodMescobrado(new MesCobradoToBooleanConverter(vcb)
-                            .convertToModel(vcb.getFlgCobrado(), String.class, ConfigurationUtil.LOCALE));
-                    view.getService().updateCobradoInCabecera(vcb);
-                }
-            }
-        });
-
-        GridContextMenu gridContextMenu = new GridContextMenu(view.getGridBanco());
+        GridContextMenu gridContextMenu = new GridContextMenu(oView.getGridBanco());
 
         gridContextMenu.addGridBodyContextMenuListener(e -> {
             gridContextMenu.removeItems();
@@ -76,11 +64,11 @@ public class BancoOperacionesLogic implements Serializable {
                 // gridContextMenu.addItem("Editar", k -> gridLogic.editarRendicion((ScpBancocabecera) itemId));
                 // gridContextMenu.addItem("Nuevo cheque", k -> gridLogic.nuevaRendicion());
                 if (!((ScpBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
-                    gridContextMenu.addItem("Anular cheque", k -> gridLogic.anularCheque((ScpBancocabecera) itemId));
+                    gridContextMenu.addItem("Anular cheque", k -> anularCheque((ScpBancocabecera) itemId));
                 }
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
-                        gridLogic.enviarContabilidad((ScpBancocabecera)itemId);
+                        enviarContabilidad((ScpBancocabecera)itemId);
                     });
                 }
                 gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjCajaBancoItem)itemId));
@@ -88,10 +76,17 @@ public class BancoOperacionesLogic implements Serializable {
                     gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajaBancoItem) itemId));
             }
         });
-        view.btnImprimir.setVisible(false);
-        view.btnVerVoucher.setVisible(false);
-        view.btnEditar.setVisible(false);
-        view.btnNuevoCheque.setVisible(false);
+        oView.btnImprimir.setVisible(false);
+        oView.btnVerVoucher.setVisible(false);
+        oView.btnEditar.setVisible(false);
+        oView.btnNuevoCheque.setVisible(false);
+    }
+
+    // Single click - select row in grids
+    @Override
+    void setItemLogic(ItemClickEvent event) {
+        oView.getGridBanco().deselectAll();
+        oView.getGridBanco().select(event.getItemId());
     }
 
 }

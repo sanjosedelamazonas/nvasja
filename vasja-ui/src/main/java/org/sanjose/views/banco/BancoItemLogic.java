@@ -434,7 +434,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
-                log.debug("in moneda logic set PEN");
+                //log.debug("in moneda logic set PEN");
                 beanItem.getBean().setNumHaberdolar(new BigDecimal(0));
                 beanItem.getBean().setNumDebedolar(new BigDecimal(0));
                 beanItem.getBean().setNumHabermo(new BigDecimal(0));
@@ -445,7 +445,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             } else if (moneda.equals(USD)) {
                 // Dolares
                 // Cta Caja
-                log.debug("in moneda logic set USD");
+                //log.debug("in moneda logic set USD");
                 beanItem.getBean().setNumHabersol(new BigDecimal(0));
                 beanItem.getBean().setNumDebesol(new BigDecimal(0));
                 beanItem.getBean().setNumHabermo(new BigDecimal(0));
@@ -456,7 +456,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             } else {
                 // Euros
                 // Cta Caja
-                log.debug("in moneda logic set EUR");
+                //log.debug("in moneda logic set EUR");
                 beanItem.getBean().setNumHaberdolar(new BigDecimal(0));
                 beanItem.getBean().setNumDebedolar(new BigDecimal(0));
                 beanItem.getBean().setNumHabersol(new BigDecimal(0));
