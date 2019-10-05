@@ -4,6 +4,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+DROP  PROCEDURE  if exists [dbo].[usp_scp_vsj_GetSaldoAlDiaCaja];
+GO
 CREATE PROCEDURE [dbo].[usp_scp_vsj_GetSaldoAlDiaCaja]
 	@Fecha varchar(19), -- Fecha para saldo formato yyyy-mm-dd hh:mi:ss(24h)
 	@Cuenta varchar(7), -- Cuenta de caja por ejemplo '1011101'

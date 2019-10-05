@@ -1,6 +1,8 @@
-alter trigger [dbo].[vsj_scp_comprobantedetalle_banco_flg_cobrado] on [dbo].[scp_comprobantedetalle]
-after update as
+drop trigger if exists [dbo].[vsj_scp_comprobantedetalle_banco_flg_cobrado] on [dbo].[scp_comprobantedetalle];
+go
 
+create trigger [dbo].[vsj_scp_comprobantedetalle_banco_flg_cobrado] on [dbo].[scp_comprobantedetalle]
+after update as
 DECLARE TrigTempUpdate_Cursor CURSOR FOR
 select
       case when i.flg_chequecobrado='1' then 1 else 0 end,

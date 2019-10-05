@@ -4,7 +4,7 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-drop PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]
+drop PROCEDURE if exists [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]
 go
 
 CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]

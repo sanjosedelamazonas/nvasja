@@ -1,10 +1,5 @@
-IF EXISTS ( SELECT *
-            FROM   sysobjects
-            WHERE  id = object_id(N'[dbo].[usp_scp_vsj_enviarAContabilidadBanco]')
-                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
-BEGIN
-    DROP PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidadBanco]
-END
+DROP PROCEDURE if exists [dbo].[usp_scp_vsj_enviarAContabilidadBanco];
+go
 
 /****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidadBanco]    Script Date: 09/25/2016 20:53:19 ******/
 SET ANSI_NULLS ON

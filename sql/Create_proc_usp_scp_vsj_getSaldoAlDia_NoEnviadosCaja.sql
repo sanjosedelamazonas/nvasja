@@ -7,7 +7,7 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-drop PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosCaja]
+drop PROCEDURE if exists [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosCaja]
 go
 CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosCaja]
 (@Tipo int, --1 Proyecto, 2 Tercero

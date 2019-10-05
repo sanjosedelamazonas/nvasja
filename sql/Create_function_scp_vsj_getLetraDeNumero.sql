@@ -3,12 +3,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-IF EXISTS (SELECT *
-            FROM   sysobjects
-            WHERE  id = object_id(N'[dbo].[fun_scp_vsj_getLetraDeNumero]'))
-BEGIN
-    DROP FUNCTION [dbo].[fun_scp_vsj_getLetraDeNumero]
-END
+    DROP FUNCTION if exists [dbo].[fun_scp_vsj_getLetraDeNumero];
 GO
 
 CREATE FUNCTION [fun_scp_vsj_getLetraDeNumero] (@Numero NUMERIC(20,2)) RETURNS Varchar(200) AS

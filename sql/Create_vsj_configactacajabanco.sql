@@ -7,6 +7,8 @@ GO
 
 SET ANSI_PADDING ON
 GO
+drop table if exists [dbo].[vsj_configuractacajabanco];
+go
 
 CREATE TABLE [dbo].[vsj_configuractacajabanco](
     [id] [int] IDENTITY(1,1) NOT NULL,

@@ -4,7 +4,7 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-drop PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_inicial]
+drop PROCEDURE if exists [dbo].[usp_scp_vsj_getSaldoAlDia_inicial]
 go
 CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_inicial]
 (@Tipo int, -- 1 proyecto, 2 tercero

@@ -5,7 +5,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
---drop PROCEDURE [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco];
+drop PROCEDURE if exists [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco];
 go
 
 ALTER PROCEDURE [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]

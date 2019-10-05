@@ -7,7 +7,8 @@ GO
 
 SET ANSI_PADDING ON
 GO
-
+drop table if exists [dbo].[vsj_configuracioncaja];
+go
 CREATE TABLE [dbo].[vsj_configuracioncaja](
 	[cod_configuracion] [int] IDENTITY(1,1) NOT NULL,
 	[txt_configuracion] [varchar](50) NOT NULL,

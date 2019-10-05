@@ -1,0 +1,30 @@
+USE [SCP]
+GO
+SET IDENTITY_INSERT [dbo].[vsj_propiedad] ON 
+
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (1, N'REPORTE_CAJA_REVISADOR_POR', N'Jorge Rojas Flores')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (2, N'REPORTE_BANCOS_REVISADOR_POR', N'Jorge Rojas Flores')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (3, N'PRINTER_LIST_SHOW', N'FALSE')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (4, N'REPORTS_COMPROBANTE_PRINT', N'FALSE')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (5, N'DEFAULT_DATE_RENDERER_FORMAT', N'%1$td/%1$tm/%1$ty')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (6, N'REPORTS_SOURCE_URL', N'reports/')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (7, N'DEFAULT_DATE_FORMAT', N'yyyy/MM/dd')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (8, N'DEV_MODE', N'1')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (9, N'DEFAULT_PRINTER_test', N'PDF')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (10, N'REPORTS_DIARIO_CAJA_TYPE', N'PDF')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (11, N'DEFAULT_FILTER_WIDTH', N'5')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (12, N'REPORTE_CAJA_PREPARADO_POR', N'Gilmer Alvina Gómez Ochoa')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (13, N'COMMON_FIELD_WIDTH', N'12em')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (14, N'REPORTS_DIARIO_BANCARIA_TYPE', N'PDF')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (15, N'REPORTS_SOURCE_FOLDER_WIN', N'C:\ab\dev\nvasja\vasja-reports\reports')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (16, N'REPORTS_IMAGE_SERVLET', N'../../servlets/image?image=')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (17, N'DECIMAL_FORMAT', N'#,##0.00')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (18, N'REPORTS_SOURCE_FOLDER', N'')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (19, N'REPORTS_COMPROBANTE_TYPE', N'PDF')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (20, N'REPORTE_BANCOS_PREPARADO_POR', N'Verónica Angelica Salazar Sosa')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (21, N'LOCALE', N'es_PE')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (22, N'SHORT_DATE_FORMAT', N'MM/dd')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (23, N'ALLOW_OVERDRAW', N'TRUE')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (24, N'REPORTS_SOURCE_FOLDER_UNIX', N'/pol/dev/nvasja/vasja-reports/reports')
+INSERT [dbo].[vsj_propiedad] ([cod_propiedad], [nombre], [valor]) VALUES (25, N'REPORTS_COMPROBANTE_OPEN', N'TRUE')
+SET IDENTITY_INSERT [dbo].[vsj_propiedad] OFF

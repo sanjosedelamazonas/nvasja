@@ -4,7 +4,8 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
+DROP  PROCEDURE  if exists [dbo].[usp_scp_vsj_getCociliacionDeSaldos];
+GO
 CREATE PROCEDURE [dbo].[usp_scp_vsj_getCociliacionDeSaldos]
 	@Tipo char(1), -- 0 proyecto, 1 tercero
 	@FechaFinal varchar(10),            -- Fecha para saldo formato dd/mm/yyyy
