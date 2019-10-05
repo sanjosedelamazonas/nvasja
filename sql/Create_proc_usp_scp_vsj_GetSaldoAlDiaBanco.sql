@@ -8,7 +8,7 @@ GO
 drop PROCEDURE if exists [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco];
 go
 
-ALTER PROCEDURE [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]
+CREATE PROCEDURE [dbo].[usp_scp_vsj_GetSaldoAlDiaBanco]
 	@Fecha varchar(19), -- Fecha para saldo formato yyyy-dd-mm hh:mi:ss(24h)
 --	@FechaFinal varchar(19), -- Fecha para saldo formato yyyy-dd-mm hh:mi:ss(24h)
 	@Cuenta varchar(7), -- Cuenta de banco por ejemplo '1040103'

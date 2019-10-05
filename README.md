@@ -33,7 +33,7 @@ Other basic workflow steps:
   - compile the vasja-ui module and start the application in debug mode:
     - cd vasja-ui
     - mvn spring-boot:run
-  - open http://localhost:8080/
+  - open http://localhost:8000/
 - client side changes or add-ons
   - edit code/POM in widgetset module
   - run "mvn install" in widgetset module
@@ -52,7 +52,6 @@ JAVA Security problem connecting to SQL Server:
 java -jar -Djava.security.properties="%BASE%\java.security" -Dspring.profiles.active=production vasja-ui/target/vasja-ui-1.0-SNAPSHOT.jar
 
 DEBUG MODE:
-
 cd vasja-ui
 mvn -Pdebug spring-boot:run
 Open Intellij and connect using the displayed port number

@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -228,16 +229,15 @@ public class ScpBancocabecera extends VsjBancoItem implements Serializable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
 		ScpBancocabecera that = (ScpBancocabecera) o;
-
-		return getCodBancocabecera() != null ? getCodBancocabecera().equals(that.getCodBancocabecera()) : that.getCodBancocabecera() == null;
-
+		return Objects.equals(codBancocabecera, that.codBancocabecera) &&
+				Objects.equals(flgEnviado, that.flgEnviado) &&
+				Objects.equals(flg_Anula, that.flg_Anula);
 	}
 
 	@Override
 	public int hashCode() {
-		return getCodBancocabecera() != null ? getCodBancocabecera().hashCode() : 0;
+		return Objects.hash(codBancocabecera, flgEnviado, flg_Anula);
 	}
 
 	@Override

@@ -89,8 +89,6 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera> {
         cabecerasParaEnviar.forEach(e -> cabecerasParaRefresh.add((ScpBancocabecera)e));
         MainUI.get().getProcUtil().enviarContabilidadBanco(cabecerasParaEnviar, view.getService(),this);
         view.getGridBanco().deselectAll();
-        //view.getGridBanco().refreshAllRows();
-        refreshItems(cabecerasParaRefresh);
     }
 
     public void generateComprobante() {
