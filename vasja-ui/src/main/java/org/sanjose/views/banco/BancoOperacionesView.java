@@ -55,7 +55,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
     private final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
             "Cobr.", "Fecha", "Numero", "Cuenta",
             "Auxiliar",  "Cheque", "Glosa",
-            "Ing S/.", "Egr S/.",
+            "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
             "Orig", "Comprob.", "Env", "Anul."
     };
 
@@ -170,7 +170,6 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
                 "txtDescctacontable");
         DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
-        selRepMoneda.select('0');
         selRepMoneda.setNullSelectionAllowed(false);
         selRepMoneda.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
@@ -185,6 +184,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
             }
             //viewLogic.setSaldoDelDia();
         });
+        selRepMoneda.select(moneda);
 
         DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
