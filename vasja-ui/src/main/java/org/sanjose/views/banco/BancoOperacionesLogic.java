@@ -13,6 +13,7 @@ import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.VsjCajaBancoItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.SaldoDelDia;
 
 import java.io.Serializable;
 
@@ -25,7 +26,7 @@ import java.io.Serializable;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class BancoOperacionesLogic extends BancoGridLogic implements Serializable {
+public class BancoOperacionesLogic extends BancoGridLogic implements Serializable, SaldoDelDia {
 
 
     private BancoOperacionesView oView;
@@ -89,4 +90,11 @@ public class BancoOperacionesLogic extends BancoGridLogic implements Serializabl
         oView.getGridBanco().select(event.getItemId());
     }
 
+    @Override
+    public void setSaldoDelDia() {
+    }
+
+    @Override
+    public void calcFooterSums() {
+    }
 }

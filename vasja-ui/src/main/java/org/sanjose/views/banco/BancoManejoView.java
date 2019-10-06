@@ -60,6 +60,11 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
             "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
             "Orig", "Comprob.", "Env", "Anul", "Codigo"
     };
+
+    private final String[] HIDDEN_COLUMN_IDS = new String[] {
+            "codOrigenenlace", "flgEnviado", "flg_Anula", "codBancocabecera"
+    };
+
     private final int[] FILTER_WIDTH = new int[]{
             1, 4, 4, 4,
             10, 4, 12,
@@ -121,16 +126,14 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         gridBanco.setEditorEnabled(false);
         gridBanco.sort("fecFecha", SortDirection.DESCENDING);
 
-        ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
-
-        ViewUtil.alignMontosInGrid(gridBanco);
-
         gridBanco.setSelectionMode(SelectionMode.MULTI);
 
+        ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
+        Arrays.asList(HIDDEN_COLUMN_IDS).forEach( colName ->  gridBanco.getColumn(colName).setHidden(true));
+        ViewUtil.alignMontosInGrid(gridBanco);
         // Fecha Desde Hasta
-        //ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta);
-        //ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta, this);
-        ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta, this);
+        ViewUtil.setupDateFiltersThisMonth(container, fechaDesde, fechaHasta, this);
+        //ViewUtil.setupDateFiltersPreviousMonth(container, fechaDesde, fechaHasta, this);
 
         fechaDesde.addValueChangeListener(e -> {
             viewLogic.calcFooterSums();
@@ -148,15 +151,13 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
         gridBanco.getColumn("flg_Anula").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
-        gridBanco.getColumn("flgEnviado").setHidden(true);
-        gridBanco.getColumn("flg_Anula").setHidden(true);
 
         gridBanco.getColumn("txtGlosa").setMaximumWidth(400);
 
         gridBanco.getColumn("scpDestino.txtNombredestino").setMaximumWidth(200);
 
         gridBanco.getColumn("checkMesCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
-        gridBanco.getColumn("codBancocabecera").setHidden(true);
+        //gridBanco.getColumn("codBancocabecera").setHidden(true);
 
         // Single click selects, double click opens
         gridBanco.addItemClickListener(e -> viewLogic.setItemLogic(e));

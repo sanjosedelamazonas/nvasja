@@ -49,15 +49,15 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
             "Fuente", "Partida","Rubro inst.","Lugar","Auxiliar",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/."
     };
-    static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"It", "codProyecto", "codTercero",
+    static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"Item", "codProyecto", "codTercero",
             "codFinanciera", "codCtaproyecto","codCtaespecial","codContraparte","codDestino",
             "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Item", "Proyecto", "Tercero",
+    static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"It", "Proyecto", "Tercero",
             "Fuente", "Partida","Rubro inst.","Lugar","Auxiliar",
             "Cuenta", "Glosa", "Ing $", "Egr $"
     };
-    static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"It", "codProyecto", "codTercero",
+    static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"Item", "codProyecto", "codTercero",
             "codFinanciera", "codCtaproyecto","codCtaespecial","codContraparte","codDestino",
             "codContracta", "txtGlosaitem", "numDebemo", "numHabermo"
     };
@@ -66,7 +66,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
             "Cuenta", "Glosa", "Ing €", "Egr €"
     };
 
-    static final String[] HIDDEN_COLUMN_IDS= new String[]{"codContraparte","txtGlosaitem"    };
+    static final String[] HIDDEN_COLUMN_IDS= new String[]{"codContraparte","txtGlosaitem" };
 
 
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};

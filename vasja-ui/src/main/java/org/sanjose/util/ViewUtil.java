@@ -174,10 +174,13 @@ public class ViewUtil {
     }
 
     private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, SaldoDelDia saldoDelDia) {
+        Map<Object, Container.Filter> columnFilters = new HashMap<>();
         Grid.HeaderRow filterRow = grid.appendHeaderRow();
+
         for (Grid.Column column: grid.getColumns()) {
             Object pid = column.getPropertyId();
             Grid.HeaderCell cell = filterRow.getCell(pid);
+
             // Have an input field to use for filter
             if (column.getConverter() instanceof ZeroOneTrafficLightConverter
                     || column.getConverter() instanceof BooleanTrafficLightConverter) {
@@ -188,10 +191,21 @@ public class ViewUtil {
                 else
                     DataFilterUtil.bindBooleanComboBox(filterCombo, pid.toString(), "", new String[]{"1", "0"});
                 filterCombo.addValueChangeListener(event -> {
-                    ((Container.SimpleFilterable) grid.getContainerDataSource()).removeContainerFilters(pid);
-                    if (!GenUtil.objNullOrEmpty(event.getProperty().getValue()))
+
+                    // Regular container
+                    if (grid.getContainerDataSource() instanceof Container.SimpleFilterable) {
+                        ((Container.SimpleFilterable) grid.getContainerDataSource()).removeContainerFilters(pid);
+                    } else {
+                        // Generated property container
+                        Container.Filter f = columnFilters.get(pid);
+                        if (f!=null)
+                            ((Container.Filterable) grid.getContainerDataSource()).removeContainerFilter(f);
+                    }
+                    if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                        columnFilters.put(pid, new Compare.Equal(pid, event.getProperty().getValue()));
                         ((Container.Filterable) grid.getContainerDataSource()).addContainerFilter(
-                                new Compare.Equal(pid, event.getProperty().getValue()));
+                                columnFilters.get(pid));
+                    }
                     if (saldoDelDia != null) {
                         saldoDelDia.setSaldoDelDia();
                         saldoDelDia.calcFooterSums();
@@ -208,13 +222,19 @@ public class ViewUtil {
                 // Update filter When the filter input is changed
                 filterField.addTextChangeListener(change -> {
                     // Can't modify filters so need to replace
-                    ((Container.SimpleFilterable) grid.getContainerDataSource()).removeContainerFilters(pid);
-
+                    if (grid.getContainerDataSource() instanceof Container.SimpleFilterable) {
+                        ((Container.SimpleFilterable) grid.getContainerDataSource()).removeContainerFilters(pid);
+                    } else {
+                        // Generated property container
+                        Container.Filter f = columnFilters.get(pid);
+                        if (f!=null)
+                            ((Container.Filterable) grid.getContainerDataSource()).removeContainerFilter(f);
+                    }
                     // (Re)create the filter if necessary
                     if (!change.getText().isEmpty()) {
-                        ((Container.Filterable) grid.getContainerDataSource()).addContainerFilter(
-                                new SimpleStringFilter(pid,
-                                        change.getText(), true, false));
+                        columnFilters.put(pid, new SimpleStringFilter(pid,
+                                change.getText(), true, false));
+                        ((Container.Filterable) grid.getContainerDataSource()).addContainerFilter(columnFilters.get(pid));
                     }
                     if (saldoDelDia != null) {
                         saldoDelDia.setSaldoDelDia();
