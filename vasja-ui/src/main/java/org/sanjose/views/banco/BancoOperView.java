@@ -150,7 +150,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
         gridBanco.setEditorEnabled(false);
         gridBanco.sort("fecFregistro", SortDirection.DESCENDING);
 
-        gridBanco.getColumn("Item").setWidth(50);
+        gridBanco.getColumn("Item").setWidth(25);
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
         Arrays.asList(HIDDEN_COLUMN_IDS).forEach(colName ->  gridBanco.getColumn(colName).setHidden(true));
         ViewUtil.alignMontosInGrid(gridBanco);
@@ -220,7 +220,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
         ViewUtil.alignMontosInGrid(gridBanco);
         getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
         getMontoTotal().setValue(GenUtil.numFormat(calcTotal(locMoneda)));
-        getMontoTotal().setCaption("Total " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)));
+        getTotalChequeLabel().setValue("Total " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)));
     }
 
     public void refreshData() {
@@ -447,5 +447,9 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
 
     public Label getMonedaSaldoCuentaLabel() {
         return monedaSaldoCuentaLabel;
+    }
+
+    public Label getTotalChequeLabel() {
+        return totalChequeLabel;
     }
 }

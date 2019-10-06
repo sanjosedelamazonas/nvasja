@@ -91,10 +91,7 @@
         <vaadin-text-field enabled="false" input-prompt="Saldo" style-name="form-textfield" width="120px" _id="saldoCuenta"></vaadin-text-field>
        </vaadin-horizontal-layout>
        <vaadin-horizontal-layout spacing>
-        <vaadin-label size-auto plain-text>
-          Responsable 
-        </vaadin-label>
-        <vaadin-combo-box input-prompt="Cod. Auxiliar" style-name="form-textfield" item-caption-mode="id" width="423px" _id="selCodAuxCabeza" :middle :center>
+        <vaadin-combo-box input-prompt="Cod. Auxiliar" style-name="form-textfield" item-caption-mode="id" width="474px" _id="selCodAuxCabeza" :middle :center>
          <option>Option 1</option>
          <option>Option 2</option>
         </vaadin-combo-box>
@@ -107,12 +104,9 @@
         <vaadin-text-field input-prompt="Numero" width="120px" _id="cheque"></vaadin-text-field>
        </vaadin-horizontal-layout>
        <vaadin-horizontal-layout style-name="cuenta-Layout" spacing>
-        <vaadin-label size-auto plain-text>
-          Glosa geneneral 
-        </vaadin-label>
-        <vaadin-text-field caption-as-html input-prompt="Glosa" width="474px" _id="glosaCabeza"></vaadin-text-field>
-        <vaadin-label size-auto plain-text>
-          Monto 
+        <vaadin-text-field caption-as-html input-prompt="Glosa general" width="474px" _id="glosaCabeza"></vaadin-text-field>
+        <vaadin-label size-auto plain-text _id="totalChequeLabel">
+          Total S/. 
         </vaadin-label>
         <vaadin-text-field enabled="false" input-prompt="" style-name="form-textfield" width="120px" value="0" _id="montoTotal"></vaadin-text-field>
        </vaadin-horizontal-layout>

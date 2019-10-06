@@ -56,6 +56,7 @@ public class BancoOperUI extends CssLayout {
     protected Button btnAuxiliar;
     protected TextField cheque;
     protected TextField glosaCabeza;
+    protected Label totalChequeLabel;
     protected TextField montoTotal;
     protected FormLayout detallesFormLayout;
     protected TextField numItem;

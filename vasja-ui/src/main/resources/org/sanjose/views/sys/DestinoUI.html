@@ -1,67 +1,83 @@
 <!doctype html>
 <html>
  <head>
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
- </head> 
- <body> 
-  <vaadin-vertical-layout size-full> 
-   <vaadin-horizontal-layout> 
-    <vaadin-form-layout width="398px" margin> 
-     <vaadin-text-field caption="Codigo" width="200px" _id="codigo"></vaadin-text-field> 
-     <vaadin-combo-box caption="Clasificacion" item-caption-mode="id" width="200px" _id="clasificacion"> 
-      <option>Option 1</option> 
-      <option>Option 2</option> 
-      <option>Option 3</option> 
-     </vaadin-combo-box> 
-     <vaadin-text-field caption="Nombre o descripcion completa" width="200px" _id="nombreCompleta"></vaadin-text-field> 
-     <vaadin-text-field caption="Apellido paterno" width="200px" _id="apellidoPaterno"></vaadin-text-field> 
-     <vaadin-text-field caption="Apellido materno" width="200px" _id="apellidoMaterno"></vaadin-text-field> 
-     <vaadin-combo-box caption="Genero" item-caption-mode="id" width="200px" _id="genero"> 
-      <option>Option 1</option> 
-      <option>Option 2</option> 
-      <option>Option 3</option> 
-     </vaadin-combo-box> 
-     <vaadin-text-field caption="Direccion" width="200px" _id="direccion"></vaadin-text-field> 
-     <vaadin-combo-box caption="Tipo de documento" item-caption-mode="id" width="200px" _id="tipoDocumento"> 
-      <option>Option 1</option> 
-      <option>Option 2</option> 
-      <option>Option 3</option> 
-     </vaadin-combo-box> 
-     <vaadin-text-field caption="Numero de documento" width="200px" _id="numDocumento"></vaadin-text-field> 
-     <vaadin-text-field caption="Telefono 1" width="200px" _id="telefono1"></vaadin-text-field> 
-     <vaadin-text-field caption="Telefono 2" width="200px" _id="telefono2"></vaadin-text-field> 
-     <vaadin-text-field caption="R.U.C." width="200px" _id="ruc"></vaadin-text-field> 
-     <vaadin-combo-box caption="Tipo de persona" item-caption-mode="id" width="200px" _id="tipoDePersona"> 
-      <option>Option 1</option> 
-      <option>Option 2</option> 
-      <option>Option 3</option> 
-     </vaadin-combo-box> 
-     <vaadin-combo-box caption="Dependencia" item-caption-mode="id" width="200px" _id="dependencia"> 
-      <option>Option 1</option> 
-      <option>Option 2</option> 
-      <option>Option 3</option> 
-     </vaadin-combo-box> 
-     <vaadin-combo-box caption="Cargo" item-caption-mode="id" width="200px" _id="cargo"> 
-      <option>Option 1</option> 
-      <option>Option 2</option> 
-      <option>Option 3</option> 
-     </vaadin-combo-box> 
-    </vaadin-form-layout> 
-    <vaadin-form-layout size-auto :bottom :center> 
-     <vaadin-button plain-text _id="btnGuardar">
-       Guardar 
-     </vaadin-button> 
-     <vaadin-button plain-text _id="btnAnular">
-       Anular 
-     </vaadin-button> 
-     <vaadin-button plain-text _id="btnEliminar">
-       Eliminar 
-     </vaadin-button> 
-     <vaadin-button plain-text _id="btnNuevo">
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta name="vaadin-version" content="7.7.7">
+ </head>
+ <body>
+  <vaadin-horizontal-layout style-name="billing-formlayout" size-full>
+   <vaadin-vertical-layout spacing margin :expand>
+    <vaadin-form-layout width="398px" margin>
+     <vaadin-horizontal-layout spacing>
+      <vaadin-text-field caption="RUC o DNI" width="200px" _id="codigo"></vaadin-text-field>
+      <vaadin-combo-box caption="Clasificacion" item-caption-mode="id" width="200px" _id="clasificacion">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
+     </vaadin-horizontal-layout>
+     <vaadin-horizontal-layout spacing>
+      <vaadin-combo-box caption="Tipo de persona" item-caption-mode="id" width="200px" _id="tipoDePersona">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
+      <vaadin-text-field caption="Nº de documeneto" width="200px" _id="ruc"></vaadin-text-field>
+     </vaadin-horizontal-layout>
+     <vaadin-horizontal-layout>
+      <vaadin-text-field caption="Nombre o descripcion completa" width="412px" _id="nombreCompleta"></vaadin-text-field>
+     </vaadin-horizontal-layout>
+    </vaadin-form-layout>
+    <vaadin-form-layout size-auto>
+     <vaadin-text-field caption="Telefono 1" width="200px" _id="telefono1"></vaadin-text-field>
+     <vaadin-text-field caption="Telefono 2" width="200px" _id="telefono2"></vaadin-text-field>
+     <vaadin-combo-box caption="Dependencia" item-caption-mode="id" width="200px" _id="dependencia">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+     </vaadin-combo-box>
+     <vaadin-combo-box caption="Cargo" item-caption-mode="id" width="200px" _id="cargo">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+     </vaadin-combo-box>
+     <vaadin-text-field caption="Direccion" width="200px" _id="direccion"></vaadin-text-field>
+     <vaadin-combo-box caption="Genero" item-caption-mode="id" width="200px" _id="genero">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+     </vaadin-combo-box>
+     <vaadin-text-field caption="Apellido materno" width="200px" _id="apellidoMaterno"></vaadin-text-field>
+     <vaadin-text-field caption="Apellido paterno" width="200px" _id="apellidoPaterno"></vaadin-text-field>
+     <vaadin-combo-box caption="Tipo de documento" item-caption-mode="id" width="200px" _id="tipoDocumento">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+     </vaadin-combo-box>
+     <vaadin-text-field caption="Numero de documento" width="200px" _id="numDocumento"></vaadin-text-field>
+    </vaadin-form-layout>
+   </vaadin-vertical-layout>
+   <vaadin-form-layout width-auto height-full :middle :center>
+    <vaadin-vertical-layout size-auto>
+     <vaadin-vertical-layout size-auto>
+      <vaadin-button width="88px" plain-text _id="btnGuardar">
+        Guardar 
+      </vaadin-button>
+      <vaadin-button width="88px" plain-text _id="btnEliminar">
+        Eliminar 
+      </vaadin-button>
+      <vaadin-button width="88px" plain-text _id="btnAnular">
+        Anular 
+      </vaadin-button>
+     </vaadin-vertical-layout>
+    </vaadin-vertical-layout>
+    <vaadin-vertical-layout size-auto>
+     <vaadin-button width="88px" height="22px" plain-text _id="btnNuevo">
        Nuevo 
-     </vaadin-button> 
-    </vaadin-form-layout> 
-   </vaadin-horizontal-layout> 
-  </vaadin-vertical-layout>  
+     </vaadin-button>
+    </vaadin-vertical-layout>
+   </vaadin-form-layout>
+  </vaadin-horizontal-layout>
  </body>
 </html>
