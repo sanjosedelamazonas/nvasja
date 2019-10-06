@@ -140,6 +140,10 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
         //gridCaja.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
         //gridCaja.getColumn("flgEnviado").setHidden(true);
 
+       /* gridCaja.getColumn("txtCorrelativo").setWidth(100);
+        gridCaja.getColumn("codProyecto").setWidth(100);
+        gridCaja.getColumn("codTercero").setWidth(100);
+*/
         // Add filters
         ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
 
