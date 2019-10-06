@@ -438,4 +438,8 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
     public void setSubWindow(Window subWindow) {
         this.subWindow = subWindow;
     }
+
+    public Label getMonedaSaldoCuentaLabel() {
+        return monedaSaldoCuentaLabel;
+    }
 }

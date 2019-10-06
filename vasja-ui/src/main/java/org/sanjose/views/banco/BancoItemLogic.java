@@ -419,7 +419,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             BigDecimal saldo = procUtil.getSaldoBanco(GenUtil.getEndOfDay(GenUtil.dateAddDays(view.getDataFechaComprobante().getValue(),-1)),
                     view.getSelCuenta().getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda())).getSegLibro();
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
-            view.getSaldoCuenta().setCaption(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
+            view.getMonedaSaldoCuentaLabel().setValue(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
             log.debug("In setCuentaLogic: " + df.format(saldo));
             view.getSaldoCuenta().setValue(df.format(saldo));
             moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
