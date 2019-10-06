@@ -70,7 +70,7 @@ spring:
 #    password: tJF/{LJ6h;Z5uW\G
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 server:
-  port: 8000
+  port: 80
 logging:
   level:
     org:
