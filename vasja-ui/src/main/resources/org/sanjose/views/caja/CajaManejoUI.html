@@ -6,7 +6,7 @@
   <meta name="vaadin-version" content="7.7.7">
  </head>
  <body>
-  <vaadin-vertical-layout spacing id="verticalMain" width="1500px" height="725px" margin>
+  <vaadin-vertical-layout spacing id="verticalMain" size-full margin>
    <vaadin-horizontal-layout spacing height="40px" margin-top margin-bottom _id="horiz1" :center>
     <vaadin-horizontal-layout spacing :center>
      <vaadin-label size-auto plain-text>
@@ -43,26 +43,27 @@
      </vaadin-button>
     </vaadin-horizontal-layout>
    </vaadin-horizontal-layout>
-   <vaadin-vertical-layout size-auto></vaadin-vertical-layout>
-   <vaadin-horizontal-layout height-full _id="horiz4" :center :expand>
-    <vaadin-vertical-layout size-auto>
+   <vaadin-vertical-layout height="20px"></vaadin-vertical-layout>
+   <vaadin-horizontal-layout size-full _id="horiz4" :center :expand>
+    <vaadin-vertical-layout size-full :expand>
      <vaadin-horizontal-layout width-full height="23px" _id="horiz3">
-      <vaadin-combo-box input-prompt="Filtrar por Caja" item-caption-mode="id" width="280px" _id="selFiltroCaja">
+      <vaadin-combo-box input-prompt="Filtrar por Caja" item-caption-mode="id" width="280px" height-full _id="selFiltroCaja" :middle :center>
        <option>Option 1</option>
        <option>Option 2</option>
        <option>Option 3</option>
       </vaadin-combo-box>
-      <vaadin-horizontal-layout :center>
-       <vaadin-button plain-text _id="nuevaTransferencia">
+      <vaadin-horizontal-layout height-full :center>
+       <vaadin-button height-full plain-text _id="nuevaTransferencia">
          Nuevo Cargo/Abono 
        </vaadin-button>
-       <vaadin-button plain-text _id="nuevoComprobante">
+       <vaadin-button height-full plain-text _id="nuevoComprobante">
          Nuevo comprobante 
        </vaadin-button>
       </vaadin-horizontal-layout>
      </vaadin-horizontal-layout>
-     <vaadin-horizontal-layout>
-      <vaadin-grid editor-cancel-caption="Anular" width="1200px" height="600px" _id="gridCaja"></vaadin-grid>
+     <vaadin-horizontal-layout size-full margin :expand>
+      <vaadin-vertical-layout spacing width="50px" height-full></vaadin-vertical-layout>
+      <vaadin-grid editor-cancel-caption="Anular" size-full _id="gridCaja" :expand></vaadin-grid>
       <vaadin-vertical-layout spacing size-auto margin :middle>
        <vaadin-button width="130px" height="22px" plain-text _id="btnVerImprimir">
          Ver/Imprimir 
@@ -75,6 +76,7 @@
        </vaadin-button>
       </vaadin-vertical-layout>
      </vaadin-horizontal-layout>
+     <vaadin-label height="30px" plain-text></vaadin-label>
     </vaadin-vertical-layout>
    </vaadin-horizontal-layout>
   </vaadin-vertical-layout>
