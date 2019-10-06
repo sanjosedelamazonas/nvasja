@@ -11,7 +11,7 @@
   <meta name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
  </head>
  <body>
-  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive width="869px">
+  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive width-full>
    <vaadin-vertical-layout _id="topVertLayout">
     <vaadin-horizontal-layout spacing _id="topButtons" :right>
      <vaadin-horizontal-layout spacing margin :right>
@@ -35,7 +35,7 @@
       </vaadin-button>
      </vaadin-horizontal-layout>
     </vaadin-horizontal-layout>
-    <vaadin-horizontal-layout style-name="billing-formlayout" spacing responsive width-full height="50px" _id="datosPrincipalesHorizLayout">
+    <vaadin-horizontal-layout style-name="billing-formlayout" spacing responsive width-full height="50px" _id="datosPrincipalesHorizLayout" :expand>
      <vaadin-horizontal-layout>
       <vaadin-label size-auto plain-text>
         Operaciòn nº 
@@ -73,7 +73,7 @@
    <vaadin-vertical-layout _id="bodyVertLayout">
     <vaadin-horizontal-layout width-full>
      <vaadin-vertical-layout spacing>
-      <vaadin-vertical-layout style-name="billing-formlayout" spacing _id="encabezadoVertLayout">
+      <vaadin-vertical-layout style-name="billing-formlayout" spacing _id="encabezadoVertLayout" :expand>
        <vaadin-horizontal-layout spacing>
         <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante"></vaadin-popup-date-field>
         <vaadin-combo-box caption="Cuenta" input-prompt="Cuenta" style-name="form-textfield" item-caption-mode="id" width="438px" _id="selCuenta">
@@ -100,7 +100,7 @@
         <vaadin-text-field caption-as-html input-prompt="Glosa" width="575px" _id="glosaCabeza"></vaadin-text-field>
        </vaadin-horizontal-layout>
       </vaadin-vertical-layout>
-      <vaadin-vertical-layout style-name="billing-formlayout" responsive size-auto _id="itemsVertLayout">
+      <vaadin-vertical-layout style-name="billing-formlayout" responsive _id="itemsVertLayout" :expand>
        <vaadin-horizontal-layout spacing :right>
         <vaadin-button plain-text _id="guardarBtn">
           Guardar 
@@ -118,14 +118,14 @@
           Eliminar 
         </vaadin-button>
        </vaadin-horizontal-layout>
-       <vaadin-form-layout spacing="false" responsive margin-top="false" margin-bottom="false" _id="order_summary_layout">
+       <vaadin-form-layout spacing="false" responsive margin-top="false" margin-bottom="false" _id="order_summary_layout" :expand>
         <vaadin-label style-name="header-label-small" plain-text _id="order_heading">
           Operaciones de cheque 
         </vaadin-label>
-        <vaadin-grid width-full height="163px" tabindex="50" _id="gridBanco"></vaadin-grid>
+        <vaadin-grid width-full height="131px" tabindex="50" _id="gridBanco"></vaadin-grid>
        </vaadin-form-layout>
       </vaadin-vertical-layout>
-      <vaadin-form-layout style-name="billing-formlayout" spacing="false" responsive width-auto height="341px" margin-top="false" margin-bottom="false" _id="detallesFormLayout">
+      <vaadin-form-layout style-name="billing-formlayout" spacing="false" responsive height="341px" margin-top="false" margin-bottom="false" _id="detallesFormLayout" :expand>
        <vaadin-horizontal-layout description="Proyecto" spacing>
         <vaadin-text-field description="Num de Voucher" caption="Item" enabled="false" input-prompt="Numero " style-name="form-textfield" responsive width="32px" _id="numItem"></vaadin-text-field>
         <vaadin-vertical-layout size-auto>

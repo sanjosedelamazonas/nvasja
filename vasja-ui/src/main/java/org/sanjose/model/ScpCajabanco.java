@@ -99,11 +99,6 @@ public class ScpCajabanco extends VsjCajaBancoItem implements Serializable {
 	@ManyToOne(targetEntity = ScpDestino.class)
 	@JoinColumn(name = "cod_destino", insertable = false, updatable = false, nullable = true)
 	private ScpDestino scpDestino;
-/*
-
-	@Column(name="txt_anoproceso")
-	private String txtAnoproceso;
-*/
 
 	public ScpCajabanco() {
 	}
@@ -261,16 +256,6 @@ public class ScpCajabanco extends VsjCajaBancoItem implements Serializable {
 		this.codFinanciera = codFinanciera;
 	}
 
-/*
-	public String getCodMes() {
-		return this.codMes;
-	}
-
-	public void setCodMes(String codMes) {
-		this.codMes = codMes;
-	}
-*/
-
 	public String getCodOrigenenlace() {
 		return this.codOrigenenlace;
 	}
@@ -393,15 +378,6 @@ public class ScpCajabanco extends VsjCajaBancoItem implements Serializable {
 	public void setNumHabermo(BigDecimal numHabermo) {
 		this.numHabermo = numHabermo;
 	}
-
-	/*
-	public String getTxtAnoproceso() {
-		return this.txtAnoproceso;
-	}
-
-	public void setTxtAnoproceso(String txtAnoproceso) {
-		this.txtAnoproceso = txtAnoproceso;
-	}*/
 
 	public String getTxtComprobantepago() {
 		return this.txtComprobantepago;
