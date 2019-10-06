@@ -105,16 +105,16 @@
           N° de chk 
         </vaadin-label>
         <vaadin-text-field input-prompt="Numero" width="120px" _id="cheque"></vaadin-text-field>
-        <vaadin-label size-auto plain-text>
-          Monto 
-        </vaadin-label>
-        <vaadin-text-field enabled="false" input-prompt="" style-name="form-textfield" width="85px" value="0" _id="montoTotal"></vaadin-text-field>
        </vaadin-horizontal-layout>
        <vaadin-horizontal-layout style-name="cuenta-Layout" spacing>
         <vaadin-label size-auto plain-text>
           Glosa geneneral 
         </vaadin-label>
         <vaadin-text-field caption-as-html input-prompt="Glosa" width="474px" _id="glosaCabeza"></vaadin-text-field>
+        <vaadin-label size-auto plain-text>
+          Monto 
+        </vaadin-label>
+        <vaadin-text-field enabled="false" input-prompt="" style-name="form-textfield" width="120px" value="0" _id="montoTotal"></vaadin-text-field>
        </vaadin-horizontal-layout>
       </vaadin-vertical-layout>
       <vaadin-form-layout style-name="billing-formlayout" spacing="false" responsive height="341px" margin-top="false" margin-bottom="false" _id="detallesFormLayout" :expand>
@@ -128,7 +128,7 @@
          <option>Option 1</option>
          <option>Option 2</option>
         </vaadin-combo-box>
-        <vaadin-horizontal-layout>
+        <vaadin-horizontal-layout spacing>
          <vaadin-text-field caption="S/." enabled="false" style-name="form-textfield" width="70px" _id="saldoProyPEN"></vaadin-text-field>
          <vaadin-text-field caption="$" enabled="false" style-name="form-textfield" width="70px" _id="saldoProyUSD"></vaadin-text-field>
          <vaadin-text-field caption="€" enabled="false" style-name="form-textfield" width="70px" _id="saldoProyEUR"></vaadin-text-field>
@@ -182,16 +182,18 @@
           </vaadin-vertical-layout>
          </vaadin-horizontal-layout>
         </vaadin-vertical-layout>
-        <vaadin-vertical-layout caption="Documento de gasto" width-auto height="176px" _id="docGastoVertLayout">
-         <vaadin-horizontal-layout style-name="name-wrapper" spacing margin _id="name_wrapper9">
-          <vaadin-combo-box caption="Razón social/Nombre" input-prompt="Auxiliar" style-name="form-textfield" item-caption-mode="id" width="293px" _id="selCodAuxiliar">
-           <option>Option 1</option>
-           <option>Option 2</option>
-          </vaadin-combo-box>
-          <vaadin-button plain-text _id="btnDestino" :bottom :center>
+        <vaadin-vertical-layout size-auto _id="docGastoVertLayout">
+         <vaadin-vertical-layout size-auto>
+          <vaadin-horizontal-layout style-name="name-wrapper" spacing margin _id="name_wrapper9">
+           <vaadin-combo-box caption="Razón social/Nombre" input-prompt="Auxiliar" style-name="form-textfield" item-caption-mode="id" width="293px" _id="selCodAuxiliar">
+            <option>Option 1</option>
+            <option>Option 2</option>
+           </vaadin-combo-box>
+          </vaadin-horizontal-layout>
+          <vaadin-button plain-text _id="btnDestino" :right>
             Nuevo 
           </vaadin-button>
-         </vaadin-horizontal-layout>
+         </vaadin-vertical-layout>
          <vaadin-horizontal-layout style-name="name-wrapper" spacing margin _id="name_wrapper10">
           <vaadin-popup-date-field caption="Fecha de doc" style-name="form-textfield" _id="fechaDoc" :bottom></vaadin-popup-date-field>
           <vaadin-combo-box caption="Tipo de doc" input-prompt="Tipo de documento" style-name="form-textfield" item-caption-mode="id" width="173px" _id="selTipoDoc" :bottom>
@@ -199,20 +201,18 @@
            <option>Option 2</option>
           </vaadin-combo-box>
          </vaadin-horizontal-layout>
-         <vaadin-horizontal-layout width="190px" margin>
-          <vaadin-text-field caption="Nùmero de doc" input-prompt="Serie de doc" width="54px" _id="serieDoc" :bottom :right></vaadin-text-field>
-          <vaadin-text-field input-prompt="Nr doc" width="165px" _id="numDoc" :bottom></vaadin-text-field>
+         <vaadin-horizontal-layout spacing margin>
+          <vaadin-text-field caption="Nùmero de doc" input-prompt="Serie de doc" width="104px" _id="serieDoc" :bottom :right></vaadin-text-field>
+          <vaadin-text-field input-prompt="Nr doc" width="181px" _id="numDoc" :bottom></vaadin-text-field>
          </vaadin-horizontal-layout>
         </vaadin-vertical-layout>
        </vaadin-horizontal-layout>
       </vaadin-form-layout>
       <vaadin-vertical-layout style-name="billing-formlayout" responsive _id="itemsVertLayout" :expand>
-       <vaadin-form-layout spacing="false" responsive margin-top="false" margin-bottom="false" _id="order_summary_layout" :expand>
-        <vaadin-label style-name="header-label-small" plain-text _id="order_heading">
-          Operaciones de cheque 
-        </vaadin-label>
-        <vaadin-grid width-full height="131px" tabindex="50" _id="gridBanco"></vaadin-grid>
-       </vaadin-form-layout>
+       <vaadin-label style-name="header-label-small" plain-text _id="order_heading">
+         Operaciones de cheque 
+       </vaadin-label>
+       <vaadin-grid width-full height="131px" tabindex="50" _id="gridBanco"></vaadin-grid>
        <vaadin-horizontal-layout spacing margin :right>
         <vaadin-button plain-text _id="guardarBtn">
           Guardar 

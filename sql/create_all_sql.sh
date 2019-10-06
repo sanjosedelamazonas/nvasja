@@ -7,20 +7,20 @@ cat Create_vsj_*.sql >> all.sql
 echo "PRINT '3. Create_vsj DONE'" >> all.sql
 #cat Create_function_*.sql >> all.sql
 #cat Create_trigger_*.sql >> all.sql
-cat Create_usp_*.sql >> all.sql
-echo "PRINT '4. Cr usp'" >> all.sql
+#cat Create_usp_*.sql >> all.sql
+#echo "PRINT '4. Cr usp'" >> all.sql
 cat Create_proc_1_*.sql >> all.sql
-echo "PRINT '5. Cr proc1'" >> all.sql
+echo "PRINT '4. Cr proc1'" >> all.sql
 cat Create_proc_usp*.sql >> all.sql
-echo "PRINT '6. Cr proc_usp*; GO;'" >> all.sql
+echo "PRINT '5. Cr proc_usp*; GO;'" >> all.sql
 cat Create_proc_fun*.sql >> all.sql
 cat Create_function_scp_*.sql >> all.sql
-echo "PRINT '7. Cr function_scp'" >> all.sql
+echo "PRINT '6. Cr function_scp'" >> all.sql
 cat Insert_into*.sql >> all.sql
-echo "PRINT '8. Cr vsj'" >> all.sql
-echo "PRINT '9. FIXING DATA'" >> all.sql
+echo "PRINT '7. Cr vsj'" >> all.sql
+echo "PRINT '8. FIXING DATA'" >> all.sql
 cat Data_fixes.sql >> all.sql
-echo "PRINT '10. DATA FIXED'" >> all.sql
+echo "PRINT '9. DATA FIXED'" >> all.sql
 OLD="USE"
 NEW="--USE"
 f=all.sql

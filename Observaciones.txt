@@ -93,8 +93,8 @@ DONE - manejjo de cheques - powinien chowac kolumny S/., USD, Eur w zaleznosci o
 - manejo de cheques - ekran dla Vero - no debe tener enviar a contabilidad (chyba ze uzaleznimy od roli?)
 - operaciones de cheques - ekran dla Jorge, debe tener botones Enviar a contabilidad, Marcar cobrado, Marcar no cobrado - ver que pasa con marcar cobrado cuando esta enviado a contabilidad
 
-
-- Procedura getSaldoAlDiaBanco - Segun Banco
+- ekran comprabnate caja - powinien przepisywac tylko za pierwszym wprowadzaniem dane z responsable do auxiliar, przy modyfikacji juz nie powinien zmieniac
+- ekran manejo de caja
 
 sonando para el futuro:
 1. Cuando envia a contabilidad y no hay tipo de cambo para el dia, lo premita anadir

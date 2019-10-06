@@ -135,6 +135,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
         gridBanco.getColumn("flg_Anula").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
         gridBanco.getColumn("txtCorrelativo").setHidden(true);
+        gridBanco.getColumn("codOrigenenlace").setHidden(true);
         gridBanco.getColumn("flgEnviado").setHidden(true);
         gridBanco.getColumn("flg_Anula").setHidden(true);
 

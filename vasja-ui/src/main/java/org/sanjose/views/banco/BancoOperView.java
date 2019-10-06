@@ -24,6 +24,7 @@ import tm.kod.widgets.numberfield.NumberField;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.USD;
@@ -44,27 +45,32 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
             "codFinanciera", "codCtaproyecto","codCtaespecial","codContraparte","codDestino",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"Item", "Proyecto", "Tercero",
+    static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"It", "Proyecto", "Tercero",
             "Fuente", "Partida","Rubro inst.","Lugar","Auxiliar",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/."
     };
-    static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"Item", "codProyecto", "codTercero",
+    static final String[] VISIBLE_COLUMN_IDS_USD = new String[]{"It", "codProyecto", "codTercero",
             "codFinanciera", "codCtaproyecto","codCtaespecial","codContraparte","codDestino",
             "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
     };
     static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Item", "Proyecto", "Tercero",
-            "Fuente", "Partida","RUbro inst.","Lugar","Auxiliar",
+            "Fuente", "Partida","Rubro inst.","Lugar","Auxiliar",
             "Cuenta", "Glosa", "Ing $", "Egr $"
     };
-    static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"Item", "codProyecto", "codTercero",
+    static final String[] VISIBLE_COLUMN_IDS_EUR = new String[]{"It", "codProyecto", "codTercero",
             "codFinanciera", "codCtaproyecto","codCtaespecial","codContraparte","codDestino",
             "codContracta", "txtGlosaitem", "numDebemo", "numHabermo"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{"Item", "Proyecto", "Tercero",
-            "Fuente", "Partida","RUbro inst.","Lugar","Auxiliar",
+    static final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{"It", "Proyecto", "Tercero",
+            "Fuente", "Partida","Rubro inst.","Lugar","Auxiliar",
             "Cuenta", "Glosa", "Ing €", "Egr €"
     };
+
+    static final String[] HIDDEN_COLUMN_IDS= new String[]{"codContraparte","txtGlosaitem"    };
+
+
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
+
 
     private static final Logger log = LoggerFactory.getLogger(BancoOperView.class);
 
@@ -146,7 +152,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
 
         gridBanco.getColumn("Item").setWidth(50);
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
-
+        Arrays.asList(HIDDEN_COLUMN_IDS).forEach(colName ->  gridBanco.getColumn(colName).setHidden(true));
         ViewUtil.alignMontosInGrid(gridBanco);
 
         ViewUtil.colorizeRows(gridBanco, ScpBancodetalle.class);
@@ -196,18 +202,18 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
             return;
         }
         if (locMoneda.equals(PEN)) {
-            order_summary_layout.removeStyleName("order-summary-layout-usd");
-            order_summary_layout.removeStyleName("order-summary-layout-eur");
+          //  order_summary_layout.removeStyleName("order-summary-layout-usd");
+          //  order_summary_layout.removeStyleName("order-summary-layout-eur");
             ViewUtil.setColumnNames(gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_PEN,
                     BancoOperView.VISIBLE_COLUMN_IDS_PEN, BancoOperView.NONEDITABLE_COLUMN_IDS);
         } else if (locMoneda.equals(USD)) {
-            order_summary_layout.removeStyleName("order-summary-layout-eur");
-            order_summary_layout.addStyleName("order-summary-layout-usd");
+           // order_summary_layout.removeStyleName("order-summary-layout-eur");
+           // order_summary_layout.addStyleName("order-summary-layout-usd");
             ViewUtil.setColumnNames(gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_USD,
                     BancoOperView.VISIBLE_COLUMN_IDS_USD, BancoOperView.NONEDITABLE_COLUMN_IDS);
         } else {
-            order_summary_layout.removeStyleName("order-summary-layout-usd");
-            order_summary_layout.addStyleName("order-summary-layout-eur");
+          //  order_summary_layout.removeStyleName("order-summary-layout-usd");
+           // order_summary_layout.addStyleName("order-summary-layout-eur");
             ViewUtil.setColumnNames(gridBanco, BancoOperView.VISIBLE_COLUMN_NAMES_EUR,
                     BancoOperView.VISIBLE_COLUMN_IDS_EUR, BancoOperView.NONEDITABLE_COLUMN_IDS);
         }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComprobanteCheque" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="42" uuid="e6e4b764-eb4a-44ec-8aa8-52e244f987a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -21,7 +21,7 @@
 	<style name="SubTitle" forecolor="#666666" fontName="DejaVu Sans" fontSize="18"/>
 	<style name="Column header" forecolor="#666666" fontName="DejaVu Sans" fontSize="12" isBold="true"/>
 	<style name="Detail" fontName="DejaVu Sans" fontSize="12"/>
-	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+	<style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -30,7 +30,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Table_CH" mode="Opaque" backcolor="#FAFAFA">
+	<style name="Table_CH" mode="Opaque" backcolor="#FFBFBF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -299,9 +299,9 @@ FROM
 			<staticText>
 				<reportElement x="0" y="2" width="538" height="18" uuid="a96ccdbe-93fa-41fc-b9ef-f4e2a8e7b78a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial Black" size="10" isBold="false"/>
+					<font fontName="Arial Rounded MT Bold" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Vicariato Apostólico de San José del Amazonas]]></text>
+				<text><![CDATA[VICARIATO APOSTOLICO DE SAN JOSE DEL AMAZONAS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="" x="0" y="23" width="110" height="14" uuid="c382b0c0-bab5-4268-81f2-bf612e2e3ba9"/>
@@ -311,7 +311,7 @@ FROM
 				<text><![CDATA[Comprobante Número:]]></text>
 			</staticText>
 			<textField>
-				<reportElement mode="Transparent" x="112" y="23" width="166" height="14" forecolor="#030303" backcolor="#FFFFFF" uuid="5226a211-4e1b-4424-b7e1-d388a8c53689"/>
+				<reportElement mode="Transparent" x="115" y="23" width="166" height="14" forecolor="#030303" backcolor="#FFFFFF" uuid="5226a211-4e1b-4424-b7e1-d388a8c53689"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -319,7 +319,7 @@ FROM
 				<textFieldExpression><![CDATA["02-" + $F{OPERACION_ID}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="39" width="278" height="15" uuid="2f85be0a-263e-43c2-af1b-274a2b739eb9"/>
+				<reportElement x="0" y="39" width="340" height="15" uuid="2f85be0a-263e-43c2-af1b-274a2b739eb9"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom" markup="none">
 					<font fontName="Arial" size="11"/>
 				</textElement>
@@ -338,7 +338,7 @@ FROM
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="279" y="21" width="1" height="33" uuid="b40c740b-33ba-4b8b-9e4c-023300340a66"/>
+				<reportElement x="348" y="21" width="1" height="33" uuid="b40c740b-33ba-4b8b-9e4c-023300340a66"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#999999"/>
 				</graphicElement>
@@ -379,21 +379,21 @@ FROM
 				<text><![CDATA[Impreso:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="283" y="23" width="50" height="14" uuid="b528dc91-b88d-4d49-aadf-58fad48a3777"/>
+				<reportElement x="354" y="23" width="50" height="14" uuid="b528dc91-b88d-4d49-aadf-58fad48a3777"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="283" y="39" width="50" height="15" uuid="004e6df6-0bea-4de3-ba83-ba7000840ffb"/>
+				<reportElement x="354" y="39" width="50" height="15" uuid="004e6df6-0bea-4de3-ba83-ba7000840ffb"/>
 				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? "Importe S/.:" : ($F{OPERACION_TIPOMONEDA}.toString().equals("1") ? "Importe U$D:" : "Importe €:"))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="343" y="39" width="196" height="15" uuid="cf8033e9-4f64-4f12-9184-e470ba7a5fca"/>
+				<reportElement x="411" y="39" width="128" height="15" uuid="cf8033e9-4f64-4f12-9184-e470ba7a5fca"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="10"/>
 				</textElement>
@@ -401,7 +401,7 @@ FROM
 				<patternExpression><![CDATA["#,##0.00"]]></patternExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="343" y="23" width="126" height="14" uuid="7f03e7cd-10e6-4377-bbbe-893c7dd982bb"/>
+				<reportElement x="411" y="23" width="126" height="14" uuid="7f03e7cd-10e6-4377-bbbe-893c7dd982bb"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
@@ -422,7 +422,7 @@ FROM
 				<text><![CDATA[Cheque:]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement x="0" y="160" width="539" height="55" uuid="22b1a0ed-1962-4933-906f-368bc5aba501">
+				<reportElement x="0" y="160" width="540" height="55" uuid="22b1a0ed-1962-4933-906f-368bc5aba501">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -438,12 +438,14 @@ FROM
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="45" uuid="25bf2483-6856-4172-b372-360b6344dab1">
+					<jr:column width="30" uuid="25bf2483-6856-4172-b372-360b6344dab1">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="45" height="25" uuid="9a11cc66-ac50-41f9-b24e-ed34ebe1e0b0"/>
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="30" height="25" uuid="9a11cc66-ac50-41f9-b24e-ed34ebe1e0b0">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Arial" size="9"/>
 								</textElement>
@@ -452,10 +454,22 @@ FROM
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement x="0" y="0" width="45" height="15" uuid="2856b825-b980-4569-bd3a-083e7f46fcd4"/>
+								<reportElement x="0" y="0" width="30" height="15" uuid="2856b825-b980-4569-bd3a-083e7f46fcd4"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -463,11 +477,11 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="43" uuid="02569495-d55c-4a45-9854-38d268ba6b60">
+					<jr:column width="83" uuid="02569495-d55c-4a45-9854-38d268ba6b60">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="43" height="25" uuid="e3de857c-3e95-4d64-aa87-701d0920ab85"/>
+								<reportElement x="0" y="0" width="83" height="25" uuid="e3de857c-3e95-4d64-aa87-701d0920ab85"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -477,7 +491,13 @@ FROM
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="43" height="15" uuid="96b51c0b-5c55-4ef0-8df6-0a9ac481f74d"/>
+								<reportElement x="0" y="0" width="83" height="15" uuid="96b51c0b-5c55-4ef0-8df6-0a9ac481f74d"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -485,21 +505,28 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="43" uuid="decd1a81-c897-4a49-9d56-4f248c4e4b97">
+					<jr:column width="61" uuid="decd1a81-c897-4a49-9d56-4f248c4e4b97">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="43" height="25" uuid="2aee6996-8d29-41b0-9af2-39410559f84f"/>
+								<reportElement x="0" y="0" width="61" height="25" uuid="2aee6996-8d29-41b0-9af2-39410559f84f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
 								<text><![CDATA[Lugar Gasto]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="43" height="15" uuid="c202c540-8944-4a1b-93bd-fff7428cedd6"/>
+								<reportElement x="0" y="0" width="61" height="15" uuid="c202c540-8944-4a1b-93bd-fff7428cedd6"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -507,11 +534,11 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="43" uuid="8cedaca9-5522-4e27-bdc6-3bebd9808ab7">
+					<jr:column width="57" uuid="8cedaca9-5522-4e27-bdc6-3bebd9808ab7">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="43" height="25" uuid="e0680329-58a8-45b5-bcc6-3679d700b462"/>
+								<reportElement x="0" y="0" width="57" height="25" uuid="e0680329-58a8-45b5-bcc6-3679d700b462"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -521,7 +548,7 @@ FROM
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="43" height="15" uuid="36c08a43-079f-444f-a2ef-74abd8f80545"/>
+								<reportElement x="0" y="0" width="57" height="15" uuid="36c08a43-079f-444f-a2ef-74abd8f80545"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -529,11 +556,11 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="43" uuid="406c7509-fda0-4e09-850f-d32a0d7a441c">
+					<jr:column width="49" uuid="406c7509-fda0-4e09-850f-d32a0d7a441c">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="43" height="25" uuid="79f3a45e-15a5-4e02-b3a7-e3db6688b2cc"/>
+								<reportElement x="0" y="0" width="49" height="25" uuid="79f3a45e-15a5-4e02-b3a7-e3db6688b2cc"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -543,7 +570,7 @@ FROM
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="43" height="15" uuid="f0f66761-fbf2-4cfd-bb01-8df7426432af"/>
+								<reportElement x="0" y="0" width="49" height="15" uuid="f0f66761-fbf2-4cfd-bb01-8df7426432af"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -551,11 +578,11 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="54" uuid="938f3bd3-0eb5-4826-afab-fe7e43022ec3">
+					<jr:column width="145" uuid="938f3bd3-0eb5-4826-afab-fe7e43022ec3">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="54" height="25" uuid="3c621432-0dfa-4dff-8ddb-82b275da43a1"/>
+								<reportElement x="0" y="0" width="145" height="25" uuid="3c621432-0dfa-4dff-8ddb-82b275da43a1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -565,7 +592,7 @@ FROM
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="54" height="15" uuid="d36bb8b4-cc85-4174-86dd-606ab818b2bf"/>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="145" height="15" uuid="d36bb8b4-cc85-4174-86dd-606ab818b2bf"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -573,11 +600,11 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="224" uuid="5182a92a-8514-4bc4-986b-a665cd254a09">
+					<jr:column width="51" uuid="5182a92a-8514-4bc4-986b-a665cd254a09">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="224" height="25" uuid="f9beb7ea-fdaa-4e7d-b095-36a86a14cc20"/>
+								<reportElement x="0" y="0" width="51" height="25" uuid="f9beb7ea-fdaa-4e7d-b095-36a86a14cc20"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -587,7 +614,7 @@ FROM
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="224" height="15" uuid="881c86c4-3678-480a-812f-a3fc74a63e8b"/>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="51" height="15" uuid="881c86c4-3678-480a-812f-a3fc74a63e8b"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -595,11 +622,11 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="44" uuid="13f7fd67-c200-492b-b14e-4a623bb160dc">
+					<jr:column width="64" uuid="13f7fd67-c200-492b-b14e-4a623bb160dc">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="44" height="25" uuid="8bd06813-06ba-47fb-9618-38e8712a0ae3"/>
+								<reportElement x="0" y="0" width="64" height="25" uuid="8bd06813-06ba-47fb-9618-38e8712a0ae3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -608,7 +635,7 @@ FROM
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="44" height="15" uuid="75a328d0-805a-4c80-9eee-c9f5447f786e"/>
+								<reportElement x="0" y="0" width="64" height="15" uuid="75a328d0-805a-4c80-9eee-c9f5447f786e"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -617,7 +644,7 @@ FROM
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField>
-								<reportElement x="0" y="0" width="44" height="15" uuid="4b451fd5-1cd6-4c75-acd5-04a6d89f50b9"/>
+								<reportElement x="0" y="0" width="64" height="15" uuid="4b451fd5-1cd6-4c75-acd5-04a6d89f50b9"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>

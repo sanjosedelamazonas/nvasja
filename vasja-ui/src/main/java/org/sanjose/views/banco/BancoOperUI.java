@@ -55,8 +55,8 @@ public class BancoOperUI extends CssLayout {
     protected ComboBox selCodAuxCabeza;
     protected Button btnAuxiliar;
     protected TextField cheque;
-    protected TextField montoTotal;
     protected TextField glosaCabeza;
+    protected TextField montoTotal;
     protected FormLayout detallesFormLayout;
     protected TextField numItem;
     protected OptionGroup tipoProyectoTercero;
@@ -85,7 +85,6 @@ public class BancoOperUI extends CssLayout {
     protected TextField serieDoc;
     protected TextField numDoc;
     protected VerticalLayout itemsVertLayout;
-    protected FormLayout order_summary_layout;
     protected Label order_heading;
     protected Grid gridBanco;
     protected Button guardarBtn;
