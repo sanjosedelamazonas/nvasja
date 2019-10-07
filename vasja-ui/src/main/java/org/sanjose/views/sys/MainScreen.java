@@ -89,7 +89,9 @@ public class MainScreen extends HorizontalLayout {
             menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
                     ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
         }
-        if (Role.isDigitador()) {
+        // Temporarily disabled access to Rendiciones
+        if (Role.isAdmin()) {
+        //if (Role.isDigitador()) {
             rendicionOperView.init();
             viewsToIgnoreWhenInit.add(rendicionOperView);
             menu.addSeparator("Rendiciones");
