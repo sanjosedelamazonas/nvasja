@@ -41,7 +41,7 @@ spring:
 logging:
   level:
     org:
-      sanjose: DEBUG
+      sanjose: INFO
       springframework:
         web: INFO
         beans: INFO

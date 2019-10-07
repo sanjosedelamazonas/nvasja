@@ -398,7 +398,7 @@ public class ViewUtil {
         Window subWindow = new Window();
         subWindow.setWindowMode(WindowMode.NORMAL);
         int width = component instanceof TransferenciaView ? 1280 : 990;
-        int height = component instanceof TransferenciaView ? 600 : 630;
+        int height = component instanceof TransferenciaView ? 600 : 500;
         String caption = component instanceof TransferenciaView ? "Cargo/Abono" : "Comprobante";
         subWindow.setWidth(width, Sizeable.Unit.PIXELS);
         subWindow.setHeight(height, Sizeable.Unit.PIXELS);

@@ -34,7 +34,9 @@ public class AboutView extends VerticalLayout implements Viewing {
         aboutContent.addComponent(
                 new Label(FontAwesome.INFO_CIRCLE.getHtml()
                         + " Version of WEB APP: "
-                        + getClass().getPackage().getImplementationVersion(), ContentMode.HTML), "info");
+                        + getClass().getPackage().getImplementationVersion()
+                        + "<br>Authors: Anna Borkowska and Pawel Rubach", ContentMode.HTML)
+                , "info");
         setSizeFull();
         setStyleName("about-view");
         addComponent(aboutContent);
