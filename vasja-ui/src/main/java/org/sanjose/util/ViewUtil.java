@@ -441,7 +441,7 @@ public class ViewUtil {
 
 
     public static void openViewInNewWindowBanco(SubWindowing component) {
-        openViewInNewWindow(component, 1150, 880);
+        openViewInNewWindow(component, 1150, 640);
     }
 
     public static void openViewInNewWindow(SubWindowing component) {
