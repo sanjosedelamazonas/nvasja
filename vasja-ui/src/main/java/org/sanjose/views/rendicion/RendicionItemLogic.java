@@ -331,7 +331,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         Window destinoWindow = new Window();
 
         destinoWindow.setWindowMode(WindowMode.NORMAL);
-        destinoWindow.setWidth(500, Sizeable.Unit.PIXELS);
+        destinoWindow.setWidth(700, Sizeable.Unit.PIXELS);
         destinoWindow.setHeight(550, Sizeable.Unit.PIXELS);
         destinoWindow.setPositionX(200);
         destinoWindow.setPositionY(50);

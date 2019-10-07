@@ -4,7 +4,7 @@
     $template-font-size: 16px;
     $template-font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     
-	$billing-form-background: #DDDDF6;
+	$billing-form-background: #e6f2ff;
 	$billing-form-border-color: #fff;
 	$form-text-field-border: #D0C7C7;
 	
@@ -32,7 +32,7 @@
 	$header-bar-height: 100px;
 
 	background-color: $root-background-color;
-	padding: 10px;
+	padding: 5px;
 	
 	.v-nativebutton {
 		background: none;
@@ -55,9 +55,9 @@
 	.billing-formlayout {
 		background: $billing-form-background;
 		border: solid 1px $billing-form-border-color;
-		margin: 0 30px 0 0px;
+		margin: 0 10px 0 0px;
 		float: left;
-		padding: 20px;
+		padding: 10px;
 		width: 100%;
 		//min-width: 400px;
 		//max-width: 722px;
@@ -83,7 +83,7 @@
     .order-summary-layout {
 		background-color: $order-summary-background;
 		float: right;
-		padding: 20px;
+		padding: 10px;
 
         .v-label {
             font-family: $template-font-family;
@@ -144,7 +144,7 @@
 		padding: 10px;
 		
 		.billing-formlayout{
-			margin: 15px 0 0 0;
+			margin: 5px 0 0 0;
 			width: 100% !important;
 		}
 			
@@ -178,7 +178,7 @@
     $dark-text-color: #323C3C;
     $lighter-text-color: #959F9F;
     
-    $billing-form-background: #f6f3f3;
+    $billing-form-background: #e6f2ff;
 	$billing-form-border-color: #fff;
 	$form-text-field-border: #D0C7C7;
 	
