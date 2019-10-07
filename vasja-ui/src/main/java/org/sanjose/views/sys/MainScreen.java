@@ -61,13 +61,6 @@ public class MainScreen extends HorizontalLayout {
             viewsToIgnoreWhenInit.add(comprobanteView);
             transferenciaView.init();
             viewsToIgnoreWhenInit.add(transferenciaView);
-/*
-            menu.addView(comprobanteView, ComprobanteView.VIEW_NAME,
-                    ComprobanteView.VIEW_NAME, FontAwesome.EDIT);
-            menu.addView(transferenciaView, TransferenciaView.VIEW_NAME,
-                    TransferenciaView.VIEW_NAME, FontAwesome.EDIT);
-*/
-
             menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
                     CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
@@ -86,8 +79,6 @@ public class MainScreen extends HorizontalLayout {
                     BancoManejoView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(bancoConciliacionView, BancoConciliacionView.VIEW_NAME,
                     BancoConciliacionView.VIEW_NAME, FontAwesome.EDIT);
-            menu.addView(bancoOperView, BancoOperView.VIEW_NAME,
-                    BancoOperView.VIEW_NAME, FontAwesome.EDIT);
         }
         if (Role.isPrivileged()) {
             menu.addView(bancoOperacionesView, BancoOperacionesView.VIEW_NAME,
