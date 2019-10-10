@@ -24,7 +24,6 @@ import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.*;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.views.caja.*;
-import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
 import org.sanjose.views.sys.SubWindowing;
@@ -334,14 +333,6 @@ public class ViewUtil {
         });
     }
 
-    public static void colorizeRowsRendiciones(Grid grid) {
-        grid.setRowStyleGenerator(rowReference -> {
-            if (((ScpRendicioncabecera)rowReference.getItemId()).isEnviado()) {
-                return "enviado";
-            }
-            return "";
-        });
-    }
 
 
     public static void colorizeRows(Grid grid) {

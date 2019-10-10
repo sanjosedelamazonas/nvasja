@@ -23,9 +23,6 @@ import org.sanjose.util.GenUtil;
 import org.sanjose.util.ProcUtil;
 import org.sanjose.views.banco.*;
 import org.sanjose.views.caja.*;
-import org.sanjose.views.rendicion.RendicionManejoView;
-import org.sanjose.views.rendicion.RendicionOperView;
-import org.sanjose.views.rendicion.RendicionService;
 import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.PropiedadService;
 import org.sanjose.views.sys.PropiedadView;
@@ -62,8 +59,6 @@ public class MainUI extends UI {
     private final BancoManejoView bancoManejoView;
     private final BancoConciliacionView bancoConciliacionView;
     private final BancoOperacionesView bancoOperacionesView;
-    private final RendicionManejoView rendicionManejoView;
-    private final RendicionOperView rendicionOperView;
     private final ReportesView reportesView;
     private final MsgUsuarioRep msgUsuarioRep;
     private ProcUtil procUtil;
@@ -76,7 +71,7 @@ public class MainUI extends UI {
     private MainUI(PropiedadService propiedadService,
                    ComprobanteService comprobanteService,
                    BancoService bancoService,
-                   RendicionService rendicionService,
+         //          RendicionService rendicionService,
                    MsgUsuarioRep msgUsuarioRep,
                    ProcUtil procUtil) {
         this.propiedadView = new PropiedadView(propiedadService);
@@ -94,8 +89,6 @@ public class MainUI extends UI {
         this.bancoManejoView = new BancoManejoView(bancoService);
         this.bancoOperacionesView = new BancoOperacionesView(bancoService);
         this.bancoConciliacionView = new BancoConciliacionView(bancoService);
-        this.rendicionManejoView = new RendicionManejoView(rendicionService);
-        this.rendicionOperView = new RendicionOperView(rendicionService);
     }
 
     public static MainUI get() {
@@ -128,7 +121,7 @@ public class MainUI extends UI {
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
         mainScreen = new MainScreen(MainUI.this, cajaManejoView, comprobanteView, transferenciaView, cajaOperacionesView, cajaGridView, confView, configuracionCajaView,
-                propiedadView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView, rendicionManejoView, rendicionOperView, reportesView);
+                propiedadView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView, reportesView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);
@@ -177,11 +170,11 @@ public class MainUI extends UI {
         return bancoOperacionesView;
     }
 
-    public RendicionOperView getRendicionOperView() {
+   /* public RendicionOperView getRendicionOperView() {
         return rendicionOperView;
     }
 
     public RendicionManejoView getRendicionManejoView() {
         return rendicionManejoView;
-    }
+    }*/
 }
