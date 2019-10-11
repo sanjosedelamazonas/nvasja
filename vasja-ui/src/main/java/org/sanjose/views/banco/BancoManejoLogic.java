@@ -46,7 +46,7 @@ public class BancoManejoLogic extends BancoGridLogic implements Serializable, Sa
     }
 
     public void init() {
-        mView.btnNuevoCheque.addClickListener(e -> nuevoCheque(mView.getBancoCuenta()));
+        mView.btnNuevoCheque.addClickListener(e -> nuevoCheque(bancoCuenta));
         mView.btnEditar.addClickListener(e -> {
             for (Object obj : mView.getSelectedRows()) {
                 editarCheque((ScpBancocabecera) obj);
@@ -84,10 +84,10 @@ public class BancoManejoLogic extends BancoGridLogic implements Serializable, Sa
             gridContextMenu.removeItems();
             final Object itemId = e.getItemId();
             if (itemId == null) {
-                gridContextMenu.addItem("Nuevo cheque", k -> nuevoCheque(mView.getBancoCuenta()));
+                gridContextMenu.addItem("Nuevo cheque", k -> nuevoCheque(bancoCuenta));
             } else {
                 gridContextMenu.addItem("Ver detalle", k -> editarCheque((ScpBancocabecera) itemId));
-                gridContextMenu.addItem("Nuevo cheque", k -> nuevoCheque(mView.getBancoCuenta()));
+                gridContextMenu.addItem("Nuevo cheque", k -> nuevoCheque(bancoCuenta));
                 if (!((ScpBancocabecera) itemId).isEnviado() || Role.isPrivileged()) {
                     gridContextMenu.addItem("Anular cheque", k -> anularCheque((ScpBancocabecera) itemId));
                 }

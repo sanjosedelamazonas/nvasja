@@ -1,9 +1,11 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextField;
 import org.sanjose.views.caja.CajaSaldoView;
+import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
 
 import java.util.Collection;
@@ -13,7 +15,7 @@ import java.util.Collection;
  * User: prubach
  * Date: 18.10.16
  */
-public interface BancoViewing extends NavigatorViewing {
+public interface BancoViewing extends NavigatorViewing, GridViewing {
 
     void clearSelection();
 
@@ -43,4 +45,7 @@ public interface BancoViewing extends NavigatorViewing {
 
     TextField getNumSaldoFinalLibro();
 
+    ComboBox getSelRepMoneda();
+
+    ComboBox getSelFiltroCuenta();
 }

@@ -3,14 +3,21 @@ package org.sanjose.views.banco;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
+import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
+import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
@@ -19,15 +26,13 @@ import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.*;
 import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.sys.SaldoDelDia;
+import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * VASJA class
@@ -40,10 +45,106 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
     private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
     private Grid.FooterRow saldosFooterInicial;
     private Grid.FooterRow saldosFooterFinal;
+
+    protected ScpPlancontable bancoCuenta;
+
+    private Character moneda = GenUtil.PEN;
     
     public BancoGridLogic(BancoViewing view) {
         this.view = view;
         view.getBancoOperView().getViewLogic().setNavigatorView(view);
+    }
+
+    public void initView() {
+
+        view.getGridBanco().setEditorEnabled(false);
+        view.getGridBanco().sort("fecFecha", SortDirection.DESCENDING);
+
+        view.getGridBanco().setSelectionMode(Grid.SelectionMode.MULTI);
+
+        ViewUtil.alignMontosInGrid(view.getGridBanco());
+        // Fecha Desde Hasta
+        ViewUtil.setupDateFiltersThisMonth((BeanItemContainer)view.getGridBanco().getContainerDataSource(), view.getFechaDesde(), view.getFechaHasta(), view);
+
+        view.getFechaDesde().addValueChangeListener(e -> {
+            calcFooterSums();
+            DataFilterUtil.refreshComboBox(view.getSelFiltroCuenta(), "id.codCtacontable",
+                    DataUtil.getBancoCuentas(view.getFechaDesde().getValue(), view.getService().getPlanRepo(), moneda),
+                    "txtDescctacontable");
+            setSaldoCuenta(bancoCuenta);
+        });
+
+        view.getFechaHasta().addValueChangeListener(e -> {
+            calcFooterSums();
+            setSaldoCuenta(bancoCuenta);
+        });
+
+        view.getGridBanco().getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        view.getGridBanco().getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        view.getGridBanco().getColumn("flg_Anula").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        view.getGridBanco().getColumn("txtGlosa").setMaximumWidth(400);
+        view.getGridBanco().getColumn("scpDestino.txtNombredestino").setMaximumWidth(200);
+        view.getGridBanco().getColumn("checkMesCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        //view.getGridBanco().getColumn("codBancocabecera").setHidden(true);
+
+        // Single click selects, double click opens
+        view.getGridBanco().addItemClickListener(e -> setItemLogic(e));
+
+        // Run date filter
+        ViewUtil.filterComprobantes((BeanItemContainer)view.getGridBanco().getContainerDataSource(), "fecFecha", view.getFechaDesde(), view.getFechaHasta(), view);
+
+        ViewUtil.colorizeRows(view.getGridBanco(), ScpBancocabecera.class);
+
+        // CABECA
+        view.getFecMesCobrado().setResolution(Resolution.MONTH);
+        view.getFecMesCobrado().setValue(new Date());
+
+        DataFilterUtil.bindTipoMonedaComboBox(view.getSelRepMoneda(), "moneda", "", false);
+        view.getSelRepMoneda().select(moneda);
+        view.getSelRepMoneda().setNullSelectionAllowed(false);
+
+        DataFilterUtil.bindTipoMonedaComboBox(view.getSelRepMoneda(), "cod_tipomoneda", "Moneda", false);
+        ViewUtil.filterColumnsByMoneda(view.getGridBanco(), moneda);
+
+        view.getSelRepMoneda().setNullSelectionAllowed(false);
+        view.getSelRepMoneda().addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                moneda = (Character)e.getProperty().getValue();
+                ((BeanItemContainer)view.getGridBanco().getContainerDataSource()).removeContainerFilters("codTipomoneda");
+                ((BeanItemContainer)view.getGridBanco().getContainerDataSource()).addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
+                ViewUtil.filterColumnsByMoneda(view.getGridBanco(), moneda);
+                calcFooterSums();
+                DataFilterUtil.refreshComboBox(view.getSelFiltroCuenta(), "id.codCtacontable",
+                        DataUtil.getBancoCuentas(view.getFechaDesde().getValue(), view.getService().getPlanRepo(), moneda),
+                        "txtDescctacontable");
+            }
+            setSaldoDelDia();
+        });
+
+        DataFilterUtil.bindComboBox(view.getSelFiltroCuenta(), "id.codCtacontable",
+                DataUtil.getBancoCuentas(view.getFechaDesde().getValue(), view.getService().getPlanRepo(), moneda),
+                "txtDescctacontable");
+        view.getSelFiltroCuenta().setEnabled(true);
+        view.getSelFiltroCuenta().addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                ((BeanItemContainer)view.getGridBanco().getContainerDataSource()).removeContainerFilters("codCtacontable");
+                ((BeanItemContainer)view.getGridBanco().getContainerDataSource()).addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
+                bancoCuenta = view.getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
+                        GenUtil.getYear(view.getFechaDesde().getValue()), view.getSelFiltroCuenta().getValue().toString());
+                //view.getSelRepMoneda().select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
+                view.getGridBanco().getColumn("txtGlosa").setMaximumWidth(500);
+                calcFooterSums();
+
+            } else {
+                bancoCuenta = null;
+                ((BeanItemContainer)view.getGridBanco().getContainerDataSource()).removeContainerFilters("codCtacontable");
+                ViewUtil.filterColumnsByMoneda(view.getGridBanco(), moneda);
+                view.getGridBanco().getColumn("txtGlosa").setMaximumWidth(400);
+            }
+            setSaldoCuenta(bancoCuenta);
+            setSaldoDelDia();
+        });
+        view.getSelFiltroCuenta().setPageLength(20);
     }
 
     public void nuevoCheque(ScpPlancontable bancoCuenta) {

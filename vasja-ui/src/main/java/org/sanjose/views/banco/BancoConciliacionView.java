@@ -8,11 +8,8 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.Grid;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.MainUI;
@@ -396,4 +393,25 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         throw new NotImplementedException();
     }
 
+    @Override
+    public ComboBox getSelRepMoneda() {
+        throw new NotImplementedException();    }
+
+    @Override
+    public ComboBox getSelFiltroCuenta() {
+        throw new NotImplementedException();    }
+
+    @Override
+    public void filter(Date fechaDesde, Date fechaHasta) {
+
+    }
+
+    @Override
+    public Date getFilterInitialDate() {
+        throw new NotImplementedException();    }
+
+    @Override
+    public void setFilterInitialDate(Date fecha) {
+
+    }
 }
