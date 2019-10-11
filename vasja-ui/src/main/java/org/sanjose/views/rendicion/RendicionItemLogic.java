@@ -198,11 +198,34 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 
 
 
+
         /// FILTROS APLICAR A TODOS
         // Proyecto
         //view.getSetAllProyecto().addValueChangeListener(e -> this.updateItemProperty("codProyecto", e.getProperty().getValue()));
         DataFilterUtil.bindComboBox(view.getSetAllProyecto(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()), "Sel Proyecto", "txtDescproyecto");
 
+        DataFilterUtil.bindComboBox(view.getSetAllContable(), "id.codCtacontable",view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+
+        // Rubro inst
+        DataFilterUtil.bindComboBox(view.getSetAllRubrInst(), "id.codCtaespecial",
+                view.getService().getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
+                "Sel cta especial", "txtDescctaespecial");
+
+        DataFilterUtil.bindComboBox(view.getSetAllLugarGasto(), "codContraparte",view.getService().getContraparteRepo().findAll(),
+                "Sel Lugar de Gasto", "txtDescContraparte");
+
+        // Fuente
+        DataFilterUtil.bindComboBox(view.getSetAllFuente(), "codFinanciera",view.getService().getFinancieraRepo().findAll(),
+                "Sel Fuente", "txtDescfinanciera");
+
+        view.getBtnSetAll().addClickListener(clickEvent -> {
+            updateProperty(view.getSetAllProyecto(), "codProyecto");
+            updateProperty(view.getSetAllContable(), "codCtacontable");
+            updateProperty(view.getSetAllRubrInst(), "codCtaespecial");
+            updateProperty(view.getSetAllLugarGasto(), "codContraparte");
+            updateProperty(view.getSetAllFuente(), "codFinanciera");
+            //updateProperty(view.getSetAllFechaDoc(), "fecComprobantepago");
+            //updateProperty(view.getSetAllFechaPago(), "fecPagocomprobantepago");
         // Fuente
         DataFilterUtil.bindComboBox(view.getSetAllFuente(), "codFinanciera",view.getService().getFinancieraRepo().findAll(),
                 "Sel Fuente", "txtDescfinanciera");
@@ -261,6 +284,8 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         List<ScpRendiciondetalle> detsToRefresh = new ArrayList<>();
         for (Object item : view.grid.getSelectedRows()) {
             ScpRendiciondetalle sr = (ScpRendiciondetalle) item;
+            view.getContainer().getItem(item).getItemProperty(itemProperty).setValue(newVal);
+            detsToRefresh.add(sr);
             if (newVal!=null) {
                 view.getContainer().getItem(item).getItemProperty(itemProperty).setValue(newVal);
                 detsToRefresh.add(sr);
@@ -528,6 +553,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         List<ScpRendiciondetalle> items = new ArrayList<>();
         items.add(item);
         view.getContainer().addAll(items);
+        view.getContainer().sort(new Object[]{"numNritem"}, new boolean[]{true});
         view.getContainer().sort(new Object[]{"id.numNritem"}, new boolean[]{true});
         view.grid.select(item);
         view.getGrid().setEditorEnabled(true);

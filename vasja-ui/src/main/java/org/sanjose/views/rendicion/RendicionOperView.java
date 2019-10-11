@@ -142,6 +142,8 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         grid.setContainerDataSource(container);
         grid.setEditorEnabled(true);
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        grid.sort("fecFregistro", SortDirection.DESCENDING);
+
         grid.sort("id.numNroitem", SortDirection.ASCENDING);
         //grid.getColumn("Item").setWidth(36);
         ViewUtil.setColumnNames(grid, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);

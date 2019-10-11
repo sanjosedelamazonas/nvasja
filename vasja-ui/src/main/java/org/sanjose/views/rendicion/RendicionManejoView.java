@@ -162,6 +162,9 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
 
     private void setItemLogic(ItemClickEvent event) {
         if (event.isDoubleClick()) {
+            //Object id = event.getItem().getItemProperty("codCajabanco").getValue();
+            //ScpRendicioncabecera vcb = getService().getCajabancoRep().findByCodCajabanco((Integer) id);
+            //viewLogic.modificarRendicion(vcb);
             Object id = event.getItem().getItemProperty("codRendicioncabecera").getValue();
             ScpRendicioncabecera vcb = getService().getRendicioncabeceraRep().findByCodRendicioncabecera((Integer) id);
             viewLogic.editarRendicion(vcb);

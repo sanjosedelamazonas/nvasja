@@ -106,6 +106,7 @@ public class RendicionLogic extends RendicionItemLogic {
         view.initGrid();
         if (!bancodetalleList.isEmpty()) {
             view.getContainer().addAll(bancodetalleList);
+            view.getContainer().sort(new Object[]{"numNritem"}, new boolean[]{true});
             view.getContainer().sort(new Object[]{"id.numNroitem"}, new boolean[]{true});
             view.setTotal(moneda);
             view.calcFooterSums();
