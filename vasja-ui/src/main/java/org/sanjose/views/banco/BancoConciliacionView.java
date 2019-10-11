@@ -12,6 +12,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.MainUI;
@@ -20,6 +21,7 @@ import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
+import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
@@ -330,6 +332,16 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
     }
 
     @Override
+    public DateField getFechaDesde() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public DateField getFechaHasta() {
+        throw new NotImplementedException();
+    }
+
+    @Override
     public String getNavigatorViewName() {
         return VIEW_NAME;
     }
@@ -351,6 +363,36 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
     @Override
     public DateField getFecMesCobrado() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public Grid.FooterRow getGridFooter() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public CajaSaldoView getSaldosView() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public TextField getNumSaldoInicialSegBancos() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public TextField getNumSaldoInicialLibro() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public TextField getNumSaldoFinalSegBancos() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public TextField getNumSaldoFinalLibro() {
         throw new NotImplementedException();
     }
 

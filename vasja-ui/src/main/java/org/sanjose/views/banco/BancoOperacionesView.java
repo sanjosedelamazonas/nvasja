@@ -12,10 +12,7 @@ import com.vaadin.event.SelectionEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.Grid;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
@@ -24,6 +21,7 @@ import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
+import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.Viewing;
@@ -76,6 +74,10 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
 
     private BancoService bancoService;
 
+    private CajaSaldoView saldosView = new CajaSaldoView();
+
+    public Grid.FooterRow gridFooter;
+
     private GeneratedPropertyContainer gpContainer;
 
     public BancoOperacionesView(BancoService bancoService) {
@@ -83,6 +85,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
     }
 
     private Character moneda = GenUtil.PEN;
+
+    private ScpPlancontable bancoCuenta;
 
     @Override
     public void init() {
@@ -129,6 +133,12 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
             DataFilterUtil.refreshComboBox(selFiltroCuenta, "id.codCtacontable",
                     DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
                     "txtDescctacontable");
+            viewLogic.setSaldoCuenta(bancoCuenta);
+        });
+
+        fechaHasta.addValueChangeListener(e -> {
+            viewLogic.calcFooterSums();
+            viewLogic.setSaldoCuenta(bancoCuenta);
         });
 
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
@@ -171,6 +181,8 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo()),
                 "txtDescctacontable");
         DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "moneda", "", false);
+        ViewUtil.filterColumnsByMoneda(gridBanco, moneda);
+
         selRepMoneda.setNullSelectionAllowed(false);
         selRepMoneda.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
@@ -178,14 +190,13 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
                 container.removeContainerFilters("codTipomoneda");
                 container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
                 ViewUtil.filterColumnsByMoneda(gridBanco, moneda);
-                //viewLogic.calcFooterSums();
+                viewLogic.calcFooterSums();
                 DataFilterUtil.refreshComboBox(selFiltroCuenta, "id.codCtacontable",
                         DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
                         "txtDescctacontable");
             }
-            //viewLogic.setSaldoDelDia();
+            viewLogic.setSaldoDelDia();
         });
-        selRepMoneda.select(moneda);
 
         DataFilterUtil.bindComboBox(selFiltroCuenta, "id.codCtacontable",
                 DataUtil.getBancoCuentas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
@@ -199,17 +210,18 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
                         GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
                 //selRepMoneda.select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
                 gridBanco.getColumn("txtGlosa").setMaximumWidth(500);
-              //  viewLogic.calcFooterSums();
-              //  viewLogic.setSaldoCuenta(cuenta);
+                viewLogic.calcFooterSums();
+                viewLogic.setSaldoCuenta(cuenta);
             } else {
                 container.removeContainerFilters("codCtacontable");
                 ViewUtil.filterColumnsByMoneda(gridBanco, moneda);
                 gridBanco.getColumn("txtGlosa").setMaximumWidth(400);
                // viewLogic.setSaldoCuenta(null);
             }
-            //viewLogic.setSaldoDelDia();
+            viewLogic.setSaldoDelDia();
         });
 
+        gridFooter = gridBanco.appendFooterRow();
         selFiltroCuenta.setPageLength(20);
         bancoOperView.init(MainUI.get().getBancoManejoView().getService());
         // Make the top buttons panel invisible if in this grid view
@@ -227,6 +239,9 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         });
         bancoOperView.getCerrarBtn().setVisible(false);
         viewLogic = new BancoOperacionesLogic(this);
+        viewLogic.setSaldos(getSaldosView().getGridSaldoInicial(), true);
+        viewLogic.setSaldos(getSaldosView().getGridSaldoFinal(), false);
+        selRepMoneda.select(moneda);
     }
 
     public void refreshData() {
@@ -292,12 +307,49 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         return fecMesCobrado;
     }
 
+    @Override
+    public Grid.FooterRow getGridFooter() {
+        return gridFooter;
+    }
+
     public Button getBtnMarcarCobrado() {
         return btnMarcarCobrado;
     }
 
     public Button getBtnMarcarNoCobrado() {
         return btnMarcarNoCobrado;
+    }
+
+    public TextField getNumSaldoInicialSegBancos() {
+        return numSaldoInicialSegBancos;
+    }
+
+    public TextField getNumSaldoInicialLibro() {
+        return numSaldoInicialLibro;
+    }
+
+    public TextField getNumSaldoFinalSegBancos() {
+        return numSaldoFinalSegBancos;
+    }
+
+    public CajaSaldoView getSaldosView() {
+        return saldosView;
+    }
+
+    public DateField getFechaDesde() {
+        return fechaDesde;
+    }
+
+    public DateField getFechaHasta() {
+        return fechaHasta;
+    }
+
+    public TextField getNumSaldoFinalLibro() {
+        return numSaldoFinalLibro;
+    }
+
+    public Button getBtnDetallesSaldos() {
+        return btnDetallesSaldos;
     }
 
     @Override

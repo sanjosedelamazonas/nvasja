@@ -2,6 +2,8 @@ package org.sanjose.views.banco;
 
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.TextField;
+import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.sys.NavigatorViewing;
 
 import java.util.Collection;
@@ -17,6 +19,10 @@ public interface BancoViewing extends NavigatorViewing {
 
     Collection<Object> getSelectedRows();
 
+    DateField getFechaDesde();
+
+    DateField getFechaHasta();
+
     BancoService getService();
 
     BancoOperView getBancoOperView();
@@ -24,4 +30,17 @@ public interface BancoViewing extends NavigatorViewing {
     Grid getGridBanco();
 
     DateField getFecMesCobrado();
+
+    Grid.FooterRow getGridFooter();
+
+    CajaSaldoView getSaldosView();
+
+    TextField getNumSaldoInicialSegBancos();
+
+    TextField getNumSaldoInicialLibro();
+
+    TextField getNumSaldoFinalSegBancos();
+
+    TextField getNumSaldoFinalLibro();
+
 }

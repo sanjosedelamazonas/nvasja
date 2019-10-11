@@ -38,15 +38,7 @@ public class BancoOperacionesLogic extends BancoGridLogic implements Serializabl
     }
 
     public void init() {
-        oView.btnNuevoCheque.addClickListener(e -> nuevoCheque());
-        oView.btnEditar.addClickListener(e -> {
-            for (Object obj : oView.getSelectedRows()) {
-                editarCheque((ScpBancocabecera) obj);
-                break;
-            }
-        });
-        oView.btnVerVoucher.addClickListener(e -> generateComprobante());
-        oView.btnImprimir.addClickListener(e -> printComprobante());
+        //oView.btnNuevoCheque.addClickListener(e -> nuevoCheque());
         oView.btnReporte.addClickListener(e -> {
             ReportHelper.generateDiarioBanco(oView.getSelRepMoneda().getValue().toString().charAt(0),
                     oView.fechaDesde.getValue(), oView.fechaHasta.getValue(), null);
@@ -77,10 +69,6 @@ public class BancoOperacionesLogic extends BancoGridLogic implements Serializabl
                     gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((VsjCajaBancoItem) itemId));
             }
         });
-        oView.btnImprimir.setVisible(false);
-        oView.btnVerVoucher.setVisible(false);
-        oView.btnEditar.setVisible(false);
-        oView.btnNuevoCheque.setVisible(false);
     }
 
     // Single click - select row in grids

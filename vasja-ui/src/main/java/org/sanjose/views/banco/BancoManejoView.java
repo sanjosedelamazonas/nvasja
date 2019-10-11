@@ -151,11 +151,8 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         gridBanco.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         gridBanco.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
         gridBanco.getColumn("flg_Anula").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
-
         gridBanco.getColumn("txtGlosa").setMaximumWidth(400);
-
         gridBanco.getColumn("scpDestino.txtNombredestino").setMaximumWidth(200);
-
         gridBanco.getColumn("checkMesCobrado").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
         //gridBanco.getColumn("codBancocabecera").setHidden(true);
 
@@ -179,7 +176,6 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         selRepMoneda.setNullSelectionAllowed(false);
 
         DataFilterUtil.bindTipoMonedaComboBox(selRepMoneda, "cod_tipomoneda", "Moneda", false);
-        selRepMoneda.select(moneda);
         ViewUtil.filterColumnsByMoneda(gridBanco, moneda);
 
         selRepMoneda.setNullSelectionAllowed(false);
@@ -230,7 +226,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         viewLogic = new BancoManejoLogic(this);
         viewLogic.setSaldos(getSaldosView().getGridSaldoInicial(), true);
         viewLogic.setSaldos(getSaldosView().getGridSaldoFinal(), false);
-        viewLogic.calcFooterSums();
+        selRepMoneda.select(moneda);
     }
 
     @Override

@@ -152,6 +152,8 @@ public class BancoLogic extends BancoItemLogic {
     @Override
     public void cerrarAlManejo() {
         if (navigatorView == null) navigatorView = MainUI.get().getBancoManejoView();
+        if (moneda!=null)
+            navigatorView.selectMoneda(moneda);
         navigatorView.refreshData();
         view.getSubWindow().close();
         //MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());

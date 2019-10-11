@@ -17,27 +17,46 @@
       - 
     </vaadin-label>
     <vaadin-date-field _id="fechaHasta"></vaadin-date-field>
-    <vaadin-button plain-text _id="btnNuevoCheque">
-      Nuevo cheque 
-    </vaadin-button>
-    <vaadin-button plain-text _id="btnEditar">
-      Editar 
-    </vaadin-button>
-    <vaadin-button plain-text _id="btnImprimir">
-      Imprimir Voucher 
-    </vaadin-button>
-    <vaadin-button plain-text _id="btnVerVoucher">
-      Ver Voucher 
-    </vaadin-button>
     <vaadin-combo-box invalid-allowed="false" item-caption-mode="id" width="46px" _id="selRepMoneda">
      <option>Option 1</option>
      <option>Option 2</option>
      <option>Option 3</option>
     </vaadin-combo-box>
+    <vaadin-horizontal-layout spacing>
+     <vaadin-vertical-layout size-auto>
+      <vaadin-label size-auto plain-text :right>
+        Saldo de cuenta: 
+      </vaadin-label>
+      <vaadin-label size-auto plain-text :right>
+        Saldo segun banco: 
+      </vaadin-label>
+      <vaadin-label size-auto plain-text :right>
+        Segun libro bancos: 
+      </vaadin-label>
+     </vaadin-vertical-layout>
+     <vaadin-vertical-layout size-auto>
+      <vaadin-label size-auto plain-text :center>
+        Inicial 
+      </vaadin-label>
+      <vaadin-text-field enabled="false" _id="numSaldoInicialSegBancos"></vaadin-text-field>
+      <vaadin-text-field enabled="false" _id="numSaldoInicialLibro"></vaadin-text-field>
+     </vaadin-vertical-layout>
+     <vaadin-vertical-layout size-auto>
+      <vaadin-label size-auto plain-text :center>
+        Final 
+      </vaadin-label>
+      <vaadin-text-field enabled="false" _id="numSaldoFinalSegBancos"></vaadin-text-field>
+      <vaadin-text-field enabled="false" height="20px" _id="numSaldoFinalLibro"></vaadin-text-field>
+     </vaadin-vertical-layout>
+    </vaadin-horizontal-layout>
+    <vaadin-button plain-text _id="btnDetallesSaldos">
+      Ver todos los saldos 
+    </vaadin-button>
     <vaadin-button plain-text _id="btnReporte">
       Imprimir Reporte 
     </vaadin-button>
    </vaadin-horizontal-layout>
+   <vaadin-label width-auto height="35px" plain-text></vaadin-label>
    <vaadin-horizontal-layout height="22px">
     <vaadin-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" item-caption-mode="id" width="300px" _id="selFiltroCuenta">
      <option>Option 1</option>

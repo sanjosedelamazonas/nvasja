@@ -546,7 +546,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             view.setEnableDetalleFields(true);
             DataFilterUtil.bindComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
                     view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
-                            "N", GenUtil.getYear(view.getDataFechaComprobante().getValue()), codProyecto),
+                            "N", GenUtil.getYear(view.getDataFechaComprobante().getValue()!=null ? view.getDataFechaComprobante().getValue() : new Date()), codProyecto),
                     "Rubro proyecto", "txtDescctaproyecto");
             DataUtil.setupAndBindproyectoPorFinanciera(codProyecto, view.getSelFuente(),
                     view.getService().getProyectoPorFinancieraRepo(), view.getService().getFinancieraRepo());

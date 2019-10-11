@@ -2,23 +2,30 @@ package org.sanjose.views.banco;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.Role;
+import org.sanjose.bean.Caja;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
+import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpPlancontable;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.DataUtil;
-import org.sanjose.util.GenUtil;
-import org.sanjose.util.ViewUtil;
+import org.sanjose.render.EmptyZeroNumberRendrer;
+import org.sanjose.util.*;
 import org.sanjose.views.ItemsRefreshing;
+import org.sanjose.views.sys.SaldoDelDia;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,10 +34,13 @@ import java.util.List;
  * User: prubach
  * Date: 18.10.16
  */
-public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera> {
+public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoDelDia {
 
     private BancoViewing view;
-
+    private final String[] COL_VIS_SALDO = new String[]{"codigo", "descripcion", "soles", "dolares", "euros"};
+    private Grid.FooterRow saldosFooterInicial;
+    private Grid.FooterRow saldosFooterFinal;
+    
     public BancoGridLogic(BancoViewing view) {
         this.view = view;
         view.getBancoOperView().getViewLogic().setNavigatorView(view);
@@ -145,5 +155,150 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera> {
         view.getGridBanco().deselectAll();
         view.getGridBanco().select(event.getItemId());
     }
+    
+    public void calcFooterSums() {
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        BigDecimal sumDebesol = new BigDecimal(0.00);
+        BigDecimal sumHabersol = new BigDecimal(0.00);
+        BigDecimal sumDebedolar = new BigDecimal(0.00);
+        BigDecimal sumHaberdolar = new BigDecimal(0.00);
+        BigDecimal sumDebemo = new BigDecimal(0.00);
+        BigDecimal sumHabermo = new BigDecimal(0.00);
+        for (Object item: view.getGridBanco().getContainerDataSource().getItemIds()) {
+            ScpBancocabecera scp = (ScpBancocabecera)item; 
+            sumDebesol = sumDebesol.add(scp.getNumDebesol());
+            sumHabersol = sumHabersol.add(scp.getNumHabersol());
+            sumDebedolar = sumDebedolar.add(scp.getNumDebedolar());
+            sumHaberdolar = sumHaberdolar.add(scp.getNumHaberdolar());
+            sumDebemo = sumDebemo.add(scp.getNumDebemo());
+            sumHabermo = sumHabermo.add(scp.getNumHabermo());
+        }
+        view.getGridFooter().getCell("numDebesol").setText(df.format(sumDebesol));
+        view.getGridFooter().getCell("numHabersol").setText(df.format(sumHabersol));
+        view.getGridFooter().getCell("numDebedolar").setText(df.format(sumDebedolar));
+        view.getGridFooter().getCell("numHaberdolar").setText(df.format(sumHaberdolar));
+        view.getGridFooter().getCell("numDebemo").setText(df.format(sumDebemo));
+        view.getGridFooter().getCell("numHabermo").setText(df.format(sumHabermo));
+
+        Arrays.asList(new String[] { "numDebesol", "numHabersol", "numHaberdolar", "numDebedolar", "numDebemo", "numHabermo"})
+                .forEach( e -> view.getGridFooter().getCell(e).setStyleName("v-align-right strong"));
+    }
+
+    public void setSaldos(Grid grid, boolean isInicial) {
+        grid.getContainerDataSource().removeAllItems();
+        BeanItemContainer<Caja> c = new BeanItemContainer<>(Caja.class);
+        grid.setContainerDataSource(c);
+        grid.setColumnOrder(COL_VIS_SALDO);
+        grid.setColumns(COL_VIS_SALDO);
+        grid.getColumn("descripcion").setWidth(200);
+        BigDecimal totalSoles = new BigDecimal(0.00);
+        BigDecimal totalUsd = new BigDecimal(0.00);
+        BigDecimal totalEuros = new BigDecimal(0.00);
+        for (Caja caja : DataUtil.getBancoCuentasList(view.getService().getPlanRepo(),
+                (isInicial ? GenUtil.getBeginningOfDay(view.getFechaDesde().getValue())
+                        : GenUtil.getEndOfDay(view.getFechaHasta().getValue())))) {
+            c.addItem(caja);
+            totalSoles = totalSoles.add(caja.getSoles());
+            totalUsd = totalUsd.add(caja.getDolares());
+            totalEuros = totalEuros.add(caja.getEuros());
+        }
+        grid.getColumn("soles").setRenderer(new EmptyZeroNumberRendrer(
+                "%02.2f", ConfigurationUtil.getLocale()));
+        grid.getColumn("dolares").setRenderer(new EmptyZeroNumberRendrer(
+                "%02.2f", ConfigurationUtil.getLocale()));
+        grid.getColumn("euros").setRenderer(new EmptyZeroNumberRendrer(
+                "%02.2f", ConfigurationUtil.getLocale()));
+        grid.setCellStyleGenerator((Grid.CellReference cellReference) -> {
+            if ("soles".equals(cellReference.getPropertyId()) ||
+                    "dolares".equals(cellReference.getPropertyId()) ||
+                    "euros".equals(cellReference.getPropertyId())) {
+                return "v-align-right";
+            } else {
+                return "v-align-left";
+            }
+        });
+
+        grid.setFooterVisible(true);
+        if (isInicial) {
+            if (saldosFooterInicial == null) saldosFooterInicial = grid.addFooterRowAt(0);
+            DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
+                    null, ConfigurationUtil.get("DECIMAL_FORMAT"));
+            saldosFooterInicial.getCell("codigo").setText("TOTAL:");
+            saldosFooterInicial.getCell("soles").setText(dpf.format(totalSoles.doubleValue()));
+            saldosFooterInicial.getCell("soles").setStyleName("v-align-right");
+            saldosFooterInicial.getCell("dolares").setText(dpf.format(totalUsd.doubleValue()));
+            saldosFooterInicial.getCell("dolares").setStyleName("v-align-right");
+            saldosFooterInicial.getCell("euros").setText(dpf.format(totalEuros.doubleValue()));
+            saldosFooterInicial.getCell("euros").setStyleName("v-align-right");
+        } else {
+            if (saldosFooterFinal == null) saldosFooterFinal = grid.addFooterRowAt(0);
+            DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
+                    null, ConfigurationUtil.get("DECIMAL_FORMAT"));
+            saldosFooterFinal.getCell("codigo").setText("TOTAL:");
+            saldosFooterFinal.getCell("soles").setStyleName("v-align-right");
+            saldosFooterFinal.getCell("soles").setText(dpf.format(totalSoles.doubleValue()));
+            saldosFooterFinal.getCell("dolares").setStyleName("v-align-right");
+            saldosFooterFinal.getCell("dolares").setText(dpf.format(totalUsd.doubleValue()));
+            saldosFooterFinal.getCell("euros").setText(dpf.format(totalEuros.doubleValue()));
+            saldosFooterFinal.getCell("euros").setStyleName("v-align-right");
+        }
+        setSaldoDelDia();
+    }
+
+    public void setSaldoDelDia() {
+        // Total del Dia
+        BigDecimal totalSolesDiaIng = new BigDecimal(0.00);
+        BigDecimal totalSolesDiaEgr = new BigDecimal(0.00);
+        BigDecimal totalUsdDiaIng = new BigDecimal(0.00);
+        BigDecimal totalUsdDiaEgr = new BigDecimal(0.00);
+        BigDecimal totalEurosDiaIng = new BigDecimal(0.00);
+        BigDecimal totalEurosDiaEgr = new BigDecimal(0.00);
+
+        for (Object item : view.getGridBanco().getContainerDataSource().getItemIds()) {
+            ScpBancocabecera bancocabecera = (ScpBancocabecera) item;
+            // PEN
+            totalSolesDiaEgr = totalSolesDiaEgr.add(bancocabecera.getNumHabersol());
+            totalSolesDiaIng = totalSolesDiaIng.add(bancocabecera.getNumDebesol());
+            // USD
+            totalUsdDiaEgr = totalUsdDiaEgr.add(bancocabecera.getNumHaberdolar());
+            totalUsdDiaIng = totalUsdDiaIng.add(bancocabecera.getNumDebedolar());
+            // EUR
+            totalEurosDiaEgr = totalEurosDiaEgr.add(bancocabecera.getNumHabermo());
+            totalEurosDiaIng = totalEurosDiaIng.add(bancocabecera.getNumDebemo());
+        }
+        DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
+                null, ConfigurationUtil.get("DECIMAL_FORMAT"));
+        // PEN
+        view.getSaldosView().getValSolEgr().setValue(dpf.format(totalSolesDiaEgr.doubleValue()));
+        view.getSaldosView().getValSolIng().setValue(dpf.format(totalSolesDiaIng.doubleValue()));
+        view.getSaldosView().getValSolSaldo().setValue(dpf.format(totalSolesDiaIng.subtract(totalSolesDiaEgr).doubleValue()));
+        // USD
+        view.getSaldosView().getValDolEgr().setValue(dpf.format(totalUsdDiaEgr.doubleValue()));
+        view.getSaldosView().getValDolIng().setValue(dpf.format(totalUsdDiaIng.doubleValue()));
+        view.getSaldosView().getValDolSaldo().setValue(dpf.format(totalUsdDiaIng.subtract(totalUsdDiaEgr).doubleValue()));
+        // EUR
+        view.getSaldosView().getValEurEgr().setValue(dpf.format(totalEurosDiaEgr.doubleValue()));
+        view.getSaldosView().getValEurIng().setValue(dpf.format(totalEurosDiaIng.doubleValue()));
+        view.getSaldosView().getValEurSaldo().setValue(dpf.format(totalEurosDiaIng.subtract(totalEurosDiaEgr).doubleValue()));
+
+        view.getSaldosView().getGridSaldoDelDia().setColumnExpandRatio(0, 0);
+    }
+
+    public void setSaldoCuenta(ScpPlancontable cuenta) {
+        if (cuenta==null) {
+            view.getNumSaldoFinalLibro().setValue("");
+            view.getNumSaldoFinalSegBancos().setValue("");
+            view.getNumSaldoInicialLibro().setValue("");
+            view.getNumSaldoInicialSegBancos().setValue("");
+        } else {
+            ProcUtil.SaldosBanco saldosIni = DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaDesde().getValue());
+            ProcUtil.SaldosBanco saldosFin = DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaHasta().getValue());
+            view.getNumSaldoInicialLibro().setValue(GenUtil.numFormat(saldosIni.getSegLibro()));
+            view.getNumSaldoInicialSegBancos().setValue(GenUtil.numFormat(saldosIni.getSegBanco()));
+            view.getNumSaldoFinalLibro().setValue(GenUtil.numFormat(saldosFin.getSegLibro()));
+            view.getNumSaldoFinalSegBancos().setValue(GenUtil.numFormat(saldosFin.getSegBanco()));
+        }
+    }
+
 }
 
