@@ -98,3 +98,44 @@ DONE - manejjo de cheques - powinien chowac kolumny S/., USD, Eur w zaleznosci o
 
 sonando para el futuro:
 1. Cuando envia a contabilidad y no hay tipo de cambo para el dia, lo premita anadir
+
+- jak modyfikuje operacionesCaja przez guzik modificar to pyta czy zapisac, jak przez dwuklik to nie pyta czy zapisac modyfikacje. generalnie nie powinien pytac czy zapisac.
+
+- czy brakuje jakiejs obslugi bledow?
+2019-10-10 08:19:55.920  INFO 14060 --- [p-nio-80-exec-3] org.sanjose.model.ScpBancodetalle        : Preparing ScpBancodetalle{VsjBancoItem{VsjCajaBancoItem{txtCorrelativo='', indTipocuenta=2, fecFecha=2019-10-10 08:19:09.737}, numDebedolar=0, numDebemo=0, numDebesol=0.00, numHaberdolar=0, numHabermo=0, numHabersol=3000.00} codBancodetalle=null, codContracta='1030101', codContraparte='null', codCtacontable='1040103', codCtaespecial='null', codCtaproyecto='null', codDestino='V082', codDestinoitem='V082', codFinanciera='null', codFormapago='null', codProyecto='000001', codTercero='null', codTipocomprobantepago='null', codTipogasto='11', codTipoingreso='null', fecComprobantepago=2019-10-10 08:19:09.737, flg_Anula=0, flgIm=1, flgSaldo=0, numSaldodolar=0, numSaldomo=0, numSaldosol=0, numTcmo=0.0, numTcvdolar=0, txtCheque='null', txtComprobantepago='null', txtCorrelativo='null', txtDetallepago='null', txtGlosaitem='Reembolso de caja', txtSeriecomprobantepago='null', codTipomov=86}
+2019-10-10 08:20:19.353 ERROR 14060 --- [p-nio-80-exec-7] com.vaadin.server.DefaultErrorHandler    :
+javax.validation.ConstraintViolationException: Validation failed for classes [org.sanjose.model.ScpBancocabecera] during persist time for groups [javax.validation.groups.Default, ]
+List of constraint violations:[
+	ConstraintViolationImpl{interpolatedMessage='no puede ser null', propertyPath=codTipomoneda, rootBeanClass=class org.sanjose.model.ScpBancocabecera, messageTemplate='{javax.validation.constraints.NotNull.message}'}
+	ConstraintViolationImpl{interpolatedMessage='no puede ser null', propertyPath=codCtacontable, rootBeanClass=class org.sanjose.model.ScpBancocabecera, messageTemplate='{javax.validation.constraints.NotNull.message}'}
+	ConstraintViolationImpl{interpolatedMessage='no puede estar vacĂ­o', propertyPath=txtGlosa, rootBeanClass=class org.sanjose.model.ScpBancocabecera, messageTemplate='{org.hibernate.validator.constraints.NotBlank.message}'}
+	ConstraintViolationImpl{interpolatedMessage='no puede ser null', propertyPath=codDestino, rootBeanClass=class org.sanjose.model.ScpBancocabecera, messageTemplate='{javax.validation.constraints.NotNull.message}'}
+]
+
+- czy brakuje jakiejs oblsugi bledow
+2019-10-10 13:05:27.213 ERROR 14060 --- [p-nio-80-exec-7] com.vaadin.server.DefaultErrorHandler    :
+java.lang.NullPointerException: null
+	at java.util.Calendar.setTime(Unknown Source) ~[na:1.8.0_221]
+	at java.text.SimpleDateFormat.format(Unknown Source) ~[na:1.8.0_221]
+	at java.text.SimpleDateFormat.format(Unknown Source) ~[na:1.8.0_221]
+	at java.text.DateFormat.format(Unknown Source) ~[na:1.8.0_221]
+	at org.sanjose.util.GenUtil.getTimeOfDay(GenUtil.java:129) ~[classes!/:1.0-SNAPSHOT 9adb6522c295f20f19016126689abccf1f8bfa35]
+	at org.sanjose.util.GenUtil.getEndOfDay(GenUtil.java:123) ~[classes!/:1.0-SNAPSHOT 9adb6522c295f20f19016126689abccf1f8bfa35]
+	at org.sanjose.views.caja.CajaManejoLogic.setSaldos(CajaManejoLogic.java:137) ~[classes!/:1.0-SNAPSHOT 9adb6522c295f20f19016126689abccf1f8bfa35]
+	at org.sanjose.views.caja.CajaManejoLogic.setSaldosFinal(CajaManejoLogic.java:104) ~[classes!/:1.0-SNAPSHOT 9adb6522c295f20f19016126689abccf1f8bfa35]
+	at org.sanjose.views.caja.CajaManejoView.refreshCajas(CajaManejoView.java:169) ~[classes!/:1.0-SNAPSHOT 9adb6522c295f20f19016126689abccf1f8bfa35]
+	at org.sanjose.views.caja.CajaManejoView.lambda$init$d8f8193f$3(CajaManejoView.java:158) ~[classes!/:1.0-SNAPSHOT 9adb6522c295f20f19016126689abccf1f8bfa35]
+	at sun.reflect.GeneratedMethodAccessor164.invoke(Unknown Source) ~[na:na]
+
+- czy brakuje obslugi bledow:
+2019-10-10 17:29:45.971  INFO 14060 --- [p-nio-80-exec-6] org.sanjose.model.ScpBancodetalle        : Preparing ScpBancodetalle{VsjBancoItem{VsjCajaBancoItem{txtCorrelativo='', indTipocuenta=2, fecFecha=2019-10-10 17:28:43.376}, numDebedolar=6.73, numDebemo=0, numDebesol=0, numHaberdolar=0.00, numHabermo=0, numHabersol=0} codBancodetalle=null, codContracta='4620301', codContraparte='null', codCtacontable='1060106', codCtaespecial='I.01.09', codCtaproyecto='null', codDestino='20100043140', codDestinoitem='20100043140', codFinanciera='null', codFormapago='null', codProyecto='023023', codTercero='null', codTipocomprobantepago='null', codTipogasto='20', codTipoingreso='null', fecComprobantepago=2019-09-30 17:28:43.376, flg_Anula=0, flgIm=1, flgSaldo=0, numSaldodolar=0, numSaldomo=0, numSaldosol=0, numTcmo=0.0, numTcvdolar=0, txtCheque='null', txtComprobantepago='null', txtCorrelativo='null', txtDetallepago='null', txtGlosaitem='Intereses acreedores', txtSeriecomprobantepago='null', codTipomov=95}
+2019-10-10 17:31:25.994  INFO 14060 --- [p-nio-80-exec-7] org.sanjose.model.ScpBancodetalle        : Preparing ScpBancodetalle{VsjBancoItem{VsjCajaBancoItem{txtCorrelativo='', indTipocuenta=2, fecFecha=2019-10-10 17:30:07.997}, numDebedolar=0.00, numDebemo=0, numDebesol=0, numHaberdolar=4.61, numHabermo=0, numHabersol=0} codBancodetalle=null, codContracta='6390101', codContraparte='004001', codCtacontable='1060106', codCtaespecial='D.03.03', codCtaproyecto='null', codDestino='20100043140', codDestinoitem='20100043140', codFinanciera='null', codFormapago='null', codProyecto='023023', codTercero='null', codTipocomprobantepago='null', codTipogasto='06', codTipoingreso='null', fecComprobantepago=2019-09-30 17:30:07.997, flg_Anula=0, flgIm=1, flgSaldo=0, numSaldodolar=0, numSaldomo=0, numSaldosol=0, numTcmo=0.0, numTcvdolar=0, txtCheque='null', txtComprobantepago='null', txtCorrelativo='null', txtDetallepago='null', txtGlosaitem='ComisiĂłn mantenimiento de cuenta', txtSeriecomprobantepago='null', codTipomov=81}
+2019-10-10 17:35:23.531  INFO 14060 --- [p-nio-80-exec-3] org.sanjose.views.sys.DestinoLogic       : Ready to save: ScpDestino{codDestino='10903632033', codCargo='null', codFilial='null', codUactualiza='jrojas', codUregistro='jrojas', fecFactualiza=2019-10-10 17:35:23.531, fecFregistro=2019-10-10 17:35:23.531, flgIm=null, indSexo=null, indTipodctoidentidad='null', indTipodestino=0, indTipopersona=N, txtApellidomaterno='null', txtApellidopaterno='null', txtDireccion='null', txtNombre='null', txtNombredestino='ARACELI VIRGINIA TANANTA ARIRAMA', txtNumerodctoidentidad='null', txtRuc='10903632033', txtTelefono1='null', txtTelefono2='null'}
+2019-10-10 17:35:28.186 ERROR 14060 --- [p-nio-80-exec-9] com.vaadin.server.DefaultErrorHandler    :
+com.vaadin.data.Validator$InvalidValueException: null
+	at com.vaadin.data.validator.BeanValidator.validate(BeanValidator.java:131) ~[vaadin-server-7.7.13.jar!/:7.7.13]
+	at com.vaadin.ui.AbstractField.validate(AbstractField.java:994) ~[vaadin-server-7.7.13.jar!/:7.7.13]
+	at com.vaadin.ui.AbstractField.setValue(AbstractField.java:522) ~[vaadin-server-7.7.13.jar!/:7.7.13]
+	at com.vaadin.ui.AbstractSelect.setValue(AbstractSelect.java:735) ~[vaadin-server-7.7.13.jar!/:7.7.13]
+	at com.vaadin.ui.AbstractField.setValue(AbstractField.java:468) ~[vaadin-server-7.7.13.jar!/:7.7.13]
+	at com.vaadin.ui.ComboBox.changeVariables(ComboBox.java:742) ~[vaadin-server-7.7.13.jar!/:7.7.13]
