@@ -262,6 +262,8 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         for (Object item : view.grid.getSelectedRows()) {
             ScpRendiciondetalle sr = (ScpRendiciondetalle) item;
             if (newVal!=null) {
+                if (newVal instanceof Date)
+                    newVal = new Timestamp(((Date) newVal).getTime());
                 view.getContainer().getItem(item).getItemProperty(itemProperty).setValue(newVal);
                 detsToRefresh.add(sr);
             }
@@ -529,6 +531,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         items.add(item);
         view.getContainer().addAll(items);
         view.getContainer().sort(new Object[]{"numNritem"}, new boolean[]{true});
+        view.grid.deselectAll();
         view.grid.select(item);
         view.getGrid().setEditorEnabled(true);
     }
@@ -595,7 +598,9 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 //                                .open();
 //                    } else
                         view.getService().getRendiciondetalleRep().save(vcbToSave);
-                        bindForm(vcb);
+                        bindForm(vcbToSave);
+                        view.setTotal(moneda);
+                        view.calcFooterSums();
                     }
                 } catch (FieldGroup.CommitException ce) {
                     Notification.show("No se puede guarder el item: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
