@@ -162,11 +162,13 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
     }
 
     private void refreshCajas() {
-        DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
-                DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
-                "txtDescctacontable");
-        viewLogic.calcFooterSums();
-        viewLogic.setSaldosFinal();
+        if (fechaDesde.getValue()!=null) {
+            DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
+                    DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
+                    "txtDescctacontable");
+            viewLogic.calcFooterSums();
+            viewLogic.setSaldosFinal();
+        }
     }
 
     public void refreshData() {

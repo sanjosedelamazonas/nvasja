@@ -100,6 +100,7 @@ sonando para el futuro:
 1. Cuando envia a contabilidad y no hay tipo de cambo para el dia, lo premita anadir
 
 - jak modyfikuje operacionesCaja przez guzik modificar to pyta czy zapisac, jak przez dwuklik to nie pyta czy zapisac modyfikacje. generalnie nie powinien pytac czy zapisac.
+ODP. To nie ma znaczenia czy przez guzik czy dwuklikiem - chodzi o brak środków - pyta wtedy jak jest za mało pieniędzy w Caja albo w projekcie
 
 - czy brakuje jakiejs obslugi bledow?
 2019-10-10 08:19:55.920  INFO 14060 --- [p-nio-80-exec-3] org.sanjose.model.ScpBancodetalle        : Preparing ScpBancodetalle{VsjBancoItem{VsjCajaBancoItem{txtCorrelativo='', indTipocuenta=2, fecFecha=2019-10-10 08:19:09.737}, numDebedolar=0, numDebemo=0, numDebesol=0.00, numHaberdolar=0, numHabermo=0, numHabersol=3000.00} codBancodetalle=null, codContracta='1030101', codContraparte='null', codCtacontable='1040103', codCtaespecial='null', codCtaproyecto='null', codDestino='V082', codDestinoitem='V082', codFinanciera='null', codFormapago='null', codProyecto='000001', codTercero='null', codTipocomprobantepago='null', codTipogasto='11', codTipoingreso='null', fecComprobantepago=2019-10-10 08:19:09.737, flg_Anula=0, flgIm=1, flgSaldo=0, numSaldodolar=0, numSaldomo=0, numSaldosol=0, numTcmo=0.0, numTcvdolar=0, txtCheque='null', txtComprobantepago='null', txtCorrelativo='null', txtDetallepago='null', txtGlosaitem='Reembolso de caja', txtSeriecomprobantepago='null', codTipomov=86}
@@ -111,6 +112,8 @@ List of constraint violations:[
 	ConstraintViolationImpl{interpolatedMessage='no puede estar vacĂ­o', propertyPath=txtGlosa, rootBeanClass=class org.sanjose.model.ScpBancocabecera, messageTemplate='{org.hibernate.validator.constraints.NotBlank.message}'}
 	ConstraintViolationImpl{interpolatedMessage='no puede ser null', propertyPath=codDestino, rootBeanClass=class org.sanjose.model.ScpBancocabecera, messageTemplate='{javax.validation.constraints.NotNull.message}'}
 ]
+ODP. Nie potrafię tego wywołać - musisz mi podać więcej szczegółów.
+
 
 - czy brakuje jakiejs oblsugi bledow
 2019-10-10 13:05:27.213 ERROR 14060 --- [p-nio-80-exec-7] com.vaadin.server.DefaultErrorHandler    :
@@ -127,6 +130,8 @@ java.lang.NullPointerException: null
 	at org.sanjose.views.caja.CajaManejoView.lambda$init$d8f8193f$3(CajaManejoView.java:158) ~[classes!/:1.0-SNAPSHOT 9adb6522c295f20f19016126689abccf1f8bfa35]
 	at sun.reflect.GeneratedMethodAccessor164.invoke(Unknown Source) ~[na:na]
 
+ODP. Zabezpieczyłem w caja w wielu miejscach przed otwarciem okna, albo odświeżeniem caj jak nie ma wybranej daty inicial albo final
+
 - czy brakuje obslugi bledow:
 2019-10-10 17:29:45.971  INFO 14060 --- [p-nio-80-exec-6] org.sanjose.model.ScpBancodetalle        : Preparing ScpBancodetalle{VsjBancoItem{VsjCajaBancoItem{txtCorrelativo='', indTipocuenta=2, fecFecha=2019-10-10 17:28:43.376}, numDebedolar=6.73, numDebemo=0, numDebesol=0, numHaberdolar=0.00, numHabermo=0, numHabersol=0} codBancodetalle=null, codContracta='4620301', codContraparte='null', codCtacontable='1060106', codCtaespecial='I.01.09', codCtaproyecto='null', codDestino='20100043140', codDestinoitem='20100043140', codFinanciera='null', codFormapago='null', codProyecto='023023', codTercero='null', codTipocomprobantepago='null', codTipogasto='20', codTipoingreso='null', fecComprobantepago=2019-09-30 17:28:43.376, flg_Anula=0, flgIm=1, flgSaldo=0, numSaldodolar=0, numSaldomo=0, numSaldosol=0, numTcmo=0.0, numTcvdolar=0, txtCheque='null', txtComprobantepago='null', txtCorrelativo='null', txtDetallepago='null', txtGlosaitem='Intereses acreedores', txtSeriecomprobantepago='null', codTipomov=95}
 2019-10-10 17:31:25.994  INFO 14060 --- [p-nio-80-exec-7] org.sanjose.model.ScpBancodetalle        : Preparing ScpBancodetalle{VsjBancoItem{VsjCajaBancoItem{txtCorrelativo='', indTipocuenta=2, fecFecha=2019-10-10 17:30:07.997}, numDebedolar=0.00, numDebemo=0, numDebesol=0, numHaberdolar=4.61, numHabermo=0, numHabersol=0} codBancodetalle=null, codContracta='6390101', codContraparte='004001', codCtacontable='1060106', codCtaespecial='D.03.03', codCtaproyecto='null', codDestino='20100043140', codDestinoitem='20100043140', codFinanciera='null', codFormapago='null', codProyecto='023023', codTercero='null', codTipocomprobantepago='null', codTipogasto='06', codTipoingreso='null', fecComprobantepago=2019-09-30 17:30:07.997, flg_Anula=0, flgIm=1, flgSaldo=0, numSaldodolar=0, numSaldomo=0, numSaldosol=0, numTcmo=0.0, numTcvdolar=0, txtCheque='null', txtComprobantepago='null', txtCorrelativo='null', txtDetallepago='null', txtGlosaitem='ComisiĂłn mantenimiento de cuenta', txtSeriecomprobantepago='null', codTipomov=81}
@@ -139,3 +144,5 @@ com.vaadin.data.Validator$InvalidValueException: null
 	at com.vaadin.ui.AbstractSelect.setValue(AbstractSelect.java:735) ~[vaadin-server-7.7.13.jar!/:7.7.13]
 	at com.vaadin.ui.AbstractField.setValue(AbstractField.java:468) ~[vaadin-server-7.7.13.jar!/:7.7.13]
 	at com.vaadin.ui.ComboBox.changeVariables(ComboBox.java:742) ~[vaadin-server-7.7.13.jar!/:7.7.13]
+
+ODP. Nie potrafię tego powtórzyć - w żadnej kombinacji dodawania Destino nie wywalił mi tego błędu... może to jest coś co jest poniżej

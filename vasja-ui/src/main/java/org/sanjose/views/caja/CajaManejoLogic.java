@@ -123,6 +123,8 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
     }
 
     public void setSaldos(Grid grid, boolean isInicial) {
+        if (view.getFechaDesde().getValue()==null || view.getFechaHasta().getValue()==null)
+            return;
         grid.getContainerDataSource().removeAllItems();
         BeanItemContainer<Caja> c = new BeanItemContainer<>(Caja.class);
         grid.setContainerDataSource(c);

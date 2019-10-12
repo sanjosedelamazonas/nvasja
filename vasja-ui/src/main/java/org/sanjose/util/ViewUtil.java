@@ -12,6 +12,7 @@ import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.*;
+import de.steinwedel.messagebox.MessageBox;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
@@ -280,12 +281,14 @@ public class ViewUtil {
         fechaDesde.setResolution(Resolution.DAY);
         fechaDesde.setValue(defDesde);
         fechaDesde.addValueChangeListener(valueChangeEvent -> filterComprobantes(container, propertyId, fechaDesde, fechaHasta, viewing));
+        fechaDesde.setInvalidAllowed(false);
 
         ts = new Timestamp(System.currentTimeMillis());
         prop = new ObjectProperty<>(ts);
         fechaHasta.setPropertyDataSource(prop);
         fechaHasta.setConverter(DateToTimestampConverter.INSTANCE);
         fechaHasta.setResolution(Resolution.DAY);
+        fechaHasta.setInvalidAllowed(false);
 
         fechaHasta.setValue(defHasta);
         fechaHasta.addValueChangeListener(valueChangeEvent -> filterComprobantes(container, propertyId, fechaDesde, fechaHasta, viewing));
@@ -421,6 +424,14 @@ public class ViewUtil {
     }
 
     public static void openCajaSaldosInNewWindow(CajaSaldoView component, Date fromDate, Date toDate) {
+        if (fromDate==null || toDate==null) {
+            MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
+            MessageBox
+                    .createQuestion()
+                    .withMessage("Por favor rellena las fechas del inicio y final")
+                    .open();
+            return;
+        }
         Window subWindow = new Window();
         subWindow.setWindowMode(WindowMode.NORMAL);
         int width = 1280;

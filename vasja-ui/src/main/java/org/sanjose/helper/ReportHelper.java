@@ -7,6 +7,7 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.*;
+import de.steinwedel.messagebox.MessageBox;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.*;
 import net.sf.jasperreports.engine.type.WhenNoDataTypeEnum;
@@ -234,6 +235,14 @@ public class ReportHelper {
 	}
 
 	public static void generateDiarioCaja(Date fechaMin, Date fechaMax, String format) {
+		if (fechaMin==null) {
+			MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
+			MessageBox
+					.createQuestion()
+					.withMessage("Por favor rellena la fecha del inicio")
+					.open();
+			return;
+		}
 		if (fechaMax==null) fechaMax = fechaMin;
 		generateDiario("ReporteCajaDiario",
 			ConfigurationUtil.getBeginningOfDay(fechaMin),

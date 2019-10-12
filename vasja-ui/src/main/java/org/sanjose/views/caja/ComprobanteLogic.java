@@ -498,6 +498,8 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
     }
 
     private void refreshProyectoYcuentaPorFecha(Date newFecha) {
+        if (newFecha==null)
+            newFecha = new Date();
         if (newFecha==null || view.getService().getPlanRepo()==null) return;
         if (view.getSelCaja()!=null)
             DataFilterUtil.refreshComboBox(
@@ -529,6 +531,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
             view.getSaldoProyPEN().removeStyleName("yield");
             view.getSaldoProyUSD().removeStyleName("yield");
             view.getSaldoProyEUR().removeStyleName("yield");
+            Date fechaCajas = view.getDataFechaComprobante().getValue()!=null ? view.getDataFechaComprobante().getValue() : new Date();
             if (moneda.equals(PEN)) {
                 // Soles        0
                 // Cta Caja
@@ -536,7 +539,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
                 beanItem.getBean().setNumDebedolar(new BigDecimal(0));
                 beanItem.getBean().setNumHabermo(new BigDecimal(0));
                 beanItem.getBean().setNumDebemo(new BigDecimal(0));
-                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
+                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(fechaCajas, view.getService().getPlanRepo(), moneda), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHabersol");
                 fieldGroup.bind(view.getNumIngreso(), "numDebesol");
                 saldoChecker.setProyectoField(view.getSaldoProyPEN());
@@ -547,7 +550,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
                 beanItem.getBean().setNumDebesol(new BigDecimal(0));
                 beanItem.getBean().setNumHabermo(new BigDecimal(0));
                 beanItem.getBean().setNumDebemo(new BigDecimal(0));
-                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
+                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(fechaCajas, view.getService().getPlanRepo(), moneda), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
                 fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
                 saldoChecker.setProyectoField(view.getSaldoProyUSD());
@@ -586,15 +589,16 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
     private void setSaldos() {
         if (view.getDataFechaComprobante().getValue()!=null) {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+            Date fechaCajas = view.getDataFechaComprobante().getValue()!=null ? view.getDataFechaComprobante().getValue() : new Date();
             ProcUtil.Saldos res = null;
             if (isProyecto() && !GenUtil.objNullOrEmpty(view.getSelProyectoTercero().getValue())) {
-                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), view.getSelProyectoTercero().getValue().toString(), null);
+                res = procUtil.getSaldos(fechaCajas, view.getSelProyectoTercero().getValue().toString(), null);
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue(df.format(res.getSaldoEUR()));
             }
             if (isTercero() && !GenUtil.objNullOrEmpty(view.getSelProyectoTercero().getValue())) {
-                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), null, view.getSelProyectoTercero().getValue().toString());
+                res = procUtil.getSaldos(fechaCajas, null, view.getSelProyectoTercero().getValue().toString());
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue(df.format(res.getSaldoEUR()));
