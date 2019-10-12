@@ -2,6 +2,7 @@ package org.sanjose.views.banco;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.sort.SortOrder;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.FilterableSortableGridTreeContainer;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.ObjectProperty;
@@ -23,7 +24,7 @@ import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import org.vaadin.gridtree.GridTree;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -307,7 +308,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
     @Override
     public void selectMoneda(Character moneda) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("");
     }
 
 
@@ -330,12 +331,12 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
     @Override
     public DateField getFechaDesde() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("");
     }
 
     @Override
     public DateField getFechaHasta() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -360,46 +361,51 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
     @Override
     public DateField getFecMesCobrado() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("");
     }
 
     @Override
     public Grid.FooterRow getGridFooter() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("");
     }
 
     @Override
     public CajaSaldoView getSaldosView() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("");
     }
 
     @Override
     public TextField getNumSaldoInicialSegBancos() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("");
     }
 
     @Override
     public TextField getNumSaldoInicialLibro() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("");
     }
 
     @Override
     public TextField getNumSaldoFinalSegBancos() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("");
     }
 
     @Override
     public TextField getNumSaldoFinalLibro() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("");
     }
 
     @Override
     public ComboBox getSelRepMoneda() {
-        throw new NotImplementedException();    }
+        throw new NotImplementedException("");    }
 
     @Override
     public ComboBox getSelFiltroCuenta() {
-        throw new NotImplementedException();    }
+        throw new NotImplementedException("");    }
+
+    @Override
+    public BeanItemContainer<ScpBancocabecera> getContainer() {
+        throw new NotImplementedException("");
+    }
 
     @Override
     public void filter(Date fechaDesde, Date fechaHasta) {
@@ -408,7 +414,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
     @Override
     public Date getFilterInitialDate() {
-        throw new NotImplementedException();    }
+        throw new NotImplementedException("");    }
 
     @Override
     public void setFilterInitialDate(Date fecha) {

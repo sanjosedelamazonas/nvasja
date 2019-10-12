@@ -1,8 +1,11 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.AbstractContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.shared.data.sort.SortDirection;
@@ -64,7 +67,7 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
 
         ViewUtil.alignMontosInGrid(view.getGridBanco());
         // Fecha Desde Hasta
-        ViewUtil.setupDateFiltersThisMonth((BeanItemContainer)view.getGridBanco().getContainerDataSource(), view.getFechaDesde(), view.getFechaHasta(), view);
+        ViewUtil.setupDateFiltersThisMonth(view.getContainer(), view.getFechaDesde(), view.getFechaHasta(), view);
 
         view.getFechaDesde().addValueChangeListener(e -> {
             calcFooterSums();
@@ -91,7 +94,7 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
         view.getGridBanco().addItemClickListener(e -> setItemLogic(e));
 
         // Run date filter
-        ViewUtil.filterComprobantes((BeanItemContainer)view.getGridBanco().getContainerDataSource(), "fecFecha", view.getFechaDesde(), view.getFechaHasta(), view);
+        ViewUtil.filterComprobantes(view.getContainer(), "fecFecha", view.getFechaDesde(), view.getFechaHasta(), view);
 
         ViewUtil.colorizeRows(view.getGridBanco(), ScpBancocabecera.class);
 
@@ -110,14 +113,18 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
         view.getSelRepMoneda().addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
                 moneda = (Character)e.getProperty().getValue();
-                ((BeanItemContainer)view.getGridBanco().getContainerDataSource()).removeContainerFilters("codTipomoneda");
-                ((BeanItemContainer)view.getGridBanco().getContainerDataSource()).addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
+                view.getContainer().removeContainerFilters("codTipomoneda");
+                view.getContainer().addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
                 ViewUtil.filterColumnsByMoneda(view.getGridBanco(), moneda);
                 calcFooterSums();
                 DataFilterUtil.refreshComboBox(view.getSelFiltroCuenta(), "id.codCtacontable",
                         DataUtil.getBancoCuentas(view.getFechaDesde().getValue(), view.getService().getPlanRepo(), moneda),
                         "txtDescctacontable");
             }
+            bancoCuenta = null;
+            view.getContainer().removeContainerFilters("codCtacontable");
+            ViewUtil.filterColumnsByMoneda(view.getGridBanco(), moneda);
+            setSaldoCuenta(bancoCuenta);
             setSaldoDelDia();
         });
 
@@ -127,8 +134,8 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
         view.getSelFiltroCuenta().setEnabled(true);
         view.getSelFiltroCuenta().addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
-                ((BeanItemContainer)view.getGridBanco().getContainerDataSource()).removeContainerFilters("codCtacontable");
-                ((BeanItemContainer)view.getGridBanco().getContainerDataSource()).addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
+                view.getContainer().removeContainerFilters("codCtacontable");
+                view.getContainer().addContainerFilter(new Compare.Equal("codCtacontable", e.getProperty().getValue()));
                 bancoCuenta = view.getService().getPlanRepo().findById_TxtAnoprocesoAndId_CodCtacontable(
                         GenUtil.getYear(view.getFechaDesde().getValue()), view.getSelFiltroCuenta().getValue().toString());
                 //view.getSelRepMoneda().select(GenUtil.getNumMoneda(cuenta.getIndTipomoneda()));
@@ -137,7 +144,7 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
 
             } else {
                 bancoCuenta = null;
-                ((BeanItemContainer)view.getGridBanco().getContainerDataSource()).removeContainerFilters("codCtacontable");
+                view.getContainer().removeContainerFilters("codCtacontable");
                 ViewUtil.filterColumnsByMoneda(view.getGridBanco(), moneda);
                 view.getGridBanco().getColumn("txtGlosa").setMaximumWidth(400);
             }
@@ -244,6 +251,7 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
             }
         }
         view.refreshData();
+        setSaldoCuenta(bancoCuenta);
     }
 
     // Single click - select row in grids
@@ -251,7 +259,7 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
         if (event.isDoubleClick()) {
             Object id = event.getItem().getItemProperty("codBancocabecera").getValue();
             ScpBancocabecera vcb = view.getService().getBancocabeceraRep().findByCodBancocabecera((Integer) id);
-            editarCheque((ScpBancocabecera) vcb);
+            editarCheque(vcb);
         }
         view.getGridBanco().deselectAll();
         view.getGridBanco().select(event.getItemId());

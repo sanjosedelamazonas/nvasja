@@ -153,7 +153,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         });
         bancoOperView.getCerrarBtn().setVisible(false);
         viewLogic = new BancoOperacionesLogic(this);
-        viewLogic.init();
+        viewLogic.initView();
         viewLogic.setSaldos(getSaldosView().getGridSaldoInicial(), true);
         viewLogic.setSaldos(getSaldosView().getGridSaldoFinal(), false);
         selRepMoneda.select('0');
@@ -279,6 +279,11 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
 
     public ComboBox getSelFiltroCuenta() {
         return selFiltroCuenta;
+    }
+
+    @Override
+    public BeanItemContainer<ScpBancocabecera> getContainer() {
+        return container;
     }
 
 }

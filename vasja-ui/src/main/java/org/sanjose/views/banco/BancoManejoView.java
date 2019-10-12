@@ -134,7 +134,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         bancoOperView.init(getService());
 
         viewLogic = new BancoManejoLogic(this);
-        viewLogic.init();
+        viewLogic.initView();
         viewLogic.setSaldos(getSaldosView().getGridSaldoInicial(), true);
         viewLogic.setSaldos(getSaldosView().getGridSaldoFinal(), false);
         selRepMoneda.select('0');
@@ -275,5 +275,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
     public ComboBox getSelFiltroCuenta() {
         return selFiltroCuenta;
     }
+
+
 
 }

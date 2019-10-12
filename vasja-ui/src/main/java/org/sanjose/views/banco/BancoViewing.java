@@ -1,9 +1,11 @@
 package org.sanjose.views.banco;
 
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextField;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
@@ -48,4 +50,6 @@ public interface BancoViewing extends NavigatorViewing, GridViewing {
     ComboBox getSelRepMoneda();
 
     ComboBox getSelFiltroCuenta();
+
+    BeanItemContainer<ScpBancocabecera> getContainer();
 }

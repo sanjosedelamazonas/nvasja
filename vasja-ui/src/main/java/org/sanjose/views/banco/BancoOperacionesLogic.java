@@ -46,6 +46,13 @@ public class BancoOperacionesLogic extends BancoGridLogic implements Serializabl
         oView.getBtnMarcarCobrado().addClickListener(clickEvent -> { setMesCobrado(true); });
         oView.getBtnMarcarNoCobrado().addClickListener(clickEvent -> { setMesCobrado(false); });
 
+        oView.getBtnDetallesSaldos().addClickListener(e -> {
+            setSaldos(oView.getSaldosView().getGridSaldoInicial(), true);
+            setSaldos(oView.getSaldosView().getGridSaldoFinal(), false);
+            setSaldoDelDia();
+            ViewUtil.openCajaSaldosInNewWindow(oView.getSaldosView(), oView.getFechaDesde().getValue(), oView.getFechaHasta().getValue());
+        });
+
         GridContextMenu gridContextMenu = new GridContextMenu(oView.getGridBanco());
 
         gridContextMenu.addGridBodyContextMenuListener(e -> {
