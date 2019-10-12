@@ -3,8 +3,10 @@ package org.sanjose.model;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import org.hibernate.validator.constraints.NotBlank;
+import org.sanjose.authentication.CurrentUser;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,19 +18,29 @@ import java.util.Objects;
 @Entity
 @Table(name = "scp_rendiciondetalle")
 @NamedQuery(name = "ScpRendiciondetalle.findAll", query = "SELECT v FROM ScpRendiciondetalle v")
-public class ScpRendiciondetalle extends VsjItem implements Serializable, Cloneable {
+public class ScpRendiciondetalle implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1232342435798744L;
 
     @EmbeddedId
     private ScpRendiciondetallePK id;
 
-    @Column(name = "cod_filial")
-    private String codFilial;
-    @Column(name = "cod_origen")
-    private String codOrigen;
-    @Column(name = "cod_comprobante")
-    private String codComprobante;
+    @Column(name="cod_uactualiza")
+    private String codUactualiza;
+
+    @Column(name="cod_uregistro")
+    private String codUregistro;
+
+    @Column(name="fec_factualiza")
+    private Timestamp fecFactualiza;
+
+    @Column(name="fec_fregistro")
+    private Timestamp fecFregistro;
+
+    @NotNull
+    @Column(name="cod_tipomoneda")
+    private Character codTipomoneda;
+
     @Column(name = "fec_comprobante")
     private java.sql.Timestamp fecComprobante;
 
@@ -182,20 +194,24 @@ public class ScpRendiciondetalle extends VsjItem implements Serializable, Clonea
     private ScpRendicioncabecera scpRendicioncabecera;
 
     public ScpRendiciondetalle prepareToSave() throws FieldGroup.CommitException {
-        super.prepareToSave();
+        //super.prepareToSave();
         SimpleDateFormat sdf = new SimpleDateFormat("MM");
-        this.setCodMes(sdf.format(this.getFecComprobante()));
-        sdf = new SimpleDateFormat("yyyy");
-        this.setTxtAnoproceso(sdf.format(this.getFecComprobante()));
-        setCodOrigen(getScpRendicioncabecera().getCodOrigen());
-        setCodFilial(getScpRendicioncabecera().getCodFilial());
+        if (this.getCodUregistro() == null) this.setCodUregistro(CurrentUser.get());
+        if (this.getFecFregistro() == null) this.setFecFregistro(new Timestamp(System.currentTimeMillis()));
+        this.setCodUactualiza(CurrentUser.get());
+        this.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+
+        if (getId()!=null) {
+            getId().setCodOrigen(getScpRendicioncabecera().getCodOrigen());
+            getId().setCodFilial(getScpRendicioncabecera().getCodFilial());
+        }
         return this;
     }
 
     public ScpRendiciondetalle() {
         setFecComprobante(new Timestamp(System.currentTimeMillis()));
         setFlgIm('1');
-        setCodFilial("01");
+        //getId().setCodFilial("01");
         setCodCtaactividad("");
         setNumTcmo(0);
         setNumTcvdolar(0);
@@ -792,28 +808,44 @@ public class ScpRendiciondetalle extends VsjItem implements Serializable, Clonea
         this.scpRendicioncabecera = scpRendicioncabecera;
     }
 
-    public String getCodFilial() {
-        return codFilial;
+    public String getCodUactualiza() {
+        return codUactualiza;
     }
 
-    public void setCodFilial(String codFilial) {
-        this.codFilial = codFilial;
+    public void setCodUactualiza(String codUactualiza) {
+        this.codUactualiza = codUactualiza;
     }
 
-    public String getCodOrigen() {
-        return codOrigen;
+    public String getCodUregistro() {
+        return codUregistro;
     }
 
-    public void setCodOrigen(String codOrigen) {
-        this.codOrigen = codOrigen;
+    public void setCodUregistro(String codUregistro) {
+        this.codUregistro = codUregistro;
     }
 
-    public String getCodComprobante() {
-        return codComprobante;
+    public Timestamp getFecFactualiza() {
+        return fecFactualiza;
     }
 
-    public void setCodComprobante(String codComprobante) {
-        this.codComprobante = codComprobante;
+    public void setFecFactualiza(Timestamp fecFactualiza) {
+        this.fecFactualiza = fecFactualiza;
+    }
+
+    public Timestamp getFecFregistro() {
+        return fecFregistro;
+    }
+
+    public void setFecFregistro(Timestamp fecFregistro) {
+        this.fecFregistro = fecFregistro;
+    }
+
+    public Character getCodTipomoneda() {
+        return codTipomoneda;
+    }
+
+    public void setCodTipomoneda(Character codTipomoneda) {
+        this.codTipomoneda = codTipomoneda;
     }
 
     @Override
@@ -832,9 +864,6 @@ public class ScpRendiciondetalle extends VsjItem implements Serializable, Clonea
     public String toString() {
         return "ScpRendiciondetalle{" +
                 "id=" + id +
-                ", codFilial='" + codFilial + '\'' +
-                ", codOrigen='" + codOrigen + '\'' +
-                ", codComprobante='" + codComprobante + '\'' +
                 ", fecComprobante=" + fecComprobante +
                 ", txtGlosaitem='" + txtGlosaitem + '\'' +
                 ", codDestino='" + codDestino + '\'' +

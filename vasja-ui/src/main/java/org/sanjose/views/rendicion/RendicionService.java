@@ -168,23 +168,28 @@ public class RendicionService {
             rendicionItem.setScpRendicioncabecera(cabecera);
             if (rendicionItem.getId() == null) {
                 ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+                id = id.prepareToSave(rendicionItem);
                 id.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
                 id.setNumNroitem(rendiciondetalleRep.findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera()).size() + 1);
+                id.setCodFilial(cabecera.getCodFilial());
+                id.setCodOrigen(cabecera.getCodOrigen());
+                id.setCodComprobante(cabecera.getCodComprobante());
                 rendicionItem.setId(id);
             }
 
             rendicionItem.setScpRendicioncabecera(cabecera);
-            if (GenUtil.strNullOrEmpty(rendicionItem.getCodComprobante())) {
-                rendicionItem.setCodComprobante(cabecera.getCodComprobante());
+            if (GenUtil.strNullOrEmpty(rendicionItem.getId().getCodComprobante())) {
+                rendicionItem.getId().setCodComprobante(cabecera.getCodComprobante());
             }
             rendicionItem = rendiciondetalleRep.save(rendicionItem);
         } else {
             rendicionItem = new ScpRendiciondetalle();
             rendicionItem.setCodTipomoneda(cabecera.getCodTipomoneda());
             ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+            id = id.prepareToSave(rendicionItem);
             id.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
             rendicionItem.setId(id);
-            rendicionItem.setCodComprobante(cabecera.getCodComprobante());
+            rendicionItem.getId().setCodComprobante(cabecera.getCodComprobante());
         }
         rendicionItem.setScpRendicioncabecera(cabecera);
         return rendicionItem;

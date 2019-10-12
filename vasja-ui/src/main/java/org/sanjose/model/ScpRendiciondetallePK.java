@@ -3,6 +3,7 @@ package org.sanjose.model;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 /**
@@ -19,7 +20,28 @@ public class ScpRendiciondetallePK implements Serializable, Cloneable {
     @Column(name = "num_nroitem")
     private Long numNroitem;
 
+    @Column(name = "cod_filial")
+    private String codFilial = "01";
+    @Column(name = "cod_origen")
+    private String codOrigen;
+    @Column(name = "cod_comprobante")
+    private String codComprobante;
+
+    @Column(name="cod_mes")
+    private String codMes;
+
+    @Column(name="txt_anoproceso")
+    private String txtAnoproceso;
+
     public ScpRendiciondetallePK() {
+    }
+
+    public ScpRendiciondetallePK prepareToSave(ScpRendiciondetalle det) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM");
+        setCodMes(sdf.format(det.getFecComprobante()));
+        sdf = new SimpleDateFormat("yyyy");
+        setTxtAnoproceso(sdf.format(det.getFecComprobante()));
+        return this;
     }
 
     public Long getNumNroitem() {
@@ -36,6 +58,51 @@ public class ScpRendiciondetallePK implements Serializable, Cloneable {
 
     public void setCodRendicioncabecera(int codRendicioncabecera) {
         this.codRendicioncabecera = codRendicioncabecera;
+    }
+
+    public String getCodFilial() {
+        return codFilial;
+    }
+
+    public void setCodFilial(String codFilial) {
+        this.codFilial = codFilial;
+    }
+
+    public String getCodOrigen() {
+        return codOrigen;
+    }
+
+    public void setCodOrigen(String codOrigen) {
+        this.codOrigen = codOrigen;
+    }
+
+    public String getCodComprobante() {
+        return codComprobante;
+    }
+
+    public void setCodComprobante(String codComprobante) {
+        this.codComprobante = codComprobante;
+    }
+
+
+    public void setNumNroitem(Long numNroitem) {
+        this.numNroitem = numNroitem;
+    }
+
+    public String getCodMes() {
+        return codMes;
+    }
+
+    public void setCodMes(String codMes) {
+        this.codMes = codMes;
+    }
+
+    public String getTxtAnoproceso() {
+        return txtAnoproceso;
+    }
+
+    public void setTxtAnoproceso(String txtAnoproceso) {
+        this.txtAnoproceso = txtAnoproceso;
     }
 
     @Override
@@ -60,6 +127,9 @@ public class ScpRendiciondetallePK implements Serializable, Cloneable {
         return "ScpRendiciondetallePK{" +
                 "codRendicioncabecera=" + codRendicioncabecera +
                 ", numNroitem=" + numNroitem +
+                ", codFilial='" + codFilial + '\'' +
+                ", codOrigen='" + codOrigen + '\'' +
+                ", codComprobante='" + codComprobante + '\'' +
                 '}';
     }
 
