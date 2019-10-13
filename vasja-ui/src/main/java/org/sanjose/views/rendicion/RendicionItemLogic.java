@@ -268,7 +268,15 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                 detsToRefresh.add(sr);
             }
         }
-        detsToRefresh.forEach(e -> view.grid.refreshRows(e));
+        detsToRefresh.forEach(e -> {
+            try {
+                e = view.getService().saveRendicionOperacion(e.getScpRendicioncabecera(), e);
+                view.grid.refreshRows(e);
+            } catch (CommitException ce) {
+                Notification.show("Error al aplicar a marcados: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                log.warn("Got Commit Exception: " + ce.getMessage());
+            }
+        });
     }
 
 
