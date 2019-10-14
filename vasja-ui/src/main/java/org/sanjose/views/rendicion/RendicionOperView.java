@@ -198,7 +198,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
             order_summary_layout.addStyleName("order-summary-layout-eur");
         }
 
-        ViewUtil.filterColumnsByMoneda(grid, locMoneda);
+        if (!isVistaFull) ViewUtil.filterColumnsByMoneda(grid, locMoneda);
         ViewUtil.alignMontosInGrid(grid);
         getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
 
@@ -206,7 +206,11 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         getTxtGastoTotal().setValue(GenUtil.numFormat(gastoTotal));
         NumberFormat nf = NumberFormat.getInstance(ConfigurationUtil.getLocale());
         try {
-            BigDecimal totalAnticipo = new BigDecimal(nf.parse(getNumTotalAnticipio().getValue()).toString());
+            BigDecimal totalAnticipo = null;
+            if (getNumTotalAnticipio().getValue()==null)
+                totalAnticipo = new BigDecimal(0.00);
+            else
+                totalAnticipo = new BigDecimal(nf.parse(getNumTotalAnticipio().getValue()).toString());
             if (viewLogic.rendicioncabecera!=null) {
                 viewLogic.rendicioncabecera.setNumSaldopendiente(totalAnticipo.subtract(gastoTotal));
             }
@@ -221,7 +225,17 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
     private BigDecimal calcTotal(Character locMoneda) {
         BigDecimal total = new BigDecimal(0.00);
         for (ScpRendiciondetalle det: container.getItemIds()) {
-            total = total.add(det.getDebe()).subtract(det.getHaber());
+            switch (locMoneda) {
+                case '0':
+                    total = total.add(det.getNumDebesol()).subtract(det.getNumHabersol());
+                    break;
+                case '1':
+                    total = total.add(det.getNumDebedolar()).subtract(det.getNumHaberdolar());
+                    break;
+                case '2':
+                    total = total.add(det.getNumDebemo()).subtract(det.getNumHabermo());
+                    break;
+            }
         }
         return total;
     }

@@ -151,7 +151,8 @@ public class RendicionLogic extends RendicionItemLogic {
         fieldGroupCabezera = new FieldGroup(beanItem);
         fieldGroupCabezera.setItemDataSource(beanItem);
         fieldGroupCabezera.bind(view.getSelMoneda(), "codTipomoneda");
-        fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigen");
+        //fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigen");
+        view.getTxtOrigen().setValue(item.getCodOrigen());
         fieldGroupCabezera.bind(view.getDataFechaComprobante(), "fecComprobante");
         fieldGroupCabezera.bind(view.getSelResponsable1(), "codDestino");
         fieldGroupCabezera.bind(view.getTxtGlosaCabeza(), "txtGlosa");
@@ -170,8 +171,10 @@ public class RendicionLogic extends RendicionItemLogic {
         fieldGroupCabezera.bind(view.getChkEnviado(), "flgEnviado");
         view.getChkEnviado().setEnabled(false);
 
-        fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigenenlace");
-        fieldGroupCabezera.bind(view.getTxtComprobenlace(), "codComprobanteenlace");
+        //fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigenenlace");
+        view.getTxtOrigenlace().setValue(item.getCodOrigenenlace());
+        view.getTxtComprobenlace().setValue(item.getCodComprobanteenlace());
+        //fieldGroupCabezera.bind(view.getTxtComprobenlace(), "codComprobanteenlace");
 
         ScpDestino ingresadoPor = view.getService().getDestinoRepo().findByCodDestino(item.getCodDestino());
         if (ingresadoPor!=null) view.getTxtIngresadoPor().setValue(ingresadoPor.getTxtNombredestino());

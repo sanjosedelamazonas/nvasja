@@ -253,7 +253,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                 TipoCambio.checkTipoCambio(fecha, view.getService().getTipocambioRep());
                 tipocambios = view.getService().getTipocambioRep().findById_FecFechacambio(fecha);
                 if (tipocambios.isEmpty()) return;
-                tipocambio = tipocambios.get(0);
             } catch (TipoCambio.TipoCambioNoExiste te) {
                 log.debug(te.getLocalizedMessage());
                 return;
@@ -290,10 +289,13 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 
     private void setMonedaLogic(Character moneda) {
         // Update Tipo Moneda on every item only if not advanced view
+        this.moneda = moneda;
         if (!view.isVistaFull) {
             updateItemProperty("codTipomoneda", moneda, view.getContainer().getItemIds());
             ViewUtil.filterColumnsByMoneda(view.getGrid(), moneda);
         }
+        // Gasto Total i Saldo Pendiente...
+        view.setTotal(moneda);
     }
 
     private void updateProperty(Field f, String itemProperty) {
@@ -666,6 +668,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 //                                .open();
 //                    } else
                         view.getService().getRendiciondetalleRep().save(vcbToSave);
+                        view.getGrid().refreshRows(item);
                         bindForm(vcbToSave);
                         view.setTotal(moneda);
                         view.calcFooterSums();
