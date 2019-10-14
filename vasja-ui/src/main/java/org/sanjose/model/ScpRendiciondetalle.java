@@ -112,9 +112,9 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     private String codFlujocaja;
 
     @Column(name = "num_tcmo")
-    private double numTcmo;
+    private BigDecimal numTcmo;
     @Column(name = "num_tcvdolar")
-    private double numTcvdolar;
+    private BigDecimal numTcvdolar;
     @Column(name = "num_debedolar")
     private BigDecimal numDebedolar;
     @Column(name = "num_debemo")
@@ -213,8 +213,8 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
         setFlgIm('1');
         //getId().setCodFilial("01");
         setCodCtaactividad("");
-        setNumTcmo(0);
-        setNumTcvdolar(0);
+        setNumTcmo(new BigDecimal(0));
+        setNumTcvdolar(new BigDecimal(0));
         setNumHabermo(new BigDecimal(0));
         setNumHabersol(new BigDecimal(0));
         setNumDebesol(new BigDecimal(0));
@@ -496,19 +496,19 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
         this.codFlujocaja = codFlujocaja;
     }
 
-    public double getNumTcmo() {
+    public BigDecimal getNumTcmo() {
         return numTcmo;
     }
 
-    public void setNumTcmo(double numTcmo) {
+    public void setNumTcmo(BigDecimal numTcmo) {
         this.numTcmo = numTcmo;
     }
 
-    public double getNumTcvdolar() {
+    public BigDecimal getNumTcvdolar() {
         return numTcvdolar;
     }
 
-    public void setNumTcvdolar(double numTcvdolar) {
+    public void setNumTcvdolar(BigDecimal numTcvdolar) {
         this.numTcvdolar = numTcvdolar;
     }
 

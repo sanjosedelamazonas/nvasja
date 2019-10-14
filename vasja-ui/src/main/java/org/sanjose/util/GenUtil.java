@@ -11,11 +11,10 @@ import org.sanjose.model.VsjBancoItem;
 import org.sanjose.model.VsjItem;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.math.RoundingMode;
+import java.text.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GenUtil {
 
@@ -36,6 +35,35 @@ public class GenUtil {
     public static final String T_TERC="Terceros";
 
     private static Map<Character, String> symMoneda = new HashMap<>();
+
+    private static Map<Character, Character> monedaLitNum = new HashMap<>();
+
+    private static Map<Character, Character> monedaNumLit = new HashMap<>();
+
+    private static Map<Character, String> monedaNumDesc = new HashMap<>();
+
+    private static Map<String, Character> monedaDescNum = new HashMap<>();
+
+
+    static {
+        monedaLitNum.put('N', '0');
+        monedaLitNum.put('D', '1');
+        monedaLitNum.put('E', '2');
+
+        monedaNumLit = monedaLitNum.entrySet().stream()
+                        .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+
+        monedaNumDesc.put('0', "sol");
+        monedaNumDesc.put('1', "dolar");
+        monedaNumDesc.put('2', "mo");
+
+        monedaDescNum = monedaNumDesc.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+
+        symMoneda.put('N', "S/.");
+        symMoneda.put('D', "$");
+        symMoneda.put('E', "€");
+    }
 
     public static boolean strNullOrEmpty(String s) {
         return s == null || "".equals(s) || "".equals(s.trim());
@@ -167,56 +195,43 @@ public class GenUtil {
     }
 
     public static Character getLitMoneda(Character numMoneda) {
-        switch (numMoneda) {
-            case '0' :
-                return 'N';
-            case '1' :
-                return 'D';
-            case '2':
-                return 'E';
-            default:
-                Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
-                Thread.dumpStack();
-                return 'U';
-        }
+        if (!monedaNumLit.containsKey(numMoneda)) {
+            Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
+            Thread.dumpStack();
+            return 'U';
+        };
+        return monedaNumLit.get(numMoneda);
     }
 
     public static Character getNumMoneda(Character litMoneda) {
-        switch (litMoneda) {
-            case 'N' :
-                return '0';
-            case 'D' :
-                return '1';
-            case 'E':
-                return '2';
-            default:
-                Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
-                Thread.dumpStack();
-                return '9';
-        }
+        if (!monedaLitNum.containsKey(litMoneda)) {
+            Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
+            Thread.dumpStack();
+            return '9';
+        };
+        return monedaLitNum.get(litMoneda);
     }
 
     public static String getDescMoneda(Character numMoneda) {
-        switch (numMoneda) {
-            case '0' :
-                return "sol";
-            case '1' :
-                return "dolar";
-            case '2':
-                return "mo";
-            default:
-                Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
-                Thread.dumpStack();
-                return "UNKNOWN";
+        if (!monedaNumDesc.containsKey(numMoneda)) {
+            Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
+            Thread.dumpStack();
+            return "UNKNOWN";
+        };
+        return monedaNumDesc.get(numMoneda);
+    }
+
+    public static Character getNumMonedaFromDescContaining(String propertyName) {
+        for (String key : monedaDescNum.keySet()) {
+            if (propertyName.contains(key))
+                return monedaDescNum.get(key);
         }
+        Notification.show("Moneda no es PEN, USD o EUR", Notification.Type.ERROR_MESSAGE);
+        Thread.dumpStack();
+        return '9';
     }
 
     public static String getSymMoneda(Character litMoneda) {
-        if (symMoneda.isEmpty()) {
-            symMoneda.put('N', "S/.");
-            symMoneda.put('D', "$");
-            symMoneda.put('E', "€");
-        }
         return symMoneda.get(litMoneda);
     }
 
@@ -252,4 +267,16 @@ public class GenUtil {
         return df.format(bd);
     }
 
+
+    public static BigDecimal parseNumber(String num) {
+        try {
+            Number n = NumberFormat.getNumberInstance(ConfigurationUtil.getLocale()).parse(num);
+            BigDecimal newNum = new BigDecimal(n.doubleValue());
+            return newNum.setScale(2, RoundingMode.HALF_EVEN);
+        } catch (ParseException pe) {
+            Notification.show("Problem parsing number: " + num, Notification.Type.ERROR_MESSAGE);
+            Thread.dumpStack();
+        }
+        return new BigDecimal(0);
+    }
 }

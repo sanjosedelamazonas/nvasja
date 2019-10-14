@@ -22,12 +22,14 @@ import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.views.sys.ComprobanteWarnGuardar;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
+import tm.kod.widgets.numberfield.NumberField;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.text.NumberFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +54,10 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     protected RendicionOperView view;
     private BeanItem<ScpRendiciondetalle> beanItem;
 
+    private ComboBox selProyecto = new ComboBox();
+    private ComboBox selCtacontable = new ComboBox();
+    private ComboBox selCtaespecial = new ComboBox();
+
 
     public void init(RendicionOperView view) {
         this.view = view;
@@ -69,10 +75,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getDataFechaComprobante().setResolution(Resolution.DAY);
         view.getDataFechaComprobante().addValueChangeListener(event -> {
             if (view.getDataFechaComprobante().getValue()!=null)
-//                DataFilterUtil.refreshComboBox(view.getSelCuenta(), "id.codCtacontable",
-//                    DataUtil.getRendicionCuentas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo()),
-//                    "txtDescctacontable");
-            //setSaldos()
                 //TODO - wg jakiej daty szukac projektow?
             refreshProyectoYcuentaPorFecha((Date)event.getProperty().getValue());
         });
@@ -150,18 +152,15 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.grid.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
         // Proyecto
-        ComboBox selProyecto = new ComboBox();
         selProyecto.addValueChangeListener(this::setProyectoLogic);
         DataFilterUtil.bindComboBox(selProyecto, "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()), "Sel Proyecto", "txtDescproyecto");
         view.grid.getColumn("codProyecto").setEditorField(selProyecto);
 
         // Cta Contable
-        ComboBox selCtacontable = new ComboBox();
         DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable",view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
         view.grid.getColumn("codCtacontable").setEditorField(selCtacontable);
 
         // Rubro inst
-        ComboBox selCtaespecial = new ComboBox();
         DataFilterUtil.bindComboBox(selCtaespecial, "id.codCtaespecial",
                view.getService().getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
                 "Sel cta especial", "txtDescctaespecial");
@@ -191,12 +190,17 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.grid.getColumn("codTipomoneda").setEditorField(selTipomoneda);
 
 
+        String[] numFields = { "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "numHabermo", "numDebemo" };
+        Arrays.asList(numFields).forEach(f -> {
+            NumberField nf = new NumberField();
+            ViewUtil.setDefaultsForNumberField(nf);
+            view.grid.getColumn(f).setEditorField(nf);
+        });
+
         addValidators();
         // Editing Destino
         view.getBtnResponsable().addClickListener(event -> editDestino(view.getSelResponsable1()));
         view.getBtnAuxiliar().addClickListener(event -> editDestino(view.getSelCodAuxiliar()));
-
-
 
         /// FILTROS APLICAR A TODOS
         // Proyecto
@@ -222,7 +226,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                 view.getService().getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
                 "Sel Rubro Inst.", "txtDescctaespecial");
 
-
         view.getBtnSetAll().addClickListener(clickEvent -> {
             updateProperty(view.getSetAllProyecto(), "codProyecto");
             updateProperty(view.getSetAllFuente(), "codFinanciera");
@@ -235,20 +238,62 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         });
     }
 
-
+    private void calculateInOtherCurrencies(String propertyName) {
+        Object newVal = view.grid.getColumn(propertyName).getEditorField().getValue();
+        if (newVal==null)
+            return;
+        BigDecimal newNum = GenUtil.parseNumber(String.valueOf(newVal));
+        Date fecha = (Date)view.grid.getColumn("fecPagocomprobantepago").getEditorField().getValue();
+        if (fecha==null) return;
+        fecha = GenUtil.getBeginningOfDay(fecha);
+        List<ScpTipocambio> tipocambios = view.getService().getTipocambioRep().findById_FecFechacambio(fecha);
+        ScpTipocambio tipocambio = null;
+        if (tipocambios.isEmpty()) {
+            try {
+                TipoCambio.checkTipoCambio(fecha, view.getService().getTipocambioRep());
+                tipocambios = view.getService().getTipocambioRep().findById_FecFechacambio(fecha);
+                if (tipocambios.isEmpty()) return;
+                tipocambio = tipocambios.get(0);
+            } catch (TipoCambio.TipoCambioNoExiste te) {
+                log.debug(te.getLocalizedMessage());
+                return;
+            }
+        }
+        tipocambio = tipocambios.get(0);
+        Character moneda = GenUtil.getNumMonedaFromDescContaining(propertyName);
+        // Ignore in othter currencies than the one chosen for input
+        if (!moneda.equals(beanItem.getItemProperty("codTipomoneda").getValue())) return;
+        String haberDebe = propertyName.contains("Haber") ? "Haber" : "Debe";
+        if (moneda==GenUtil.PEN) {
+            beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTccdolar());
+            BeanItem beanItem = view.getContainer().getItem(view.grid.getEditedItemId());
+            beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.USD)).setValue(
+                    newNum.setScale(2).divide(tipocambio.getNumTccdolar(), RoundingMode.HALF_EVEN));
+        } else if (moneda==GenUtil.USD) {
+            beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTcvdolar());
+            BeanItem beanItem = view.getContainer().getItem(view.grid.getEditedItemId());
+            beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.PEN)).setValue(
+                    newNum.setScale(2).multiply(tipocambio.getNumTcvdolar()));
+        } else {
+            if (GenUtil.isNullOrZero(tipocambio.getNumTcveuro()) || GenUtil.isNullOrZero(tipocambio.getNumTcceuro()))
+                return;
+            beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTccdolar());
+            beanItem.getItemProperty("numTc" +  GenUtil.getDescMoneda(GenUtil.EUR)).setValue(tipocambio.getNumTcveuro());
+            BeanItem beanItem = view.getContainer().getItem(view.grid.getEditedItemId());
+            beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.PEN)).setValue(
+                    newNum.setScale(2).multiply(tipocambio.getNumTcveuro()));
+            beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.USD)).setValue(
+                    newNum.setScale(2).multiply(tipocambio.getNumTcveuro()).divide(tipocambio.getNumTccdolar(), RoundingMode.HALF_EVEN));
+        }
+    }
 
 
     private void setMonedaLogic(Character moneda) {
-        //updateItemProperty("codTipomoneda", moneda);
-        for (ScpRendiciondetalle item : view.getContainer().getItemIds()) {
-            ScpRendiciondetalle sr = view.getContainer().getItem(item).getBean();
-
-
-
-            //view.getContainer().getItem(item).getItemProperty(itemProperty).setValue(newVal);
-            //detsToRefresh.add(sr);
+        // Update Tipo Moneda on every item only if not advanced view
+        if (!view.isVistaFull) {
+            updateItemProperty("codTipomoneda", moneda, view.getContainer().getItemIds());
+            ViewUtil.filterColumnsByMoneda(view.getGrid(), moneda);
         }
-
     }
 
     private void updateProperty(Field f, String itemProperty) {
@@ -256,11 +301,15 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
             updateItemProperty(itemProperty, f.getValue());
     }
 
-
     private void updateItemProperty(String itemProperty, Object newVal) {
+        List<ScpRendiciondetalle> dets = new ArrayList<>();
+        view.grid.getSelectedRows().forEach(e -> dets.add((ScpRendiciondetalle)e));
+        updateItemProperty(itemProperty, newVal, dets);
+    }
+
+    private void updateItemProperty(String itemProperty, Object newVal, List<ScpRendiciondetalle> items) {
         List<ScpRendiciondetalle> detsToRefresh = new ArrayList<>();
-        for (Object item : view.grid.getSelectedRows()) {
-            ScpRendiciondetalle sr = (ScpRendiciondetalle) item;
+        for (ScpRendiciondetalle sr : items) {
             if (newVal!=null) {
                 if (newVal instanceof Date)
                     newVal = new Timestamp(((Date) newVal).getTime());
@@ -434,14 +483,24 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 
     private void refreshProyectoYcuentaPorFecha(Date newFecha) {
         if (newFecha==null || view.getService().getPlanRepo()==null) return;
-        //if (view.grid.getColumn("codCtacontable"))
-//            DataFilterUtil.refreshComboBox(view.getSelCtaContable(),view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
-//                    '0', 'N', GenUtil.getYear(newFecha), "101%", "102%", "104%", "106%"),
-//                    "id.codCtacontable", "txtDescctacontable", null);
-//        DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().
-//                            findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(newFecha, newFecha, GenUtil.getBegin20thCent()),
-//                    "Sel Proyecto", "txtDescproyecto");
-        //view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
+        // Proyecto
+        DataFilterUtil.refreshComboBox(selProyecto, "codProyecto", view.getService().getProyectoRepo().
+                            findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(newFecha, newFecha, GenUtil.getBegin20thCent()),
+                    "txtDescproyecto");
+        // Cta Contable
+        DataFilterUtil.refreshComboBox(selCtacontable, "id.codCtacontable", view.getService().getPlanRepo().
+                findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getYear(newFecha), ""), "txtDescctacontable");
+
+        // Rubro inst
+        DataFilterUtil.refreshComboBox(selCtaespecial, "id.codCtaespecial",
+                view.getService().getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getYear(newFecha)),
+                "txtDescctaespecial");
+
+        // Rubro Proy
+        ComboBox selPlanproyecto = new ComboBox();
+        DataFilterUtil.refreshComboBox(selPlanproyecto, "id.codCtaproyecto",
+                view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoproceso("N", GenUtil.getYear(newFecha)),
+                "txtDescctaproyecto");
     }
 
 
@@ -584,16 +643,17 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.grid.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-
-
             }
             @Override
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
                 Object item = view.grid.getContainerDataSource().getItem(view.grid.getEditedItemId());
+                // Attach logic to num fields
+                String[] numFields = { "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "numHabermo", "numDebemo" };
+                Arrays.asList(numFields).forEach(f ->calculateInOtherCurrencies(f));
                 try {
                     if (item != null) {
                         ScpRendiciondetalle vcb = (ScpRendiciondetalle) ((BeanItem) item).getBean();
-                        final ScpRendiciondetalle vcbToSave = (ScpRendiciondetalle) vcb.prepareToSave();
+                        final ScpRendiciondetalle vcbToSave = vcb.prepareToSave();
                         fieldGroup.commit();
                         commitEvent.getFieldBinder();
 //                    if (vcb.isEnviado()) {
@@ -614,6 +674,8 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                     Notification.show("No se puede guarder el item: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
                     log.warn("Got Commit Exception: " + ce);
                 }
+                Arrays.asList(view.HIDDEN_COLUMN_NAMES_PEN)
+                        .forEach( e -> view.getGrid().getColumn(e).setHidden(!view.isVistaFull));
             }
         });
     }
