@@ -147,7 +147,11 @@ com.vaadin.data.Validator$InvalidValueException: null
 
 ODP. Nie potrafię tego powtórzyć - w żadnej kombinacji dodawania Destino nie wywalił mi tego błędu... może to jest coś co jest poniżej
 
+
+
 Pytania Rendiciones - przeliczanie walut.
 
 Czy pola Tipo Cambio w każdym wierszu powinny być edytowalne, czy tylko wypełniane automatycznie - jeśli mają być edytowalne to w jakiej sytuacji mają być wypełniane automatycznie:
  np. - kiedy są puste, gdy zmieniamy datę operacji itd
+
+Jakimi parametrami ma sterować przycisk "ajuste"
