@@ -15,3 +15,6 @@ DROP INDEX IF EXISTS scp_comprobantedetalle_txt_anoproceso_ctacontable_proyecto_
 GO
 CREATE INDEX scp_comprobantedetalle_txt_anoproceso_ctacontable_proyecto_origen_mes_tipomoneda_index ON SCP.dbo.scp_comprobantedetalle (txt_anoproceso, cod_ctacontable, cod_proyecto, cod_origen, cod_mes, cod_tipomoneda);
 GO
+
+
+ALTER TABLE SCP.dbo.scp_comprobantecabecera ALTER COLUMN txt_glosa varchar(90)

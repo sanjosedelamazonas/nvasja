@@ -301,9 +301,9 @@ public class ProcUtil {
     
     @Transactional(readOnly = false)
     public String doEnviarContabilidadBanco(ScpBancocabecera vcb) throws EnviarContabilidadException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         try {
             StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarBanco");
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             query.setParameter(1, vcb.getCodBancocabecera());
             query.setParameter(2, CurrentUser.get());
             query.setParameter(3, sdf.format(vcb.getFecFecha()));
@@ -312,6 +312,9 @@ public class ProcUtil {
             query.execute();
             return result;
         } catch (Exception pe) {
+            log.warn("Problem running:\n" +
+                    "EXEC [dbo].[usp_scp_vsj_enviarAContabilidadBanco] " + vcb.getCodBancocabecera() + ", '"
+                    + CurrentUser.get() + "', '" + sdf.format(vcb.getFecFecha()) + "', " + vcb.getCodTipomoneda());
             throw new EnviarContabilidadException("Problema al enviar a contabilidad operacion: " + (vcb != null ? vcb.getCodBancocabecera() : 0)
                     + "\n\n" + pe.getMessage() +
                     (pe.getCause() != null ? "\n" + pe.getCause().getMessage() : "")
