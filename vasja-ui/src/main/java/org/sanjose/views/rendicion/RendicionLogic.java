@@ -9,10 +9,7 @@ import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.ScpDestino;
-import org.sanjose.model.ScpRendicioncabecera;
-import org.sanjose.model.ScpRendiciondetalle;
-import org.sanjose.model.VsjItem;
+import org.sanjose.model.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
@@ -43,8 +40,21 @@ public class RendicionLogic extends RendicionItemLogic {
     public void init(RendicionOperView view) {
         super.init(view);
         view.getBtnGuardar().addClickListener(event -> {
-            saveCabecera();
-            switchMode(VIEW);
+            if (beanItem.getBean().isEnviado()) {
+                MessageBox
+                        .createQuestion()
+                        .withCaption("Esta operacion ya esta enviado")
+                        .withMessage("?Esta seguro que quiere guardar los cambios?")
+                        .withYesButton(() -> {
+                            saveCabecera();
+                            switchMode(VIEW);
+                        })
+                        .withNoButton()
+                        .open();
+            } else {
+                saveCabecera();
+                switchMode(VIEW);
+            }
         });
         view.getBtnNewItem().addClickListener(event -> nuevoItem());
         view.getBtnEliminar().addClickListener(event -> eliminarItem());
@@ -175,13 +185,12 @@ public class RendicionLogic extends RendicionItemLogic {
         fieldGroupCabezera.bind(view.getChkEnviado(), "flgEnviado");
         view.getChkEnviado().setEnabled(false);
 
-        //fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigenenlace");
         view.getTxtOrigenlace().setValue(item.getCodOrigenenlace());
         view.getTxtComprobenlace().setValue(item.getCodComprobanteenlace());
-        //fieldGroupCabezera.bind(view.getTxtComprobenlace(), "codComprobanteenlace");
 
-        ScpDestino ingresadoPor = view.getService().getDestinoRepo().findByCodDestino(item.getCodDestino());
-        if (ingresadoPor!=null) view.getTxtIngresadoPor().setValue(ingresadoPor.getTxtNombredestino());
+        MsgUsuario ingresadoPor = view.getService().getMsgUsuarioRep().findByTxtUsuario(item.getCodUregistro().toLowerCase());
+        if (ingresadoPor!=null) view.getTxtIngresadoPor().setValue(ingresadoPor.getTxtNombre());
+        else view.getTxtIngresadoPor().setValue(item.getCodUregistro());
 
         ViewUtil.setFieldsNullRepresentation(fieldGroupCabezera);
         isEdit = item.getCodRendicioncabecera() != null;

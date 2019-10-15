@@ -39,6 +39,7 @@ public class RendicionService {
     private final EntityManager em;
     private final ScpCategoriaproyectoRep scpCategoriaproyectoRep;
     private final ScpTipocambioRep tipocambioRep;
+    private final MsgUsuarioRep msgUsuarioRep;
 
     @Autowired
     public RendicionService(ScpRendicioncabeceraRep rendicioncabeceraRep, ScpRendiciondetalleRep rendiciondetalleRep, VsjConfiguractacajabancoRep configuractacajabancoRepo,
@@ -48,7 +49,7 @@ public class RendicionService {
                             ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
                             Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
                             ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, ScpTipocambioRep
-                                      tipocambioRep, EntityManager em) {
+                                      tipocambioRep, MsgUsuarioRep msgUsuarioRep, EntityManager em) {
         this.rendicioncabeceraRep = rendicioncabeceraRep;
         this.rendiciondetalleRep = rendiciondetalleRep;
         this.configuractacajabancoRepo = configuractacajabancoRepo;
@@ -66,6 +67,7 @@ public class RendicionService {
         this.cargocuartaRepo = cargocuartaRepo;
         this.tipodocumentoRepo = tipodocumentoRepo;
         this.tipocambioRep = tipocambioRep;
+        this.msgUsuarioRep = msgUsuarioRep;
         this.em = em;
     }
 
@@ -135,6 +137,10 @@ public class RendicionService {
 
     public ScpCategoriaproyectoRep getScpCategoriaproyectoRep() {
         return scpCategoriaproyectoRep;
+    }
+
+    public MsgUsuarioRep getMsgUsuarioRep() {
+        return msgUsuarioRep;
     }
 
     public EntityManager getEm() {

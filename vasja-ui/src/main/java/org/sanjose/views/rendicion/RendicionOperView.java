@@ -29,6 +29,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static org.sanjose.util.GenUtil.EUR;
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.USD;
 
@@ -157,6 +158,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
             ViewUtil.filterColumnsByMoneda(grid, (Character)getSelMoneda().getValue());
         else
             ViewUtil.filterColumnsByMoneda(grid, 'A');
+        getAjusteForm().setVisible(isVistaFull);
     }
 
     public ScpRendiciondetalle getSelectedRow() {
@@ -165,15 +167,14 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
     }
 
     public void setEnableDetalleFields(boolean enabled) {
-        log.debug("enabling detalle fields");
         for (Field f : allFields) f.setEnabled(enabled);
-        btnResponsable.setEnabled(enabled);
         btnAuxiliar.setEnabled(enabled);
     }
 
 
     public void setEnableCabezeraFields(boolean enabled) {
         for (Field f : cabezeraFields) f.setEnabled(enabled);
+        btnResponsable.setEnabled(enabled);
         btnAuxiliar.setEnabled(enabled);
     }
 
@@ -212,8 +213,9 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         } catch (ParseException pe) {
             log.debug("Problem parsing total anticipo");
         }
-        //getMontoTotal().setValue(calcTotal(locMoneda).toString());
-        //getMontoTotal().setCaption("Total " + GenUtil.getSymMoneda(GenUtil.getLitMoneda(locMoneda)));
+        getNumDifsol().setValue(GenUtil.numFormat(new BigDecimal(-1).multiply(calcTotal(PEN))));
+        getNumDifdolar().setValue(GenUtil.numFormat(new BigDecimal(-1).multiply(calcTotal(USD))));
+        getNumDifmo().setValue(GenUtil.numFormat(new BigDecimal(-1).multiply(calcTotal(EUR))));
     }
 
     private BigDecimal calcTotal(Character locMoneda) {
@@ -443,6 +445,26 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
 
     public Button getBtnSetAll() {
         return btnSetAll;
+    }
+
+    public FormLayout getAjusteForm() {
+        return ajusteForm;
+    }
+
+    public TextField getNumDifsol() {
+        return numDifsol;
+    }
+
+    public TextField getNumDifdolar() {
+        return numDifdolar;
+    }
+
+    public TextField getNumDifmo() {
+        return numDifmo;
+    }
+
+    public Button getBtnAjustar() {
+        return btnAjustar;
     }
 
     @Override

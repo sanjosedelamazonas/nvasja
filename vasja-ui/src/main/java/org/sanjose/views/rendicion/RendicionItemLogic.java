@@ -531,7 +531,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         isLoading = false;
         if (isEdit) {
             // EDITING
-            log.debug("is Edit in bindForm");
             setNumVoucher(item);
         }
         else if (item.getScpRendicioncabecera() != null) {
@@ -639,28 +638,33 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                 try {
                     if (item != null) {
                         ScpRendiciondetalle vcb = (ScpRendiciondetalle) ((BeanItem) item).getBean();
-                        String[] numFields = { "numHaber", "numDebe" };
-                        Arrays.asList(numFields).forEach(f ->calculateInOtherCurrencies(f + GenUtil.getDescMoneda(vcb.getCodTipomoneda())));
+                        String[] numFields = {"numHaber", "numDebe"};
+                        Arrays.asList(numFields).forEach(f -> calculateInOtherCurrencies(f + GenUtil.getDescMoneda(vcb.getCodTipomoneda())));
                         // Copy date field values from grid to detalle fields
-                        view.getFechaDoc().setValue((Date)view.getGrid().getColumn("fecComprobantepago").getEditorField().getValue());
-                        view.getFechaPago().setValue((Date)view.getGrid().getColumn("fecPagocomprobantepago").getEditorField().getValue());
+                        view.getFechaDoc().setValue((Date) view.getGrid().getColumn("fecComprobantepago").getEditorField().getValue());
+                        view.getFechaPago().setValue((Date) view.getGrid().getColumn("fecPagocomprobantepago").getEditorField().getValue());
                         // Save data
                         final ScpRendiciondetalle vcbToSave = vcb.prepareToSave();
                         fieldGroup.commit();
                         commitEvent.getFieldBinder();
-//                    if (vcb.isEnviado()) {
-//                        MessageBox
-//                                .createQuestion()
-//                                .withCaption("Esta operacion ya esta enviado")
-//                                .withMessage("?Esta seguro que quiere guardar los cambios?")
-//                                .withYesButton(() -> view.getService().getCajabancoRep().save(vcbToSave))
-//                                .withNoButton()
-//                                .open();
-//                    } else
-                        view.getService().getRendiciondetalleRep().save(vcbToSave);
-                        view.getGrid().refreshRows(item);
-                        bindForm(vcbToSave);
-                        moneda = (Character)view.getSelMoneda().getValue();
+                        if (vcb.getScpRendicioncabecera().isEnviado()) {
+                            MessageBox
+                                    .createQuestion()
+                                    .withCaption("Esta operacion ya esta enviado")
+                                    .withMessage("?Esta seguro que quiere guardar los cambios?")
+                                    .withYesButton(() -> {
+                                        view.getService().getRendiciondetalleRep().save(vcbToSave);
+                                        view.getGrid().refreshRows(item);
+                                        bindForm(vcbToSave);
+                                    })
+                                    .withNoButton()
+                                    .open();
+                        } else {
+                            view.getService().getRendiciondetalleRep().save(vcbToSave);
+                            view.getGrid().refreshRows(item);
+                            bindForm(vcbToSave);
+                        }
+                        moneda = (Character) view.getSelMoneda().getValue();
                         view.setTotal(moneda);
                         view.calcFooterSums();
                     }

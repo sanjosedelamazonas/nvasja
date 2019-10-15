@@ -1,6 +1,5 @@
 package org.sanjose.views.rendicion;
 
-import com.vaadin.addon.contextmenu.GridContextMenu;
 import com.vaadin.data.sort.Sort;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.shared.data.sort.SortDirection;
@@ -33,6 +32,7 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
         view = rendicionManejoView;
         view.getBtnNueva().addClickListener(e -> nuevaRendicion());
         view.getBtnModificar().addClickListener(e -> editarRendicion(view.getSelectedRow()));
+        view.getBtnEnviar().addClickListener(e -> enviarContabilidad(view.getSelectedRow()));
         //view.getBtnVerImprimir().addClickListener(e -> generateComprobante());
         //
         //view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
@@ -40,7 +40,7 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
         view.getBtnEliminar().addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
         saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.getFechaDesde().getValue(), view.getFechaHasta().getValue(), null));
 
-//        GridContextMenu gridContextMenu = new GridContextMenu(view.getGridCaja());
+//        GridContextMenu gridContextMenu = new GridContextMenu(view.getGrid());
 //        gridContextMenu.addGridBodyContextMenuListener(e -> {
 //            gridContextMenu.removeItems();
 //            final Object itemId = e.getItemId();
@@ -91,25 +91,38 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
         view.getContainer().removeAllItems();
         view.setFilterInitialDate(fechaDesde);
         view.getContainer().addAll(view.getService().getRendicioncabeceraRep().findByFecComprobanteBetween(fechaDesde, fechaHasta));
-        view.getGridCaja().setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
+        view.getGrid().setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
         //calcFooterSums();
     }
 
     // Realize logic from View
     public void refreshData() {
-        SortOrder[] sortOrders = view.getGridCaja().getSortOrder().toArray(new SortOrder[1]);
+        SortOrder[] sortOrders = view.getGrid().getSortOrder().toArray(new SortOrder[1]);
         filter(view.getFechaDesde().getValue(), view.getFechaHasta().getValue());
-        view.getGridCaja().setSortOrder(Arrays.asList(sortOrders));
+        view.getGrid().setSortOrder(Arrays.asList(sortOrders));
         //calcFooterSums();
         //setSaldosFinal();
     }
+
+    public void enviarContabilidad(ScpRendicioncabecera rendicioncabecera) {
+        Collection<Object> cabecerasParaEnviar = view.getSelectedRows();
+        Collection<ScpRendicioncabecera> cabecerasParaRefresh = new ArrayList<>();
+        if (cabecerasParaEnviar.isEmpty() && rendicioncabecera!=null) {
+            cabecerasParaEnviar.add(rendicioncabecera);
+            cabecerasParaRefresh.add(rendicioncabecera);
+        }
+        cabecerasParaEnviar.forEach(e -> cabecerasParaRefresh.add((ScpRendicioncabecera) e));
+        MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, view.getService(),this);
+        view.getGrid().deselectAll();
+    }
+
 
     @Override
     public void refreshItems(Collection<ScpRendicioncabecera> rendicioncabeceras) {
         rendicioncabeceras.forEach(scb -> {
 //            ScpCajabanco newScb = view.getService().getRendicioncabeceraRep().findByCodCajabanco(scb.getCodCajabanco());
-//            view.getGridCaja().getContainerDataSource().removeItem(scb);
-//            view.getGridCaja().getContainerDataSource().addItem(newScb);
+//            view.getGrid().getContainerDataSource().removeItem(scb);
+//            view.getGrid().getContainerDataSource().addItem(newScb);
         });
         view.refreshData();
     }

@@ -1,7 +1,11 @@
 package org.sanjose.views.rendicion;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.sort.Sort;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -10,10 +14,9 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
+import org.sanjose.authentication.Role;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
-import org.sanjose.model.ScpBancocabecera;
-import org.sanjose.model.ScpRendicioncabecera;
-import org.sanjose.model.VsjItem;
+import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.GridViewing;
@@ -40,7 +43,7 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
 
     private final RendicionManejoLogic viewLogic = new RendicionManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{ "codOrigen", "codComprobante", "fecComprobante", "txtGlosa",
-            "flgEnviado", "codOrigenenlace", "codComprobanteenlace", "codUactualiza"
+            "flgEnviado", "codOrigenenlace", "codComprobanteenlace", "msgUsuario"
     };
     private final String[] HIDDEN_COLUMN_IDS = new String[] {
     };
@@ -71,6 +74,8 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
 
     private Character moneda ='0';
 
+    private GeneratedPropertyContainer gpContainer;
+
     @Override
     public void init() {
         setSizeFull();
@@ -78,61 +83,83 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
 
         //noinspection unchecked
         container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
-        //container.addNestedContainerBean("scpDestino");
-        //container.addNestedContainerBean("msgUsuario");
-        gridCaja.setContainerDataSource(container);
-        gridCaja.setEditorEnabled(false);
-        gridCaja.setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
 
-        ViewUtil.setColumnNames(gridCaja, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
+        gpContainer = new GeneratedPropertyContainer(container);
+        gpContainer.addGeneratedProperty("msgUsuario",
+                new PropertyValueGenerator<String>() {
+                    @Override
+                    public String getValue(Item item, Object itemId,
+                                            Object propertyId) {
+                        if (((BeanItem)item).getBean()!=null && ((ScpRendicioncabecera)((BeanItem)item).getBean()).getCodUregistro()!=null) {
+                            MsgUsuario ingresadoPor = getService().getMsgUsuarioRep().findByTxtUsuario(((ScpRendicioncabecera) ((BeanItem) item).getBean()).getCodUregistro().toLowerCase());
+                            if (ingresadoPor!=null)
+                                return ingresadoPor.getTxtNombre();
+                            else
+                                return ((ScpRendicioncabecera) ((BeanItem) item).getBean()).getCodUregistro();
+                        } else
+                            return "";
+                    }
+                    @Override
+                    public Class<String> getType() {
+                        return String.class;
+                    }
+                });
 
-        Arrays.asList(HIDDEN_COLUMN_IDS).forEach( colName ->  gridCaja.getColumn(colName).setHidden(true));
 
-        ViewUtil.alignMontosInGrid(gridCaja);
+        grid.setContainerDataSource(gpContainer);
 
-        gridCaja.setSelectionMode(SelectionMode.SINGLE);
+        grid.setEditorEnabled(false);
+        grid.setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
+
+        ViewUtil.setColumnNames(grid, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
+
+        Arrays.asList(HIDDEN_COLUMN_IDS).forEach( colName ->  grid.getColumn(colName).setHidden(true));
+
+        ViewUtil.alignMontosInGrid(grid);
+
+        if (Role.isPrivileged()) {
+            getBtnEnviar().setVisible(true);
+            grid.setSelectionMode(SelectionMode.MULTI);
+        } else {
+            grid.setSelectionMode(SelectionMode.SINGLE);
+            getBtnEnviar().setVisible(false);
+        }
 
         // Fecha Desde Hasta
         ViewUtil.setupDateFiltersRendicionesPreviousMonth(container, fechaDesde, fechaHasta, this);
 
-        //gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
-        gridCaja.getColumn("fecComprobante").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        //grid.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        grid.getColumn("fecComprobante").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
         DataFilterUtil.bindTipoMonedaComboBox(selMoneda, "cod_tipomoneda", "Moneda", false);
         selMoneda.select(moneda);
-//        DataFilterUtil.bindComboBox(selFiltroCaja, "id.codCtacontable",
-//                DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
-//                "txtDescctacontable");
 
         selMoneda.setNullSelectionAllowed(false);
         selMoneda.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
+                grid.deselectAll();
                 moneda = (Character)e.getProperty().getValue();
                 container.removeContainerFilters("codTipomoneda");
                 container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
-                ViewUtil.filterColumnsByMoneda(gridCaja, moneda);
-
-//                DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
-//                        DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
-//                        "txtDescctacontable");
+                ViewUtil.filterColumnsByMoneda(grid, moneda);
             }
         });
         container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
-        gridCaja.addItemClickListener(this::setItemLogic);
-        gridCaja.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
-        gridCaja.getColumn("flgEnviado").setHidden(true);
+        grid.addItemClickListener(this::setItemLogic);
+        grid.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        grid.getColumn("flgEnviado").setHidden(true);
 
         viewLogic.init(this);
 
         // Add filters
-        ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
+        ViewUtil.setupColumnFilters(grid, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
 
         // Run date filter
         ViewUtil.filterComprobantes(container, "fecComprobante", fechaDesde, fechaHasta, this);
 
-        ViewUtil.colorizeRowsRendiciones(gridCaja);
+        ViewUtil.colorizeRowsRendiciones(grid);
 
-        gridFooter = gridCaja.appendFooterRow();
+        //gridFooter = grid.appendFooterRow();
     }
 
     public void refreshData() {
@@ -141,17 +168,17 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
 
     @Override
     public void selectItem(VsjItem item) {
-        gridCaja.select(item);        for (Object vcb : container.getItemIds()) {
+        grid.select(item);        for (Object vcb : container.getItemIds()) {
             if (((ScpRendicioncabecera)vcb).getCodRendicioncabecera().equals(((ScpRendicioncabecera)item).getCodRendicioncabecera())) {
-                gridCaja.select(vcb);
+                grid.select(vcb);
                 return;
             }
         }
     }
 
-
     @Override
     public void selectMoneda(Character moneda) {
+        grid.deselectAll();
         selMoneda.select(moneda);
     }
 
@@ -177,16 +204,16 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
     }
 
     public void clearSelection() {
-        gridCaja.getSelectionModel().reset();
+        grid.getSelectionModel().reset();
     }
     
     public Collection<Object> getSelectedRows() {
-        return gridCaja.getSelectedRows();
+        return grid.getSelectedRows();
     }
 
     public ScpRendicioncabecera getSelectedRow() {
-        if (gridCaja.getSelectedRows().toArray().length>0)
-            return (ScpRendicioncabecera) gridCaja.getSelectedRows().toArray()[0];
+        if (grid.getSelectedRows().toArray().length>0)
+            return (ScpRendicioncabecera) grid.getSelectedRows().toArray()[0];
         else
             return null;
     }
@@ -222,8 +249,8 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         return selMoneda;
     }
 
-    public Grid getGridCaja() {
-        return gridCaja;
+    public Grid getGrid() {
+        return grid;
     }
 
     public Button getBtnVerImprimir() {
@@ -254,4 +281,7 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         return btnNueva;
     }
 
+    public Button getBtnEnviar() {
+        return btnEnviar;
+    }
 }

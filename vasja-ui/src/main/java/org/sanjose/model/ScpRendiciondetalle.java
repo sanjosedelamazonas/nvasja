@@ -48,7 +48,7 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     private Integer codTipomov;
 
     @NotBlank
-    @Size(min = 2, max = 70)
+    @Size(min = 2, max = 100)
     @Column(name = "txt_glosaitem")
     private String txtGlosaitem;
     @Column(name = "cod_destino")

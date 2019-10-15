@@ -58,7 +58,7 @@ public class RendicionOperUI extends CssLayout {
     protected FormLayout order_summary_layout;
     protected Label order_heading;
     protected Grid grid;
-    protected FormLayout billing_form2;
+    protected FormLayout detalleForm;
     protected TextField numItem;
     protected TextField txtGlosaDetalle;
     protected ComboBox selTipoMov;
@@ -80,9 +80,13 @@ public class RendicionOperUI extends CssLayout {
     protected Button btnGuardar;
     protected Button btnCerrar;
     protected Button btnVerVoucher;
+    protected FormLayout ajusteForm;
+    protected TextField numDifsol;
+    protected TextField numDifdolar;
+    protected TextField numDifmo;
+    protected Button btnAjustar;
 
     public RendicionOperUI() {
         Design.read(this);
     }
-
 }

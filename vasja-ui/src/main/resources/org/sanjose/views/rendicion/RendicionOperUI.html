@@ -15,7 +15,7 @@
    <vaadin-vertical-layout spacing size-auto>
     <vaadin-form-layout style-name="billing-formlayout" spacing="false" responsive width-auto height="167px" margin-top="false" margin-bottom="false" _id="cuenta_form">
      <vaadin-horizontal-layout spacing height="60px">
-      <vaadin-vertical-layout size-auto>
+      <vaadin-vertical-layout spacing size-auto>
        <vaadin-horizontal-layout>
         <vaadin-text-field caption="Origen" enabled="false" input-prompt="" style-name="form-textfield" width="28px" height="23px" _id="txtOrigen"></vaadin-text-field>
         <vaadin-text-field description="Num de Voucher" caption="Nro" enabled="false" input-prompt="Numero " style-name="form-textfield" responsive width="65px" _id="numVoucher"></vaadin-text-field>
@@ -30,7 +30,7 @@
         <vaadin-text-field caption="Glosa" input-prompt="Glosa" style-name="form-textfield" width="466px" _id="txtGlosaCabeza"></vaadin-text-field>
        </vaadin-horizontal-layout>
        <vaadin-horizontal-layout spacing margin>
-        <vaadin-combo-box caption="Responsable" input-prompt="Cuenta" style-name="form-textfield" item-caption-mode="id" width="270px" _id="selResponsable1">
+        <vaadin-combo-box caption="Responsable" input-prompt="Responsable" style-name="form-textfield" item-caption-mode="id" width="270px" _id="selResponsable1">
          <option>Option 1</option>
          <option>Option 2</option>
         </vaadin-combo-box>
@@ -116,13 +116,13 @@
      </vaadin-horizontal-layout>
     </vaadin-form-layout>
     <vaadin-horizontal-layout width-full :expand>
-     <vaadin-form-layout style-name="order-summary-layout" responsive height="528px" margin-top="false" margin-bottom="false" _id="order_summary_layout" :middle :expand>
+     <vaadin-form-layout style-name="order-summary-layout" responsive size-full margin-top="false" margin-bottom="false" _id="order_summary_layout" :middle :expand>
       <vaadin-label style-name="header-label-small" plain-text _id="order_heading">
         Datos del Detalle 
       </vaadin-label>
-      <vaadin-grid editor-save-caption="Guardar" responsive editor-cancel-caption="Anular" width-full height="458px" tabindex="50" _id="grid"></vaadin-grid>
+      <vaadin-grid editor-save-caption="Guardar" responsive editor-cancel-caption="Anular" size-full tabindex="50" _id="grid"></vaadin-grid>
      </vaadin-form-layout>
-     <vaadin-form-layout style-name="billing-formlayout" spacing="false" responsive width="461px" height="528px" margin-top="false" margin-bottom="false" _id="billing_form2" :middle :right>
+     <vaadin-form-layout style-name="billing-formlayout" spacing="false" responsive width="461px" height-full margin-top="false" margin-bottom="false" _id="detalleForm" :middle :right>
       <vaadin-horizontal-layout description="Proyecto" spacing>
        <vaadin-text-field description="Num de Voucher" caption="Item" enabled="false" input-prompt="Numero " style-name="form-textfield" responsive width="32px" _id="numItem"></vaadin-text-field>
        <vaadin-text-field caption="Glosa por detalle" input-prompt="Glosa por detalle" style-name="form-textfield" width="362px" height="22px" _id="txtGlosaDetalle"></vaadin-text-field>
@@ -188,6 +188,16 @@
         </vaadin-button>
         <vaadin-button plain-text _id="btnVerVoucher">
           Ver Voucher 
+        </vaadin-button>
+       </vaadin-horizontal-layout>
+      </vaadin-form-layout>
+      <vaadin-form-layout visible="false" style-name="billing-formlayout" responsive width="98.83%" height="72px" margin-top="false" margin-bottom="false" _id="ajusteForm">
+       <vaadin-horizontal-layout spacing>
+        <vaadin-text-field caption="Dif. S/." enabled="false" input-prompt="Saldo" style-name="form-textfield" width="85px" value="------" _id="numDifsol"></vaadin-text-field>
+        <vaadin-text-field caption="Dif. $" enabled="false" input-prompt="Saldo" style-name="form-textfield" width="85px" value="------" _id="numDifdolar"></vaadin-text-field>
+        <vaadin-text-field caption="Dif. €" enabled="false" input-prompt="Saldo" style-name="form-textfield" width="85px" value="------" _id="numDifmo"></vaadin-text-field>
+        <vaadin-button plain-text _id="btnAjustar" :middle :center>
+          Ajuste 
         </vaadin-button>
        </vaadin-horizontal-layout>
       </vaadin-form-layout>

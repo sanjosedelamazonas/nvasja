@@ -6,12 +6,14 @@ import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpCajabanco;
+import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.ScpTipocambio;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.repo.ScpTipocambioRep;
 import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.banco.BancoService;
 import org.sanjose.views.caja.ComprobanteService;
+import org.sanjose.views.rendicion.RendicionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,8 @@ public class ProcUtil {
     private EntityManager em;
 
     private ScpBancocabecera curBancoCabecera = null;
+    
+    private ScpRendicioncabecera curRendicionCabecera = null;
 
     @Autowired
     public ProcUtil(EntityManager em) {
@@ -293,8 +297,8 @@ public class ProcUtil {
                     .open();
         }
     }
-
-
+    
+    
     @Transactional(readOnly = false)
     public String doEnviarContabilidadBanco(ScpBancocabecera vcb) throws EnviarContabilidadException {
         try {
@@ -362,7 +366,6 @@ public class ProcUtil {
         }
     }
 
-
     public class Saldos {
 
         private BigDecimal saldoPEN;
@@ -407,5 +410,69 @@ public class ProcUtil {
                     ", saldoEUR=" + saldoEUR +
                     '}';
         }
+    }
+
+
+    public void enviarContabilidadRendicion(Collection<Object> vcbs, RendicionService service, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
+        Set<ScpRendicioncabecera> rendicionsAEnviar = new HashSet<>();
+        Map<ScpRendicioncabecera, String> rendicionsFaltaTipoCambio = new HashMap<>();
+        for (Object objVcb : vcbs) {
+            curRendicionCabecera = (ScpRendicioncabecera) objVcb;
+            if (curRendicionCabecera.isEnviado()) {
+                Notification.show("!Attention!", "!Omitiendo operacion " + curRendicionCabecera.getCodComprobante() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
+                continue;
+            }
+            rendicionsAEnviar.add(curRendicionCabecera);
+        }
+        try {
+            itemsRefreshing.refreshItems(enviarContabilidadRendicionInTransaction(rendicionsAEnviar, service));
+        } catch (EnviarContabilidadException envexc) {
+            MessageBox
+                    .createError()
+                    .withCaption("Problema al Enviar a contabilidad")
+                    .withMessage(envexc.getMessage())
+                    .withOkButton()
+                    .open();
+        }
+    }
+
+
+    @Transactional(readOnly = false)
+    public String doEnviarContabilidadRendicion(ScpRendicioncabecera vcb) throws EnviarContabilidadException {
+        try {
+            log.debug("Ready to run stored procedure to enviar: " + vcb.getCodRendicioncabecera() + " " + vcb.getCodComprobante());
+            return "Done";
+//            StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarRendicion");
+//            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+//            query.setParameter(1, vcb.getCodRendicioncabecera());
+//            query.setParameter(2, CurrentUser.get());
+//            query.setParameter(3, sdf.format(vcb.getFecComprobante()));
+//            query.setParameter(4, vcb.getCodTipomoneda());
+//            String result = (String) query.getOutputParameterValue(5);
+//            query.execute();
+//            return result;
+        } catch (Exception pe) {
+            throw new EnviarContabilidadException("Problema al enviar a contabilidad rendicion: " + (vcb != null ? vcb.getCodRendicioncabecera() : 0)
+                    + "\n\n" + pe.getMessage() +
+                    (pe.getCause() != null ? "\n" + pe.getCause().getMessage() : "")
+                    + (pe.getCause() != null && pe.getCause().getCause() != null ? "\n" + pe.getCause().getCause().getMessage() : ""), null);
+        }
+    }
+
+    @Transactional(readOnly = false)
+    public Set<ScpRendicioncabecera> enviarContabilidadRendicionInTransaction(Set<ScpRendicioncabecera> vsjRendicioncabeceras, RendicionService service) throws EnviarContabilidadException {
+        Set<ScpRendicioncabecera> vsjRendicioncabecerasEnviados = new HashSet<>();
+        for (ScpRendicioncabecera vcbS : vsjRendicioncabeceras) {
+            curRendicionCabecera = vcbS;
+            log.info("Enviando: " + curRendicionCabecera);
+            String result = doEnviarContabilidadRendicion(curRendicionCabecera);
+            curRendicionCabecera = service.getRendicioncabeceraRep().findByCodRendicioncabecera(curRendicionCabecera.getCodRendicioncabecera());
+            service.getRendicioncabeceraRep().save(curRendicionCabecera);
+            if (result.contains("correctamente"))
+                vsjRendicioncabecerasEnviados.add(curRendicionCabecera);
+            log.info("Resultado: " + result);
+            Notification.show("Operacion: " + curRendicionCabecera.getCodRendicioncabecera(), result, Notification.Type.TRAY_NOTIFICATION);
+        }
+        return vsjRendicioncabecerasEnviados;
     }
 }

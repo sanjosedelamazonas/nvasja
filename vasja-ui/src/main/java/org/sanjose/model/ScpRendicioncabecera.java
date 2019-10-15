@@ -73,8 +73,8 @@ public class ScpRendicioncabecera extends VsjItem {
     public ScpRendicioncabecera() {
         setFecComprobante(new Timestamp(System.currentTimeMillis()));
         setFecFregistro(new Timestamp(System.currentTimeMillis()));
-        setTxtGlosa("TEST");
-        setCodDestino("V003");
+        setTxtGlosa("");
+        //setCodDestino("V003");
         setFlgEnviado('0');
         setFlgIm('1');
         setCodOrigen("08");
