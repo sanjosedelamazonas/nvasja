@@ -4,6 +4,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
@@ -17,6 +18,9 @@ import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.*;
+import org.sanjose.repo.ScpFinancieraRep;
+import org.sanjose.repo.ScpPlanproyectoRep;
+import org.sanjose.repo.Scp_ProyectoPorFinancieraRep;
 import org.sanjose.util.*;
 import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.views.sys.ComprobanteWarnGuardar;
@@ -57,6 +61,9 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     private ComboBox selProyecto = new ComboBox();
     private ComboBox selCtacontable = new ComboBox();
     private ComboBox selCtaespecial = new ComboBox();
+
+    ItemClickEvent.ItemClickListener gridItemClickListener;
+    FieldGroup.CommitHandler gridCommitHandler;
 
 
     public void init(RendicionOperView view) {
@@ -100,7 +107,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 
         view.getNumTotalAnticipio().addBlurListener(event -> view.setTotal((Character)view.getSelMoneda().getValue()));
 
-
         // ------------ DETALLE
 
         view.getNumItem().setEnabled(false);
@@ -133,23 +139,34 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getTxtSerieDoc().setMaxLength(5);
         view.getTxtNumDoc().setMaxLength(20);
 
+        //view.getFechaPago().setPropertyDataSource(prop);
+        view.getFechaPago().setConverter(DateToTimestampConverter.INSTANCE);
+        view.getFechaPago().setResolution(Resolution.DAY);
+
+        //view.getFechaPago().setPropertyDataSource(prop);
+        view.getFechaDoc().setConverter(DateToTimestampConverter.INSTANCE);
+        view.getFechaDoc().setResolution(Resolution.DAY);
+
+
         // DETALLE - GRID
 
         // Fecha Pago
         PopupDateField pdf = new PopupDateField();
         pdf.setPropertyDataSource(prop);
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
-        pdf.setResolution(Resolution.MINUTE);
+        pdf.setResolution(Resolution.DAY);
         view.grid.getColumn("fecPagocomprobantepago").setEditorField(pdf);
         view.grid.getColumn("fecPagocomprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        //pdf.addValueChangeListener(e -> view.getFechaPago().setValue((Date)e.getProperty().getValue()));
 
         // Fecha Doc
         pdf = new PopupDateField();
         pdf.setPropertyDataSource(prop);
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
-        pdf.setResolution(Resolution.MINUTE);
+        pdf.setResolution(Resolution.DAY);
         view.grid.getColumn("fecComprobantepago").setEditorField(pdf);
         view.grid.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        //pdf.addValueChangeListener(e -> view.getFechaDoc().setValue((Date)e.getProperty().getValue()));
 
         // Proyecto
         selProyecto.addValueChangeListener(this::setProyectoLogic);
@@ -166,6 +183,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                 "Sel cta especial", "txtDescctaespecial");
         view.grid.getColumn("codCtaespecial").setEditorField(selCtaespecial);
 
+        // Lugar Gasto
         ComboBox selLugarGasto = new ComboBox();
         DataFilterUtil.bindComboBox(selLugarGasto, "codContraparte",view.getService().getContraparteRepo().findAll(),
                 "Sel Lugar de Gasto", "txtDescContraparte");
@@ -188,9 +206,9 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         ComboBox selTipomoneda = new ComboBox();
         DataFilterUtil.bindTipoMonedaComboBox(selTipomoneda, "codTipomoneda", "Moneda");
         view.grid.getColumn("codTipomoneda").setEditorField(selTipomoneda);
+        selTipomoneda.addValueChangeListener(e -> moneda = (Character)e.getProperty().getValue());
 
-
-        String[] numFields = { "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "numHabermo", "numDebemo" };
+        String[] numFields = { "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "numHabermo", "numDebemo", "numTcvdolar", "numTcmo" };
         Arrays.asList(numFields).forEach(f -> {
             NumberField nf = new NumberField();
             ViewUtil.setDefaultsForNumberField(nf);
@@ -239,40 +257,56 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     }
 
     private void calculateInOtherCurrencies(String propertyName) {
+        if (view.grid.getColumn(propertyName).getEditorField()==null)
+            return;
         Object newVal = view.grid.getColumn(propertyName).getEditorField().getValue();
         if (newVal==null)
             return;
         BigDecimal newNum = GenUtil.parseNumber(String.valueOf(newVal));
         Date fecha = (Date)view.grid.getColumn("fecPagocomprobantepago").getEditorField().getValue();
-        if (fecha==null) return;
+        if (fecha==null)
+            return;
         fecha = GenUtil.getBeginningOfDay(fecha);
+        Character moneda = GenUtil.getNumMonedaFromDescContaining(propertyName);
+        // Ignore in othter currencies than the one chosen for input
+        if (!moneda.equals(beanItem.getItemProperty("codTipomoneda").getValue()))
+            return;
+        // Get Tipo Cambio - if not exists, try to download
         List<ScpTipocambio> tipocambios = view.getService().getTipocambioRep().findById_FecFechacambio(fecha);
         ScpTipocambio tipocambio = null;
         if (tipocambios.isEmpty()) {
             try {
                 TipoCambio.checkTipoCambio(fecha, view.getService().getTipocambioRep());
                 tipocambios = view.getService().getTipocambioRep().findById_FecFechacambio(fecha);
-                if (tipocambios.isEmpty()) return;
+                if (tipocambios.isEmpty())
+                    return;
             } catch (TipoCambio.TipoCambioNoExiste te) {
                 log.debug(te.getLocalizedMessage());
                 return;
             }
         }
         tipocambio = tipocambios.get(0);
-        Character moneda = GenUtil.getNumMonedaFromDescContaining(propertyName);
-        // Ignore in othter currencies than the one chosen for input
-        if (!moneda.equals(beanItem.getItemProperty("codTipomoneda").getValue())) return;
         String haberDebe = propertyName.contains("Haber") ? "Haber" : "Debe";
         if (moneda==GenUtil.PEN) {
             beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTccdolar());
             BeanItem beanItem = view.getContainer().getItem(view.grid.getEditedItemId());
             beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.USD)).setValue(
                     newNum.setScale(2).divide(tipocambio.getNumTccdolar(), RoundingMode.HALF_EVEN));
+            if (GenUtil.isNullOrZero(tipocambio.getNumTcveuro()) || GenUtil.isNullOrZero(tipocambio.getNumTcceuro()))
+                return;
+            beanItem.getItemProperty("numTc" +  GenUtil.getDescMoneda(GenUtil.EUR)).setValue(tipocambio.getNumTcceuro());
+            beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.EUR)).setValue(
+                    newNum.setScale(2).divide(tipocambio.getNumTcceuro(), RoundingMode.HALF_EVEN));
         } else if (moneda==GenUtil.USD) {
             beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTcvdolar());
             BeanItem beanItem = view.getContainer().getItem(view.grid.getEditedItemId());
             beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.PEN)).setValue(
                     newNum.setScale(2).multiply(tipocambio.getNumTcvdolar()));
+            if (GenUtil.isNullOrZero(tipocambio.getNumTcveuro()) || GenUtil.isNullOrZero(tipocambio.getNumTcceuro()))
+                return;
+            beanItem.getItemProperty("numTc" +  GenUtil.getDescMoneda(GenUtil.EUR)).setValue(tipocambio.getNumTcceuro());
+            beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.EUR)).setValue(
+                    newNum.setScale(2).multiply(tipocambio.getNumTcvdolar()).divide(tipocambio.getNumTcceuro(), RoundingMode.HALF_EVEN));
         } else {
             if (GenUtil.isNullOrZero(tipocambio.getNumTcveuro()) || GenUtil.isNullOrZero(tipocambio.getNumTcceuro()))
                 return;
@@ -286,7 +320,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         }
     }
 
-
     private void setMonedaLogic(Character moneda) {
         // Update Tipo Moneda on every item only if not advanced view
         this.moneda = moneda;
@@ -294,6 +327,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
             updateItemProperty("codTipomoneda", moneda, view.getContainer().getItemIds());
             ViewUtil.filterColumnsByMoneda(view.getGrid(), moneda);
         }
+        ViewUtil.filterColumnsDisableByMoneda(view.getGrid(), moneda);
         // Gasto Total i Saldo Pendiente...
         view.setTotal(moneda);
     }
@@ -336,8 +370,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecComprobante"));
         view.getFechaDoc().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecComprobantepago"));
         view.getDataFechaRegistro().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecFregistro"));
-//        view.getNumIngreso().addValidator(new TwoNumberfieldsValidator(view.getNumEgreso(), false, "Ingreso o egreso debe ser rellenado"));
-//        view.getNumEgreso().addValidator(new TwoNumberfieldsValidator(view.getNumIngreso(), false, "Ingreso o egreso debe ser rellenado"));
         view.getSelResponsable1().addValidator(new LocalizedBeanValidator(ScpRendicioncabecera.class, "codDestino"));
         view.getSelCodAuxiliar().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "codDestino"));
         view.getTxtGlosaCabeza().setDescription("Glosa Cabeza");
@@ -352,49 +384,15 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     }
 
     private void setProyectoLogic(Property.ValueChangeEvent event) {
-        if (event.getProperty().getValue()!=null)
-            setEditorLogic(event.getProperty().getValue().toString());
+        if (event.getProperty().getValue()!=null) {
+            String codProyecto = event.getProperty().getValue().toString();
+            ComboBox selFinanciera = (ComboBox)view.grid.getColumn("codFinanciera").getEditorField();
+            ComboBox selPlanproyecto = (ComboBox) view.grid.getColumn("codCtaproyecto").getEditorField();
+            DataFilterUtil.setEditorLogicPorProyecto(codProyecto, selFinanciera, selPlanproyecto, view.getService().getPlanproyectoRepo(), view.getService().getProyectoPorFinancieraRepo(), view.getService().getFinancieraRepo());
+        }
         ComboBox selProyecto = (ComboBox)view.grid.getColumn("codProyecto").getEditorField();
         selProyecto.getValidators().forEach(validator -> validator.validate(event.getProperty().getValue()));
     }
-
-    private void setEditorLogic(String codProyecto) {
-        ComboBox selFinanciera = (ComboBox)view.grid.getColumn("codFinanciera").getEditorField();
-        ComboBox selPlanproyecto = (ComboBox) view.grid.getColumn("codCtaproyecto").getEditorField();
-
-        if (codProyecto!=null && !codProyecto.isEmpty()) {
-            DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
-                    view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
-                            "N", GenUtil.getCurYear(), codProyecto),
-                    "Sel Rubro proy", "txtDescctaproyecto");
-            List<Scp_ProyectoPorFinanciera>
-                    proyectoPorFinancieraList = view.getService().getProyectoPorFinancieraRepo().findById_CodProyecto(codProyecto);
-
-            // Filter financiera if exists in Proyecto Por Financiera
-            List<ScpFinanciera> financieraList = view.getService().getFinancieraRepo().findAll();
-            List<ScpFinanciera> financieraEfectList = new ArrayList<>();
-            if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
-                List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
-
-                for (ScpFinanciera financiera : financieraList) {
-                    if (financiera.getCodFinanciera()!=null &&
-                            codFinancieraList.contains(financiera.getCodFinanciera())) {
-                        financieraEfectList.add(financiera);
-                    }
-                }
-            } else {
-                financieraEfectList = financieraList;
-            }
-            DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
-                    "Sel Fuente", "txtDescfinanciera");
-        } else {
-            DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", new ArrayList<ScpFinanciera>(),
-                    "-------", null);
-            DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto", new ArrayList<ScpPlanproyecto>(),
-                    "-------", null);
-        }
-    }
-
 
     private void editDestino(ComboBox comboBox) {
         Window destinoWindow = new Window();
@@ -471,6 +469,8 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
             } catch (CommitException ce) {
                 Notification.show("Error al eliminar el destino: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
                 log.warn("Got Commit Exception: " + ce.getMessage());
+                //ce.getFieldGroup().
+                //ce.getInvalidFields().keySet().
             }
         });
         UI.getCurrent().addWindow(destinoWindow);
@@ -515,37 +515,13 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         fieldGroup.setItemDataSource(beanItem);
         view.getTxtGlosaDetalle().setValue(null);
         view.getNumItem().setValue("");
-   /*     if (!GenUtil.strNullOrEmpty(item.getCodProyecto()) && !GenUtil.strNullOrEmpty(item.getCodTercero())) {
-            log.error("Problema con esta operacion " + item.getScpRendicioncabecera().getCodRendicioncabecera() + " - codigo proyecto y codigo tercero son rellenadas!");
-        }
-        if (!GenUtil.strNullOrEmpty(item.getCodTercero())) {
-            view.getTipoProyectoTercero().select(GenUtil.T_TERC);
-        } else {
-            view.getTipoProyectoTercero().select(GenUtil.T_PROY);
-        }
-        *//*fieldGroup.bind(view.getSelProyectoTercero(), "codProyecto");
-        fieldGroup.bind(view.getSelTercero(), "codTercero");*//*
-        if (PEN.equals(item.getCodTipomoneda())) {
-            fieldGroup.bind(view.getNumEgreso(), "numHabersol");
-            fieldGroup.bind(view.getNumIngreso(), "numDebesol");
-        } else if (USD.equals(item.getCodTipomoneda())) {
-            fieldGroup.bind(view.getNumEgreso(), "numHaberdolar");
-            fieldGroup.bind(view.getNumIngreso(), "numDebedolar");
-        } else if (EUR.equals(item.getCodTipomoneda())) {
-            fieldGroup.bind(view.getNumEgreso(), "numHabermo");
-            fieldGroup.bind(view.getNumIngreso(), "numDebemo");
-        } else {
-            Notification.show("Moneda sellecionada no existe, esto nunca deberia pasar", Notification.Type.ERROR_MESSAGE);
-        }
-        ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
-        ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
-*/
         fieldGroup.bind(view.getTxtGlosaDetalle(), "txtGlosaitem");
         fieldGroup.bind(view.getSelCodAuxiliar(), "codDestino");
         fieldGroup.bind(view.getSelTipoDoc(), "codTipocomprobantepago");
         fieldGroup.bind(view.getTxtSerieDoc(), "txtSeriecomprobantepago");
         fieldGroup.bind(view.getTxtNumDoc(), "txtComprobantepago");
         fieldGroup.bind(view.getFechaDoc(), "fecComprobantepago");
+        fieldGroup.bind(view.getFechaPago(), "fecPagocomprobantepago");
         //fieldGroup.bind(view.getSelFuente(), "codFinanciera");
         fieldGroup.bind(view.getSelTipoMov(), "codTipomov");
 
@@ -603,6 +579,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.grid.deselectAll();
         view.grid.select(item);
         view.getGrid().setEditorEnabled(true);
+        addCommitHandlerToGrid();
     }
 
     public void setNavigatorView(NavigatorViewing navigatorView) {
@@ -626,23 +603,32 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     }
 
     protected void addCommitHandlerToGrid(){
-        log.debug("Add commit");
-        view.grid.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+        view.grid.removeItemClickListener(gridItemClickListener);
+        gridItemClickListener = new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent itemClickEvent) {
                 try {
                     fieldGroup.commit();
-                    log.debug("Item click");
                     view.grid.deselectAll();
                     view.grid.select(itemClickEvent.getItemId());
+                    // Filter enabled columns according to chosen moneda for current row
+                    Object mon = view.getGrid().getContainerDataSource().getItem(itemClickEvent.getItemId()).getItemProperty("codTipomoneda");
+                    Character itemMoneda = (Character)((MethodProperty) mon).getValue();
+                    ViewUtil.filterColumnsDisableByMoneda(view.getGrid(), itemMoneda);
+                    if (!view.isVistaFull) {
+                        ViewUtil.filterColumnsByMoneda(view.getGrid(), itemMoneda);
+                    }
                 } catch (FieldGroup.CommitException ce) {
                     Notification.show("Por favor rellena los datos necessarios en la parte a la derecha primero!", Notification.Type.ERROR_MESSAGE);
                     log.warn("Got Commit Exception: " + ce);
                 }
             }
-        });
+        };
 
-        view.grid.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
+        view.grid.addItemClickListener(gridItemClickListener);
+        view.grid.getEditorFieldGroup().removeCommitHandler(gridCommitHandler);
+
+        gridCommitHandler = new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
             }
@@ -650,11 +636,15 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
                 Object item = view.grid.getContainerDataSource().getItem(view.grid.getEditedItemId());
                 // Attach logic to num fields
-                String[] numFields = { "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "numHabermo", "numDebemo" };
-                Arrays.asList(numFields).forEach(f ->calculateInOtherCurrencies(f));
                 try {
                     if (item != null) {
                         ScpRendiciondetalle vcb = (ScpRendiciondetalle) ((BeanItem) item).getBean();
+                        String[] numFields = { "numHaber", "numDebe" };
+                        Arrays.asList(numFields).forEach(f ->calculateInOtherCurrencies(f + GenUtil.getDescMoneda(vcb.getCodTipomoneda())));
+                        // Copy date field values from grid to detalle fields
+                        view.getFechaDoc().setValue((Date)view.getGrid().getColumn("fecComprobantepago").getEditorField().getValue());
+                        view.getFechaPago().setValue((Date)view.getGrid().getColumn("fecPagocomprobantepago").getEditorField().getValue());
+                        // Save data
                         final ScpRendiciondetalle vcbToSave = vcb.prepareToSave();
                         fieldGroup.commit();
                         commitEvent.getFieldBinder();
@@ -670,6 +660,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                         view.getService().getRendiciondetalleRep().save(vcbToSave);
                         view.getGrid().refreshRows(item);
                         bindForm(vcbToSave);
+                        moneda = (Character)view.getSelMoneda().getValue();
                         view.setTotal(moneda);
                         view.calcFooterSums();
                     }
@@ -677,9 +668,8 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                     Notification.show("No se puede guarder el item: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
                     log.warn("Got Commit Exception: " + ce);
                 }
-                Arrays.asList(view.HIDDEN_COLUMN_NAMES_PEN)
-                        .forEach( e -> view.getGrid().getColumn(e).setHidden(!view.isVistaFull));
             }
-        });
+        };
+        view.grid.getEditorFieldGroup().addCommitHandler(gridCommitHandler);
     }
 }

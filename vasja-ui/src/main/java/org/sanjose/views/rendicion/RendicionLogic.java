@@ -12,6 +12,7 @@ import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.ScpRendiciondetalle;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
@@ -110,6 +111,7 @@ public class RendicionLogic extends RendicionItemLogic {
             view.getContainer().sort(new Object[]{"id.numNroitem"}, new boolean[]{true});
             view.setTotal(moneda);
             view.calcFooterSums();
+            if (view.isVistaFull) ViewUtil.filterColumnsByMoneda(view.getGrid(), 'A');
             return Optional.of(bancodetalleList.toArray()[0]);
         }
         return Optional.ofNullable(null);
@@ -131,8 +133,8 @@ public class RendicionLogic extends RendicionItemLogic {
     public void viewComprobante() {
         if (!view.grid.getSelectedRows().isEmpty()) {
             bindForm((ScpRendiciondetalle)view.grid.getSelectedRows().toArray()[0]);
+            addCommitHandlerToGrid();
         }
-        //switchMode(VIEW);
         switchMode(EDIT);
     }
 
@@ -140,6 +142,8 @@ public class RendicionLogic extends RendicionItemLogic {
     public void cerrarAlManejo() {
         if (navigatorView == null) navigatorView = MainUI.get().getRendicionManejoView();
         navigatorView.refreshData();
+        navigatorView.selectMoneda(rendicioncabecera.getCodTipomoneda());
+        //navigatorView.selectItem(rendicioncabecera);
         MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
         closeWindow();
     }
@@ -281,6 +285,8 @@ public class RendicionLogic extends RendicionItemLogic {
         ScpRendicioncabecera rendcab = rendiciondetalle.getScpRendicioncabecera();
         view.getService().deleteRendicionOperacion(rendiciondetalle.getScpRendicioncabecera(), rendiciondetalle);
         loadDetallesToGrid(rendcab);
+        ViewUtil.clearFields(fieldGroup);
+        switchMode(VIEW);
         //view.refreshData();
     }
 

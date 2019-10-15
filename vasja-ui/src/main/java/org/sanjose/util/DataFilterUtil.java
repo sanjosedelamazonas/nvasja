@@ -10,12 +10,19 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.OptionGroup;
+import org.sanjose.model.ScpFinanciera;
+import org.sanjose.model.ScpPlanproyecto;
+import org.sanjose.model.Scp_ProyectoPorFinanciera;
+import org.sanjose.repo.ScpFinancieraRep;
+import org.sanjose.repo.ScpPlanproyectoRep;
+import org.sanjose.repo.Scp_ProyectoPorFinancieraRep;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /*import org.sanjose.model.CentroCosto;
 import org.sanjose.model.Cuenta;
@@ -377,5 +384,39 @@ public class DataFilterUtil {
                     }
 
                 });
+	}
+
+	public static void setEditorLogicPorProyecto(String codProyecto, ComboBox selFinanciera, ComboBox selPlanproyecto, ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo, ScpFinancieraRep financieraRepo) {
+		if (codProyecto!=null && !codProyecto.isEmpty()) {
+			DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
+					planproyectoRepo.findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
+							"N", GenUtil.getCurYear(), codProyecto),
+					"Sel Rubro proy", "txtDescctaproyecto");
+			List<Scp_ProyectoPorFinanciera>
+					proyectoPorFinancieraList = proyectoPorFinancieraRepo.findById_CodProyecto(codProyecto);
+
+			// Filter financiera if exists in Proyecto Por Financiera
+			List<ScpFinanciera> financieraList = financieraRepo.findAll();
+			List<ScpFinanciera> financieraEfectList = new ArrayList<>();
+			if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
+				List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
+
+				for (ScpFinanciera financiera : financieraList) {
+					if (financiera.getCodFinanciera()!=null &&
+							codFinancieraList.contains(financiera.getCodFinanciera())) {
+						financieraEfectList.add(financiera);
+					}
+				}
+			} else {
+				financieraEfectList = financieraList;
+			}
+			DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
+					"Sel Fuente", "txtDescfinanciera");
+		} else {
+			DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", new ArrayList<ScpFinanciera>(),
+					"-------", null);
+			DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto", new ArrayList<ScpPlanproyecto>(),
+					"-------", null);
+		}
 	}
 }

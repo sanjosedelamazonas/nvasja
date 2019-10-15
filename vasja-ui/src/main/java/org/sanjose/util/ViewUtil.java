@@ -25,16 +25,12 @@ import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.*;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.views.caja.*;
-import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
 import org.sanjose.views.sys.SubWindowing;
 
 import javax.print.PrintException;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -362,7 +358,7 @@ public class ViewUtil {
         for (int i=0;i<3;i++) {
             String mon = GenUtil.getDescMoneda(Character.forDigit(i, 10));
             for (String col : new String[] { "numDebe", "numHaber"}) {
-                grid.getColumn(col + mon).setHidden(isHide);
+                if (grid.getColumn(col + mon)!=null) grid.getColumn(col + mon).setHidden(isHide);
             }
         }
     }
@@ -370,11 +366,39 @@ public class ViewUtil {
     public static void filterColumnsByMoneda(Grid grid, Character moneda) {
         if (moneda=='A') {
             allColumnsHide(grid, false);
+            if (grid.getColumn("numTcvdolar")!=null) grid.getColumn("numTcvdolar").setHidden(false);
+            if (grid.getColumn("numTcmo")!=null) grid.getColumn("numTcmo").setHidden(false);
+            if (grid.getColumn("codTipomoneda")!=null) grid.getColumn("codTipomoneda").setHidden(false);
             return;
         }
         allColumnsHide(grid, true);
         for (String col : new String[] { "numDebe", "numHaber"}) {
-            grid.getColumn(col + GenUtil.getDescMoneda(moneda)).setHidden(false);
+            if (grid.getColumn(col + GenUtil.getDescMoneda(moneda))!=null)
+                grid.getColumn(col + GenUtil.getDescMoneda(moneda)).setHidden(false);
+        }
+        if (grid.getColumn("numTcvdolar")!=null) grid.getColumn("numTcvdolar").setHidden(true);
+        if (grid.getColumn("numTcmo")!=null) grid.getColumn("numTcmo").setHidden(true);
+        if (grid.getColumn("codTipomoneda")!=null) grid.getColumn("codTipomoneda").setHidden(true);
+
+    }
+
+    private static void allColumnsEnable(Grid grid, boolean isEnabled) {
+        for (int i=0;i<3;i++) {
+            String mon = GenUtil.getDescMoneda(Character.forDigit(i, 10));
+            for (String col : new String[] { "numDebe", "numHaber"}) {
+                grid.getColumn(col + mon).setEditable(isEnabled);
+            }
+        }
+    }
+
+    public static void filterColumnsDisableByMoneda(Grid grid, Character moneda) {
+        if (moneda=='A') {
+            allColumnsEnable(grid, true);
+            return;
+        }
+        allColumnsEnable(grid, false);
+        for (String col : new String[] { "numDebe", "numHaber"}) {
+            grid.getColumn(col + GenUtil.getDescMoneda(moneda)).setEditable(true);
         }
     }
 

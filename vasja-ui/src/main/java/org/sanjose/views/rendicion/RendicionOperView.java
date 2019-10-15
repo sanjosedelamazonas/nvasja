@@ -56,9 +56,9 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
             "numTcmo", "numDebemo", "numHabermo"
     };
     static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
-            "Item", "Proyecto", "Fuente", "Partida P.",
+            "It", "Proyecto", "Fuente", "Partida P.",
             "Lug. Gst.", "Contable", "Actividad", "Area", "Rubro Inst",
-            "Fecha doc", "Fecha Pago",
+            "Fecha Doc", "Fecha Pago",
             "Mon", "TC $",
             "Gast S/.", "Ingr S/.",
             "Gast $", "Ingr $",
@@ -68,13 +68,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
             "codCtaarea", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo", "codTipomoneda", "numTcvdolar", "numTcmo"
     };
 
-    static final String[] HIDDEN_COLUMN_NAMES_USD = new String[]{
-            "codCtaarea", "numDebesol", "numHabersol", "numDebemo", "numHabermo", "codTipomoneda", "numTcvdolar", "numTcmo"
-    };
-
-    static final String[] HIDDEN_COLUMN_NAMES_EUR = new String[]{
-            "codCtaarea", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "codTipomoneda", "numTcvdolar", "numTcmo"
-    };
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
 
     private static final Logger log = LoggerFactory.getLogger(RendicionOperView.class);
@@ -160,9 +153,10 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
 
     public void toggleVista() {
         isVistaFull = !isVistaFull;
-        Arrays.asList(HIDDEN_COLUMN_NAMES_PEN)
-                    .forEach( e -> grid.getColumn(e).setHidden(!isVistaFull));
-
+        if (!isVistaFull)
+            ViewUtil.filterColumnsByMoneda(grid, (Character)getSelMoneda().getValue());
+        else
+            ViewUtil.filterColumnsByMoneda(grid, 'A');
     }
 
     public ScpRendiciondetalle getSelectedRow() {

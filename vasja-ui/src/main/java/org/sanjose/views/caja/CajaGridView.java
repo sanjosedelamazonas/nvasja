@@ -250,37 +250,7 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
         ComboBox selFinanciera = (ComboBox)gridCaja.getColumn("codFinanciera").getEditorField();
         ComboBox selPlanproyecto = (ComboBox) gridCaja.getColumn("codCtaproyecto").getEditorField();
 
-        if (codProyecto!=null && !codProyecto.isEmpty()) {
-            DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto",
-                    getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
-                            "N", GenUtil.getCurYear(), codProyecto),
-                    "Sel Rubro proy", "txtDescctaproyecto");
-            List<Scp_ProyectoPorFinanciera>
-                    proyectoPorFinancieraList = getService().getProyectoPorFinancieraRepo().findById_CodProyecto(codProyecto);
-
-            // Filter financiera if exists in Proyecto Por Financiera
-            List<ScpFinanciera> financieraList = getService().getFinancieraRepo().findAll();
-            List<ScpFinanciera> financieraEfectList = new ArrayList<>();
-            if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
-                List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
-
-                for (ScpFinanciera financiera : financieraList) {
-                    if (financiera.getCodFinanciera()!=null &&
-                            codFinancieraList.contains(financiera.getCodFinanciera())) {
-                        financieraEfectList.add(financiera);
-                    }
-                }
-            } else {
-                financieraEfectList = financieraList;
-            }
-            DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
-                    "Sel Fuente", "txtDescfinanciera");
-        } else {
-            DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", new ArrayList<ScpFinanciera>(),
-                    "-------", null);
-            DataFilterUtil.bindComboBox(selPlanproyecto, "id.codCtaproyecto", new ArrayList<ScpPlanproyecto>(),
-                    "-------", null);
-        }
+        DataFilterUtil.setEditorLogicPorProyecto(codProyecto, selFinanciera, selPlanproyecto, getService().getPlanproyectoRepo(), getService().getProyectoPorFinancieraRepo(), getService().getFinancieraRepo());
     }
 
     @Override
