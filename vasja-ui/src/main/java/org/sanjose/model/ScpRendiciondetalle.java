@@ -4,6 +4,7 @@ package org.sanjose.model;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import org.hibernate.validator.constraints.NotBlank;
 import org.sanjose.authentication.CurrentUser;
+import org.sanjose.util.GenUtil;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,7 +14,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Objects;
 
 @Entity
 @Table(name = "scp_rendiciondetalle")
@@ -75,7 +75,7 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     @Column(name = "cod_evento")
     private String codEvento;
     @Column(name = "num_refnroitem")
-    private String numRefnroitem;
+    private Integer numRefnroitem;
     @Column(name = "fec_refcomprobante")
     private Timestamp fecRefcomprobante;
     @Column(name = "cod_proyecto")
@@ -145,7 +145,7 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     @Column(name = "por_ies")
     private double porIes;
     @Column(name = "num_nroitem2")
-    private String numNroitem2;
+    private Long numNroitem2;
     @Column(name = "cod_contraparte")
     private String codContraparte;
     @Column(name = "txt_nroretencion")
@@ -196,7 +196,7 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     public ScpRendiciondetalle prepareToSave() throws FieldGroup.CommitException {
         //super.prepareToSave();
         SimpleDateFormat sdf = new SimpleDateFormat("MM");
-        if (this.getCodUregistro() == null) this.setCodUregistro(CurrentUser.get());
+        if (GenUtil.strNullOrEmpty(this.getCodUregistro())) this.setCodUregistro(CurrentUser.get());
         if (this.getFecFregistro() == null) this.setFecFregistro(new Timestamp(System.currentTimeMillis()));
         this.setCodUactualiza(CurrentUser.get());
         this.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
@@ -205,6 +205,7 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
             getId().setCodOrigen(getScpRendicioncabecera().getCodOrigen());
             getId().setCodFilial(getScpRendicioncabecera().getCodFilial());
         }
+        setNumNroitem2(getId().getNumNroitem());
         return this;
     }
 
@@ -222,6 +223,16 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
         setNumDebedolar(new BigDecimal(0));
         setNumHabermo(new BigDecimal(0));
         setNumDebemo(new BigDecimal(0));
+        setFlgChequecobrado("0");
+        //setFecRefcomprobantepago(new Timestamp(GenUtil.getBegin20thCent().getTime()));
+        //setFecRefcomprobante(new Timestamp(GenUtil.getBegin20thCent().getTime()));
+        //setFecRefcomprobante(new Timestamp(GenUtil.getBegin20thCent().getTime()));
+        setNumRefnroitem(0);
+        setFlgTcreferencia("0");
+        setFlgConversion("0");
+        setFlgRecuperaigv("1");
+        setFlgDistribuido("0");
+        setFlg_Retienecuarta("1");
     }
     
     public BigDecimal getDebe() {
@@ -352,11 +363,11 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
         this.codEvento = codEvento;
     }
 
-    public String getNumRefnroitem() {
+    public Integer getNumRefnroitem() {
         return numRefnroitem;
     }
 
-    public void setNumRefnroitem(String numRefnroitem) {
+    public void setNumRefnroitem(Integer numRefnroitem) {
         this.numRefnroitem = numRefnroitem;
     }
 
@@ -624,11 +635,11 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
         this.porIes = porIes;
     }
 
-    public String getNumNroitem2() {
+    public Long getNumNroitem2() {
         return numNroitem2;
     }
 
-    public void setNumNroitem2(String numNroitem2) {
+    public void setNumNroitem2(Long numNroitem2) {
         this.numNroitem2 = numNroitem2;
     }
 

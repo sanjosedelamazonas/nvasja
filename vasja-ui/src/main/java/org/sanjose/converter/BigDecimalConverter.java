@@ -13,6 +13,15 @@ import java.util.Locale;
  */
 public class BigDecimalConverter extends StringToBigDecimalConverter {
 
+    private int scale = 2;
+
+    public BigDecimalConverter() {
+    }
+
+    public BigDecimalConverter(int scale) {
+        this.scale = scale;
+    }
+
     @Override
     public BigDecimal convertToModel(String value,
             Class<? extends BigDecimal> targetType, Locale locale)
@@ -29,8 +38,8 @@ public class BigDecimalConverter extends StringToBigDecimalConverter {
         // Always display currency with two decimals
         NumberFormat format = super.getFormat(locale);
         if (format instanceof DecimalFormat) {
-            ((DecimalFormat) format).setMaximumFractionDigits(2);
-            ((DecimalFormat) format).setMinimumFractionDigits(2);
+            ((DecimalFormat) format).setMaximumFractionDigits(scale);
+            ((DecimalFormat) format).setMinimumFractionDigits(scale);
         }
         return format;
     }

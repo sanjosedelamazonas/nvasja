@@ -16,6 +16,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.DateRenderer;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.converter.BigDecimalConverter;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.*;
 import org.sanjose.repo.ScpFinancieraRep;
@@ -33,6 +34,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -164,6 +166,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
         pdf.setResolution(Resolution.DAY);
         view.grid.getColumn("fecPagocomprobantepago").setEditorField(pdf);
+        SimpleDateFormat sdf = new SimpleDateFormat(ConfigurationUtil.get("DEFAULT_DATE_FORMAT"));
         view.grid.getColumn("fecPagocomprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         //pdf.addValueChangeListener(e -> view.getFechaPago().setValue((Date)e.getProperty().getValue()));
 
@@ -220,6 +223,10 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         Arrays.asList(numFields).forEach(f -> {
             NumberField nf = new NumberField();
             ViewUtil.setDefaultsForNumberField(nf);
+            if (f.contains("Tc")) {
+                nf.setConverter(new BigDecimalConverter(4));
+                nf.setDecimalLength(4);
+            }
             view.grid.getColumn(f).setEditorField(nf);
         });
 
@@ -352,7 +359,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
             int scale = 2;
             BigDecimal difSol = new BigDecimal(view.getNumDifsol().getValue());
             BigDecimal difDolar = new BigDecimal(view.getNumDifdolar().getValue());
-            while (scale<6 && (!GenUtil.isZero(difSol) || !GenUtil.isZero(difDolar))) {
+            while (scale<8 && (!GenUtil.isZero(difSol) || !GenUtil.isZero(difDolar))) {
                 if (!GenUtil.isZero(difSol) && (!GenUtil.isZero(difDolar))) {
                     Notification.show("Error al ajustar - soles o dolares deben ser balancados!", Notification.Type.ERROR_MESSAGE);
                     return;
@@ -364,10 +371,10 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                                     , RoundingMode.HALF_EVEN);
                     rend.setNumTcvdolar(tcDolar);
                 } else if (!GenUtil.isZero(difSol) && rend.getCodTipomoneda() != GenUtil.PEN) {
-                    BigDecimal tcDolar = rend.getNumHabersol().subtract(rend.getNumDebesol()).subtract(difSol).setScale(scale)
+                    BigDecimal tcDolar = rend.getNumHabersol().subtract(rend.getNumDebesol()).subtract(difSol)
                             .divide(
                                     rend.getNumHaberdolar().subtract(rend.getNumDebedolar())
-                                    , RoundingMode.HALF_EVEN);
+                                    , RoundingMode.HALF_EVEN).setScale(scale, RoundingMode.HALF_EVEN);
                     rend.setNumTcvdolar(tcDolar);
                 }
                 //beanItem.getItemProperty("num")
@@ -704,17 +711,17 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
                 Object item = view.grid.getContainerDataSource().getItem(view.grid.getEditedItemId());
                 // Attach logic to num fields
                 try {
-                    if (item != null) {
-                        ScpRendiciondetalle vcb = (ScpRendiciondetalle) ((BeanItem) item).getBean();
+                    ScpRendiciondetalle vcb = prepToSave();
+                    if (vcb != null) {
                         // Copy date field values from grid to detalle fields
                         view.getFechaDoc().setValue((Date) view.getGrid().getColumn("fecComprobantepago").getEditorField().getValue());
                         view.getFechaPago().setValue((Date) view.getGrid().getColumn("fecPagocomprobantepago").getEditorField().getValue());
                         String[] numFields = {"numHaber", "numDebe"};
                         Arrays.asList(numFields).forEach(f -> calculateInOtherCurrencies(f + GenUtil.getDescMoneda(vcb.getCodTipomoneda())));
                         // Save data
-                        final ScpRendiciondetalle vcbToSave = vcb.prepareToSave();
                         fieldGroup.commit();
                         commitEvent.getFieldBinder();
+                        final ScpRendiciondetalle vcbToSave = setEmptyStrings(vcb);
                         if (vcb.getScpRendicioncabecera().isEnviado()) {
                             MessageBox
                                     .createQuestion()
@@ -743,5 +750,35 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
             }
         };
         view.grid.getEditorFieldGroup().addCommitHandler(gridCommitHandler);
+    }
+
+    protected ScpRendiciondetalle prepToSave() throws CommitException {
+        return prepToSave(view.grid.getContainerDataSource().getItem(view.grid.getEditedItemId()));
+    }
+
+    protected ScpRendiciondetalle prepToSave(Object item) throws CommitException {
+        ScpRendiciondetalle vcb = (ScpRendiciondetalle) ((BeanItem) item).getBean();
+        vcb = vcb.prepareToSave();
+        if (item != null) {
+            for (Object o : ((BeanItem) item).getItemPropertyIds()) {
+                String propName = (String) o;
+                Property prop = ((BeanItem) item).getItemProperty(propName);
+                if (prop.getValue() == null && prop.getType() == String.class)
+                    prop.setValue("");
+                if (prop.getValue() == null && prop.getType() == Timestamp.class)
+                    prop.setValue(new Timestamp(GenUtil.getBegin20thCent().getTime()));
+                if (prop.getValue() == null && prop.getType() == BigDecimal.class)
+                    prop.setValue(new BigDecimal(0));
+            }
+        }
+        return vcb;
+    }
+
+    protected ScpRendiciondetalle setEmptyStrings(ScpRendiciondetalle rd) {
+        if (rd.getCodTipocomprobantepago()==null) rd.setCodTipocomprobantepago("");
+        if (rd.getTxtSeriecomprobantepago()==null) rd.setTxtSeriecomprobantepago("");
+        if (rd.getTxtComprobantepago()==null) rd.setTxtComprobantepago("");
+        if (rd.getFecPagocomprobantepago()==null) rd.setFecPagocomprobantepago(new Timestamp(GenUtil.getBegin20thCent().getTime()));
+        return rd;
     }
 }

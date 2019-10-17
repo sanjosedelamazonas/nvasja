@@ -8,6 +8,7 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.CurrentUser;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.*;
 import org.sanjose.util.ConfigurationUtil;
@@ -190,6 +191,8 @@ public class RendicionLogic extends RendicionItemLogic {
         view.getTxtOrigenlace().setValue(item.getCodOrigenenlace());
         view.getTxtComprobenlace().setValue(item.getCodComprobanteenlace());
 
+        if (item.getCodUregistro()==null)
+            item.setCodUregistro(CurrentUser.get());
         MsgUsuario ingresadoPor = view.getService().getMsgUsuarioRep().findByTxtUsuario(item.getCodUregistro().toLowerCase());
         if (ingresadoPor!=null) view.getTxtIngresadoPor().setValue(ingresadoPor.getTxtNombre());
         else view.getTxtIngresadoPor().setValue(item.getCodUregistro());
@@ -226,10 +229,12 @@ public class RendicionLogic extends RendicionItemLogic {
 
             // Committing detalle
             if (rendicionItem!=null) {
-                final ScpRendiciondetalle rendiItem = item;
+                BeanItem<ScpRendiciondetalle> beanItem = new BeanItem<>(item);
+                final ScpRendiciondetalle rendiItem = prepToSave(beanItem);
                 fieldGroup.commit();
                 String[] numFields = {"numHaber", "numDebe"};
                 Arrays.asList(numFields).forEach(f -> calculateInOtherCurrencies(f + GenUtil.getDescMoneda(rendiItem.getCodTipomoneda())));
+                rendicionItem = setEmptyStrings(rendiItem);
             }
 
             rendicionItem = view.getService().saveRendicionOperacion(cabecera, rendicionItem);
