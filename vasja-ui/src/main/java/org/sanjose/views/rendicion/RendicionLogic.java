@@ -17,6 +17,7 @@ import org.sanjose.views.sys.Viewing;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +57,7 @@ public class RendicionLogic extends RendicionItemLogic {
                 switchMode(VIEW);
             }
         });
+        view.getBtnAjustar().addClickListener(event -> ajusteTipoCambio());
         view.getBtnNewItem().addClickListener(event -> nuevoItem());
         view.getBtnEliminar().addClickListener(event -> eliminarItem());
         view.getBtnAnular().addClickListener(event -> anular());
@@ -224,7 +226,10 @@ public class RendicionLogic extends RendicionItemLogic {
 
             // Committing detalle
             if (rendicionItem!=null) {
+                final ScpRendiciondetalle rendiItem = item;
                 fieldGroup.commit();
+                String[] numFields = {"numHaber", "numDebe"};
+                Arrays.asList(numFields).forEach(f -> calculateInOtherCurrencies(f + GenUtil.getDescMoneda(rendiItem.getCodTipomoneda())));
             }
 
             rendicionItem = view.getService().saveRendicionOperacion(cabecera, rendicionItem);

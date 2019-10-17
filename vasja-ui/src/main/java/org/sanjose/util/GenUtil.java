@@ -77,6 +77,11 @@ public class GenUtil {
         return val == null || (val.compareTo(new BigDecimal(0.00))) == 0;
     }
 
+    public static boolean isZero(BigDecimal val) {
+        return (val.compareTo(new BigDecimal(0.00))) == 0;
+    }
+
+
     public static boolean isIngreso(VsjItem vcb) {
         if (vcb instanceof ScpCajabanco)
             return ((ScpCajabanco) vcb).getNumDebesol().compareTo(new BigDecimal(0)) > 0
