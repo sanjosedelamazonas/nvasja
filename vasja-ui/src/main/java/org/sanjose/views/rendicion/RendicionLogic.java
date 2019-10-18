@@ -95,10 +95,8 @@ public class RendicionLogic extends RendicionItemLogic {
 
     public void editarRendicion(ScpRendicioncabecera rendicioncabecera) {
         view.getContainer().removeAllItems();
-        //view.grid.select(null);
         moneda = rendicioncabecera.getCodTipomoneda();
         clearFields();
-        //clearSaldos();
         view.setTotal(null);
         view.calcFooterSums();
         item = null;
@@ -106,7 +104,6 @@ public class RendicionLogic extends RendicionItemLogic {
         addValidators();
         loadDetallesToGrid(rendicioncabecera).ifPresent(renddet -> {
             view.grid.select(renddet);
-            //viewComprobante();
         });
         if (rendicioncabecera.getCodRendicioncabecera()!=null)
             switchMode(EDIT);
@@ -131,7 +128,6 @@ public class RendicionLogic extends RendicionItemLogic {
     }
 
     void nuevoItem() {
-        //clearSaldos();
         switchMode(EDIT);
         // If grid is not empty save current and then create a new one.
         if (item!=null) {
@@ -156,7 +152,6 @@ public class RendicionLogic extends RendicionItemLogic {
         if (navigatorView == null) navigatorView = MainUI.get().getRendicionManejoView();
         navigatorView.refreshData();
         navigatorView.selectMoneda(rendicioncabecera.getCodTipomoneda());
-        //navigatorView.selectItem(rendicioncabecera);
         MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
         closeWindow();
     }
@@ -168,7 +163,6 @@ public class RendicionLogic extends RendicionItemLogic {
         fieldGroupCabezera = new FieldGroup(beanItem);
         fieldGroupCabezera.setItemDataSource(beanItem);
         fieldGroupCabezera.bind(view.getSelMoneda(), "codTipomoneda");
-        //fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigen");
         view.getTxtOrigen().setValue(item.getCodOrigen());
         fieldGroupCabezera.bind(view.getDataFechaComprobante(), "fecComprobante");
         fieldGroupCabezera.bind(view.getSelResponsable1(), "codDestino");
@@ -222,7 +216,6 @@ public class RendicionLogic extends RendicionItemLogic {
             fieldGroupCabezera.commit();
             log.debug("saved in class: " + rendicioncabecera);
             ScpRendicioncabecera cabecera = beanItem.getBean();
-            //rendicionItem = getScpRendiciondetalle();
             if (!verifyNumMoneda(cabecera.getCodTipomoneda()))
                 throw new FieldGroup.CommitException("Moneda no esta de tipo numeral");
             log.debug("cabezera ready: " + cabecera);
@@ -241,22 +234,15 @@ public class RendicionLogic extends RendicionItemLogic {
             rendicioncabecera = rendicionItem.getScpRendicioncabecera();
             log.debug("cabecera after save: " + rendicionItem.getScpRendicioncabecera());
             boolean isNew = rendicionItem.getFecFregistro() == null;
-            //view.getService().updateCobradoInCabecera(bancocabecera);
             setNumVoucher(rendicionItem);
             moneda = rendicioncabecera.getCodTipomoneda();
             if (isNew) {
-                //view.getContainer().addBean(rendicionItem);
-                //view.grid.select(rendicionItem);
-                //view.getGrid().setEditorEnabled(true);
                 item = rendicionItem;
             } else {
                 loadDetallesToGrid(cabecera);
                 view.grid.select(rendicionItem);
             }
-            //view.setTotal(moneda);
             view.calcFooterSums();
-            //view.refreshData();
-            //switchMode(VIEW);
         } catch (Validator.InvalidValueException e) {
             Notification.show("Error al guardar: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
             view.setEnableCabezeraFields(true);
@@ -306,7 +292,6 @@ public class RendicionLogic extends RendicionItemLogic {
         loadDetallesToGrid(rendcab);
         ViewUtil.clearFields(fieldGroup);
         switchMode(VIEW);
-        //view.refreshData();
     }
 
     private void switchMode(Viewing.Mode newMode) {
@@ -318,8 +303,6 @@ public class RendicionLogic extends RendicionItemLogic {
                 view.getBtnModificar().setEnabled(false);
                 view.getBtnVerVoucher().setEnabled(false);
                 view.getBtnNewItem().setEnabled(false);
-                //view.getNewChequeBtn().setEnabled(true);
-                //view.getCerrarBtn().setEnabled(true);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
                 break;
@@ -335,8 +318,6 @@ public class RendicionLogic extends RendicionItemLogic {
                 view.getBtnCerrar().setEnabled(false);
                 view.setEnableCabezeraFields(true);
                 view.setEnableDetalleFields(false);
-                //view.selProyectoTercero.setEnabled(false);
-                //view.tipoProyectoTercero.setEnabled(false);
                 break;
 
             case EDIT:
@@ -348,7 +329,6 @@ public class RendicionLogic extends RendicionItemLogic {
                 if (ViewUtil.isPrinterReady()) view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnNewItem().setEnabled(true);
-                //view.getNewChequeBtn().setEnabled(false);
                 view.getBtnCerrar().setEnabled(false);
                 view.setEnableCabezeraFields(true);
                 view.setEnableDetalleFields(true);
@@ -357,20 +337,8 @@ public class RendicionLogic extends RendicionItemLogic {
             case VIEW:
                 view.getBtnGuardar().setEnabled(false);
                 view.getBtnAnular().setEnabled(false);
-//                if ((view.getSelectedRow() != null && view.getSelectedRow().isAnula()) ||
-//                        (bancocabecera != null && (bancocabecera.isAnula()
-//                                || (bancocabecera.isEnviado() && !Role.isPrivileged())))) {
-//                    view.getBtnModificar().setEnabled(false);
-//                    view.getBtnEliminar().setEnabled(false);
-//                } else {
-//                    view.getBtnModificar().setEnabled(true);
-//                    if (view.getContainer().size() > 1) view.getBtnEliminar().setEnabled(true);
-//                    else view.getBtnEliminar().setEnabled(false);
-//                }
                 view.getBtnCerrar().setEnabled(true);
-                //if (ViewUtil.isPrinterReady()) view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnVerVoucher().setEnabled(true);
-                //view.getNewChequeBtn().setEnabled(true);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
                 break;

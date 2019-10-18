@@ -63,7 +63,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
             "Mon", "TC $",
             "Gast S/.", "Ingr S/.",
             "Gast $", "Ingr $",
-            "TC €", "Ing €", "Egr €"
+            "TC €", "Gast €", "Ingr €"
     };
     static final String[] HIDDEN_COLUMN_NAMES_PEN = new String[]{
             "codCtaarea", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo", "codTipomoneda", "numTcvdolar", "numTcmo"

@@ -19,6 +19,7 @@ import org.sanjose.MainUI;
 import org.sanjose.converter.BigDecimalConverter;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.*;
+import org.sanjose.render.DateNotNullRenderer;
 import org.sanjose.repo.ScpFinancieraRep;
 import org.sanjose.repo.ScpPlanproyectoRep;
 import org.sanjose.repo.Scp_ProyectoPorFinancieraRep;
@@ -79,7 +80,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     }
 
     public void setupEditComprobanteView() {
-
         //--------- CABEZA
 
         // Fecha Comprobante
@@ -167,7 +167,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         pdf.setResolution(Resolution.DAY);
         view.grid.getColumn("fecPagocomprobantepago").setEditorField(pdf);
         SimpleDateFormat sdf = new SimpleDateFormat(ConfigurationUtil.get("DEFAULT_DATE_FORMAT"));
-        view.grid.getColumn("fecPagocomprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        view.grid.getColumn("fecPagocomprobantepago").setRenderer(new DateNotNullRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         //pdf.addValueChangeListener(e -> view.getFechaPago().setValue((Date)e.getProperty().getValue()));
 
         // Fecha Doc
@@ -176,7 +176,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
         pdf.setResolution(Resolution.DAY);
         view.grid.getColumn("fecComprobantepago").setEditorField(pdf);
-        view.grid.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        view.grid.getColumn("fecComprobantepago").setRenderer(new DateNotNullRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
 
         // Proyecto
@@ -439,7 +439,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         });
     }
 
-
     public void addValidators() {
         // Validators
         view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecComprobante"));
@@ -597,7 +596,9 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         fieldGroup.bind(view.getTxtNumDoc(), "txtComprobantepago");
         fieldGroup.bind(view.getFechaDoc(), "fecComprobantepago");
         fieldGroup.bind(view.getFechaPago(), "fecPagocomprobantepago");
-        //fieldGroup.bind(view.getSelFuente(), "codFinanciera");
+        Date fechaPagoComprobpago = (Date)beanItem.getItemProperty("fecPagocomprobantepago").getValue();
+        if (fechaPagoComprobpago!=null && fechaPagoComprobpago.getTime()==GenUtil.getBegin20thCent().getTime())
+            view.getFechaPago().setValue(null);
         fieldGroup.bind(view.getSelTipoMov(), "codTipomov");
 
         ViewUtil.setFieldsNullRepresentation(fieldGroup);
@@ -660,22 +661,12 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         this.navigatorView = navigatorView;
     }
 
-    // Helpers
-
-    ScpRendiciondetalle getScpRendiciondetalle() throws CommitException {
-        if (fieldGroup==null || beanItem==null || beanItem.getBean()==null)
-            throw new CommitException("El cheque debe tener operaciones rellenadas");
-        fieldGroup.commit();
-        ScpRendiciondetalle item = beanItem.getBean();
-        log.debug("got from getDetalle " + item);
-        return item;
-    }
-
     @Override
     public void addWarningToGuardarBtn(boolean isWarn) {
         //TODO Implement Warning when Saving!!!
     }
 
+    // Save grid row
     protected void addCommitHandlerToGrid(){
         view.grid.removeItemClickListener(gridItemClickListener);
         gridItemClickListener = new ItemClickEvent.ItemClickListener() {
@@ -779,6 +770,8 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         if (rd.getTxtSeriecomprobantepago()==null) rd.setTxtSeriecomprobantepago("");
         if (rd.getTxtComprobantepago()==null) rd.setTxtComprobantepago("");
         if (rd.getFecPagocomprobantepago()==null) rd.setFecPagocomprobantepago(new Timestamp(GenUtil.getBegin20thCent().getTime()));
+        if (rd.getCodDestino()==null) rd.setCodDestino("");
+        if (rd.getCodTipomov()==null) rd.setCodTipomov(0);
         return rd;
     }
 }
