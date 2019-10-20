@@ -29,6 +29,9 @@ import tm.kod.widgets.numberfield.NumberField;
 @SuppressWarnings("serial")
 public class TransferenciaUI extends CssLayout {
     protected Label operacion_header_label;
+    protected Button finalizarTransBtn;
+    protected Button eliminarTransfBtn;
+    protected Button cerrarBtn;
     protected FormLayout cuenta_form;
     protected TextField numVoucher;
     protected PopupDateField dataFechaComprobante;
@@ -36,11 +39,10 @@ public class TransferenciaUI extends CssLayout {
     protected TextField txtOrigen;
     protected TextField txtNumCombrobante;
     protected OptionGroup tipoProyectoTercero;
+    protected ComboBox selProyectoTercero;
     protected TextField saldoProyPEN;
     protected TextField saldoProyUSD;
     protected TextField saldoProyEUR;
-    protected ComboBox selProyectoTercero;
-    protected ComboBox selFuente;
     protected FormLayout billing_form2;
     protected OptionGroup selMoneda;
     protected NumberField numIngreso;
@@ -55,6 +57,7 @@ public class TransferenciaUI extends CssLayout {
     protected ComboBox selTipoMov;
     protected ComboBox selCtaContable;
     protected ComboBox selRubroInst;
+    protected ComboBox selFuente;
     protected ComboBox selRubroProy;
     protected FormLayout billing_form5;
     protected Label documento_header_label4;
@@ -71,15 +74,13 @@ public class TransferenciaUI extends CssLayout {
     protected Grid gridTrans;
     protected Label saldoTotal;
     protected FormLayout billing_form6;
+    protected Button nuevoComprobante;
     protected Button guardarBtn;
+    protected Button eliminarBtn;
     protected Button anularBtn;
     protected Button modificarBtn;
-    protected Button eliminarBtn;
-    protected Button nuevoComprobante;
     protected Button imprimirBtn;
     protected Button nuevaTransBtn;
-    protected Button finalizarTransBtn;
-    protected Button cerrarBtn;
     protected Button imprimirTotalBtn;
 
     public TransferenciaUI() {
