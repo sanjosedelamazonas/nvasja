@@ -28,6 +28,7 @@ public class RendicionManejoUI extends VerticalLayout {
     protected ComboBox selMoneda;
     protected HorizontalLayout horiz4;
     protected HorizontalLayout horiz3;
+    protected ComboBox filtroEnviadasCombo;
     protected Button btnEnviar;
     protected Button btnNueva;
     protected Grid grid;

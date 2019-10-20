@@ -155,3 +155,19 @@ Czy pola Tipo Cambio w każdym wierszu powinny być edytowalne, czy tylko wypeł
  np. - kiedy są puste, gdy zmieniamy datę operacji itd
 
 Jakimi parametrami ma sterować przycisk "ajuste"
+
+Rendiciones:
+- hay que anadir campo 'tipo de cambio' para aplicar a todos
+- cuando se anade nuevo item se deben copiar los datos de la linea en que esta focus, solo no se copia la glosa y monto
+- cuando se anade nuevo item  fecha de doc debe ser copiada de fecha de rendicion no fecha actual
+- guzik Modifikar no funciona en la pagina Registro de rendiciones
+- falta filtro No enviados a contabilidad
+- no se necesita origen en el grid ni origen contable
+- przy zapisywaniu nowego znika codigo de proyecto
+- nie odsiweza listy rendiciones po dodaniu nowej
+- al enviar a contabilidad debe revisar si glosa general, glosa de item, proyecto y cta contable sa wypelnione, bez tego nie moze wyslac
+- sprawdza czy jest tipo de cambio na dany dzien, jezeli nie ma zdefiniowanego to moze mozna podac w tym momencie albo wyslac mimo to
+
+-- puste wartosci nie moga byc nulami bo wywalaja stary system (zwalszcza destino, rendiciones)
+
+

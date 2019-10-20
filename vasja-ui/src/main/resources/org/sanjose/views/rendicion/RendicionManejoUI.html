@@ -19,10 +19,7 @@
      <vaadin-date-field _id="fechaHasta"></vaadin-date-field>
     </vaadin-horizontal-layout>
     <vaadin-horizontal-layout spacing>
-     <vaadin-label size-auto plain-text>
-       Moneda: 
-     </vaadin-label>
-     <vaadin-combo-box input-prompt="Filtrar por Moneda" item-caption-mode="id" width="65px" _id="selMoneda">
+     <vaadin-combo-box visible="false" input-prompt="Filtrar por Moneda" item-caption-mode="id" width="65px" _id="selMoneda">
       <option>Option 1</option>
       <option>Option 2</option>
       <option>Option 3</option>
@@ -35,7 +32,12 @@
     <vaadin-label width="50px" height-full plain-text></vaadin-label>
     <vaadin-vertical-layout size-full :expand>
      <vaadin-horizontal-layout width-full height="23px" _id="horiz3">
-      <vaadin-horizontal-layout :middle :right>
+      <vaadin-horizontal-layout spacing :middle :right>
+       <vaadin-combo-box input-prompt="Filtro enviadas a contabilidad" width="183px" _id="filtroEnviadasCombo">
+        <option>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+       </vaadin-combo-box>
        <vaadin-button _id="btnEnviar">
          Enviar a contabilidad 
        </vaadin-button>
