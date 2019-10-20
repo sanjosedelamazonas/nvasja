@@ -42,15 +42,15 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
     }
 
     private final RendicionManejoLogic viewLogic = new RendicionManejoLogic();
-    private final String[] VISIBLE_COLUMN_IDS = new String[]{ "codOrigen", "codComprobante", "fecComprobante", "txtGlosa",
-            "flgEnviado", "codOrigenenlace", "codComprobanteenlace", "msgUsuario"
+    private final String[] VISIBLE_COLUMN_IDS = new String[]{ "codComprobante", "fecComprobante", "txtGlosa",
+            "flgEnviado", "codComprobanteenlace", "msgUsuario"
     };
     private final String[] HIDDEN_COLUMN_IDS = new String[] {
     };
-    private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Origen", "Comprobante", "Fecha", "Glosa", "Enviado", "Origen Contab", "Voucher Contab", "Ingresado por"
+    private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Comprobante", "Fecha", "Glosa", "Enviado", "Voucher Contab", "Ingresado por"
     };
     private final int[] FILTER_WIDTH = new int[]{
-            3, 3, 4, 15, 3, 3, 2
+            4, 4, 15, 1, 3, 7
 //            5, 6, 4, 4,
 //            5, 15, 6, 6, 6, 6, 6, 6, //
 //            6, 4, 6, 5, 5, 2, // Tipo Doc
@@ -73,6 +73,8 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
     public Grid.FooterRow gridFooter;
 
     private Character moneda ='0';
+
+    private Boolean onlyEnviados = null;
 
     private GeneratedPropertyContainer gpContainer;
 
@@ -149,6 +151,15 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         grid.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
         grid.getColumn("flgEnviado").setHidden(true);
 
+        DataFilterUtil.bindBooleanComboBox(getFiltroEnviadasCombo(), "flgEnviado", "Filtro enviadas a contabilidad", new String[] { "Enviadas",  "No enviadas" });
+        getFiltroEnviadasCombo().addValueChangeListener(e -> {
+            grid.deselectAll();
+            onlyEnviados = (Boolean)e.getProperty().getValue();
+            container.removeContainerFilters("flgEnviado");
+            if (onlyEnviados!=null) {
+                container.addContainerFilter(new Compare.Equal("flgEnviado", onlyEnviados ? '1' : '0'));
+            }
+        });
         viewLogic.init(this);
 
         // Add filters
@@ -283,5 +294,9 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
 
     public Button getBtnEnviar() {
         return btnEnviar;
+    }
+
+    public ComboBox getFiltroEnviadasCombo() {
+        return filtroEnviadasCombo;
     }
 }

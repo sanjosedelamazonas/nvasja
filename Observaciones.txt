@@ -161,8 +161,11 @@ Rendiciones:
 - cuando se anade nuevo item se deben copiar los datos de la linea en que esta focus, solo no se copia la glosa y monto
 - cuando se anade nuevo item  fecha de doc debe ser copiada de fecha de rendicion no fecha actual
 - guzik Modifikar no funciona en la pagina Registro de rendiciones
+Działa tylko musi być zaznaczony rekord
 - falta filtro No enviados a contabilidad
+DONE
 - no se necesita origen en el grid ni origen contable
+DONE
 - przy zapisywaniu nowego znika codigo de proyecto
 - nie odsiweza listy rendiciones po dodaniu nowej
 - al enviar a contabilidad debe revisar si glosa general, glosa de item, proyecto y cta contable sa wypelnione, bez tego nie moze wyslac

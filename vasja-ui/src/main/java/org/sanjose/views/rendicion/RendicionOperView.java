@@ -158,7 +158,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
             ViewUtil.filterColumnsByMoneda(grid, (Character)getSelMoneda().getValue());
         else
             ViewUtil.filterColumnsByMoneda(grid, 'A');
-        getAjusteForm().setVisible(isVistaFull);
+        //getAjusteForm().setVisible(isVistaFull);
     }
 
     public ScpRendiciondetalle getSelectedRow() {
@@ -445,10 +445,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
 
     public Button getBtnSetAll() {
         return btnSetAll;
-    }
-
-    public HorizontalLayout getAjusteForm() {
-        return ajusteForm;
     }
 
     public TextField getNumDifsol() {
