@@ -447,7 +447,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         return btnSetAll;
     }
 
-    public FormLayout getAjusteForm() {
+    public HorizontalLayout getAjusteForm() {
         return ajusteForm;
     }
 
