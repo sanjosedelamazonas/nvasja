@@ -45,7 +45,7 @@ public class RendicionOperUI extends CssLayout {
     protected PopupDateField dataFechaRegistro;
     protected TextField txtIngresadoPor;
     protected Button btnGuardar;
-    protected Button eliminarRendBtn;
+    protected Button btnEliminarRend;
     protected Button btnVerVoucher;
     protected Button btnCerrar;
     protected TextField numItem;
@@ -66,7 +66,7 @@ public class RendicionOperUI extends CssLayout {
     protected ComboBox setAllLugarGasto;
     protected ComboBox setAllContable;
     protected ComboBox setAllRubrInst;
-    protected TextField tcambioText;
+    protected TextField setAllTcambioText;
     protected DateField setAllFechaDoc;
     protected DateField setAllFechaPago;
     protected Button btnSetAll;
@@ -87,4 +87,5 @@ public class RendicionOperUI extends CssLayout {
     public RendicionOperUI() {
         Design.read(this);
     }
+
 }

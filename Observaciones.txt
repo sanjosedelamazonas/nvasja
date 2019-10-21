@@ -158,8 +158,11 @@ Jakimi parametrami ma sterować przycisk "ajuste"
 
 Rendiciones:
 - hay que anadir campo 'tipo de cambio' para aplicar a todos
+DONE
 - cuando se anade nuevo item se deben copiar los datos de la linea en que esta focus, solo no se copia la glosa y monto
+DONE
 - cuando se anade nuevo item  fecha de doc debe ser copiada de fecha de rendicion no fecha actual
+DONE
 - guzik Modifikar no funciona en la pagina Registro de rendiciones
 Działa tylko musi być zaznaczony rekord
 - falta filtro No enviados a contabilidad
@@ -167,10 +170,14 @@ DONE
 - no se necesita origen en el grid ni origen contable
 DONE
 - przy zapisywaniu nowego znika codigo de proyecto
+W jakiej dokładnie sytuacji - nie potrafię tego powtórzyć
 - nie odsiweza listy rendiciones po dodaniu nowej
+DONE
 - al enviar a contabilidad debe revisar si glosa general, glosa de item, proyecto y cta contable sa wypelnione, bez tego nie moze wyslac
 - sprawdza czy jest tipo de cambio na dany dzien, jezeli nie ma zdefiniowanego to moze mozna podac w tym momencie albo wyslac mimo to
 
 -- puste wartosci nie moga byc nulami bo wywalaja stary system (zwalszcza destino, rendiciones)
+DONE - testowałem i nie powinno ich być
 
+- Guzik Eliminar Rend w OperUI
 

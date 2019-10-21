@@ -79,7 +79,7 @@ public class RendicionLogic extends RendicionItemLogic {
             else
                 switchMode(VIEW);
         }
-        closeWindow();
+        cerrarAlManejo();
     }
 
     public void nuevaRendicion() {
@@ -102,11 +102,14 @@ public class RendicionLogic extends RendicionItemLogic {
         item = null;
         bindForm(rendicioncabecera);
         addValidators();
+        switchMode(EDIT);
+        view.setEnableDetalleFields(false);
         loadDetallesToGrid(rendicioncabecera).ifPresent(renddet -> {
             view.grid.select(renddet);
-        });
-        if (rendicioncabecera.getCodRendicioncabecera()!=null)
             switchMode(EDIT);
+        });
+        //if (rendicioncabecera.getCodRendicioncabecera()!=null)
+        //    switchMode(EDIT);
         addCommitHandlerToGrid();
     }
 
@@ -149,9 +152,12 @@ public class RendicionLogic extends RendicionItemLogic {
 
     @Override
     public void cerrarAlManejo() {
+        view.getGrid().deselectAll();
+        item = null;
+        beanItem = null;
         if (navigatorView == null) navigatorView = MainUI.get().getRendicionManejoView();
         navigatorView.refreshData();
-        navigatorView.selectMoneda(rendicioncabecera.getCodTipomoneda());
+        if (rendicioncabecera!=null) navigatorView.selectMoneda(rendicioncabecera.getCodTipomoneda());
         MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
         closeWindow();
     }
@@ -159,6 +165,7 @@ public class RendicionLogic extends RendicionItemLogic {
     private void bindForm(ScpRendicioncabecera item) {
         isLoading = true;
         //clearSaldos();
+        setAllFields.forEach(field -> field.setValue(null));
         beanItem = new BeanItem<>(item);
         fieldGroupCabezera = new FieldGroup(beanItem);
         fieldGroupCabezera.setItemDataSource(beanItem);
@@ -291,6 +298,8 @@ public class RendicionLogic extends RendicionItemLogic {
         view.getService().deleteRendicionOperacion(rendiciondetalle.getScpRendicioncabecera(), rendiciondetalle);
         loadDetallesToGrid(rendcab);
         ViewUtil.clearFields(fieldGroup);
+        view.getNumItem().setValue("");
+        item = null;
         switchMode(VIEW);
     }
 

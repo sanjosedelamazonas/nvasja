@@ -463,6 +463,10 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         return btnAjustar;
     }
 
+    public TextField getSetAllTcambioText() {
+        return setAllTcambioText;
+    }
+
     @Override
     public void enter(ViewChangeEvent event) {
     }
