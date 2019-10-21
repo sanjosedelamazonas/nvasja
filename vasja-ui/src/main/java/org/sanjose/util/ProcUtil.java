@@ -425,6 +425,12 @@ public class ProcUtil {
                 Notification.show("!Attention!", "!Omitiendo operacion " + curRendicionCabecera.getCodComprobante() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
                 continue;
             }
+/*
+            if (curRendicionCabecera.) {
+                Notification.show("!Attention!", "!Omitiendo operacion " + curRendicionCabecera.getCodComprobante() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
+                continue;
+            }
+*/
             rendicionsAEnviar.add(curRendicionCabecera);
         }
         try {
@@ -444,16 +450,15 @@ public class ProcUtil {
     public String doEnviarContabilidadRendicion(ScpRendicioncabecera vcb) throws EnviarContabilidadException {
         try {
             log.debug("Ready to run stored procedure to enviar: " + vcb.getCodRendicioncabecera() + " " + vcb.getCodComprobante());
-            return "Done";
-//            StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarRendicion");
-//            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-//            query.setParameter(1, vcb.getCodRendicioncabecera());
-//            query.setParameter(2, CurrentUser.get());
-//            query.setParameter(3, sdf.format(vcb.getFecComprobante()));
-//            query.setParameter(4, vcb.getCodTipomoneda());
-//            String result = (String) query.getOutputParameterValue(5);
-//            query.execute();
-//            return result;
+            StoredProcedureQuery query = em.createNamedStoredProcedureQuery("getEnviarRendicion");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            query.setParameter(1, vcb.getCodRendicioncabecera());
+            query.setParameter(2, CurrentUser.get());
+            query.setParameter(3, sdf.format(vcb.getFecComprobante()));
+            query.setParameter(4, vcb.getCodTipomoneda());
+            String result = (String) query.getOutputParameterValue(5);
+            query.execute();
+            return result;
         } catch (Exception pe) {
             throw new EnviarContabilidadException("Problema al enviar a contabilidad rendicion: " + (vcb != null ? vcb.getCodRendicioncabecera() : 0)
                     + "\n\n" + pe.getMessage() +

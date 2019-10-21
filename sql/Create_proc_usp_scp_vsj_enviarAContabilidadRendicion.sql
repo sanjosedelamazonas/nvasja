@@ -5,7 +5,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidadRendicion]
+CREATE PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidadRendicion]
 	@cod_rendicioncabecera int, --id de operacion de scp_rendicioncabecera
 	@user varchar(15), -- nombre del usuario segun SCP
 	@fecha_operacion varchar(10),-- fecha de operacion en formato 'dd/mm/yyyy'

@@ -39,6 +39,17 @@ import java.math.BigDecimal;
 				}
 		),
 		@NamedStoredProcedureQuery(
+				name = "getEnviarRendicion",
+				procedureName = "usp_scp_vsj_enviarAContabilidadRendicion",
+				parameters = {
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = Character.class),
+						@StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class)
+				}
+		),
+		@NamedStoredProcedureQuery(
 				name = "getSaldoAlDia",
 				procedureName = "usp_scp_vsj_getSaldoAlDia",
 				parameters = {
