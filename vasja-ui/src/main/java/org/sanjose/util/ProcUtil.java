@@ -5,10 +5,7 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.authentication.CurrentUser;
-import org.sanjose.model.ScpCajabanco;
-import org.sanjose.model.ScpRendicioncabecera;
-import org.sanjose.model.ScpTipocambio;
-import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.*;
 import org.sanjose.repo.ScpTipocambioRep;
 import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.banco.BancoService;
@@ -422,19 +419,66 @@ public class ProcUtil {
         for (Object objVcb : vcbs) {
             curRendicionCabecera = (ScpRendicioncabecera) objVcb;
             if (curRendicionCabecera.isEnviado()) {
-                Notification.show("!Attention!", "!Omitiendo operacion " + curRendicionCabecera.getCodComprobante() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
+                Notification.show("!Attention!", "!Omitiendo rendicion " + curRendicionCabecera.getCodComprobante() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
                 continue;
             }
-/*
-            if (curRendicionCabecera.) {
-                Notification.show("!Attention!", "!Omitiendo operacion " + curRendicionCabecera.getCodComprobante() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
+            if (GenUtil.strNullOrEmpty(curRendicionCabecera.getTxtGlosa())) {
+                Notification.show("!Attention!", "!Omitiendo rendicion " + curRendicionCabecera.getCodComprobante() + " - falta glosa de cabecera!", Notification.Type.TRAY_NOTIFICATION);
                 continue;
             }
-*/
+            for (ScpRendiciondetalle det : service.getRendiciondetalleRep().findById_CodRendicioncabecera(curRendicionCabecera.getCodRendicioncabecera())) {
+                if (GenUtil.strNullOrEmpty(det.getCodCtacontable()) || GenUtil.strNullOrEmpty(det.getCodProyecto()) || GenUtil.strNullOrEmpty(det.getTxtGlosaitem())) {
+                    MessageBox
+                            .createError()
+                            .withCaption("Problema al Enviar a contabilidad")
+                            .withMessage("!Omitiendo rendicion " + curRendicionCabecera.getCodComprobante() + " - falta glosa, proyecto o cuenta contable en item numero: " + det.getId().getNumNroitem() + " !")
+                            .withOkButton()
+                            .open();
+                    continue;
+                }
+            }
+            // Falta Tipo de cambio?
+            if (!existeTipoDeCambio(curRendicionCabecera.getFecComprobante(), curRendicionCabecera.getCodTipomoneda(), service.getTipocambioRep())) {
+                try {
+                    TipoCambio.checkTipoCambio(curRendicionCabecera.getFecComprobante(), service.getTipocambioRep());
+                } catch (TipoCambio.TipoCambioNoExiste e) {
+                    rendicionsFaltaTipoCambio.put(curRendicionCabecera, e.getMessage());
+                }
+            }
             rendicionsAEnviar.add(curRendicionCabecera);
         }
+
+
         try {
-            itemsRefreshing.refreshItems(enviarContabilidadRendicionInTransaction(rendicionsAEnviar, service));
+            if (!rendicionsFaltaTipoCambio.isEmpty()) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                StringBuffer sb = new StringBuffer();
+                for (ScpRendicioncabecera cab : rendicionsFaltaTipoCambio.keySet())
+                    sb.append("\n").append(cab.getCodComprobante()).append(" fecha: ").append(sdf.format(cab.getFecComprobante()))
+                            .append("\n")
+                            .append(rendicionsFaltaTipoCambio.get(cab));
+                MessageBox
+                        .createQuestion()
+                        .withCaption("Falta tipo de cambio")
+                        .withMessage("No se podia conseguir el tipo de cambio para rendiciones: " + sb.toString()
+                                + "\n?Continuar o ignorar esta operacion?\n")
+                        .withYesButton(() -> {
+                            try {
+                                itemsRefreshing.refreshItems(enviarContabilidadRendicionInTransaction(rendicionsAEnviar, service));
+                            } catch (EnviarContabilidadException envexc) {
+                                MessageBox
+                                        .createError()
+                                        .withCaption("Problema al Enviar a contabilidad")
+                                        .withMessage(envexc.getMessage())
+                                        .withOkButton()
+                                        .open();
+                            }
+                        })
+                        .withNoButton()
+                        .open();
+            } else {
+                itemsRefreshing.refreshItems(enviarContabilidadRendicionInTransaction(rendicionsAEnviar, service));
+            }
         } catch (EnviarContabilidadException envexc) {
             MessageBox
                     .createError()

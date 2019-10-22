@@ -87,5 +87,4 @@ public class RendicionOperUI extends CssLayout {
     public RendicionOperUI() {
         Design.read(this);
     }
-
 }

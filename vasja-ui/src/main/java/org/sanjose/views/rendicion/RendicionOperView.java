@@ -467,6 +467,10 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         return setAllTcambioText;
     }
 
+    public Button getBtnEliminarRend() {
+        return btnEliminarRend;
+    }
+
     @Override
     public void enter(ViewChangeEvent event) {
     }

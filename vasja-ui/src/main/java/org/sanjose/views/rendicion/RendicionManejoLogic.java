@@ -3,7 +3,6 @@ package org.sanjose.views.rendicion;
 import com.vaadin.data.sort.Sort;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.shared.data.sort.SortDirection;
-import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpRendicioncabecera;
@@ -16,31 +15,31 @@ import java.util.*;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
- * view, its parts like the product editor form and the data source, including
+ * manView, its parts like the product editor form and the data source, including
  * fetching and saving products.
  *
- * Having this separate from the view makes it easier to test various parts of
+ * Having this separate from the manView makes it easier to test various parts of
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecera>, Serializable {
+public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsRefreshing<ScpRendicioncabecera>, Serializable {
 
-    protected RendicionManejoView view;
+    //protected RendicionManejoView manView;
     private CajaSaldoView saldosView = new CajaSaldoView();
 
     public void init(RendicionManejoView rendicionManejoView) {
-        view = rendicionManejoView;
-        view.getBtnNueva().addClickListener(e -> nuevaRendicion());
-        view.getBtnModificar().addClickListener(e -> editarRendicion(view.getSelectedRow()));
-        view.getBtnEnviar().addClickListener(e -> enviarContabilidad(view.getSelectedRow()));
-        //view.getBtnVerImprimir().addClickListener(e -> generateComprobante());
+        manView = rendicionManejoView;
+        manView.getBtnNueva().addClickListener(e -> nuevaRendicion());
+        manView.getBtnModificar().addClickListener(e -> editarRendicion(manView.getSelectedRow()));
+        manView.getBtnEnviar().addClickListener(e -> enviarContabilidad(manView.getSelectedRow()));
+        //manView.getBtnVerImprimir().addClickListener(e -> generateComprobante());
         //
-        //view.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
-        //view.btnImprimir.addClickListener(e -> printComprobante());
-        view.getBtnEliminar().addClickListener(e -> eliminarComprobante(view.getSelectedRow()));
-        saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(view.getFechaDesde().getValue(), view.getFechaHasta().getValue(), null));
+        //manView.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
+        //manView.btnImprimir.addClickListener(e -> printComprobante());
+        manView.getBtnEliminar().addClickListener(e -> eliminarRendicion(manView.getSelectedRow()));
+        saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(manView.getFechaDesde().getValue(), manView.getFechaHasta().getValue(), null));
 
-//        GridContextMenu gridContextMenu = new GridContextMenu(view.getGrid());
+//        GridContextMenu gridContextMenu = new GridContextMenu(manView.getGrid());
 //        gridContextMenu.addGridBodyContextMenuListener(e -> {
 //            gridContextMenu.removeItems();
 //            final Object itemId = e.getItemId();
@@ -64,108 +63,67 @@ public class RendicionManejoLogic implements ItemsRefreshing<ScpRendicioncabecer
 
 
     protected void nuevaRendicion() {
-        view.clearSelection();
+        manView.clearSelection();
         MainUI.get().getRendicionOperView().getViewLogic().nuevaRendicion();
-        MainUI.get().getRendicionOperView().getViewLogic().setNavigatorView(view);
+        MainUI.get().getRendicionOperView().getViewLogic().setNavigatorView(manView);
         ViewUtil.openViewInNewWindow(MainUI.get().getRendicionOperView());
         //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
 //    private void generateComprobante() {
-//        ReportHelper.generateComprobante(view.getSelectedRow());
+//        ReportHelper.generateComprobante(manView.getSelectedRow());
 //    }
 //
 //    private void printComprobante() {
-//        ViewUtil.printComprobante(view.getSelectedRow());
+//        ViewUtil.printComprobante(manView.getSelectedRow());
 //    }
 
     protected void editarRendicion(ScpRendicioncabecera vcb) {
         if (vcb==null) return;
-        //MainUI.get().getRendicionOperView().setNavigatorView(view);
+        //MainUI.get().getRendicionOperView().setNavigatorView(manView);
         MainUI.get().getRendicionOperView().getViewLogic().editarRendicion(vcb);
         ViewUtil.openViewInNewWindow(MainUI.get().getRendicionOperView());
     }
 
     // Realize logic from View
     public void filter(Date fechaDesde, Date fechaHasta) {
-        view.getContainer().removeAllItems();
-        view.setFilterInitialDate(fechaDesde);
-        view.getContainer().addAll(view.getService().getRendicioncabeceraRep().findByFecComprobanteBetween(fechaDesde, fechaHasta));
-        view.getGrid().setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
+        manView.getContainer().removeAllItems();
+        manView.setFilterInitialDate(fechaDesde);
+        manView.getContainer().addAll(manView.getService().getRendicioncabeceraRep().findByFecComprobanteBetween(fechaDesde, fechaHasta));
+        manView.getGrid().setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
         //calcFooterSums();
     }
 
     // Realize logic from View
     public void refreshData() {
-        SortOrder[] sortOrders = view.getGrid().getSortOrder().toArray(new SortOrder[1]);
-        filter(view.getFechaDesde().getValue(), view.getFechaHasta().getValue());
-        view.getGrid().setSortOrder(Arrays.asList(sortOrders));
+        SortOrder[] sortOrders = manView.getGrid().getSortOrder().toArray(new SortOrder[1]);
+        filter(manView.getFechaDesde().getValue(), manView.getFechaHasta().getValue());
+        manView.getGrid().setSortOrder(Arrays.asList(sortOrders));
         //calcFooterSums();
         //setSaldosFinal();
     }
 
     public void enviarContabilidad(ScpRendicioncabecera rendicioncabecera) {
-        Collection<Object> cabecerasParaEnviar = view.getSelectedRows();
+        Collection<Object> cabecerasParaEnviar = manView.getSelectedRows();
         Collection<ScpRendicioncabecera> cabecerasParaRefresh = new ArrayList<>();
         if (cabecerasParaEnviar.isEmpty() && rendicioncabecera!=null) {
             cabecerasParaEnviar.add(rendicioncabecera);
             cabecerasParaRefresh.add(rendicioncabecera);
         }
         cabecerasParaEnviar.forEach(e -> cabecerasParaRefresh.add((ScpRendicioncabecera) e));
-        MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, view.getService(),this);
-        view.getGrid().deselectAll();
+        MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, manView.getService(),this);
+        manView.getGrid().deselectAll();
     }
 
 
     @Override
     public void refreshItems(Collection<ScpRendicioncabecera> rendicioncabeceras) {
         rendicioncabeceras.forEach(scb -> {
-//            ScpCajabanco newScb = view.getService().getRendicioncabeceraRep().findByCodCajabanco(scb.getCodCajabanco());
-//            view.getGrid().getContainerDataSource().removeItem(scb);
-//            view.getGrid().getContainerDataSource().addItem(newScb);
+//            ScpCajabanco newScb = manView.getService().getRendicioncabeceraRep().findByCodCajabanco(scb.getCodCajabanco());
+//            manView.getGrid().getContainerDataSource().removeItem(scb);
+//            manView.getGrid().getContainerDataSource().addItem(newScb);
         });
-        view.refreshData();
+        manView.refreshData();
     }
 
-    void eliminarComprobante(ScpRendicioncabecera rendicioncabecera) {
-        if (rendicioncabecera == null)
-            return;
-        if (rendicioncabecera.isEnviado()) {
-            MessageBox
-                    .createInfo()
-                    .withCaption("Ya enviado a contabilidad")
-                    .withMessage("No se puede eliminar porque ya esta enviado a la contabilidad.")
-                    .withOkButton()
-                    .open();
-            return;
-        }
-        MessageBox
-                .createQuestion()
-                .withCaption("Eliminar")
-                .withMessage("?Esta seguro que quiere eliminar esta rendicion?")
-                .withYesButton(() ->  doEliminarComprobante(rendicioncabecera))
-                .withNoButton()
-                .open();
-    }
-
-    void doEliminarComprobante(ScpRendicioncabecera rendicioncabecera) {
-        try {
-            view.getService().deleteRendicion(rendicioncabecera);
-            view.refreshData();
-            MessageBox
-                    .createInfo()
-                    .withCaption("Elminado correctamente")
-                    .withMessage("La rendicion ha sido eliminado.")
-                    .withOkButton()
-                    .open();
-        } catch (Exception ce) {
-            //log.info("Got Exception al eliminar comprobante: " + ce.getMessage());
-            MessageBox
-                    .createError()
-                    .withCaption("Error al eliminar la rendicion:")
-                    .withMessage(ce.getLocalizedMessage())
-                    .withOkButton()
-                    .open();
-        }
-    }
 }

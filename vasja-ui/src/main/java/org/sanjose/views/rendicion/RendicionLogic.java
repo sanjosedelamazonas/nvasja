@@ -65,6 +65,7 @@ public class RendicionLogic extends RendicionItemLogic {
         view.getBtnCerrar().addClickListener(event -> cerrarAlManejo());
         view.getBtnVerVoucher().addClickListener(event -> ReportHelper.generateComprobante(beanItem.getBean()));
         view.getBtnToggleVista().addClickListener(event -> view.toggleVista());
+        view.getBtnEliminarRend().addClickListener(clickEvent -> eliminarRendicion(beanItem.getBean()));
         switchMode(EMPTY);
     }
 
@@ -102,14 +103,14 @@ public class RendicionLogic extends RendicionItemLogic {
         item = null;
         bindForm(rendicioncabecera);
         addValidators();
-        switchMode(EDIT);
+        switchMode(NEW);
         view.setEnableDetalleFields(false);
         loadDetallesToGrid(rendicioncabecera).ifPresent(renddet -> {
             view.grid.select(renddet);
             switchMode(EDIT);
         });
-        //if (rendicioncabecera.getCodRendicioncabecera()!=null)
-        //    switchMode(EDIT);
+        if (rendicioncabecera.getCodRendicioncabecera()!=null)
+            switchMode(EDIT);
         addCommitHandlerToGrid();
     }
 
@@ -309,22 +310,22 @@ public class RendicionLogic extends RendicionItemLogic {
                 view.getBtnGuardar().setEnabled(false);
                 view.getBtnAnular().setEnabled(false);
                 view.getBtnEliminar().setEnabled(false);
-                view.getBtnModificar().setEnabled(false);
                 view.getBtnVerVoucher().setEnabled(false);
                 view.getBtnNewItem().setEnabled(false);
+                view.getBtnEliminarRend().setEnabled(false);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
                 break;
 
             case NEW:
-                view.getBtnGuardar().setEnabled(false);
+                view.getBtnGuardar().setEnabled(true);
                 view.getBtnAnular().setEnabled(true);
-                view.getBtnEliminar().setEnabled(false);
-                view.getBtnModificar().setEnabled(false);
-                view.getBtnVerVoucher().setEnabled(false);
+                if (view.getContainer().size() > 1) view.getBtnEliminar().setEnabled(true);
+                else view.getBtnEliminar().setEnabled(false);
                 view.getBtnVerVoucher().setEnabled(false);
                 view.getBtnNewItem().setEnabled(true);
                 view.getBtnCerrar().setEnabled(false);
+                view.getBtnEliminarRend().setEnabled(false);
                 view.setEnableCabezeraFields(true);
                 view.setEnableDetalleFields(false);
                 break;
@@ -334,11 +335,11 @@ public class RendicionLogic extends RendicionItemLogic {
                 view.getBtnAnular().setEnabled(true);
                 if (view.getContainer().size() > 1) view.getBtnEliminar().setEnabled(true);
                 else view.getBtnEliminar().setEnabled(false);
-                view.getBtnModificar().setEnabled(false);
                 if (ViewUtil.isPrinterReady()) view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnNewItem().setEnabled(true);
                 view.getBtnCerrar().setEnabled(false);
+                view.getBtnEliminarRend().setEnabled(true);
                 view.setEnableCabezeraFields(true);
                 view.setEnableDetalleFields(true);
                 break;
@@ -348,6 +349,7 @@ public class RendicionLogic extends RendicionItemLogic {
                 view.getBtnAnular().setEnabled(false);
                 view.getBtnCerrar().setEnabled(true);
                 view.getBtnVerVoucher().setEnabled(true);
+                view.getBtnEliminarRend().setEnabled(true);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
                 break;

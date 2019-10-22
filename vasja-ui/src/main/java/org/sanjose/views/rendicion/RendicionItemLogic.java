@@ -34,14 +34,14 @@ import java.util.*;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
- * view, its parts like the product editor form and the data source, including
+ * manView, its parts like the product editor form and the data source, including
  * fetching and saving products.
  * <p>
- * Having this separate from the view makes it easier to test various parts of
+ * Having this separate from the manView makes it easier to test various parts of
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
+class RendicionItemLogic extends RendicionSharedLogic implements Serializable, ComprobanteWarnGuardar {
 
     private static final Logger log = LoggerFactory.getLogger(RendicionItemLogic.class);
     protected ScpRendiciondetalle item;
@@ -65,12 +65,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
 
     public void init(RendicionOperView view) {
         this.view = view;
-        tipoCambioListener = new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                setTipoCambios((Date)valueChangeEvent.getProperty().getValue());
-            }
-        };
+        tipoCambioListener = (Property.ValueChangeListener) valueChangeEvent -> setTipoCambios((Date)valueChangeEvent.getProperty().getValue());
         setAllFields.add(view.getSetAllProyecto());
         setAllFields.add(view.getSetAllFuente());
         setAllFields.add(view.getSetAllPartida());
@@ -80,6 +75,8 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         setAllFields.add(view.getSetAllTcambioText());
         setAllFields.add(view.getSetAllFechaDoc());
         setAllFields.add(view.getSetAllFechaPago());
+        manView = MainUI.get().getRendicionManejoView();
+        navigatorView = manView;
     }
 
     public void setupEditComprobanteView() {
@@ -106,7 +103,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getDataFechaRegistro().setResolution(Resolution.DAY);
         view.getDataFechaRegistro().setValue(new Date());
 
-        //view.getNumVoucher().setEnabled(false);
+        //manView.getNumVoucher().setEnabled(false);
 
         // Responsable
         DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
@@ -150,11 +147,11 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getTxtSerieDoc().setMaxLength(5);
         view.getTxtNumDoc().setMaxLength(20);
 
-        //view.getFechaPago().setPropertyDataSource(prop);
+        //manView.getFechaPago().setPropertyDataSource(prop);
         view.getFechaPago().setConverter(DateToTimestampConverter.INSTANCE);
         view.getFechaPago().setResolution(Resolution.DAY);
 
-        //view.getFechaPago().setPropertyDataSource(prop);
+        //manView.getFechaPago().setPropertyDataSource(prop);
         view.getFechaDoc().setConverter(DateToTimestampConverter.INSTANCE);
         view.getFechaDoc().setResolution(Resolution.DAY);
 
@@ -170,7 +167,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         pdf.setResolution(Resolution.DAY);
         view.grid.getColumn("fecPagocomprobantepago").setEditorField(pdf);
         view.grid.getColumn("fecPagocomprobantepago").setRenderer(new DateNotNullRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
-        //pdf.addValueChangeListener(e -> view.getFechaPago().setValue((Date)e.getProperty().getValue()));
+        //pdf.addValueChangeListener(e -> manView.getFechaPago().setValue((Date)e.getProperty().getValue()));
 
         // Fecha Doc
 //        ObjectProperty<Timestamp> prop = new ObjectProperty<>(rendicioncabecera.getFecComprobante());
@@ -336,7 +333,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         String haberDebe = propertyName.contains("Haber") ? "Haber" : "Debe";
         BigDecimal tcDolar = (BigDecimal)beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).getValue();
         BigDecimal tcEuro = (BigDecimal)beanItem.getItemProperty("numTc" + GenUtil.getDescMoneda(GenUtil.EUR)).getValue();
-//        BeanItem beanItem = view.getContainer().getItem(view.grid.getEditedItemId());
+//        BeanItem beanItem = manView.getContainer().getItem(manView.grid.getEditedItemId());
 //        if (beanItem==null)
 //            return;
         if (moneda==GenUtil.PEN) {
@@ -403,7 +400,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     // END OF TIPO CAMBIO LOGIC
 
     private void setMonedaLogic(Character moneda) {
-        // Update Tipo Moneda on every item only if not advanced view
+        // Update Tipo Moneda on every item only if not advanced manView
         this.moneda = moneda;
         if (!view.isVistaFull) {
             updateItemProperty("codTipomoneda", moneda, view.getContainer().getItemIds());
@@ -473,7 +470,7 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getTxtNumDoc().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "txtComprobantepago"));
         view.getSelTipoMov().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "codTipomov"));
 //        // Check saldos and warn
-//        saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN(), this);
+//        saldoChecker = new SaldoChecker(manView.getNumEgreso(), manView.getSaldoCuenta(), manView.getSaldoProyPEN(), this);
     }
 
     private void setProyectoLogic(Property.ValueChangeEvent event) {
@@ -649,8 +646,6 @@ class RendicionItemLogic implements Serializable, ComprobanteWarnGuardar {
     // Buttons
 
     void cerrarAlManejo() {
-        if (navigatorView == null)
-            navigatorView = MainUI.get().getCajaManejoView();
         MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
     }
 
