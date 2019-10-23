@@ -73,7 +73,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
 
     private static final Logger log = LoggerFactory.getLogger(RendicionOperView.class);
 
-    private final Field[] allFields = new Field[]{ txtGlosaCabeza, selTipoMov, selCodAuxiliar, fechaPago,
+    private final Field[] allFields = new Field[]{ selTipoMov, selCodAuxiliar, fechaPago,
             selTipoDoc, fechaDoc, txtSerieDoc, txtNumDoc, txtGlosaDetalle
     };
     private final Field[] cabezeraFields = new Field[]{dataFechaComprobante, txtGlosaCabeza, selResponsable1, selMoneda,

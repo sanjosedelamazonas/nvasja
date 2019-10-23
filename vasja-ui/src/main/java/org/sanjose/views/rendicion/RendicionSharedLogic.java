@@ -7,6 +7,7 @@ public class RendicionSharedLogic {
 
     protected RendicionManejoView manView;
 
+
     void eliminarRendicion(ScpRendicioncabecera rendicioncabecera) {
         if (rendicioncabecera == null || rendicioncabecera.getCodRendicioncabecera()==null)
             return;
@@ -36,7 +37,7 @@ public class RendicionSharedLogic {
                     .createInfo()
                     .withCaption("Elminado correctamente")
                     .withMessage("La rendicion ha sido eliminado.")
-                    .withOkButton()
+                    .withOkButton(() -> cerrarAlManejo())
                     .open();
         } catch (Exception ce) {
             //log.info("Got Exception al eliminar comprobante: " + ce.getMessage());
@@ -48,4 +49,8 @@ public class RendicionSharedLogic {
                     .open();
         }
     }
+
+    public void cerrarAlManejo() {
+    }
+
 }

@@ -644,11 +644,6 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
     }
 
     // Buttons
-
-    void cerrarAlManejo() {
-        MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
-    }
-
     void nuevoItem(ScpRendiciondetalle vcb) {
         if (rendicioncabecera != null)
             vcb.setScpRendicioncabecera(rendicioncabecera);
@@ -745,6 +740,14 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
                         // Copy date field values from grid to detalle fields
                         view.getFechaDoc().setValue((Date) view.getGrid().getColumn("fecComprobantepago").getEditorField().getValue());
                         view.getFechaPago().setValue((Date) view.getGrid().getColumn("fecPagocomprobantepago").getEditorField().getValue());
+
+                        // Check if empty Tipo Cambio and set
+                        if ((vcb.getCodTipomoneda().equals(GenUtil.USD) || vcb.getCodTipomoneda().equals(GenUtil.PEN))
+                                && GenUtil.isNullOrZero((BigDecimal) beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).getValue())
+                        || (vcb.getCodTipomoneda().equals(GenUtil.EUR) && GenUtil.isNullOrZero((BigDecimal) beanItem.getItemProperty("numTccmo").getValue()))
+                        ) {
+                            setTipoCambios(view.getFechaDoc().getValue());
+                        }
                         String[] numFields = {"numHaber", "numDebe"};
                         Arrays.asList(numFields).forEach(f -> calculateInOtherCurrencies(f + GenUtil.getDescMoneda(vcb.getCodTipomoneda())));
                         // Save data

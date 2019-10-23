@@ -178,6 +178,6 @@ DONE
 
 -- puste wartosci nie moga byc nulami bo wywalaja stary system (zwalszcza destino, rendiciones)
 DONE - testowałem i nie powinno ich być
-
 - Guzik Eliminar Rend w OperUI
+DONE
 

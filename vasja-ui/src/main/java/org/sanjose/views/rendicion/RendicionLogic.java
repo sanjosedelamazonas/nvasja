@@ -65,7 +65,10 @@ public class RendicionLogic extends RendicionItemLogic {
         view.getBtnCerrar().addClickListener(event -> cerrarAlManejo());
         view.getBtnVerVoucher().addClickListener(event -> ReportHelper.generateComprobante(beanItem.getBean()));
         view.getBtnToggleVista().addClickListener(event -> view.toggleVista());
-        view.getBtnEliminarRend().addClickListener(clickEvent -> eliminarRendicion(beanItem.getBean()));
+        view.getBtnEliminarRend().addClickListener(clickEvent -> {
+            eliminarRendicion(beanItem.getBean());
+
+        });
         switchMode(EMPTY);
     }
 
