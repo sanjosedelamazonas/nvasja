@@ -744,7 +744,7 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
                         // Check if empty Tipo Cambio and set
                         if ((vcb.getCodTipomoneda().equals(GenUtil.USD) || vcb.getCodTipomoneda().equals(GenUtil.PEN))
                                 && GenUtil.isNullOrZero((BigDecimal) beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).getValue())
-                        || (vcb.getCodTipomoneda().equals(GenUtil.EUR) && GenUtil.isNullOrZero((BigDecimal) beanItem.getItemProperty("numTccmo").getValue()))
+                        || (vcb.getCodTipomoneda().equals(GenUtil.EUR) && GenUtil.isNullOrZero((BigDecimal) beanItem.getItemProperty("numTcmo").getValue()))
                         ) {
                             setTipoCambios(view.getFechaDoc().getValue());
                         }

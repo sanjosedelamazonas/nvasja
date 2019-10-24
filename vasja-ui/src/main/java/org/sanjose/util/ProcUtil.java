@@ -11,6 +11,8 @@ import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.banco.BancoService;
 import org.sanjose.views.caja.ComprobanteService;
 import org.sanjose.views.rendicion.RendicionService;
+import org.sanjose.views.rendicion.RendicionTipoCambiosLogic;
+import org.sanjose.views.sys.TipoCambioLogic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -413,6 +415,25 @@ public class ProcUtil {
     }
 
 
+    public void checkTipoCambios(List<ScpRendicioncabecera> rends, RendicionService service) {
+
+
+
+        Map<ScpRendicioncabecera, Boolean> rendicionsFaltaTipoCambioDecision = new HashMap<>();
+        for (ScpRendicioncabecera cab : rends) {
+            if (!existeTipoDeCambio(cab.getFecComprobante(), cab.getCodTipomoneda(), service.getTipocambioRep())) {
+                TipoCambioLogic.openTipocambio(cab.getFecComprobante(), service.getTipocambioRep());
+            }
+
+
+        }
+
+
+
+
+    }
+
+
     public void enviarContabilidadRendicion(Collection<Object> vcbs, RendicionService service, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
         Set<ScpRendicioncabecera> rendicionsAEnviar = new HashSet<>();
         Map<ScpRendicioncabecera, String> rendicionsFaltaTipoCambio = new HashMap<>();
@@ -426,6 +447,7 @@ public class ProcUtil {
                 Notification.show("!Attention!", "!Omitiendo rendicion " + curRendicionCabecera.getCodComprobante() + " - falta glosa de cabecera!", Notification.Type.TRAY_NOTIFICATION);
                 continue;
             }
+            boolean isValidated = true;
             for (ScpRendiciondetalle det : service.getRendiciondetalleRep().findById_CodRendicioncabecera(curRendicionCabecera.getCodRendicioncabecera())) {
                 if (GenUtil.strNullOrEmpty(det.getCodCtacontable()) || GenUtil.strNullOrEmpty(det.getCodProyecto()) || GenUtil.strNullOrEmpty(det.getTxtGlosaitem())) {
                     MessageBox
@@ -434,51 +456,32 @@ public class ProcUtil {
                             .withMessage("!Omitiendo rendicion " + curRendicionCabecera.getCodComprobante() + " - falta glosa, proyecto o cuenta contable en item numero: " + det.getId().getNumNroitem() + " !")
                             .withOkButton()
                             .open();
-                    continue;
+                    isValidated = false;
+                    break;
                 }
             }
+            if (!isValidated) continue;
             // Falta Tipo de cambio?
             if (!existeTipoDeCambio(curRendicionCabecera.getFecComprobante(), curRendicionCabecera.getCodTipomoneda(), service.getTipocambioRep())) {
                 try {
                     TipoCambio.checkTipoCambio(curRendicionCabecera.getFecComprobante(), service.getTipocambioRep());
                 } catch (TipoCambio.TipoCambioNoExiste e) {
+                    //Tipo
                     rendicionsFaltaTipoCambio.put(curRendicionCabecera, e.getMessage());
                 }
             }
             rendicionsAEnviar.add(curRendicionCabecera);
         }
+        if (!rendicionsFaltaTipoCambio.isEmpty()) {
+            new RendicionTipoCambiosLogic(rendicionsAEnviar, service, this, itemsRefreshing);
+        } else {
+            enviarContabilidadRendicionConTipoCambio(rendicionsAEnviar, service, itemsRefreshing);
+        }
+    }
 
-
+    public void enviarContabilidadRendicionConTipoCambio(Set<ScpRendicioncabecera> rendicionsAEnviar, RendicionService service, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
         try {
-            if (!rendicionsFaltaTipoCambio.isEmpty()) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                StringBuffer sb = new StringBuffer();
-                for (ScpRendicioncabecera cab : rendicionsFaltaTipoCambio.keySet())
-                    sb.append("\n").append(cab.getCodComprobante()).append(" fecha: ").append(sdf.format(cab.getFecComprobante()))
-                            .append("\n")
-                            .append(rendicionsFaltaTipoCambio.get(cab));
-                MessageBox
-                        .createQuestion()
-                        .withCaption("Falta tipo de cambio")
-                        .withMessage("No se podia conseguir el tipo de cambio para rendiciones: " + sb.toString()
-                                + "\n?Continuar o ignorar esta operacion?\n")
-                        .withYesButton(() -> {
-                            try {
-                                itemsRefreshing.refreshItems(enviarContabilidadRendicionInTransaction(rendicionsAEnviar, service));
-                            } catch (EnviarContabilidadException envexc) {
-                                MessageBox
-                                        .createError()
-                                        .withCaption("Problema al Enviar a contabilidad")
-                                        .withMessage(envexc.getMessage())
-                                        .withOkButton()
-                                        .open();
-                            }
-                        })
-                        .withNoButton()
-                        .open();
-            } else {
-                itemsRefreshing.refreshItems(enviarContabilidadRendicionInTransaction(rendicionsAEnviar, service));
-            }
+            itemsRefreshing.refreshItems(enviarContabilidadRendicionInTransaction(rendicionsAEnviar, service));
         } catch (EnviarContabilidadException envexc) {
             MessageBox
                     .createError()
@@ -488,7 +491,6 @@ public class ProcUtil {
                     .open();
         }
     }
-
 
     @Transactional(readOnly = false)
     public String doEnviarContabilidadRendicion(ScpRendicioncabecera vcb) throws EnviarContabilidadException {
