@@ -1,21 +1,18 @@
 package org.sanjose.views.rendicion;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.GeneratedPropertyContainer;
-import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.event.SelectionEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import org.sanjose.converter.ZeroOneToBooleanConverter;
 import org.sanjose.model.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.SubWindowing;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
@@ -82,7 +79,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
     private RendicionLogic viewLogic = null;
     private BeanItemContainer<ScpRendiciondetalle> container;
     //private GeneratedPropertyContainer gpContainer;
-    private RendicionService RendicionService;
+    private org.sanjose.views.sys.PersistanceService PersistanceService;
 
     public boolean isVistaFull = false;
 
@@ -91,13 +88,13 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
     public RendicionOperView() {
     }
 
-    public RendicionOperView(RendicionService RendicionService) {
-        this.RendicionService = RendicionService;
+    public RendicionOperView(PersistanceService PersistanceService) {
+        this.PersistanceService = PersistanceService;
         setSizeFull();
     }
 
-    public void init(RendicionService RendicionService) {
-        this.RendicionService = RendicionService;
+    public void init(PersistanceService PersistanceService) {
+        this.PersistanceService = PersistanceService;
         init();
     }
 
@@ -271,8 +268,8 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         viewLogic.navigatorView.refreshData();
     }
 
-    public RendicionService getService() {
-        return RendicionService;
+    public PersistanceService getService() {
+        return PersistanceService;
     }
 
     public TextField getTxtOrigen() {

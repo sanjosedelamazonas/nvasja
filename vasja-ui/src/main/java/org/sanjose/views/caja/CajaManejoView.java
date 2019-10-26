@@ -14,6 +14,7 @@ import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -66,9 +67,9 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
 
     private BeanItemContainer<ScpCajabanco> container;
 
-    private ComprobanteService comprobanteService;
+    private PersistanceService comprobanteService;
 
-    public CajaManejoView(ComprobanteService comprobanteService) {
+    public CajaManejoView(PersistanceService comprobanteService) {
         this.comprobanteService = comprobanteService;
     }
 
@@ -229,7 +230,7 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
         return VIEW_NAME;
     }
 
-    public ComprobanteService getService() {
+    public PersistanceService getService() {
         return comprobanteService;
     }
 

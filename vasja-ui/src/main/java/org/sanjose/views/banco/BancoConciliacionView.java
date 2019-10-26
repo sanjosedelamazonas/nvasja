@@ -21,6 +21,7 @@ import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import org.vaadin.gridtree.GridTree;
@@ -77,9 +78,9 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
     FilterableSortableGridTreeContainer container = null;
 
-    private BancoService bancoService;
+    private PersistanceService bancoService;
 
-    public BancoConciliacionView(BancoService bancoService) {
+    public BancoConciliacionView(PersistanceService bancoService) {
         this.bancoService = bancoService;
     }
 
@@ -345,7 +346,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
     }
 
     @Override
-    public BancoService getService() {
+    public PersistanceService getService() {
         return bancoService;
     }
 

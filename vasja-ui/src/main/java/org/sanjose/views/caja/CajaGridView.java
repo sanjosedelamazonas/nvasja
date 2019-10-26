@@ -27,6 +27,7 @@ import org.sanjose.util.*;
 import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 
 import java.sql.Timestamp;
@@ -76,9 +77,9 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
     private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
 
     private ScpCajabanco itemSeleccionado;
-    private ComprobanteService comprobanteService;
+    private PersistanceService comprobanteService;
 
-    public CajaGridView(ComprobanteService comprobanteService) {
+    public CajaGridView(PersistanceService comprobanteService) {
         this.comprobanteService = comprobanteService;
         viewLogic = new CajaGridLogic();
     }
@@ -316,7 +317,7 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
         return VIEW_NAME;
     }
 
-    public ComprobanteService getService() {
+    public PersistanceService getService() {
         return comprobanteService;
     }
 

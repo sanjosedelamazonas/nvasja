@@ -7,23 +7,17 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
-import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.SelectionEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.renderers.DateRenderer;
-import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.MainUI;
-import org.sanjose.converter.BooleanTrafficLightConverter;
-import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.GridViewing;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 
@@ -72,7 +66,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
 
     private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
 
-    private BancoService bancoService;
+    private PersistanceService bancoService;
 
     private CajaSaldoView saldosView = new CajaSaldoView();
 
@@ -80,7 +74,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
 
     private GeneratedPropertyContainer gpContainer;
 
-    public BancoOperacionesView(BancoService bancoService) {
+    public BancoOperacionesView(PersistanceService bancoService) {
         this.bancoService = bancoService;
     }
 
@@ -202,7 +196,7 @@ public class BancoOperacionesView extends BancoOperacionesUI implements Viewing,
         return VIEW_NAME;
     }
 
-    public BancoService getService() {
+    public PersistanceService getService() {
         return bancoService;
     }
 

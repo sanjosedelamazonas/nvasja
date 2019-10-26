@@ -7,7 +7,7 @@ import org.sanjose.model.*;
 import org.sanjose.repo.ScpFinancieraRep;
 import org.sanjose.repo.ScpPlancontableRep;
 import org.sanjose.repo.Scp_ProyectoPorFinancieraRep;
-import org.sanjose.views.banco.BancoService;
+import org.sanjose.views.sys.PersistanceService;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -213,7 +213,7 @@ public class DataUtil {
                     GenUtil.getLitMoneda(moneda), '0','N', GenUtil.getYear(ano), "106%");
     }
 
-    public static Boolean isCobrado(ScpBancocabecera cab, BancoService service) {
+    public static Boolean isCobrado(ScpBancocabecera cab, PersistanceService service) {
         String codMescobrado = checkMesCobrado(cab, service);
         return isCobrado(codMescobrado);
     }
@@ -222,7 +222,7 @@ public class DataUtil {
         return codMescobrado!=null && !GenUtil.strNullOrEmpty(codMescobrado.trim());
     }
 
-    public static String checkMesCobrado(ScpBancocabecera cab, BancoService service) {
+    public static String checkMesCobrado(ScpBancocabecera cab, PersistanceService service) {
         //ScpBancocabecera cab = detalle.getScpBancocabecera();
         if (!cab.isEnviado())
             return cab.getCodMescobrado();

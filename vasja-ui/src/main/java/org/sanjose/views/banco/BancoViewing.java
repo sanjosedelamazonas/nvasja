@@ -9,6 +9,7 @@ import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
+import org.sanjose.views.sys.PersistanceService;
 
 import java.util.Collection;
 
@@ -27,7 +28,7 @@ public interface BancoViewing extends NavigatorViewing, GridViewing {
 
     DateField getFechaHasta();
 
-    BancoService getService();
+    PersistanceService getService();
 
     BancoOperView getBancoOperView();
 

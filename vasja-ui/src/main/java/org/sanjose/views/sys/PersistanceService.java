@@ -1,19 +1,20 @@
-package org.sanjose.views.banco;
+package org.sanjose.views.sys;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.external.org.slf4j.Logger;
-import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.model.*;
 import org.sanjose.repo.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
+import org.sanjose.views.sys.TipocambioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,8 +26,11 @@ import static org.sanjose.util.GenUtil.USD;
  */
 @Service
 @Transactional
-public class BancoService {
+public class PersistanceService {
 
+    private final ScpCajabancoRep cajabancoRep;
+    private final ScpRendicioncabeceraRep rendicioncabeceraRep;
+    private final ScpRendiciondetalleRep rendiciondetalleRep;
     private final VsjConfiguractacajabancoRep configuractacajabancoRepo;
     private final ScpPlancontableRep planRepo;
     private final ScpPlanespecialRep planEspRepo;
@@ -41,27 +45,30 @@ public class BancoService {
     private final ScpCargocuartaRep cargocuartaRepo;
     private final ScpTipodocumentoRep tipodocumentoRepo;
     private final EntityManager em;
+    private final ScpCategoriaproyectoRep scpCategoriaproyectoRep;
+    private final ScpTipocambioRep tipocambioRep;
+    private final MsgUsuarioRep msgUsuarioRep;
     private final ScpBancocabeceraRep bancocabeceraRep;
     private final ScpBancodetalleRep bancodetalleRep;
-    private final ScpTipocambioRep scpTipocambioRep;
     private final ScpComprobantedetalleRep scpComprobantedetalleRep;
     private final ScpChequependienteRep scpChequependienteRep;
 
-    private final Logger log = LoggerFactory.getLogger(BancoService.class);
 
     @Autowired
-    public BancoService(ScpBancocabeceraRep bancocabeceraRep, ScpBancodetalleRep bancodetalleRep,
-                        VsjConfiguractacajabancoRep configuractacajabancoRepo, ScpPlancontableRep planRepo,
-                        ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
-                        ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
-                        ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
-                        Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
-                        ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo,
-                        ScpComprobantedetalleRep scpComprobantedetalleRep, ScpTipocambioRep scpTipocambioRep,
-                        ScpChequependienteRep scpChequependienteRep, EntityManager em) {
-        this.bancocabeceraRep = bancocabeceraRep;
-        this.bancodetalleRep = bancodetalleRep;
+    public PersistanceService(ScpRendicioncabeceraRep rendicioncabeceraRep, ScpRendiciondetalleRep rendiciondetalleRep, VsjConfiguractacajabancoRep configuractacajabancoRepo,
+                              ScpCategoriaproyectoRep scpCategoriaproyectoRep, ScpPlancontableRep planRepo,
+                              ScpPlanespecialRep planEspRepo, ScpProyectoRep proyectoRepo, ScpDestinoRep destinoRepo,
+                              ScpComprobantepagoRep comprobantepagoRepo, ScpFinancieraRep financieraRepo,
+                              ScpPlanproyectoRep planproyectoRepo, Scp_ProyectoPorFinancieraRep proyectoPorFinancieraRepo,
+                              Scp_ContraparteRep contraparteRepo, VsjConfiguracioncajaRep configuracioncajaRepo,
+                              ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, ScpTipocambioRep
+                                      tipocambioRep, MsgUsuarioRep msgUsuarioRep, ScpCajabancoRep cajabancoRep,
+                              ScpBancocabeceraRep bancocabeceraRep, ScpBancodetalleRep bancodetalleRep, ScpComprobantedetalleRep scpComprobantedetalleRep,
+                              ScpChequependienteRep scpChequependienteRep, EntityManager em) {
+        this.rendicioncabeceraRep = rendicioncabeceraRep;
+        this.rendiciondetalleRep = rendiciondetalleRep;
         this.configuractacajabancoRepo = configuractacajabancoRepo;
+        this.scpCategoriaproyectoRep = scpCategoriaproyectoRep;
         this.planRepo = planRepo;
         this.planEspRepo = planEspRepo;
         this.proyectoRepo = proyectoRepo;
@@ -74,11 +81,76 @@ public class BancoService {
         this.configuracioncajaRepo = configuracioncajaRepo;
         this.cargocuartaRepo = cargocuartaRepo;
         this.tipodocumentoRepo = tipodocumentoRepo;
+        this.tipocambioRep = tipocambioRep;
+        this.msgUsuarioRep = msgUsuarioRep;
+        this.cajabancoRep = cajabancoRep;
+        this.bancocabeceraRep = bancocabeceraRep;
+        this.bancodetalleRep = bancodetalleRep;
         this.scpComprobantedetalleRep = scpComprobantedetalleRep;
-        this.scpTipocambioRep = scpTipocambioRep;
         this.scpChequependienteRep = scpChequependienteRep;
         this.em = em;
     }
+
+    // Caja
+
+    @Transactional(readOnly = false)
+    public ScpCajabanco save(ScpCajabanco cajabanco) {
+        // You can persist your data here
+        ScpCajabanco savedCajabanco = cajabancoRep.save(cajabanco);
+
+        if (GenUtil.strNullOrEmpty(savedCajabanco.getTxtCorrelativo())) {
+            savedCajabanco.setTxtCorrelativo(GenUtil.getTxtCorrelativo(savedCajabanco.getCodCajabanco()));
+            savedCajabanco = cajabancoRep.save(savedCajabanco);
+        }
+        if (savedCajabanco.getTxtGlosaitem().equals("abc")) {
+            throw new RuntimeException();
+        }
+        return savedCajabanco;
+    }
+
+    @Transactional(readOnly = false)
+    public List<ScpCajabanco> saveVsjCajabancos(List<ScpCajabanco> cajabancos) {
+        assert TransactionSynchronizationManager.isActualTransactionActive();
+        List<ScpCajabanco> savedOperaciones = new ArrayList<>();
+
+        String transCorrelativo = null;
+        // Find at least one operation with transCorrelativo set
+        for (ScpCajabanco oper : cajabancos) {
+            if (!GenUtil.strNullOrEmpty(oper.getCodTranscorrelativo())) {
+                transCorrelativo = oper.getCodTranscorrelativo();
+                break;
+            }
+        }
+        if (transCorrelativo == null) transCorrelativo = GenUtil.getUuid();
+        for (ScpCajabanco oper : cajabancos) {
+            if (GenUtil.strNullOrEmpty(oper.getCodTranscorrelativo()))
+                oper.setCodTranscorrelativo(transCorrelativo);
+        }
+        for (ScpCajabanco oper : cajabancoRep.save(cajabancos)) {
+            // Tested saving each element using entityManager directly but then an Exception is raised:
+            // javax.persistence.TransactionRequiredException: No EntityManager with actual transaction available for
+            // current thread - cannot reliably process 'merge' call
+            //
+//            ScpCajabanco savedCajabanco = em.merge(oper);
+            if (GenUtil.strNullOrEmpty(oper.getTxtCorrelativo())) {
+                oper.setTxtCorrelativo(GenUtil.getTxtCorrelativo(oper.getCodCajabanco()));
+                // TEST transactionality - causes org.springframework.dao.DataIntegrityViolationException
+                // because codMes is NOT NULL in the database
+                if (oper.getTxtGlosaitem().equals("abc")) {
+                    throw new RuntimeException("Test transactions");
+                }
+                //oper.setCodMes(null);
+                oper = cajabancoRep.save(oper);
+                //log.info("Saved cajabanco from transferencia: " + oper);
+//                oper = em.merge(oper);
+            }
+            savedOperaciones.add(oper);
+        }
+        return savedOperaciones;
+    }
+
+    // Banco
+
 
     @Transactional(readOnly = false)
     public ScpBancodetalle saveBancoOperacion(ScpBancocabecera cabecera, ScpBancodetalle bancoItem, Character moneda) throws FieldGroup.CommitException {
@@ -130,7 +202,7 @@ public class BancoService {
                 it = setNewSaldos(it, oldDebe, oldHaber, moneda);
                 it = bancodetalleRep.save(it);
             }
-            
+
             saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
             saldoDebemo = saldoDebemo.add(it.getNumDebemo());
             saldoDebesol = saldoDebesol.add(it.getNumDebesol());
@@ -163,7 +235,7 @@ public class BancoService {
         bd.setCodTipomoneda(moneda);
         return bd;
     }
-    
+
     private BigDecimal getDebeAndReset(ScpBancodetalle bd) {
         BigDecimal debe = new BigDecimal(0);
         if (bd.getCodTipomoneda().equals(PEN)) {
@@ -193,7 +265,7 @@ public class BancoService {
         }
         return haber;
     }
-    
+
     @Transactional(readOnly = false)
     public void deleteBancoOperacion(ScpBancocabecera cabecera, ScpBancodetalle bancoItem) {
         int delNumItem = bancoItem.getId().getNumItem();
@@ -261,10 +333,10 @@ public class BancoService {
                 return;
             // if however not found then change in CombrobanteDetalle
             List<ScpComprobantedetalle> comprobantedetalles = scpComprobantedetalleRep.
-            findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobanteAndCodCtacontable(
-                        cab.getTxtAnoproceso(), cab.getCodMes(), cab.getCodOrigenenlace(),
-                        cab.getCodComprobanteenlace(), cab.getCodCtacontable());
-            log.info("Will update comprodets: " + comprobantedetalles.size());
+                    findById_TxtAnoprocesoAndId_CodMesAndId_CodOrigenAndId_CodComprobanteAndCodCtacontable(
+                            cab.getTxtAnoproceso(), cab.getCodMes(), cab.getCodOrigenenlace(),
+                            cab.getCodComprobanteenlace(), cab.getCodCtacontable());
+            //log.info("Will update comprodets: " + comprobantedetalles.size());
             for (ScpComprobantedetalle det : comprobantedetalles) {
                 if (cab.getFlgCobrado() != null && cab.getFlgCobrado()) {
                     det.setFlgChequecobrado('1');
@@ -303,12 +375,130 @@ public class BancoService {
         return bancocabeceraRep.findByFecFechaBetween(from, to);
     }
 
-    public ScpBancocabeceraRep getBancocabeceraRep() {
-        return bancocabeceraRep;
+
+
+    // Rendicion
+    
+    @Transactional(readOnly = false)
+    public ScpRendiciondetalle saveRendicionOperacion(ScpRendicioncabecera cabecera, ScpRendiciondetalle rendicionItem) throws FieldGroup.CommitException {
+        //cabecera.setCodTipomoneda(moneda);
+        cabecera.prepareToSave();
+        System.out.println("saving: " + cabecera);
+        cabecera = rendicioncabeceraRep.save(cabecera);
+        if (GenUtil.strNullOrEmpty(cabecera.getCodComprobante())) {
+            cabecera.setCodComprobante(GenUtil.getTxtCorrelativoLen(cabecera.getCodRendicioncabecera(), 6));
+            cabecera = rendicioncabeceraRep.save(cabecera);
+        }
+        //cabecera = rendicioncabeceraRep.save(cabecera);
+        if (rendicionItem!=null) {
+            if (!GenUtil.objNullOrEmpty(rendicionItem.getCodTipomov()) && rendicionItem.getCodTipomov()>0) {
+                VsjConfiguractacajabanco codTipoMov = configuractacajabancoRepo.findById(rendicionItem.getCodTipomov());
+                if (codTipoMov == null) {
+                    throw new FieldGroup.CommitException("No se puede encontrar el Codigo Tipo Gasto (" + rendicionItem.getCodTipomov() + ") - por favor verifica la configuracion de Caja y Rendicions");
+                }
+                //else if ((rendicionItem.getCodTipomov()>0)
+                //rendicionItem.set(codTipoMov.getCodTipocuenta());
+            }
+            //rendicionItem.setCodTipomoneda(moneda);
+            rendicionItem.prepareToSave();
+            rendicionItem.setFecComprobante(cabecera.getFecComprobante());
+            rendicionItem.setScpRendicioncabecera(cabecera);
+            if (rendicionItem.getId() == null) {
+                ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+                id = id.prepareToSave(rendicionItem);
+                id.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
+                id.setNumNroitem(rendiciondetalleRep.findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera()).size() + 1);
+                id.setCodFilial(cabecera.getCodFilial());
+                id.setCodOrigen(cabecera.getCodOrigen());
+                id.setCodComprobante(cabecera.getCodComprobante());
+                rendicionItem.setId(id);
+            }
+
+            rendicionItem.setScpRendicioncabecera(cabecera);
+            if (GenUtil.strNullOrEmpty(rendicionItem.getId().getCodComprobante())) {
+                rendicionItem.getId().setCodComprobante(cabecera.getCodComprobante());
+            }
+            rendicionItem = rendiciondetalleRep.save(rendicionItem);
+        } else {
+            rendicionItem = new ScpRendiciondetalle();
+            rendicionItem.setCodTipomoneda(cabecera.getCodTipomoneda());
+            ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+            id = id.prepareToSave(rendicionItem);
+            id.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
+            rendicionItem.setId(id);
+            rendicionItem.getId().setCodComprobante(cabecera.getCodComprobante());
+        }
+        rendicionItem.setScpRendicioncabecera(cabecera);
+        return rendicionItem;
     }
 
-    public ScpBancodetalleRep getBancodetalleRep() {
-        return bancodetalleRep;
+
+    @Transactional
+    public void deleteRendicion(ScpRendicioncabecera cabecera) {
+        cabecera = rendicioncabeceraRep.findByCodRendicioncabecera(cabecera.getCodRendicioncabecera());
+        for (ScpRendiciondetalle det : cabecera.getScpRendiciondetalles()) {
+            rendiciondetalleRep.delete(det);
+        }
+        rendicioncabeceraRep.delete(cabecera);
+    }
+
+    @Transactional(readOnly = false)
+    public void deleteRendicionOperacion(ScpRendicioncabecera cabecera, ScpRendiciondetalle rendicionItem) {
+        long delNumItem = rendicionItem.getId().getNumNroitem();
+        rendiciondetalleRep.delete(rendicionItem);
+        for (ScpRendiciondetalle it : rendiciondetalleRep
+                .findById_CodRendicioncabeceraAndId_NumNroitemGreaterThan(cabecera.getCodRendicioncabecera(), delNumItem)) {
+            try {
+                ScpRendiciondetalle newRendicionDetalle = (ScpRendiciondetalle) it.clone();
+                ScpRendiciondetallePK id = (ScpRendiciondetallePK) it.getId().clone();
+                id.setNumNroitem(it.getId().getNumNroitem() - 1);
+                newRendicionDetalle.setId(id);
+                rendiciondetalleRep.delete(it);
+                rendiciondetalleRep.save(newRendicionDetalle);
+            } catch (CloneNotSupportedException cle) {
+                cle.printStackTrace();
+            }
+        }
+        BigDecimal saldoHabersol = new BigDecimal(0);
+        BigDecimal saldoHaberdolar = new BigDecimal(0);
+        BigDecimal saldoHabermo = new BigDecimal(0);
+        BigDecimal saldoDebesol = new BigDecimal(0);
+        BigDecimal saldoDebedolar = new BigDecimal(0);
+        BigDecimal saldoDebemo = new BigDecimal(0);
+        for (ScpRendiciondetalle it : rendiciondetalleRep
+                .findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera())) {
+            saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
+            saldoDebemo = saldoDebemo.add(it.getNumDebemo());
+            saldoDebesol = saldoDebesol.add(it.getNumDebesol());
+            saldoHaberdolar = saldoHaberdolar.add(it.getNumHaberdolar());
+            saldoHabermo = saldoHabermo.add(it.getNumHabermo());
+            saldoHabersol = saldoHabersol.add(it.getNumHabersol());
+        }
+        BigDecimal gastoTotal;
+        switch (cabecera.getCodTipomoneda()) {
+            case '0':
+                gastoTotal = saldoDebesol.subtract(saldoHabersol);
+                break;
+            case '1':
+                gastoTotal = saldoDebedolar.subtract(saldoHaberdolar);
+                break;
+            case '2':
+                gastoTotal = saldoDebemo.subtract(saldoHabermo);
+                break;
+            default:
+                throw new RuntimeException(cabecera.getCodTipomoneda() + " - Unknown currency - this shouldn't happen");
+        }
+        cabecera.setNumGastototal(gastoTotal);
+        cabecera.setNumSaldopendiente(cabecera.getNumTotalanticipo().subtract(gastoTotal));
+        rendicioncabeceraRep.save(cabecera);
+    }
+
+    public ScpRendicioncabeceraRep getRendicioncabeceraRep() {
+        return rendicioncabeceraRep;
+    }
+
+    public ScpRendiciondetalleRep getRendiciondetalleRep() {
+        return rendiciondetalleRep;
     }
 
     public VsjConfiguractacajabancoRep getConfiguractacajabancoRepo() {
@@ -363,12 +553,28 @@ public class BancoService {
         return tipodocumentoRepo;
     }
 
-    public ScpTipocambioRep getScpTipocambioRep() {
-        return scpTipocambioRep;
+    public ScpTipocambioRep getTipocambioRep() {
+        return tipocambioRep;
     }
 
-    public EntityManager getEm() {
-        return em;
+    public ScpCategoriaproyectoRep getScpCategoriaproyectoRep() {
+        return scpCategoriaproyectoRep;
+    }
+
+    public MsgUsuarioRep getMsgUsuarioRep() {
+        return msgUsuarioRep;
+    }
+
+    public ScpCajabancoRep getCajabancoRep() {
+        return cajabancoRep;
+    }
+
+    public ScpBancocabeceraRep getBancocabeceraRep() {
+        return bancocabeceraRep;
+    }
+
+    public ScpBancodetalleRep getBancodetalleRep() {
+        return bancodetalleRep;
     }
 
     public ScpComprobantedetalleRep getScpComprobantedetalleRep() {
@@ -378,4 +584,10 @@ public class BancoService {
     public ScpChequependienteRep getScpChequependienteRep() {
         return scpChequependienteRep;
     }
+
+    public EntityManager getEm() {
+        return em;
+    }
+
+
 }

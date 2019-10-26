@@ -21,6 +21,7 @@ import org.sanjose.util.*;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 
 import java.util.Arrays;
@@ -64,9 +65,9 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
 
     private BeanItemContainer<ScpRendicioncabecera> container;
 
-    private RendicionService comprobanteService;
+    private PersistanceService comprobanteService;
 
-    public RendicionManejoView(RendicionService comprobanteService) {
+    public RendicionManejoView(PersistanceService comprobanteService) {
         this.comprobanteService = comprobanteService;
     }
 
@@ -234,7 +235,7 @@ public class RendicionManejoView extends RendicionManejoUI implements NavigatorV
         return VIEW_NAME;
     }
 
-    public RendicionService getService() {
+    public PersistanceService getService() {
         return comprobanteService;
     }
 

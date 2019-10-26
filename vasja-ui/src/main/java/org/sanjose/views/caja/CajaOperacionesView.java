@@ -15,6 +15,7 @@ import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 
 import java.util.Arrays;
@@ -66,9 +67,9 @@ public class CajaOperacionesView extends CajaOperacionesUI implements CajaManejo
 
     private BeanItemContainer<ScpCajabanco> container;
 
-    private ComprobanteService comprobanteService;
+    private PersistanceService comprobanteService;
 
-    public CajaOperacionesView(ComprobanteService comprobanteService) {
+    public CajaOperacionesView(PersistanceService comprobanteService) {
         this.comprobanteService = comprobanteService;
     }
 
@@ -244,7 +245,7 @@ public class CajaOperacionesView extends CajaOperacionesUI implements CajaManejo
         return VIEW_NAME;
     }
 
-    public ComprobanteService getService() {
+    public PersistanceService getService() {
         return comprobanteService;
     }
 

@@ -25,14 +25,13 @@ import org.sanjose.views.banco.*;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
-import org.sanjose.views.rendicion.RendicionService;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.PropiedadService;
 import org.sanjose.views.sys.PropiedadView;
 import org.sanjose.views.sys.ReportesView;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -74,28 +73,26 @@ public class MainUI extends UI {
 
     @Autowired
     private MainUI(PropiedadService propiedadService,
-                   ComprobanteService comprobanteService,
-                   BancoService bancoService,
-                   RendicionService rendicionService,
+                   PersistanceService persistanceService,
                    MsgUsuarioRep msgUsuarioRep,
                    ProcUtil procUtil) {
         this.propiedadView = new PropiedadView(propiedadService);
-        this.reportesView = new ReportesView(comprobanteService);
+        this.reportesView = new ReportesView(persistanceService);
         this.msgUsuarioRep = msgUsuarioRep;
         this.procUtil = procUtil;
-        this.confView = new ConfiguracionCtaCajaBancoView(comprobanteService);
-        this.cajaGridView = new CajaGridView(comprobanteService);
-        this.comprobanteView = new ComprobanteView(comprobanteService);
-        this.transferenciaView = new TransferenciaView(comprobanteService);
-        this.configuracionCajaView = new ConfiguracionCajaView(comprobanteService);
-        this.bancoOperView = new BancoOperView(bancoService);
-        this.cajaManejoView = new CajaManejoView(comprobanteService);
-        this.cajaOperacionesView = new CajaOperacionesView(comprobanteService);
-        this.bancoManejoView = new BancoManejoView(bancoService);
-        this.bancoOperacionesView = new BancoOperacionesView(bancoService);
-        this.bancoConciliacionView = new BancoConciliacionView(bancoService);
-        this.rendicionManejoView = new RendicionManejoView(rendicionService);
-        this.rendicionOperView = new RendicionOperView(rendicionService);
+        this.confView = new ConfiguracionCtaCajaBancoView(persistanceService);
+        this.cajaGridView = new CajaGridView(persistanceService);
+        this.comprobanteView = new ComprobanteView(persistanceService);
+        this.transferenciaView = new TransferenciaView(persistanceService);
+        this.configuracionCajaView = new ConfiguracionCajaView(persistanceService);
+        this.bancoOperView = new BancoOperView(persistanceService);
+        this.cajaManejoView = new CajaManejoView(persistanceService);
+        this.cajaOperacionesView = new CajaOperacionesView(persistanceService);
+        this.bancoManejoView = new BancoManejoView(persistanceService);
+        this.bancoOperacionesView = new BancoOperacionesView(persistanceService);
+        this.bancoConciliacionView = new BancoConciliacionView(persistanceService);
+        this.rendicionManejoView = new RendicionManejoView(persistanceService);
+        this.rendicionOperView = new RendicionOperView(persistanceService);
     }
 
     public static MainUI get() {
@@ -117,7 +114,7 @@ public class MainUI extends UI {
         }
         if (Role.isPrivileged()) {
             try {
-                TipoCambio.checkTipoCambio(new Date(), this.getBancoOperacionesView().getService().getScpTipocambioRep());
+                TipoCambio.checkTipoCambio(new Date(), this.getBancoOperacionesView().getService().getTipocambioRep());
             } catch (TipoCambio.TipoCambioNoExiste e) {
                 log.info(e.getMessage());
             }

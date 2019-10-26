@@ -14,6 +14,7 @@ import org.sanjose.model.VsjConfiguractacajabanco;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 
 import java.util.Collection;
@@ -43,9 +44,9 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
             3, 3, 3, 12, 6,
             6, 6, 3, 3, 3, 3
     };
-    private ComprobanteService service;
+    private PersistanceService service;
 
-    public ConfiguracionCtaCajaBancoView(ComprobanteService comprobanteService) {
+    public ConfiguracionCtaCajaBancoView(PersistanceService comprobanteService) {
         this.service = comprobanteService;
         setSizeFull();
     }
@@ -131,7 +132,7 @@ public class ConfiguracionCtaCajaBancoView extends ConfiguracionCtaCajaBancoUI i
         gridConfigCtaCajaBanco.getContainerDataSource().removeItem(vsj);
     }
 
-    public ComprobanteService getService() {
+    public PersistanceService getService() {
         return service;
     }
 }

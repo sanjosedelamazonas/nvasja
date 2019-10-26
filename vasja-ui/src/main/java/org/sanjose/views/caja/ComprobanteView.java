@@ -4,9 +4,8 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
-import org.sanjose.MainUI;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.banco.BancoService;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
@@ -29,17 +28,17 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
             numIngreso, numEgreso, selResponsable, selLugarGasto, selCodAuxiliar, selTipoDoc, selCtaContable,
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
     ComprobanteLogic viewLogic;
-    private ComprobanteService comprobanteService;
+    private PersistanceService comprobanteService;
     private Window subWindow;
 
     public ComprobanteView(){
     }
 
-    public ComprobanteView(ComprobanteService comprobanteService) {
+    public ComprobanteView(PersistanceService comprobanteService) {
         this.comprobanteService = comprobanteService;
     }
 
-    public void init(ComprobanteService comprobanteService) {
+    public void init(PersistanceService comprobanteService) {
         this.comprobanteService = comprobanteService;
         init();
     }
@@ -299,7 +298,7 @@ public class ComprobanteView extends ComprobanteUI implements ComprobanteViewing
         return this.lblSaldo;
     }
 
-    public ComprobanteService getService() {
+    public PersistanceService getService() {
         return comprobanteService;
     }
 

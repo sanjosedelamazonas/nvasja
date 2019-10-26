@@ -8,9 +8,7 @@ import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.*;
 import org.sanjose.repo.ScpTipocambioRep;
 import org.sanjose.views.ItemsRefreshing;
-import org.sanjose.views.banco.BancoService;
-import org.sanjose.views.caja.ComprobanteService;
-import org.sanjose.views.rendicion.RendicionService;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.rendicion.RendicionTipoCambiosLogic;
 import org.sanjose.views.sys.TipoCambioLogic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.StoredProcedureQuery;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -149,7 +146,7 @@ public class ProcUtil {
     }
 
 /*
-    public void enviarContabilidad(Collection<Object> vcbs, ComprobanteService service) {
+    public void enviarContabilidad(Collection<Object> vcbs, PersistanceService service) {
         StringBuffer sb = new StringBuffer();
         vcbs.forEach(scpCajabanco -> {
             sb.append("\n").append(((ScpCajabanco) scpCajabanco).getTxtCorrelativo()).append(" fecha: ").append(((ScpCajabanco) scpCajabanco).getFecFecha());
@@ -178,7 +175,7 @@ public class ProcUtil {
         return !(tcval.compareTo(new BigDecimal(0))==0);
     }
 
-    public void enviarContabilidad(Collection<Object> vcbs, ComprobanteService service, ItemsRefreshing<ScpCajabanco> itemsRefreshing) {
+    public void enviarContabilidad(Collection<Object> vcbs, PersistanceService service, ItemsRefreshing<ScpCajabanco> itemsRefreshing) {
         Set<ScpCajabanco> cajabancosAEnviar = new HashSet<>();
         try{
             Map<ScpCajabanco, String> cajaBancosFaltaTipoCambio = new HashMap<>();
@@ -238,7 +235,7 @@ public class ProcUtil {
     }
 
 
-    public void enviarContabilidadBanco(Collection<Object> vcbs, BancoService service, ItemsRefreshing<ScpBancocabecera> itemsRefreshing) {
+    public void enviarContabilidadBanco(Collection<Object> vcbs, PersistanceService service, ItemsRefreshing<ScpBancocabecera> itemsRefreshing) {
         try{
             Set<ScpBancocabecera> bancosAEnviar = new HashSet<>();
             Map<ScpBancocabecera, String> bancosFaltaTipoCambio = new HashMap<>();
@@ -250,9 +247,9 @@ public class ProcUtil {
                 }
                 bancosAEnviar.add(curBancoCabecera);
                 // Falta Tipo de cambio?
-                if (!existeTipoDeCambio(curBancoCabecera.getFecFecha(), curBancoCabecera.getCodTipomoneda(), service.getScpTipocambioRep())) {
+                if (!existeTipoDeCambio(curBancoCabecera.getFecFecha(), curBancoCabecera.getCodTipomoneda(), service.getTipocambioRep())) {
                     try {
-                        TipoCambio.checkTipoCambio(curBancoCabecera.getFecFecha(), service.getScpTipocambioRep());
+                        TipoCambio.checkTipoCambio(curBancoCabecera.getFecFecha(), service.getTipocambioRep());
                     } catch (TipoCambio.TipoCambioNoExiste e) {
                         bancosFaltaTipoCambio.put(curBancoCabecera, e.getMessage());
                     }
@@ -322,7 +319,7 @@ public class ProcUtil {
     }
 
     @Transactional(readOnly = false)
-    public Set<ScpBancocabecera> enviarContabilidadBancoInTransaction(Set<ScpBancocabecera> vsjBancocabeceras, BancoService service) throws EnviarContabilidadException {
+    public Set<ScpBancocabecera> enviarContabilidadBancoInTransaction(Set<ScpBancocabecera> vsjBancocabeceras, PersistanceService service) throws EnviarContabilidadException {
         Set<ScpBancocabecera> vsjBancocabecerasEnviados = new HashSet<>();
         for (ScpBancocabecera vcbS : vsjBancocabeceras) {
             curBancoCabecera = vcbS;
@@ -415,7 +412,7 @@ public class ProcUtil {
     }
 
 
-    public void checkTipoCambios(List<ScpRendicioncabecera> rends, RendicionService service) {
+    public void checkTipoCambios(List<ScpRendicioncabecera> rends, PersistanceService service) {
 
 
 
@@ -434,7 +431,7 @@ public class ProcUtil {
     }
 
 
-    public void enviarContabilidadRendicion(Collection<Object> vcbs, RendicionService service, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
+    public void enviarContabilidadRendicion(Collection<Object> vcbs, PersistanceService service, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
         Set<ScpRendicioncabecera> rendicionsAEnviar = new HashSet<>();
         Map<ScpRendicioncabecera, String> rendicionsFaltaTipoCambio = new HashMap<>();
         for (Object objVcb : vcbs) {
@@ -479,7 +476,7 @@ public class ProcUtil {
         }
     }
 
-    public void enviarContabilidadRendicionConTipoCambio(Set<ScpRendicioncabecera> rendicionsAEnviar, RendicionService service, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
+    public void enviarContabilidadRendicionConTipoCambio(Set<ScpRendicioncabecera> rendicionsAEnviar, PersistanceService service, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
         try {
             itemsRefreshing.refreshItems(enviarContabilidadRendicionInTransaction(rendicionsAEnviar, service));
         } catch (EnviarContabilidadException envexc) {
@@ -514,7 +511,7 @@ public class ProcUtil {
     }
 
     @Transactional(readOnly = false)
-    public Set<ScpRendicioncabecera> enviarContabilidadRendicionInTransaction(Set<ScpRendicioncabecera> vsjRendicioncabeceras, RendicionService service) throws EnviarContabilidadException {
+    public Set<ScpRendicioncabecera> enviarContabilidadRendicionInTransaction(Set<ScpRendicioncabecera> vsjRendicioncabeceras, PersistanceService service) throws EnviarContabilidadException {
         Set<ScpRendicioncabecera> vsjRendicioncabecerasEnviados = new HashSet<>();
         for (ScpRendicioncabecera vcbS : vsjRendicioncabeceras) {
             curRendicionCabecera = vcbS;

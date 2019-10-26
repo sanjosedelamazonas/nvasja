@@ -9,7 +9,6 @@ import org.sanjose.helper.CustomReport;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
-import org.sanjose.views.caja.ComprobanteService;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 
 import java.util.*;
@@ -27,10 +26,10 @@ public class ReportesView extends ReportesUI implements Viewing {
         return VIEW_NAME;
     }
     private static final Logger log = LoggerFactory.getLogger(ReportesView.class);
-    private ComprobanteService comprobanteService;
+    private PersistanceService comprobanteService;
     private Map<String,CustomReport> customReportMap = new TreeMap<>();
 
-    public ReportesView(ComprobanteService comprobanteService) {
+    public ReportesView(PersistanceService comprobanteService) {
         this.comprobanteService = comprobanteService;
         setSizeFull();
         addStyleName("crud-view");

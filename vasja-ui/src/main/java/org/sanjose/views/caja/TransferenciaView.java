@@ -11,6 +11,7 @@ import com.vaadin.ui.*;
 import org.sanjose.MainUI;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import tm.kod.widgets.numberfield.NumberField;
@@ -59,11 +60,11 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
             selRubroInst, selRubroProy, selFuente, selTipoMov, glosa, serieDoc, numDoc };
     TransferenciaLogic viewLogic = null;
     private BeanItemContainer<ScpCajabanco> container;
-    private ComprobanteService comprobanteService;
+    private PersistanceService comprobanteService;
 
     private Window subWindow;
 
-    public TransferenciaView(ComprobanteService comprobanteService) {
+    public TransferenciaView(PersistanceService comprobanteService) {
         this.comprobanteService = comprobanteService;
     }
 
@@ -373,7 +374,7 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
     }
 
     @Override
-    public ComprobanteService getService() {
+    public PersistanceService getService() {
         return comprobanteService;
     }
 

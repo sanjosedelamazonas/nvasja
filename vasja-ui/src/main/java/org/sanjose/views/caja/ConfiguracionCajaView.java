@@ -12,6 +12,7 @@ import org.sanjose.model.VsjConfiguracioncaja;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 
 import java.util.Collection;
@@ -41,9 +42,9 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewin
             6, 12, 2,
             6, 6, 6
     };
-    private ComprobanteService service;
+    private PersistanceService service;
 
-    public ConfiguracionCajaView(ComprobanteService comprobanteService) {
+    public ConfiguracionCajaView(PersistanceService comprobanteService) {
         service = comprobanteService;
         setSizeFull();
     }
@@ -122,7 +123,7 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewin
         gridConfigCaja.getContainerDataSource().removeItem(vsj);
     }
 
-    public ComprobanteService getService() {
+    public PersistanceService getService() {
         return service;
     }
 }

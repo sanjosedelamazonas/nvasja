@@ -1,35 +1,22 @@
 package org.sanjose.views.banco;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
-import com.vaadin.data.util.filter.Compare;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.renderers.DateRenderer;
-import com.vaadin.ui.renderers.HtmlRenderer;
-import org.sanjose.MainUI;
-import org.sanjose.converter.BooleanTrafficLightConverter;
-import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.ScpBancocabecera;
-import org.sanjose.model.ScpCajabanco;
-import org.sanjose.model.ScpPlancontable;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.CajaSaldoView;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.GridViewing;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
-import org.vaadin.addons.CssCheckBox;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,9 +67,9 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
 
     private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
 
-    private BancoService bancoService;
+    private PersistanceService bancoService;
 
-    public BancoManejoView(BancoService bancoService) {
+    public BancoManejoView(PersistanceService bancoService) {
         this.bancoService = bancoService;
     }
 
@@ -189,7 +176,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
         return VIEW_NAME;
     }
 
-    public BancoService getService() {
+    public PersistanceService getService() {
         return bancoService;
     }
 

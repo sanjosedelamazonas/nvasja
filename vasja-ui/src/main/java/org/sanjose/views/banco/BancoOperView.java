@@ -17,6 +17,7 @@ import org.sanjose.model.ScpBancodetallePK;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.SubWindowing;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
@@ -83,18 +84,18 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
     private BancoLogic viewLogic = null;
     private BeanItemContainer<ScpBancodetalle> container;
     private GeneratedPropertyContainer gpContainer;
-    private BancoService bancoService;
+    private PersistanceService bancoService;
     private Window subWindow;
 
     public BancoOperView() {
     }
 
-    public BancoOperView(BancoService bancoService) {
+    public BancoOperView(PersistanceService bancoService) {
         this.bancoService = bancoService;
         setSizeFull();
     }
 
-    public void init(BancoService bancoService) {
+    public void init(PersistanceService bancoService) {
         this.bancoService = bancoService;
         init();
     }
@@ -227,7 +228,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
         viewLogic.navigatorView.refreshData();
     }
 
-    public BancoService getService() {
+    public PersistanceService getService() {
         return bancoService;
     }
 
