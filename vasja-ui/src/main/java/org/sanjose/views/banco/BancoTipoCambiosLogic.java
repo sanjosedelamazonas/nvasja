@@ -26,7 +26,6 @@ public class BancoTipoCambiosLogic extends TipoCambiosCheckLogic<ScpBancocabecer
     }
 
     public void done() {
-
-        //procUtil.enviarContabilidadRendicionConTipoCambio(rends, this.service, this.itemsRefreshing);
+        procUtil.enviarContabilidadBancoConTipoCambio(this.rends, this.service, this.itemsRefreshing);
     }
 }

@@ -8,6 +8,8 @@ import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.*;
 import org.sanjose.repo.ScpTipocambioRep;
 import org.sanjose.views.ItemsRefreshing;
+import org.sanjose.views.banco.BancoTipoCambiosLogic;
+import org.sanjose.views.caja.CajaTipoCambiosLogic;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.rendicion.RendicionTipoCambiosLogic;
 import org.sanjose.views.sys.TipoCambioLogic;
@@ -177,51 +179,34 @@ public class ProcUtil {
 
     public void enviarContabilidad(Collection<Object> vcbs, PersistanceService service, ItemsRefreshing<ScpCajabanco> itemsRefreshing) {
         Set<ScpCajabanco> cajabancosAEnviar = new HashSet<>();
-        try{
-            Map<ScpCajabanco, String> cajaBancosFaltaTipoCambio = new HashMap<>();
-            for (Object objVcb : vcbs) {
-                ScpCajabanco vcb = (ScpCajabanco) objVcb;
-                if (vcb.isEnviado()) {
-                    Notification.show("!Attention!", "!Omitiendo operacion " + vcb.getTxtCorrelativo() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
-                    continue;
-                }
-                cajabancosAEnviar.add(vcb);
-                // Falta Tipo de cambio?
-                if (!existeTipoDeCambio(vcb.getFecFecha(), vcb.getCodTipomoneda(), service.getTipocambioRep())) {
-                    try {
-                        TipoCambio.checkTipoCambio(vcb.getFecFecha(), service.getTipocambioRep());
-                    } catch (TipoCambio.TipoCambioNoExiste e) {
-                        cajaBancosFaltaTipoCambio.put(vcb, e.getMessage());
-                    }
+        Map<ScpCajabanco, String> cajaBancosFaltaTipoCambio = new HashMap<>();
+        for (Object objVcb : vcbs) {
+            ScpCajabanco vcb = (ScpCajabanco) objVcb;
+            if (vcb.isEnviado()) {
+                Notification.show("!Attention!", "!Omitiendo operacion " + vcb.getTxtCorrelativo() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
+                continue;
+            }
+            cajabancosAEnviar.add(vcb);
+            // Falta Tipo de cambio?
+            if (!existeTipoDeCambio(vcb.getFecFecha(), vcb.getCodTipomoneda(), service.getTipocambioRep())) {
+                try {
+                    TipoCambio.checkTipoCambio(vcb.getFecFecha(), service.getTipocambioRep());
+                } catch (TipoCambio.TipoCambioNoExiste e) {
+                    cajaBancosFaltaTipoCambio.put(vcb, e.getMessage());
                 }
             }
-            if (!cajaBancosFaltaTipoCambio.isEmpty()) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                StringBuffer sb = new StringBuffer();
-                for (ScpCajabanco scpCajabanco : cajaBancosFaltaTipoCambio.keySet())
-                    sb.append("\n").append(scpCajabanco.getTxtCorrelativo()).append(" fecha: ").append(sdf.format(scpCajabanco.getFecFecha()));
-                MessageBox
-                        .createQuestion()
-                        .withCaption("Falta tipo de cambio")
-                        .withMessage("Falta tipo de cambio para operaciones: " + sb.toString() +"\n?Continuar o ignorar esta operacion?\n")
-                        .withYesButton(() -> {
-                            try {
-                                doEnviarContabilidad(cajabancosAEnviar);
-                                itemsRefreshing.refreshItems(cajabancosAEnviar);
-                            } catch (EnviarContabilidadException envexc) {
-                                MessageBox
-                                        .createError()
-                                        .withCaption("Problema al Enviar a contabilidad")
-                                        .withMessage(envexc.getMessage())
-                                        .withOkButton()
-                                        .open();
-                            }
-                        })
-                        .withNoButton()
-                        .open();
-            } else {
-                doEnviarContabilidad(cajabancosAEnviar);
-            }
+        }
+        if (!cajaBancosFaltaTipoCambio.isEmpty()) {
+            new CajaTipoCambiosLogic(cajabancosAEnviar, service, this, itemsRefreshing);
+        } else {
+            enviarContabilidadCajaConTipoCambio(cajabancosAEnviar, service, itemsRefreshing);
+        }
+    }
+
+    public void enviarContabilidadCajaConTipoCambio(Set<ScpCajabanco> cajabancos, PersistanceService service, ItemsRefreshing<ScpCajabanco> itemsRefreshing) {
+        try {
+            doEnviarContabilidad(cajabancos);
+            itemsRefreshing.refreshItems(cajabancos);
         } catch (EnviarContabilidadException envexc) {
             MessageBox
                     .createError()
@@ -229,61 +214,42 @@ public class ProcUtil {
                     .withMessage(envexc.getMessage())
                     .withOkButton()
                     .open();
-
         }
-        itemsRefreshing.refreshItems(cajabancosAEnviar);
     }
 
 
+
     public void enviarContabilidadBanco(Collection<Object> vcbs, PersistanceService service, ItemsRefreshing<ScpBancocabecera> itemsRefreshing) {
-        try{
-            Set<ScpBancocabecera> bancosAEnviar = new HashSet<>();
-            Map<ScpBancocabecera, String> bancosFaltaTipoCambio = new HashMap<>();
-            for (Object objVcb : vcbs) {
-                curBancoCabecera = (ScpBancocabecera) objVcb;
-                if (curBancoCabecera.isEnviado()) {
-                    Notification.show("!Attention!", "!Omitiendo operacion " + curBancoCabecera.getTxtCorrelativo() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
-                    continue;
-                }
-                bancosAEnviar.add(curBancoCabecera);
-                // Falta Tipo de cambio?
-                if (!existeTipoDeCambio(curBancoCabecera.getFecFecha(), curBancoCabecera.getCodTipomoneda(), service.getTipocambioRep())) {
-                    try {
-                        TipoCambio.checkTipoCambio(curBancoCabecera.getFecFecha(), service.getTipocambioRep());
-                    } catch (TipoCambio.TipoCambioNoExiste e) {
-                        bancosFaltaTipoCambio.put(curBancoCabecera, e.getMessage());
-                    }
+        Set<ScpBancocabecera> bancosAEnviar = new HashSet<>();
+        Map<ScpBancocabecera, String> bancosFaltaTipoCambio = new HashMap<>();
+        for (Object objVcb : vcbs) {
+            curBancoCabecera = (ScpBancocabecera) objVcb;
+            if (curBancoCabecera.isEnviado()) {
+                Notification.show("!Attention!", "!Omitiendo operacion " + curBancoCabecera.getTxtCorrelativo() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
+                continue;
+            }
+            // Falta Tipo de cambio?
+            if (!existeTipoDeCambio(curBancoCabecera.getFecFecha(), curBancoCabecera.getCodTipomoneda(), service.getTipocambioRep())) {
+                try {
+                    TipoCambio.checkTipoCambio(curBancoCabecera.getFecFecha(), service.getTipocambioRep());
+                } catch (TipoCambio.TipoCambioNoExiste e) {
+                    bancosFaltaTipoCambio.put(curBancoCabecera, e.getMessage());
                 }
             }
-            if (!bancosFaltaTipoCambio.isEmpty()) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                StringBuffer sb = new StringBuffer();
-                for (ScpBancocabecera cab : bancosFaltaTipoCambio.keySet())
-                    sb.append("\n").append(cab.getTxtCorrelativo()).append(" fecha: ").append(sdf.format(cab.getFecFecha()))
-                            .append("\n")
-                            .append(bancosFaltaTipoCambio.get(cab));
-                MessageBox
-                        .createQuestion()
-                        .withCaption("Falta tipo de cambio")
-                        .withMessage("No se podia conseguir el tipo de cambio para operaciones: " + sb.toString()
-                                + "\n?Continuar o ignorar esta operacion?\n")
-                        .withYesButton(() -> {
-                            try {
-                                itemsRefreshing.refreshItems(enviarContabilidadBancoInTransaction(bancosAEnviar, service));
-                            } catch (EnviarContabilidadException envexc) {
-                                MessageBox
-                                        .createError()
-                                        .withCaption("Problema al Enviar a contabilidad")
-                                        .withMessage(envexc.getMessage())
-                                        .withOkButton()
-                                        .open();
-                            }
-                        })
-                        .withNoButton()
-                        .open();
-            } else {
-                itemsRefreshing.refreshItems(enviarContabilidadBancoInTransaction(bancosAEnviar, service));
-            }
+            bancosAEnviar.add(curBancoCabecera);
+        }
+        if (!bancosFaltaTipoCambio.isEmpty()) {
+            new BancoTipoCambiosLogic(bancosAEnviar, service, this, itemsRefreshing);
+        } else {
+            enviarContabilidadBancoConTipoCambio(bancosAEnviar, service, itemsRefreshing);
+        }
+    }
+
+
+
+    public void enviarContabilidadBancoConTipoCambio(Set<ScpBancocabecera> rendicionsAEnviar, PersistanceService service, ItemsRefreshing<ScpBancocabecera> itemsRefreshing) {
+        try {
+            itemsRefreshing.refreshItems(enviarContabilidadBancoInTransaction(rendicionsAEnviar, service));
         } catch (EnviarContabilidadException envexc) {
             MessageBox
                     .createError()
@@ -381,24 +347,12 @@ public class ProcUtil {
             return saldoPEN;
         }
 
-        public void setSaldoPEN(BigDecimal saldoPEN) {
-            this.saldoPEN = saldoPEN;
-        }
-
         public BigDecimal getSaldoUSD() {
             return saldoUSD;
         }
 
-        public void setSaldoUSD(BigDecimal saldoUSD) {
-            this.saldoUSD = saldoUSD;
-        }
-
         public BigDecimal getSaldoEUR() {
             return saldoEUR;
-        }
-
-        public void setSaldoEUR(BigDecimal saldoEUR) {
-            this.saldoEUR = saldoEUR;
         }
 
         @Override
@@ -409,25 +363,6 @@ public class ProcUtil {
                     ", saldoEUR=" + saldoEUR +
                     '}';
         }
-    }
-
-
-    public void checkTipoCambios(List<ScpRendicioncabecera> rends, PersistanceService service) {
-
-
-
-        Map<ScpRendicioncabecera, Boolean> rendicionsFaltaTipoCambioDecision = new HashMap<>();
-        for (ScpRendicioncabecera cab : rends) {
-            if (!existeTipoDeCambio(cab.getFecComprobante(), cab.getCodTipomoneda(), service.getTipocambioRep())) {
-                TipoCambioLogic.openTipocambio(cab.getFecComprobante(), service.getTipocambioRep());
-            }
-
-
-        }
-
-
-
-
     }
 
 
