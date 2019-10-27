@@ -6,7 +6,6 @@ import org.sanjose.model.*;
 import org.sanjose.repo.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
-import org.sanjose.views.sys.TipocambioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
