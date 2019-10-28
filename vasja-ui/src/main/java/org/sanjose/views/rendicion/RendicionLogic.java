@@ -69,6 +69,7 @@ public class RendicionLogic extends RendicionItemLogic {
             eliminarRendicion(beanItem.getBean());
 
         });
+        view.getBtnImportar().addClickListener(clickEvent -> importDetalles());
         switchMode(EMPTY);
     }
 

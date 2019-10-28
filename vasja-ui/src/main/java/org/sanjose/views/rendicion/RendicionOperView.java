@@ -376,10 +376,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         return btnNewItem;
     }
 
-    public Button getBtnModificar() {
-        return btnModificar;
-    }
-
     public Button getBtnAnular() {
         return btnAnular;
     }
@@ -467,6 +463,11 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
     public Button getBtnEliminarRend() {
         return btnEliminarRend;
     }
+
+    public Button getBtnImportar() {
+        return btnImportar;
+    }
+
 
     @Override
     public void enter(ViewChangeEvent event) {

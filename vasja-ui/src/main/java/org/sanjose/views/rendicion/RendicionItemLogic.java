@@ -26,6 +26,9 @@ import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
 import tm.kod.widgets.numberfield.NumberField;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.FileChooserUI;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -814,5 +817,18 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
         if (rd.getCodDestino()==null) rd.setCodDestino("");
         if (rd.getCodTipomov()==null) rd.setCodTipomov(0);
         return rd;
+    }
+
+    protected void importDetalles() {
+        RendicionImport ri = new RendicionImport();
+        JFileChooser chooser = new JFileChooser();
+        //FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        //        "Excel files", "xls", "xlsx");
+        //chooser.setFileFilter(filter);
+        //int returnVal = chooser.showOpenDialog(MainUI.get);
+//        if(returnVal == JFileChooser.APPROVE_OPTION) {
+//            System.out.println("You chose to open this file: " +
+//                    chooser.getSelectedFile().getName());
+//        }
     }
 }
