@@ -819,9 +819,28 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
         return rd;
     }
 
+    protected void addImportedDetalles(List<ScpRendiciondetalle> importedDets) {
+        int i = view.getContainer().size()+1;
+        for (ScpRendiciondetalle det : importedDets) {
+            ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+            //id.setCodRendicioncabecera(this.rendicioncabecera.getCodRendicioncabecera());
+            id.setNumNroitem(i);
+            det.setId(id);
+            i++;
+        }
+        view.getContainer().addAll(importedDets);
+        view.getContainer().sort(new Object[]{"numNritem"}, new boolean[]{true});
+        view.getContainer().sort(new Object[]{"id.numNroitem"}, new boolean[]{true});
+        view.setTotal(moneda);
+        view.calcFooterSums();
+    }
+
+
     protected void importDetalles() {
-        RendicionImport ri = new RendicionImport();
-        JFileChooser chooser = new JFileChooser();
+        ImportView importView = new ImportView(this);
+        ViewUtil.openViewInNewWindow(importView, 1050, 150);
+
+        //JFileChooser chooser = new JFileChooser();
         //FileNameExtensionFilter filter = new FileNameExtensionFilter(
         //        "Excel files", "xls", "xlsx");
         //chooser.setFileFilter(filter);

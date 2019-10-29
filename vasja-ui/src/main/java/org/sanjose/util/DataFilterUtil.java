@@ -228,10 +228,8 @@ public class DataFilterUtil {
 									final String prompt, Class clas, Filter filter, String concatenatedColumn, JpaRepository repo) {
 		
 		BeanItemContainer beanItemContainer;  
-		//if (elements==null) {
-			beanItemContainer = new BeanItemContainer(clas, repo.findAll());
-			if (filter!=null) beanItemContainer.addContainerFilter(filter);
-		//}
+		beanItemContainer = new BeanItemContainer(clas, repo.findAll());
+		if (filter!=null) beanItemContainer.addContainerFilter(filter);
 		// propietarios.setWidth(ConfigurationUtil.get("COMMON_FIELD_WIDTH"));
 		IndexedContainer c = new IndexedContainer();
 		c.addContainerProperty(column, String.class, "");

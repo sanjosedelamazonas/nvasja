@@ -6,8 +6,20 @@
   <meta name="vaadin-version" content="7.7.7">
  </head>
  <body>
-  <vaadin-vertical-layout size-full>
-   <vaadin-upload></vaadin-upload>
+  <vaadin-vertical-layout spacing immediate height="150px" margin>
+   <vaadin-vertical-layout height="50px">
+    <vaadin-horizontal-layout spacing margin>
+     <vaadin-upload caption="Subir archivo con detalles" size-full _id="btnUpload"></vaadin-upload>
+     <vaadin-label width="50px" plain-text></vaadin-label>
+     <vaadin-button plain-text _id="btnAnular" :bottom :center>
+       Anular 
+     </vaadin-button>
+     <vaadin-button plain-text _id="btnImportar" :bottom :right>
+       Guardar y Importar 
+     </vaadin-button>
+    </vaadin-horizontal-layout>
+   </vaadin-vertical-layout>
+   <vaadin-vertical-layout immediate height="50px" _id="layItem" :expand></vaadin-vertical-layout>
   </vaadin-vertical-layout>
  </body>
 </html>

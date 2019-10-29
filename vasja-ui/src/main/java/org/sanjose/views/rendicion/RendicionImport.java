@@ -2,6 +2,7 @@ package org.sanjose.views.rendicion;
 
 import org.apache.poi.ss.usermodel.*;
 import org.sanjose.model.ScpRendiciondetalle;
+import org.sanjose.util.GenUtil;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -22,15 +23,15 @@ public class RendicionImport {
 
     private int maxRowWidth;
 
+    private Character moneda = GenUtil.PEN;
+
     private List<ScpRendiciondetalle> rendDetalles = new ArrayList<>();
 
-/*
-    if(source.isDirectory()) {
-        // Get a list of all of the Excel spreadsheet files (workbooks) in
-        // the source folder/directory
-        filesList = source.listFiles(new ExcelFilenameFilter());
+    public RendicionImport(File file, Character moneda) throws IOException {
+        this.moneda = moneda;
+        openWorkbook(file);
+        importData();
     }
-*/
 
     /**
      * Open an Excel workbook ready for conversion.
@@ -143,7 +144,17 @@ public class RendicionImport {
             det.setCodDestino(strCells.get(2));
             det.setCodCtaespecial(strCells.get(3));
             det.setTxtGlosaitem(strCells.get(4));
-            det.setNumDebesol(new BigDecimal(strCells.get(5)));
+            switch (this.moneda) {
+                case '0':
+                    det.setNumDebesol(new BigDecimal(strCells.get(5)));
+                    break;
+                case '1':
+                    det.setNumDebedolar(new BigDecimal(strCells.get(5)));
+                    break;
+                case '2':
+                    det.setNumDebemo(new BigDecimal(strCells.get(5)));
+                    break;
+            };
         } catch (ParseException pe) {
             det.setTxtGlosaitem("Problema al importar la fecha: " + pe.getLocalizedMessage());
         }
