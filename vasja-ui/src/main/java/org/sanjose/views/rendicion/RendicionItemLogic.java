@@ -821,6 +821,7 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
 
     protected void addImportedDetalles(List<ScpRendiciondetalle> importedDets) {
         int i = view.getContainer().size()+1;
+        List<ScpRendiciondetalle> rendsToAdd = new ArrayList<>();
         for (ScpRendiciondetalle det : importedDets) {
             ScpRendiciondetallePK id = new ScpRendiciondetallePK();
             id.setCodRendicioncabecera(this.rendicioncabecera.getCodRendicioncabecera());
@@ -828,8 +829,16 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
             det.setId(id);
             det.setScpRendicioncabecera(this.rendicioncabecera);
             i++;
+            BeanItem<ScpRendiciondetalle> item = new BeanItem<>(det);
+            try {
+                det = setEmptyStrings(prepToSave(item));
+                rendsToAdd.add(view.getService().getRendiciondetalleRep().save(det));
+            } catch (CommitException ce) {
+                Notification.show("Problema al guardar detalle: " + ce.getMessage() + "\n" + det);
+            }
         }
-        view.getContainer().addAll(importedDets);
+        view.getContainer().addAll(rendsToAdd);
+        view.getGrid().select(rendsToAdd.get(0));
         view.getContainer().sort(new Object[]{"numNritem"}, new boolean[]{true});
         view.getContainer().sort(new Object[]{"id.numNroitem"}, new boolean[]{true});
         view.setTotal(moneda);
