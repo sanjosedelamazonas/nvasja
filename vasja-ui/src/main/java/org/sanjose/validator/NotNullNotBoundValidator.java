@@ -17,7 +17,7 @@ public class NotNullNotBoundValidator implements Validator {
     private final String message;
 
     public NotNullNotBoundValidator(String message) {
-        if (message!=null) message = "Tiene que ser selecionado";
+        if (message==null) message = "Tiene que ser selecionado";
         this.message = message;
     }
 

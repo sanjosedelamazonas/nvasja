@@ -135,7 +135,7 @@ public class RendicionLogic extends RendicionItemLogic {
         return Optional.ofNullable(null);
     }
 
-    void nuevoItem() {
+    private void nuevoItem() {
         switchMode(EDIT);
         // If grid is not empty save current and then create a new one.
         if (item!=null) {
@@ -306,6 +306,15 @@ public class RendicionLogic extends RendicionItemLogic {
         view.getNumItem().setValue("");
         item = null;
         switchMode(VIEW);
+    }
+
+    protected void importDetalles() {
+        ScpRendiciondetalle res = saveCabecera();
+        if (res==null)
+            return;
+        item = null;
+        ImportView importView = new ImportView(this);
+        ViewUtil.openViewInNewWindow(importView, 1100, 150);
     }
 
     private void switchMode(Viewing.Mode newMode) {

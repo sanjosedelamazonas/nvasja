@@ -823,9 +823,10 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
         int i = view.getContainer().size()+1;
         for (ScpRendiciondetalle det : importedDets) {
             ScpRendiciondetallePK id = new ScpRendiciondetallePK();
-            //id.setCodRendicioncabecera(this.rendicioncabecera.getCodRendicioncabecera());
+            id.setCodRendicioncabecera(this.rendicioncabecera.getCodRendicioncabecera());
             id.setNumNroitem(i);
             det.setId(id);
+            det.setScpRendicioncabecera(this.rendicioncabecera);
             i++;
         }
         view.getContainer().addAll(importedDets);
@@ -833,21 +834,5 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
         view.getContainer().sort(new Object[]{"id.numNroitem"}, new boolean[]{true});
         view.setTotal(moneda);
         view.calcFooterSums();
-    }
-
-
-    protected void importDetalles() {
-        ImportView importView = new ImportView(this);
-        ViewUtil.openViewInNewWindow(importView, 1050, 150);
-
-        //JFileChooser chooser = new JFileChooser();
-        //FileNameExtensionFilter filter = new FileNameExtensionFilter(
-        //        "Excel files", "xls", "xlsx");
-        //chooser.setFileFilter(filter);
-        //int returnVal = chooser.showOpenDialog(MainUI.get);
-//        if(returnVal == JFileChooser.APPROVE_OPTION) {
-//            System.out.println("You chose to open this file: " +
-//                    chooser.getSelectedFile().getName());
-//        }
     }
 }

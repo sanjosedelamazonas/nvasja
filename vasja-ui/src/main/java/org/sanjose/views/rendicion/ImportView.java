@@ -16,6 +16,7 @@ import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.validator.LocalizedBeanValidator;
+import org.sanjose.validator.NotBoundComboBoxValidator;
 import org.sanjose.validator.NotNullNotBoundValidator;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.SubWindowing;
@@ -115,10 +116,12 @@ public class ImportView extends ImportUI implements SubWindowing {
         // Auxiliar
         DataFilterUtil.bindComboBox(row.getSelDestino(), "codDestino", rendicionItemLogic.view.getService().getDestinoRepo().findByIndTipodestinoNot('3'), item.getCodDestino(),
                 "txtNombredestino");
-        //row.getSelDestino().setInvalidAllowed(true);
-        //row.getSelDestino().setNewItemsAllowed(true);
+        row.getSelDestino().setInvalidAllowed(true);
+        row.getSelDestino().setNewItemsAllowed(true);
         //row.getSelDestino().setImmediate(false);
         fieldGroup.bind(row.getSelDestino(), "codDestino");
+        //row.getSelDestino().
+        selectByValue(row.getSelDestino(), item.getCodDestino());
 
         row.getTxtGlosaItem().setMaxLength(70);
 
@@ -127,10 +130,11 @@ public class ImportView extends ImportUI implements SubWindowing {
                 rendicionItemLogic.view.getService().getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
                 "Rubro instit", "txtDescctaespecial");
         fieldGroup.bind(row.getSelRubroInst(), "codCtaespecial");
-        row.getSelRubroInst().setNullSelectionAllowed(false);
-        row.getSelRubroInst().setInvalidAllowed(false);
-        row.getSelRubroInst().setImmediate(true);
-        row.getSelRubroInst().setDescription(item.getCodCtaespecial());
+        //row.getSelRubroInst().setNullSelectionAllowed(false);
+        row.getSelRubroInst().setInvalidAllowed(true);
+        //row.getSelRubroInst().setImmediate(true);
+        //row.getSelRubroInst().setDescription(item.getCodCtaespecial());
+        selectByValue(row.getSelRubroInst(), item.getCodCtaespecial());
 
 
         // Rubro Proy
@@ -139,19 +143,40 @@ public class ImportView extends ImportUI implements SubWindowing {
                 "Partida pptal", "txtDescctaproyecto");
         fieldGroup.bind(row.getSelPartidaP(), "codCtaproyecto");
         row.getSelPartidaP().setInvalidAllowed(true);
+        row.getSelPartidaP().setNewItemsAllowed(true);
+        selectByValue(row.getSelPartidaP(), item.getCodCtaproyecto());
 
         ViewUtil.setFieldsNullRepresentation(fieldGroup);
         ViewUtil.setDefaultsForNumberField(row.getNumMonto());
         row.getNumMonto().addStyleName("v-align-right");
 
-        row.getSelDestino().addValidator(new NotNullNotBoundValidator(null));
-        row.getSelRubroInst().addValidator(new NotNullNotBoundValidator(null));
-        row.getSelPartidaP().addValidator(new NotNullNotBoundValidator(null));
+        row.getFecFechaDoc().addValidator(new NotNullNotBoundValidator(null));
+        row.getNumMonto().addValidator(new NotNullNotBoundValidator(null));
+        row.getTxtGlosaItem().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "txtGlosaitem"));
+        row.getSelDestino().addValidator(new NotBoundComboBoxValidator(null, row.getSelDestino()));
+        //row.getSelDestino().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "codDestino"));
+        row.getSelRubroInst().addValidator(new NotBoundComboBoxValidator(null, row.getSelRubroInst()));
+        row.getSelPartidaP().addValidator(new NotBoundComboBoxValidator(null, row.getSelPartidaP()));
 
         fieldGroups.add(fieldGroup);
         rows.add(row);
         beanItems.add(beanItem);
+        //row.getSelDestino().getValidators().forEach(validator -> validator.validate(row.getSelDestino().getValue()));
     }
+
+    private void selectByValue(ComboBox comboBox, String value) {
+        if (value==null)
+            return;
+        List<Object> matchedIds = new ArrayList<>();
+        for (Object it : comboBox.getContainerDataSource().getItemIds()) {
+            if (comboBox.getContainerDataSource().getItem(it).toString().contains(value)) {
+                matchedIds.add(it);
+            }
+        }
+        if (matchedIds.size()==1)
+            comboBox.select(matchedIds.get(0));
+    }
+
 
     private void guardarImportar() {
         try {

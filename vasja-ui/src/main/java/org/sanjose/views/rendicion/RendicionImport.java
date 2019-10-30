@@ -138,12 +138,12 @@ public class RendicionImport {
         if (strCells.size() < 7)
             return null;
         ScpRendiciondetalle det = new ScpRendiciondetalle();
+        det.setCodCtaproyecto(strCells.get(1));
+        det.setCodDestino(strCells.get(2));
+        det.setCodCtaespecial(strCells.get(3));
+        det.setTxtGlosaitem(strCells.get(4));
         try {
             det.setFecComprobantepago(parseDate(strCells.get(0)));
-            det.setCodCtaproyecto(strCells.get(1));
-            det.setCodDestino(strCells.get(2));
-            det.setCodCtaespecial(strCells.get(3));
-            det.setTxtGlosaitem(strCells.get(4));
             switch (this.moneda) {
                 case '0':
                     det.setNumDebesol(new BigDecimal(strCells.get(5)));
@@ -155,9 +155,10 @@ public class RendicionImport {
                     det.setNumDebemo(new BigDecimal(strCells.get(5)));
                     break;
             };
-        } catch (ParseException pe) {
-            det.setTxtGlosaitem("Problema al importar la fecha: " + pe.getLocalizedMessage());
+        } catch (NumberFormatException | ParseException pe) {
+            //det.setTxtGlosaitem("Problema al importar la fecha: " + pe.getLocalizedMessage());
         }
+        det.setCodTipomoneda(this.moneda);
         return det;
     }
 
