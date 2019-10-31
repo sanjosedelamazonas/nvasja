@@ -18,9 +18,7 @@ import org.sanjose.views.sys.Viewing;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.sanjose.util.GenUtil.verifyNumMoneda;
 import static org.sanjose.views.sys.Viewing.Mode.*;
@@ -238,7 +236,7 @@ public class RendicionLogic extends RendicionItemLogic {
                 final ScpRendiciondetalle rendiItem = prepToSave(beanItem);
                 fieldGroup.commit();
                 String[] numFields = {"numHaber", "numDebe"};
-                Arrays.asList(numFields).forEach(f -> calculateInOtherCurrencies(f + GenUtil.getDescMoneda(rendiItem.getCodTipomoneda())));
+                Arrays.asList(numFields).forEach(f -> calculateInOtherCurrencies(f + GenUtil.getDescMoneda(rendiItem.getCodTipomoneda()), beanItem));
                 rendicionItem = setEmptyStrings(rendiItem);
             }
 
@@ -275,10 +273,12 @@ public class RendicionLogic extends RendicionItemLogic {
     }
 
     void eliminarItem() {
-        ScpRendiciondetalle bancoItem = view.getSelectedRow();
-        if (bancoItem  == null)
+        Collection<Object> items = view.getGrid().getSelectedRows();
+        if (items == null || items.isEmpty())
             return;
-        if (bancoItem.getScpRendicioncabecera().isEnviado()) {
+        List<ScpRendiciondetalle> detalles = new ArrayList<>();
+        items.forEach(it -> detalles.add((ScpRendiciondetalle)it));
+        if (detalles.get(0).getScpRendicioncabecera().isEnviado()) {
             MessageBox
                     .createInfo()
                     .withCaption("Ya enviado a contabilidad")
@@ -287,20 +287,28 @@ public class RendicionLogic extends RendicionItemLogic {
                     .open();
             return;
         }
+        StringBuffer sb = new StringBuffer();
+        sb.append("?Esta seguro que quiere eliminar detalles:\n");
+        detalles.forEach(det -> sb.append(det.getScpRendicioncabecera().getCodRendicioncabecera() + "-" + det.getId().getNumNroitem() + "\n"));
+        sb.append(" ?\n");
         MessageBox
                 .createQuestion()
                 .withCaption("Eliminar")
-                .withMessage("?Esta seguro que quiere eliminar esta operacion:\n" +
-                        bancoItem.getScpRendicioncabecera().getCodRendicioncabecera() + "-" + bancoItem.getId().getNumNroitem() + " ?\n")
+                .withMessage(sb.toString())
                 .withYesButton(this::doEliminarComprobante)
                 .withNoButton()
                 .open();
     }
 
     private void doEliminarComprobante() {
-        ScpRendiciondetalle rendiciondetalle = view.getSelectedRow();
-        ScpRendicioncabecera rendcab = rendiciondetalle.getScpRendicioncabecera();
-        view.getService().deleteRendicionOperacion(rendiciondetalle.getScpRendicioncabecera(), rendiciondetalle);
+        Collection<Object> items = view.getGrid().getSelectedRows();
+        List<ScpRendiciondetalle> detalles = new ArrayList<>();
+        items.forEach(it -> detalles.add((ScpRendiciondetalle)it));
+        ScpRendicioncabecera rendcab = null;
+        for (ScpRendiciondetalle rendiciondetalle : detalles) {
+            rendcab = rendiciondetalle.getScpRendicioncabecera();
+            view.getService().deleteRendicionOperacion(rendiciondetalle.getScpRendicioncabecera(), rendiciondetalle);
+        }
         loadDetallesToGrid(rendcab);
         ViewUtil.clearFields(fieldGroup);
         view.getNumItem().setValue("");
@@ -314,7 +322,7 @@ public class RendicionLogic extends RendicionItemLogic {
             return;
         item = null;
         ImportView importView = new ImportView(this);
-        ViewUtil.openViewInNewWindow(importView, 1100, 150);
+        ViewUtil.openViewInNewWindow(importView, 1100, 600);
     }
 
     private void switchMode(Viewing.Mode newMode) {

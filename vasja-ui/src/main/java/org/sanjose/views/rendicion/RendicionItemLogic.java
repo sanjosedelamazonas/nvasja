@@ -26,9 +26,6 @@ import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
 import tm.kod.widgets.numberfield.NumberField;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.FileChooserUI;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -278,7 +275,17 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
     // TIPO CAMBIO LOGIC AND RECALCULATION
 
     private void setTipoCambios(Date fecha) {
-        log.debug("setting tipo for: " + fecha);
+        setTipoCambios(fecha, beanItem);
+        List<ScpRendiciondetalle> detsToRefresh = new ArrayList<>();
+        detsToRefresh.add(beanItem.getBean());
+        view.grid.refreshRows(detsToRefresh);
+        calculateInOtherCurrencies();
+    }
+
+    private void setTipoCambios(Date fecha, BeanItem<ScpRendiciondetalle> bItem) {
+        Character mon = (Character)bItem.getItemProperty("codTipomoneda").getValue();
+        if (mon==null)
+            mon = moneda;
         if (fecha==null || isLoading)
             return;
         fecha = GenUtil.getBeginningOfDay(fecha);
@@ -297,66 +304,62 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
             }
         }
         tipocambio = tipocambios.get(0);
-        if (moneda==GenUtil.PEN) {
-            beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTccdolar());
+        if (mon==GenUtil.PEN) {
+            bItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTccdolar());
             if (!GenUtil.isNullOrZero(tipocambio.getNumTcceuro()))
-                beanItem.getItemProperty("numTc" +  GenUtil.getDescMoneda(GenUtil.EUR)).setValue(tipocambio.getNumTcceuro());
-        } else if (moneda==GenUtil.USD) {
-            beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTcvdolar());
+                bItem.getItemProperty("numTc" +  GenUtil.getDescMoneda(GenUtil.EUR)).setValue(tipocambio.getNumTcceuro());
+        } else if (mon==GenUtil.USD) {
+            bItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTcvdolar());
             if (!GenUtil.isNullOrZero(tipocambio.getNumTcceuro()))
-                beanItem.getItemProperty("numTc" +  GenUtil.getDescMoneda(GenUtil.EUR)).setValue(tipocambio.getNumTcceuro());
-        } else if (moneda==GenUtil.EUR) {
-            beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTccdolar());
+                bItem.getItemProperty("numTc" +  GenUtil.getDescMoneda(GenUtil.EUR)).setValue(tipocambio.getNumTcceuro());
+        } else if (mon==GenUtil.EUR) {
+            bItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).setValue(tipocambio.getNumTccdolar());
             if (!GenUtil.isNullOrZero(tipocambio.getNumTcveuro()))
-                beanItem.getItemProperty("numTc" +  GenUtil.getDescMoneda(GenUtil.EUR)).setValue(tipocambio.getNumTcveuro());
+                bItem.getItemProperty("numTc" +  GenUtil.getDescMoneda(GenUtil.EUR)).setValue(tipocambio.getNumTcveuro());
         }
-        List<ScpRendiciondetalle> detsToRefresh = new ArrayList<>();
-        detsToRefresh.add(beanItem.getBean());
-        view.grid.refreshRows(detsToRefresh);
-        calculateInOtherCurrencies();
     }
 
     protected void calculateInOtherCurrencies() {
-        String[] numFields = {"numHaber", "numDebe"};
-        Arrays.asList(numFields).forEach(f -> calculateInOtherCurrencies(f + GenUtil.getDescMoneda(beanItem.getBean().getCodTipomoneda())));
+        calculateInOtherCurrencies(beanItem);
     }
 
-    protected void calculateInOtherCurrencies(String propertyName) {
-        log.debug("calculating for: " + propertyName);
+    protected void calculateInOtherCurrencies(BeanItem<ScpRendiciondetalle>  bItem) {
+        String[] numFields = {"numHaber", "numDebe"};
+        Arrays.asList(numFields).forEach(f -> calculateInOtherCurrencies(f + GenUtil.getDescMoneda(bItem.getBean().getCodTipomoneda()), bItem));
+    }
+
+    protected void calculateInOtherCurrencies(String propertyName, BeanItem<ScpRendiciondetalle> bItem) {
         if (view.grid.getColumn(propertyName).getEditorField()==null)
             return;
-        Object newVal = beanItem.getItemProperty(propertyName).getValue();
+        Object newVal = bItem.getItemProperty(propertyName).getValue();
         if (newVal==null)
             return;
         BigDecimal newNum = (BigDecimal)newVal;
         Character moneda = GenUtil.getNumMonedaFromDescContaining(propertyName);
         // Ignore in othter currencies than the one chosen for input
-        if (!moneda.equals(beanItem.getItemProperty("codTipomoneda").getValue()))
+        if (!moneda.equals(bItem.getItemProperty("codTipomoneda").getValue()))
             return;
         String haberDebe = propertyName.contains("Haber") ? "Haber" : "Debe";
-        BigDecimal tcDolar = (BigDecimal)beanItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).getValue();
-        BigDecimal tcEuro = (BigDecimal)beanItem.getItemProperty("numTc" + GenUtil.getDescMoneda(GenUtil.EUR)).getValue();
-//        BeanItem beanItem = manView.getContainer().getItem(manView.grid.getEditedItemId());
-//        if (beanItem==null)
-//            return;
+        BigDecimal tcDolar = (BigDecimal)bItem.getItemProperty("numTcv" + GenUtil.getDescMoneda(GenUtil.USD)).getValue();
+        BigDecimal tcEuro = (BigDecimal)bItem.getItemProperty("numTc" + GenUtil.getDescMoneda(GenUtil.EUR)).getValue();
         if (moneda==GenUtil.PEN) {
             if (!GenUtil.isNullOrZero(tcDolar))
-                beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.USD)).setValue(
+                bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.USD)).setValue(
                         newNum.setScale(2).divide(tcDolar, RoundingMode.HALF_EVEN));
             if (!GenUtil.isNullOrZero(tcEuro))
-                beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.EUR)).setValue(
+                bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.EUR)).setValue(
                         newNum.setScale(2).divide(tcEuro, RoundingMode.HALF_EVEN));
         } else if (moneda==GenUtil.USD) {
             if (!GenUtil.isNullOrZero(tcDolar))
-                beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.PEN)).setValue(
+                bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.PEN)).setValue(
                     newNum.setScale(2).multiply(tcDolar));
             if (!GenUtil.isNullOrZero(tcEuro) && !GenUtil.isNullOrZero(tcDolar))
-                beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.EUR)).setValue(
+                bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.EUR)).setValue(
                     newNum.setScale(2).multiply(tcDolar).divide(tcEuro, RoundingMode.HALF_EVEN));
         } else if (!GenUtil.isNullOrZero(tcEuro) && !GenUtil.isNullOrZero(tcDolar)) {
-                beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.PEN)).setValue(
+                bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.PEN)).setValue(
                         newNum.setScale(2).multiply(tcEuro));
-                beanItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.USD)).setValue(
+                bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.USD)).setValue(
                         newNum.setScale(2).multiply(tcEuro).divide(tcDolar, RoundingMode.HALF_EVEN));
         }
     }
@@ -751,8 +754,7 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
                         ) {
                             setTipoCambios(view.getFechaDoc().getValue());
                         }
-                        String[] numFields = {"numHaber", "numDebe"};
-                        Arrays.asList(numFields).forEach(f -> calculateInOtherCurrencies(f + GenUtil.getDescMoneda(vcb.getCodTipomoneda())));
+                        calculateInOtherCurrencies();
                         // Save data
                         fieldGroup.commit();
                         commitEvent.getFieldBinder();
@@ -824,12 +826,18 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
         List<ScpRendiciondetalle> rendsToAdd = new ArrayList<>();
         for (ScpRendiciondetalle det : importedDets) {
             ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+            id = id.prepareToSave(det);
             id.setCodRendicioncabecera(this.rendicioncabecera.getCodRendicioncabecera());
             id.setNumNroitem(i);
+            id.setCodFilial(this.rendicioncabecera.getCodFilial());
+            id.setCodOrigen(this.rendicioncabecera.getCodOrigen());
+            id.setCodComprobante(this.rendicioncabecera.getCodComprobante());
             det.setId(id);
             det.setScpRendicioncabecera(this.rendicioncabecera);
             i++;
             BeanItem<ScpRendiciondetalle> item = new BeanItem<>(det);
+            setTipoCambios(det.getFecComprobantepago(), item);
+            calculateInOtherCurrencies(item);
             try {
                 det = setEmptyStrings(prepToSave(item));
                 rendsToAdd.add(view.getService().getRendiciondetalleRep().save(det));

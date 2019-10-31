@@ -23,7 +23,7 @@ public class RendicionImport {
 
     private int maxRowWidth;
 
-    private Character moneda = GenUtil.PEN;
+    private Character moneda;
 
     private List<ScpRendiciondetalle> rendDetalles = new ArrayList<>();
 
@@ -68,13 +68,6 @@ public class RendicionImport {
             // any rows.
             sheet = this.workbook.getSheetAt(i);
             if (sheet.getPhysicalNumberOfRows() > 0) {
-
-                // Note down the index number of the bottom-most row and
-                // then iterate through all of the rows on the sheet starting
-                // from the very first row - number 1 - even if it is missing.
-                // Recover a reference to the row and then call another method
-                // which will strip the data from the cells and build lines
-                // for inclusion in the resylting CSV file.
                 lastRowNum = sheet.getLastRowNum();
                 for (int j = 1; j <= lastRowNum; j++) {
                     row = sheet.getRow(j);
@@ -130,7 +123,8 @@ public class RendicionImport {
                 this.maxRowWidth = lastCellNum;
             }
 
-            rendDetalles.add(strCellToDetalle(strCells));
+            ScpRendiciondetalle det = strCellToDetalle(strCells);
+            if (det!=null) rendDetalles.add(det);
         }
     }
 
@@ -181,51 +175,4 @@ public class RendicionImport {
     public List<ScpRendiciondetalle> getRendDetalles() {
         return rendDetalles;
     }
-
-    /**
-     * An instance of this class can be used to control the files returned
-     * be a call to the listFiles() method when made on an instance of the
-     * File class and that object refers to a folder/directory
-     */
-    public class ExcelFilenameFilter implements FilenameFilter {
-
-        /**
-         * Determine those files that will be returned by a call to the
-         * listFiles() method. In this case, the name of the file must end with
-         * either of the following two extension; '.xls' or '.xlsx'. For the
-         * future, it is very possible to parameterise this and allow the
-         * containing class to pass, for example, an array of Strings to this
-         * class on instantiation. Each element in that array could encapsulate
-         * a valid file extension - '.xls', '.xlsx', '.xlt', '.xlst', etc. These
-         * could then be used to control which files were returned by the call
-         * to the listFiles() method.
-         *
-         * @param file An instance of the File class that encapsulates a handle
-         *             referring to the folder/directory that contains the file.
-         * @param name An instance of the String class that encapsulates the
-         *             name of the file.
-         * @return A boolean value that indicates whether the file should be
-         *         included in the array retirned by the call to the listFiles()
-         *         method. In this case true will be returned if the name of the
-         *         file ends with either '.xls' or '.xlsx' and false will be
-         *         returned in all other instances.
-         */
-        @Override
-        public boolean accept(File file, String name) {
-            return(name.endsWith(".xls") || name.endsWith(".xlsx"));
-        }
-    }
-
-
-//    public static void main(String[] args) {
-//        RendicionImport ri = new RendicionImport();
-//        File f = new File("import.xlsx");
-//        try {
-//            ri.openWorkbook(f);
-//            ri.importData();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        };
-//    }
-
 }

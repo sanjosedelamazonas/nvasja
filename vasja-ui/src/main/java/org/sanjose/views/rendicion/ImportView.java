@@ -7,6 +7,7 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
+import org.apache.poi.EmptyFileException;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.ScpRendiciondetalle;
 import org.sanjose.model.ScpRendiciondetallePK;
@@ -20,7 +21,6 @@ import org.sanjose.validator.NotBoundComboBoxValidator;
 import org.sanjose.validator.NotNullNotBoundValidator;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.SubWindowing;
-import org.springframework.context.annotation.Bean;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -68,6 +68,7 @@ public class ImportView extends ImportUI implements SubWindowing {
             ri = new RendicionImport(file, rendicionItemLogic.moneda);
             List<ScpRendiciondetalle> importedDets = ri.getRendDetalles();
             int i = rendicionItemLogic.view.getContainer().size()+1;
+            int j = 1;
             for (ScpRendiciondetalle det : importedDets) {
                 ScpRendiciondetallePK id = new ScpRendiciondetallePK();
                 id.setCodRendicioncabecera(this.rendicionItemLogic.rendicioncabecera!=null ? this.rendicionItemLogic.rendicioncabecera.getCodRendicioncabecera() : -1);
@@ -76,16 +77,14 @@ public class ImportView extends ImportUI implements SubWindowing {
                 ImportedDetalleLineView row = new ImportedDetalleLineView();
                 bindRow(det, row);
                 getLayItem().addComponent(row);
-                String h = new Integer(25*i).toString();
+                String h = new Integer(25*j).toString();
                 getLayItem().setHeight(h);
-                h = new Integer(25*i+80).toString();
+                h = new Integer(25*j+70).toString();
                 this.setHeight(h);
                 i++;
+                j++;
             }
-
-
-            //rendicionItemLogic.addImportedDetalles();
-        } catch (IOException ie) {
+        } catch (IOException | EmptyFileException ie) {
             Notification.show("Problema al importar el archivo subido: " + ie.getLocalizedMessage());
         }
     }
@@ -111,7 +110,6 @@ public class ImportView extends ImportUI implements SubWindowing {
         pdf.setConverter(DateToTimestampConverter.INSTANCE);
         pdf.setResolution(Resolution.DAY);
         fieldGroup.bind(pdf, "fecComprobantepago");
-        //pdf.setRenderer(new DateNotNullRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
         // Auxiliar
         DataFilterUtil.bindComboBox(row.getSelDestino(), "codDestino", rendicionItemLogic.view.getService().getDestinoRepo().findByIndTipodestinoNot('3'), item.getCodDestino(),
@@ -161,7 +159,6 @@ public class ImportView extends ImportUI implements SubWindowing {
         fieldGroups.add(fieldGroup);
         rows.add(row);
         beanItems.add(beanItem);
-        //row.getSelDestino().getValidators().forEach(validator -> validator.validate(row.getSelDestino().getValue()));
     }
 
     private void selectByValue(ComboBox comboBox, String value) {
@@ -184,7 +181,7 @@ public class ImportView extends ImportUI implements SubWindowing {
                 fg.commit();
             }
         } catch (FieldGroup.CommitException ce) {
-            Notification.show("Por favor rellena los datos necessarios!", Notification.Type.ERROR_MESSAGE);
+            Notification.show("Por favor rellena los datos necessarios!\n" + ce.getMessage(), Notification.Type.ERROR_MESSAGE);
             return;
         }
         List<ScpRendiciondetalle> updatedDetalles = new ArrayList<>();
@@ -195,7 +192,7 @@ public class ImportView extends ImportUI implements SubWindowing {
 
 
 
-    class RendicionUploader implements Upload.Receiver, Upload.SucceededListener {
+    private class RendicionUploader implements Upload.Receiver, Upload.SucceededListener {
         public File file;
 
         public OutputStream receiveUpload(String filename,
@@ -208,7 +205,7 @@ public class ImportView extends ImportUI implements SubWindowing {
                 file = new File(tmpDir + "/" + System.currentTimeMillis() + "_" + filename);
                 fos = new FileOutputStream(file);
             } catch (final java.io.FileNotFoundException e) {
-                new Notification("Could not open file<br/>",
+                new Notification("No se podia abrir el archivo<br/>",
                         e.getMessage(),
                         Notification.Type.ERROR_MESSAGE)
                         .show(Page.getCurrent());
@@ -221,10 +218,6 @@ public class ImportView extends ImportUI implements SubWindowing {
             onUpload(e, file);
         }
     };
-
-
-
-
 
 
     @Override
