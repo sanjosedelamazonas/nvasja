@@ -565,8 +565,6 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
             } catch (CommitException ce) {
                 Notification.show("Error al eliminar el destino: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
                 log.warn("Got Commit Exception: " + ce.getMessage());
-                //ce.getFieldGroup().
-                //ce.getInvalidFields().keySet().
             }
         });
         UI.getCurrent().addWindow(destinoWindow);
@@ -653,8 +651,6 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
     void nuevoItem(ScpRendiciondetalle vcb) {
         if (rendicioncabecera != null)
             vcb.setScpRendicioncabecera(rendicioncabecera);
-        //vcb.setCodTipomoneda(moneda);
-        //vcb.setFecComprobante(new Timestamp(System.currentTimeMillis()));
         vcb.setFecComprobantepago(new Timestamp(view.getDataFechaComprobante().getValue().getTime()));
         // if selected other item then copy most fields
         if (!view.getGrid().getSelectedRows().isEmpty()) {
@@ -678,8 +674,6 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
                 break;
             }
         }
-
-
         bindForm(vcb);
         item = vcb;
         view.setEnableCabezeraFields(true);

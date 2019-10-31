@@ -1,6 +1,5 @@
 package org.sanjose.views.caja;
 
-import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.util.ProcUtil;
 import org.sanjose.views.ItemsRefreshing;

@@ -167,7 +167,6 @@ public class RendicionLogic extends RendicionItemLogic {
 
     private void bindForm(ScpRendicioncabecera item) {
         isLoading = true;
-        //clearSaldos();
         setAllFields.forEach(field -> field.setValue(null));
         beanItem = new BeanItem<>(item);
         fieldGroupCabezera = new FieldGroup(beanItem);

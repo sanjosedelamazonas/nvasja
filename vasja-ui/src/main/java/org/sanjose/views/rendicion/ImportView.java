@@ -116,9 +116,7 @@ public class ImportView extends ImportUI implements SubWindowing {
                 "txtNombredestino");
         row.getSelDestino().setInvalidAllowed(true);
         row.getSelDestino().setNewItemsAllowed(true);
-        //row.getSelDestino().setImmediate(false);
         fieldGroup.bind(row.getSelDestino(), "codDestino");
-        //row.getSelDestino().
         selectByValue(row.getSelDestino(), item.getCodDestino());
 
         row.getTxtGlosaItem().setMaxLength(70);
@@ -128,10 +126,7 @@ public class ImportView extends ImportUI implements SubWindowing {
                 rendicionItemLogic.view.getService().getPlanEspRepo().findByFlgMovimientoAndId_TxtAnoproceso('N', GenUtil.getCurYear()),
                 "Rubro instit", "txtDescctaespecial");
         fieldGroup.bind(row.getSelRubroInst(), "codCtaespecial");
-        //row.getSelRubroInst().setNullSelectionAllowed(false);
         row.getSelRubroInst().setInvalidAllowed(true);
-        //row.getSelRubroInst().setImmediate(true);
-        //row.getSelRubroInst().setDescription(item.getCodCtaespecial());
         selectByValue(row.getSelRubroInst(), item.getCodCtaespecial());
 
 
@@ -152,7 +147,6 @@ public class ImportView extends ImportUI implements SubWindowing {
         row.getNumMonto().addValidator(new NotNullNotBoundValidator(null));
         row.getTxtGlosaItem().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "txtGlosaitem"));
         row.getSelDestino().addValidator(new NotBoundComboBoxValidator(null, row.getSelDestino()));
-        //row.getSelDestino().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "codDestino"));
         row.getSelRubroInst().addValidator(new NotBoundComboBoxValidator(null, row.getSelRubroInst()));
         row.getSelPartidaP().addValidator(new NotBoundComboBoxValidator(null, row.getSelPartidaP()));
 
