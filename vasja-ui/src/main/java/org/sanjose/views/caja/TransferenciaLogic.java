@@ -124,7 +124,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         if (state.isEdited())
             MessageBox
                 .createQuestion()
-                .withCaption("Quitar la transferencia")
+                .withCaption("Eliminar la transferencia")
                 .withMessage("?Esta seguro que quiere eliminar todos operaciones de esta transferencia \n" +
                         "y regresar al Manejo de Caja?\n")
                     .withYesButton(() -> {

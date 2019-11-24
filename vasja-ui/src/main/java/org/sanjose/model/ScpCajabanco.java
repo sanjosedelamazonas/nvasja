@@ -32,20 +32,20 @@ public class ScpCajabanco extends VsjCajaBancoItem implements Serializable {
 	@Column(name="cod_cajabanco")
 	private Integer codCajabanco;
 	@Column(name="cod_comprobanteenlace")
-	private String codComprobanteenlace;
+	private String codComprobanteenlace="";
 	@NotBlank
 	@Column(name="cod_contracta")
 	private String codContracta;
 	@Column(name="cod_contraparte")
-	private String codContraparte;
+	private String codContraparte="";
 	//@NotNull
 	@NotBlank
 	@Column(name="cod_ctacontable")
 	private String codCtacontable;
 	@Column(name="cod_ctaespecial")
-	private String codCtaespecial;
+	private String codCtaespecial="";
 	@Column(name="cod_ctaproyecto")
-	private String codCtaproyecto;
+	private String codCtaproyecto="";
 	//@NotNull
 	@NotBlank
 	@Column(name="cod_destino")
@@ -55,30 +55,35 @@ public class ScpCajabanco extends VsjCajaBancoItem implements Serializable {
 	@Column(name="cod_destinoitem")
 	private String codDestinoitem;
 	@Column(name="cod_financiera")
-	private String codFinanciera;
+	private String codFinanciera="";
 	@Column(name="cod_origenenlace")
-	private String codOrigenenlace;
+	private String codOrigenenlace="";
 	@Column(name="cod_proyecto")
 	private String codProyecto="";
 	@Column(name="cod_tercero")
-	private String codTercero;
+	private String codTercero="";
 	@Column(name="cod_tipocomprobantepago")
-	private String codTipocomprobantepago;
+	private String codTipocomprobantepago="";
 	@NotNull
 	@Column(name="cod_tipomov")
 	private Integer codTipomov;
 	@Column(name="cod_transcorrelativo")
-	private String codTranscorrelativo;
+	private String codTranscorrelativo="";
 	@Column(name="fec_comprobantepago")
 	private Timestamp fecComprobantepago;
-	private Character flg_Anula;
+	@Column(name="flg_anula")
+	private Character flg_Anula='0';
 	@Column(name="flg_enviado")
-	private Character flgEnviado;
+	private Character flgEnviado='0';
 	@Column(name="num_debedolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebedolar;
 	@Column(name="num_debesol", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebesol;
-	@Column(name="num_haberdolar", columnDefinition="decimal(12,2)")
+    @Column(name="num_tcvdolar", columnDefinition="decimal(12,2)")
+    private BigDecimal numTcvdolar=new BigDecimal(0.00);
+    @Column(name="num_tcmo", columnDefinition="decimal(12,2)")
+    private BigDecimal numTcmo=new BigDecimal(0.00);
+    @Column(name="num_haberdolar", columnDefinition="decimal(12,2)")
 	private BigDecimal numHaberdolar;
 	@Column(name="num_debemo", columnDefinition="decimal(12,2)")
 	private BigDecimal numDebemo;
@@ -87,15 +92,26 @@ public class ScpCajabanco extends VsjCajaBancoItem implements Serializable {
 	@Column(name="num_habersol", columnDefinition="decimal(12,2)")
 	private BigDecimal numHabersol;
 	@Column(name="txt_comprobantepago")
-	private String txtComprobantepago;
+	private String txtComprobantepago="";
 	@NotBlank
 	@Column(name="txt_glosaitem")
 	private String txtGlosaitem;
 	@Column(name="txt_seriecomprobantepago")
-	private String txtSeriecomprobantepago;
+	private String txtSeriecomprobantepago="";
 	@Column(name="flg_saldo")
 	private Character flgSaldo='0';
-
+	@Column(name="flg_im")
+	private Character flgIm='1';
+	@Column(name="txt_cheque")
+	private String txtCheque="";
+	@Column(name="cod_tipogasto")
+	private String txtCodTipogasto="";
+	@Column(name="cod_tipoingreso")
+	private String txtCodTipoingreso="";
+	@Column(name="cod_formapago")
+	private String txtCodFormapago="";
+	@Column(name="txt_detallepago")
+	private String txtDetallepago="";
 	@ManyToOne(targetEntity = ScpDestino.class)
 	@JoinColumn(name = "cod_destino", insertable = false, updatable = false, nullable = true)
 	private ScpDestino scpDestino;
@@ -148,6 +164,11 @@ public class ScpCajabanco extends VsjCajaBancoItem implements Serializable {
 			item.setNumHaberdolar(new BigDecimal(0.00));
 			item.setNumDebedolar(new BigDecimal(0.00));
 		}
+
+		if (item.getCodTranscorrelativo()==null) item.setCodTranscorrelativo("");
+		if(item.getCodProyecto()==null) item.setCodProyecto("");
+		if (item.getCodCtacontable()==null) item.setCodContracta("");
+
 		return item;
 	}
 
