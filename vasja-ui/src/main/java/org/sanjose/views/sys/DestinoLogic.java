@@ -28,6 +28,9 @@ public class DestinoLogic implements Serializable {
 	private static final Logger log = LoggerFactory.getLogger(DestinoLogic.class);
 	
     private final DestinoView view;
+    private String vacio="";
+    private Character FlgImg='1';
+    private Character Nada=' ';
 
     public DestinoLogic(DestinoView DestinoView) {
         view = DestinoView;
@@ -81,6 +84,20 @@ public class DestinoLogic implements Serializable {
             if (item.getFecFregistro() == null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
             item.setCodUactualiza(CurrentUser.get());
             item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+
+           if (item.getTxtNombre() == null) item.setTxtNombre("");
+            if (item.getCodCargo() == null) item.setCodCargo(vacio);
+            if (item.getCodFilial()== null) item.setCodFilial(vacio);
+            if (item.getTxtApellidomaterno() == null) item.setTxtApellidomaterno(vacio);
+            if (item.getTxtDireccion() == null) item.setTxtDireccion(vacio);
+            if (item.getTxtApellidopaterno() == null) item.setTxtApellidopaterno(vacio);
+            if (item.getTxtNumerodctoidentidad() == null) item.setTxtNumerodctoidentidad(vacio);
+            if (item.getTxtRuc() == null) item.setTxtRuc(vacio);
+            if (item.getTxtTelefono1() == null) item.setTxtTelefono1(vacio);
+            if (item.getTxtTelefono2() == null) item.setTxtTelefono2(vacio);
+            if (item.getIndSexo() == null) item.setIndSexo(Nada);
+            if (item.getIndTipodctoidentidad() == null) item.setIndTipodctoidentidad(vacio);
+            item.setFlgIm(FlgImg);
 
             view.btnGuardar.setEnabled(false);
             view.btnAnular.setEnabled(false);
