@@ -124,8 +124,8 @@ public class TransferenciaLogic extends ComprobanteLogic {
         if (state.isEdited())
             MessageBox
                 .createQuestion()
-                .withCaption("Eliminar la transferencia")
-                .withMessage("?Esta seguro que quiere eliminar todos operaciones de esta transferencia \n" +
+                .withCaption("Anular cambios")
+                .withMessage("?Esta seguro que quiere anular todos cambios en esta transferencia \n" +
                         "y regresar al Manejo de Caja?\n")
                     .withYesButton(() -> {
                         doCerrar();
@@ -249,6 +249,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 view.getEliminarBtn().setEnabled(true);
                 tView.getEliminarTransfBtn().setEnabled(true);
                 view.getFinalizarTransBtn().setEnabled(false);
+                view.getCerrarBtn().setEnabled(true);
                 break;
 
             case VIEW:
