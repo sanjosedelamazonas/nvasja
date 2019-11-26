@@ -15,6 +15,7 @@ import org.sanjose.util.StateUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.Viewing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.sanjose.util.GenUtil.PEN;
@@ -38,6 +39,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         tView = (TransferenciaView) comprobanteView;
         tView.nuevaTransBtn.addClickListener(ev -> nuevaTrans());
         tView.finalizarTransBtn.addClickListener(ev -> saveTransferencia());
+        tView.getEliminarTransfBtn().addClickListener(ev -> eliminarTransferencia());
         state = new StateUtil();
         switchMode(Viewing.Mode.VIEW);
     }
@@ -77,28 +79,37 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
     @Override
     public void editarComprobante() {
-        if (tView.getSelectedRow()!=null
-                && !tView.getSelectedRow().isAnula()) {
-            state.edit();
-            editarComprobante(tView.getSelectedRow());
-            switchMode(Viewing.Mode.EDIT);
-        }
-    }
-
-    public void viewComprobante() {
-        if (!view.getGuardarBtn().isEnabled()) {
-            super.viewComprobante(tView.getSelectedRow());
-            tView.setEnableFields(false);
-            switchMode(Viewing.Mode.VIEW);
+        if (tView.getSelectedRow()!=null) {
+            if (!tView.getSelectedRow().isAnula()) {
+                state.edit();
+                editarComprobante(tView.getSelectedRow());
+                switchMode(Viewing.Mode.EDIT);
+            } else {
+                state.save();
+                editarComprobante(tView.getSelectedRow());
+                switchMode(Viewing.Mode.VIEW);
+            }
         }
     }
 
     @Override
     public void doEliminarComprobante() {
-        if (GenUtil.strNullOrEmpty(tView.getSelectedRow().getCodTranscorrelativo()))
-            tView.getContainer().removeItem(tView.getSelectedRow());
+        doEliminarItem(tView.getSelectedRow());
+        if (tView.getContainer().getItemIds().isEmpty()) {
+            nuevoComprobante();
+            moneda = null;
+        } else
+            tView.getGridTrans().select(tView.getContainer().firstItemId());
+        tView.setSaldoTrans();
+        switchMode(Viewing.Mode.VIEW);
+        state.edit();
+    }
+
+    private void doEliminarItem(ScpCajabanco cajabanco) {
+        if (GenUtil.strNullOrEmpty(cajabanco.getCodTranscorrelativo()))
+            tView.getContainer().removeItem(cajabanco);
         else {
-            ScpCajabanco anuladoVcb = tView.getSelectedRow().prepareToEliminar();
+            ScpCajabanco anuladoVcb = cajabanco.prepareToEliminar();
             ScpCajabanco vcbOld = null;
             for (ScpCajabanco vcb : tView.getContainer().getItemIds()) {
                 if (anuladoVcb .getFecFregistro().equals(vcb.getFecFregistro())) {
@@ -109,14 +120,26 @@ public class TransferenciaLogic extends ComprobanteLogic {
             tView.getContainer().removeItem(vcbOld);
             tView.getContainer().addBean(anuladoVcb);
         }
-        if (tView.getContainer().getItemIds().isEmpty()) {
-            nuevoComprobante();
-            moneda = null;
-        } else
-            tView.getGridTrans().select(tView.getContainer().firstItemId());
-        tView.setSaldoTrans();
-        switchMode(Viewing.Mode.VIEW);
-        state.edit();
+    }
+
+    public void eliminarTransferencia() {
+        MessageBox
+                .createQuestion()
+                .withCaption("Eliminar transferencia")
+                .withMessage("?Esta seguro que quiere eliminar toda transferencia, anular los detalles \n" +
+                        "y regresar al Manejo de Caja?\n")
+                .withYesButton(() -> {
+                    List<ScpCajabanco> cajabancosElimin = new ArrayList<>(tView.getContainer().getItemIds());
+                    boolean isSaved = true;
+                    for (ScpCajabanco vcb : cajabancosElimin) {
+                        isSaved = !GenUtil.strNullOrEmpty(vcb.getCodTranscorrelativo());
+                        if (!vcb.isAnula()) doEliminarItem(vcb);
+                    }
+                    if (isSaved) saveTransferencia();
+                    else doCerrar();
+                })
+                .withNoButton()
+                .open();
     }
 
     @Override
@@ -217,6 +240,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         state.reset();
         if (!tView.getContainer().getItemIds().isEmpty())
             tView.getGridTrans().select(tView.getContainer().getItemIds().toArray()[0]);
+        editarComprobante();
     }
 
     @Override
@@ -243,7 +267,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
 
             case EDIT:
                 state.edit();
-                tView.getNuevaTransBtn().setEnabled(false);
+                tView.getNuevaTransBtn().setEnabled(true);
                 view.getImprimirTotalBtn().setEnabled(false);
                 view.getImprimirBtn().setEnabled(false);
                 view.getEliminarBtn().setEnabled(true);
@@ -268,11 +292,11 @@ public class TransferenciaLogic extends ComprobanteLogic {
                             (beanItem.getBean().isEnviado() && !Role.isPrivileged()))) {
                         view.getModificarBtn().setEnabled(false);
                         view.getEliminarBtn().setEnabled(false);
-                        tView.getEliminarTransfBtn().setEnabled(false);
                     } else {
                         view.getModificarBtn().setEnabled(true);
                         view.getEliminarBtn().setEnabled(true);
-                        //tView.getEliminarTransfBtn().setEnabled(true);
+                        if (tView.getContainer().getItemIds().get(0)!=null && tView.getContainer().getItemIds().get(0).isAnula()) tView.getEliminarTransfBtn().setEnabled(false);
+                        else tView.getEliminarTransfBtn().setEnabled(true);
                     }
                 }
                 tView.setSaldoTrans();

@@ -98,7 +98,8 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
             @Override
             public void select(SelectionEvent selectionEvent) {
                 if (selectionEvent.getSelected().isEmpty()) return;
-                viewLogic.viewComprobante();
+                viewLogic.editarComprobante();
+                //viewLogic.viewComprobante();
             }
         });
 
