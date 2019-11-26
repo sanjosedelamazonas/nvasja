@@ -336,6 +336,10 @@ public class TransferenciaView extends TransferenciaUI implements ComprobanteVie
         return finalizarTransBtn;
     }
 
+    public Button getEliminarTransfBtn() {
+        return eliminarTransfBtn;
+    }
+
     public CssCheckBox getChkEnviado() {
         return chkEnviado;
     }

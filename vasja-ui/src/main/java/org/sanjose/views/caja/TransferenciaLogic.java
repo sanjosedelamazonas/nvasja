@@ -128,17 +128,21 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 .withMessage("?Esta seguro que quiere eliminar todos operaciones de esta transferencia \n" +
                         "y regresar al Manejo de Caja?\n")
                     .withYesButton(() -> {
-                        if (navigatorView == null) navigatorView = MainUI.get().getCajaManejoView();
-                        MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
+                        doCerrar();
                     })
                 .withNoButton()
                 .open();
         else {
-            if (navigatorView == null) navigatorView = MainUI.get().getCajaManejoView();
-            MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
-            if (view.getSubWindow()!=null)
-                view.getSubWindow().close();
+            doCerrar();
         }
+    }
+
+    private void doCerrar() {
+        tView.getGridTrans().getContainerDataSource().removeAllItems();
+        if (navigatorView == null) navigatorView = MainUI.get().getCajaManejoView();
+        MainUI.get().getNavigator().navigateTo(navigatorView.getNavigatorViewName());
+        if (view.getSubWindow()!=null)
+            view.getSubWindow().close();
     }
 
     private void setColumnsForMoneda(Character moneda) {
@@ -195,7 +199,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
         state.save();
         if (!savedOperaciones.isEmpty())
             navigatorView.selectItem(savedOperaciones.get(0));
-        switchMode(Viewing.Mode.VIEW);
+        doCerrar();
     }
 
     public void editarTransferencia(ScpCajabanco vcb) throws NonEditableException {
@@ -223,6 +227,8 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 tView.getNuevaTransBtn().setEnabled(true);
                 view.getImprimirTotalBtn().setEnabled(false);
                 view.getFinalizarTransBtn().setEnabled(false);
+                tView.getEliminarTransfBtn().setEnabled(false);
+                view.getCerrarBtn().setEnabled(true);
                 break;
 
             case NEW:
@@ -231,6 +237,8 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 view.getImprimirTotalBtn().setEnabled(false);
                 view.getFinalizarTransBtn().setEnabled(false);
                 view.getImprimirBtn().setEnabled(false);
+                tView.getEliminarTransfBtn().setEnabled(false);
+                view.getCerrarBtn().setEnabled(true);
                 break;
 
             case EDIT:
@@ -238,6 +246,8 @@ public class TransferenciaLogic extends ComprobanteLogic {
                 tView.getNuevaTransBtn().setEnabled(false);
                 view.getImprimirTotalBtn().setEnabled(false);
                 view.getImprimirBtn().setEnabled(false);
+                view.getEliminarBtn().setEnabled(true);
+                tView.getEliminarTransfBtn().setEnabled(true);
                 view.getFinalizarTransBtn().setEnabled(false);
                 break;
 
@@ -249,6 +259,7 @@ public class TransferenciaLogic extends ComprobanteLogic {
                     view.getModificarBtn().setEnabled(false);
                     view.getEliminarBtn().setEnabled(false);
                     view.getImprimirBtn().setEnabled(false);
+                    tView.getEliminarTransfBtn().setEnabled(false);
                 } else {
                     if (state.isSaved()) view.getImprimirBtn().setEnabled(true);
                     else view.getImprimirBtn().setEnabled(false);
@@ -256,9 +267,11 @@ public class TransferenciaLogic extends ComprobanteLogic {
                             (beanItem.getBean().isEnviado() && !Role.isPrivileged()))) {
                         view.getModificarBtn().setEnabled(false);
                         view.getEliminarBtn().setEnabled(false);
+                        tView.getEliminarTransfBtn().setEnabled(false);
                     } else {
                         view.getModificarBtn().setEnabled(true);
                         view.getEliminarBtn().setEnabled(true);
+                        //tView.getEliminarTransfBtn().setEnabled(true);
                     }
                 }
                 tView.setSaldoTrans();
