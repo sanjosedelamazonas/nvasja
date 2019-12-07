@@ -45,7 +45,7 @@ public class ScpBancocabecera extends VsjBancoItem implements Serializable {
 	@Column(name="txt_cheque")
 	private String txtCheque;
 	@NotBlank
-	@Size(min=2, max=150)
+	@Size(min=2, max=70)
 	@Column(name="txt_glosa")
 	private String txtGlosa;
 	@Column(name="ind_cobrado")
