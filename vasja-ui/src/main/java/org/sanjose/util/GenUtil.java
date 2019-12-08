@@ -250,7 +250,7 @@ public class GenUtil {
 
     public static String validIsNull(String in) {
         if (in==null || in.equalsIgnoreCase("null"))
-            return "no puede estar vacío";
+            return "esta vacío o demasiado largo";
         else
             return in;
     }
