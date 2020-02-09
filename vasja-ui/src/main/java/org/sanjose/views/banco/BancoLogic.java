@@ -127,7 +127,7 @@ public class BancoLogic extends BancoItemLogic {
             view.getSelCodAuxiliar().setValue(view.getSelCodAuxCabeza().getValue());
             view.getSelResponsable().setValue(view.getSelCodAuxCabeza().getValue());
             view.getGlosaDetalle().setValue(view.getGlosaCabeza().getValue());
-        } else {
+               } else {
             super.nuevoComprobante(PEN);
         }
     }
@@ -251,6 +251,7 @@ public class BancoLogic extends BancoItemLogic {
             log.debug("cabecera after save: " + bancoItem.getScpBancocabecera());
             // Update flg_cobrado y mes_cobrado en Comprobante detalle
             view.getService().updateCobradoInCabecera(bancocabecera);
+
             setNumVoucher(bancoItem);
             moneda = item.getCodTipomoneda();
             if (isNew) {

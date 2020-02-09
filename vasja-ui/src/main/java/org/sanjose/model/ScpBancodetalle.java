@@ -177,6 +177,7 @@ public class ScpBancodetalle extends VsjBancoItem implements Serializable, Clone
 		if (item.getCodTipocomprobantepago()==null) item.setCodTipocomprobantepago("");
 		if (item.getTxtComprobantepago()==null) item.setTxtComprobantepago("");
 		if (item.getTxtSeriecomprobantepago()==null) item.setTxtSeriecomprobantepago("");
+		if (item.getScpBancocabecera()!=null) item.setFecFecha(item.getScpBancocabecera().getFecFecha());
 		return item;
     }
 

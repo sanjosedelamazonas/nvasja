@@ -254,12 +254,12 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         //view.getSelTercero().addValidator(new TwoCombosValidator(view.getSelProyectoTercero(), true, null));
         view.getNumIngreso().setDescription("Ingreso");
         view.getNumEgreso().setDescription("Egreso");
-        view.getNumIngreso().addValidator(new TwoNumberfieldsValidator(view.getNumEgreso(), false, "Ingreso o egreso debe ser rellenado"));
-        view.getNumEgreso().addValidator(new TwoNumberfieldsValidator(view.getNumIngreso(), false, "Ingreso o egreso debe ser rellenado"));
+        view.getNumIngreso().addValidator(new TwoNumberfieldsValidator(view.getNumEgreso(), false, "Ingreso y egreso debe tener valor"));
+        view.getNumEgreso().addValidator(new TwoNumberfieldsValidator(view.getNumIngreso(), false, "Ingreso y egreso debe tener valor"));
         view.getSelResponsable().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "codDestino"));
         view.getSelLugarGasto().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "codContraparte"));
         view.getSelCodAuxiliar().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "codDestinoitem"));
-        view.getGlosaCabeza().setDescription("Glosa Cabeza");
+        view.getGlosaCabeza().setDescription("Glosa principal");
         view.getGlosaCabeza().addValidator(new LocalizedBeanValidator(ScpBancocabecera.class, "txtGlosa"));
         view.getGlosaDetalle().setDescription("Glosa Detalle");
         view.getGlosaDetalle().addValidator(new LocalizedBeanValidator(ScpBancodetalle.class, "txtGlosaitem"));
@@ -580,7 +580,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         fieldGroup = new FieldGroup(beanItem);
         fieldGroup.setItemDataSource(beanItem);
         if (!GenUtil.strNullOrEmpty(item.getCodProyecto()) && !GenUtil.strNullOrEmpty(item.getCodTercero())) {
-            log.error("Problema con esta operacion " + item.getScpBancocabecera().getCodBancocabecera() + " - codigo proyecto y codigo tercero son rellenadas!");
+            log.error("Problema con esta operacion " + item.getScpBancocabecera().getCodBancocabecera() + " - codigo proyecto y codigo tercero son rellenados al mismo tiempo!");
         }
         if (!GenUtil.strNullOrEmpty(item.getCodTercero())) {
             view.getTipoProyectoTercero().select(GenUtil.T_TERC);
@@ -599,7 +599,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             fieldGroup.bind(view.getNumEgreso(), "numHabermo");
             fieldGroup.bind(view.getNumIngreso(), "numDebemo");
         } else {
-            Notification.show("Moneda sellecionada no existe, esto nunca deberia pasar", Notification.Type.ERROR_MESSAGE);
+            Notification.show("Moneda selecionada no existe, esto nunca deberia pasar", Notification.Type.ERROR_MESSAGE);
         }
         ViewUtil.setDefaultsForNumberField(view.getNumIngreso());
         ViewUtil.setDefaultsForNumberField(view.getNumEgreso());
@@ -676,7 +676,8 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         if (bancocabecera != null)
             vcb.setScpBancocabecera(bancocabecera);
         vcb.setCodTipomoneda(moneda);
-        vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
+   //     vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
+        vcb.setFecFecha(new Timestamp(view.getDataFechaComprobante().getValue().getTime()));
         vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
         bindForm(vcb);
         item = vcb;
