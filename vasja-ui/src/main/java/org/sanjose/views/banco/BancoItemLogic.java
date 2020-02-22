@@ -77,10 +77,21 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getDataFechaComprobante().setConverter(DateToTimestampConverter.INSTANCE);
         view.getDataFechaComprobante().setResolution(Resolution.DAY);
         view.getDataFechaComprobante().addValueChangeListener(event -> {
-            if (view.getDataFechaComprobante().getValue()!=null)
+            if (view.getDataFechaComprobante().getValue()!=null) {
                 DataFilterUtil.refreshComboBox(view.getSelCuenta(), "id.codCtacontable",
-                    DataUtil.getBancoCuentas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo()),
-                    "txtDescctacontable");
+                        DataUtil.getBancoCuentas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo()),
+                        "txtDescctacontable");
+                view.getFechaDoc().setValue((Date) view.getDataFechaComprobante().getValue());
+                if (item != null) {
+                    if (item.getScpBancocabecera().getCodBancocabecera() != null) {
+                        List<ScpBancodetalle> comprobantes = view.getService().getBancodetalleRep().findById_CodBancocabecera(item.getScpBancocabecera().getCodBancocabecera());
+                        if (!comprobantes.isEmpty())
+                            for (ScpBancodetalle vcb : comprobantes) {
+                                vcb.setFecFecha(new Timestamp(view.getDataFechaComprobante().getValue().getTime()));
+                            }
+                    }
+                }
+            }
             if (!isLoading && view.getDataFechaComprobante().getValue()==null) {
                 setCuentaLogic();
                 setSaldos();
@@ -678,7 +689,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         vcb.setCodTipomoneda(moneda);
    //     vcb.setFecFecha(new Timestamp(System.currentTimeMillis()));
         vcb.setFecFecha(new Timestamp(view.getDataFechaComprobante().getValue().getTime()));
-        vcb.setFecComprobantepago(new Timestamp(System.currentTimeMillis()));
+        vcb.setFecComprobantepago(new Timestamp(view.getDataFechaComprobante().getValue().getTime()));
         bindForm(vcb);
         item = vcb;
         view.setEnableCabezeraFields(true);

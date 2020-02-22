@@ -80,10 +80,6 @@ public class ScpBancocabecera extends VsjBancoItem implements Serializable {
 		if (item.getCodComprobanteenlace()==null) item.setCodComprobanteenlace("");
 		if (item.getCodMescobrado()==null) item.setCodMescobrado("");
 		if (item.getCodDestino()==null) item.setCodDestino("");
-		if(item.getScpBancodetalles()!=null)
-		for (ScpBancodetalle bc : item.getScpBancodetalles()) {
-			bc.setFecFecha(item.getFecFecha());
-		}
 		return item;
 	}
 
