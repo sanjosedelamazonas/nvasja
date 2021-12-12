@@ -504,7 +504,7 @@
 				<textFieldExpression><![CDATA[$P{STR_SALDO_FECHA_MIN}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement x="73" y="20" width="340" height="30" isRemoveLineWhenBlank="true" uuid="94293a8a-9088-4062-977d-9ba71ef6233a">
+				<reportElement x="73" y="20" width="447" height="30" isRemoveLineWhenBlank="true" uuid="94293a8a-9088-4062-977d-9ba71ef6233a">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
@@ -666,14 +666,44 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="ebf29303-19c4-457d-a851-01208b198820">
+					<jr:column width="40" uuid="ebf29303-19c4-457d-a851-01208b198820">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader style="Table 1_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="40" height="20" uuid="068e1e85-19b0-42c7-8b90-f85f59cba3f6"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<text><![CDATA[EUR]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table 1_CH" height="10" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="40" height="10" uuid="eb6c0c48-4fda-432c-b78b-1fbfbb809c05"/>
+								<textElement>
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[SUM($F{caja}.getEuros())]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell style="Table 1_TD" height="10">
+							<textField>
+								<reportElement x="0" y="0" width="40" height="10" uuid="20a0da9b-7d08-4fdd-a0ba-543328e89d79"/>
+								<textElement>
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{caja}.getEuros()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="40" uuid="46a534f6-af31-4316-bcd6-980db257e413">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:columnHeader style="Table 1_CH" height="20" rowSpan="1"/>
 						<jr:columnFooter style="Table 1_CH" height="10" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="10"/>
 					</jr:column>
 					<jr:column width="60" uuid="cc79241c-b562-466c-af5c-30c2be479804">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:columnHeader style="Table 1_CH" height="20" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="60" height="20" uuid="0725d219-b6db-4cde-9c40-751305fad414"/>
@@ -721,7 +751,7 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="50" uuid="2a4c4808-f28f-4420-b99a-566cebcae0e4">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:columnHeader style="Table 1_CH" height="20" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="50" height="20" uuid="4531f65c-bd7f-4d82-89bf-37d2cefdf3ec"/>
@@ -765,6 +795,36 @@
 									<font fontName="Arial" size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{caja}.getDolaresFinal()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="40" uuid="f73703af-7131-4051-8c83-2875440c342f">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<jr:columnHeader style="Table 1_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="40" height="20" uuid="616ef655-8beb-449c-af30-bc4da64586b2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[EUR]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="Table 1_CH" height="10" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="40" height="10" uuid="1216fb88-d375-45b4-afeb-02dc9f8f424f"/>
+								<textElement>
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[SUM($F{caja}.getEurosFinal())]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell style="Table 1_TD" height="10">
+							<textField>
+								<reportElement x="0" y="0" width="40" height="10" uuid="fbbdcf2a-ba66-488d-9982-6d65d5812007"/>
+								<textElement>
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{caja}.getEurosFinal()]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
