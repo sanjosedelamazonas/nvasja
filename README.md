@@ -68,3 +68,12 @@ $ sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.1 libssl.1.1
 
 If you're missing version 1.1 of these files, you can first do
 $ sudo apt install libssl1.1
+
+Restore database on Ubuntu:
+
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -Q "RESTORE DATABASE [SCP] FROM DISK = N'/var/opt/mssql/data/bkp-2019-10-10.bak' WITH FILE = 1, NOUNLOAD, REPLACE, RECOVERY, STATS = 5, MOVE 'SCP_VASJA' TO '/var/opt/mssql/data/SCP_VASJA', MOVE 'SCP_VASJA_log' TO '/var/opt/mssql/data/SCP_VASJA_log'"
+
+CREATE LOGIN vasja WITH PASSWORD = 'vasja123'
+GO
+CREATE USER vasja FOR LOGIN vasja
+GO
