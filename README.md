@@ -55,3 +55,16 @@ DEBUG MODE:
 cd vasja-ui
 mvn -Pdebug spring-boot:run
 Open Intellij and connect using the displayed port number
+
+
+MS SQL SERVER on Ubuntu 22.04:
+
+Thanks! This was very helpful and solved my problem. For anyone looking for explicit commands on an Ubuntu 22.04 installation,
+$ cd /opt/mssql/lib
+$ ls -la
+$ sudo rm libcrypto.so libssl.so
+$ sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 libcrypto.so
+$ sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.1 libssl.1.1
+
+If you're missing version 1.1 of these files, you can first do
+$ sudo apt install libssl1.1
