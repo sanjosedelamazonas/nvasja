@@ -108,7 +108,7 @@
       ,caja.[cod_tipomoneda]
       ,caja.[cod_ctacontable]
 ,   CASE 
-            WHEN ((caja.[num_habersol] >0) OR (caja.num_haberdolar>0))
+            WHEN ((caja.[num_habersol] >0) OR (caja.num_haberdolar>0) OR (caja.num_habermo>0))
                THEN 1 
                ELSE 0 
        END as Cargo
@@ -154,7 +154,7 @@
 		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<variable name="SALDO_AMOUNT" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
-		<variableExpression><![CDATA[$F{cod_tipomoneda}.equals("0") ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new  java.math.BigDecimal(-1)):$F{num_debesol}) : (($F{Cargo}==1)?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
+		<variableExpression><![CDATA[$F{cod_tipomoneda}.equals("0") ? (($F{Cargo}==1)?$F{num_habersol}.multiply(new java.math.BigDecimal(-1)):$F{num_debesol}) : (($F{Cargo}==1)?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
 		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<variable name="CAJA_PEN" class="java.math.BigDecimal" resetType="Group" resetGroup="Caja" calculation="Sum">
@@ -162,19 +162,19 @@
 		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<variable name="INGERESO_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="operacion_ISCARGO" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("1")) ? (($F{Cargo}==1)? new BigDecimal(0):$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1))):new BigDecimal(0)]]></variableExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("1")) ? (($F{Cargo}==1) ? $F{num_haberdolar}.multiply(new java.math.BigDecimal(-1)):$F{num_debedolar}) :new BigDecimal(0)]]></variableExpression>
 		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<variable name="CAJA_USD" class="java.math.BigDecimal" resetType="Group" resetGroup="Caja" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("1")) ? new BigDecimal(0) : (($F{Cargo}==1)?$F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar})]]></variableExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("1")) ? (($F{Cargo}==1) ? $F{num_haberdolar}.multiply(new  java.math.BigDecimal(-1)):$F{num_debedolar}) : new BigDecimal(0)]]></variableExpression>
 		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<variable name="CAJA_EUR" class="java.math.BigDecimal" resetType="Group" resetGroup="Caja" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("2")) ? new BigDecimal(0) : (($F{Cargo}==1)?$F{num_habermo}.multiply(new  java.math.BigDecimal(-1)):$F{num_debemo})]]></variableExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("2")) ? (($F{Cargo}==1)?$F{num_habermo}.multiply(new  java.math.BigDecimal(-1)):$F{num_debemo}) : new BigDecimal(0)]]></variableExpression>
 		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<variable name="INGERESO_EUR" class="java.math.BigDecimal" resetType="Group" resetGroup="operacion_ISCARGO" calculation="Sum">
-		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("2")) ? (($F{Cargo}==1)? new BigDecimal(0):$F{num_habermo}.multiply(new  java.math.BigDecimal(-1))):new BigDecimal(0)]]></variableExpression>
+		<variableExpression><![CDATA[($F{cod_tipomoneda}.equals("2")) ? (($F{Cargo}==1) ? $F{num_habermo}.multiply(new java.math.BigDecimal(-1)):$F{num_debemo}) : new BigDecimal(0)]]></variableExpression>
 		<initialValueExpression><![CDATA[new BigDecimal(0.00)]]></initialValueExpression>
 	</variable>
 	<group name="operacion_ISCARGO">
@@ -214,7 +214,7 @@
 					<textFieldExpression><![CDATA["USD "+$V{INGERESO_USD}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement style="SubTitle" x="492" y="0" width="46" height="10" forecolor="#000000" uuid="f6b41210-4009-4711-867f-f71567490e6a"/>
+					<reportElement style="SubTitle" x="492" y="0" width="63" height="10" forecolor="#000000" uuid="f6b41210-4009-4711-867f-f71567490e6a"/>
 					<textElement textAlignment="Right">
 						<font fontName="Arial" size="8" isBold="true"/>
 					</textElement>
@@ -255,11 +255,11 @@
 					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("1"))?"USD "+$V{CAJA_USD}:""]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="Caja" pattern="#,##0.00;-#,##0.00">
-					<reportElement x="490" y="5" width="50" height="12" uuid="d42e80a8-8f06-48d4-89ca-de3274b96e1f"/>
+					<reportElement x="490" y="5" width="65" height="12" uuid="d42e80a8-8f06-48d4-89ca-de3274b96e1f"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="Arial" size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("2"))?"EUR"+$V{CAJA_EUR}:""]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{cod_tipomoneda}.equals("2"))?"EUR "+$V{CAJA_EUR}:""]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
