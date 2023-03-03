@@ -300,10 +300,9 @@ public class DataFilterUtil {
 					value = bItem.getItemProperty(column).getValue();
 			}
 			c.addItem(value);
-			if (concatenatedColumn!=null) {
-				Property prop = c.getContainerProperty(value, contProp);
-				prop.setValue((idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value) + " " + bItem.getItemProperty(concatenatedColumn).getValue());
-			}
+			if (concatenatedColumn != null)
+				c.getContainerProperty(value, contProp).setValue((idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value)
+						+ " " + bItem.getItemProperty(concatenatedColumn).getValue());
 			else
 				c.getContainerProperty(value, contProp).setValue(idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value);
 		}
