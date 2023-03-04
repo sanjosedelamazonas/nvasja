@@ -246,6 +246,8 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
                 if (isCobrado) {
                     SimpleDateFormat sdf = new SimpleDateFormat("MM");
                     cab.setCodMescobrado(sdf.format(view.getFecMesCobrado().getValue()));
+                } else {
+                    cab.setCodMescobrado("");
                 }
                 view.getService().updateCobradoInCabecera(cab);
             }
