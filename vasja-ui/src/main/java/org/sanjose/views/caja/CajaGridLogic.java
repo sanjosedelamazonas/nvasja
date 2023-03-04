@@ -55,7 +55,7 @@ public class CajaGridLogic extends CajaLogic implements Serializable {
         view.responsablesBtn.addClickListener(e -> editDestino(view.getSelectedRow()));
         view.enviarBtn.addClickListener(e -> {
             if (!view.getSelectedRows().isEmpty()) {
-                enviarContabilidad(view.getSelectedRow());
+                enviarContabilidad(view.getSelectedRow(), true);
             }
             view.gridCaja.deselectAll();
         });
@@ -98,7 +98,8 @@ public class CajaGridLogic extends CajaLogic implements Serializable {
                 gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((ScpCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
                         k -> editarComprobante((ScpCajabanco) itemId));
                 gridContextMenu.addItem("Nuevo comprobante", k -> newComprobante());
-                gridContextMenu.addItem("Enviar a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId); });
+                gridContextMenu.addItem("Enviar a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId, true); });
+                gridContextMenu.addItem("Marcar no enviado a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId, false); });
                 gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjItem) itemId));
                 if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> ViewUtil.printComprobante((ScpCajabanco) itemId));
             }

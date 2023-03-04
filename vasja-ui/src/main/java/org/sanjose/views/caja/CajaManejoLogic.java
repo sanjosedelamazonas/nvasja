@@ -85,7 +85,8 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
                 if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
 
                 if (Role.isPrivileged()) {
-                    gridContextMenu.addItem("Enviar a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId); });
+                    gridContextMenu.addItem("Enviar a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId, true); });
+                    gridContextMenu.addItem("Marcar no enviado a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId, false); });
                 }
             }
         });

@@ -66,7 +66,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
 
     public void init(ComprobanteViewing comprobanteView) {
         view = comprobanteView;
-        addWarningToGuardarBtn(false);
+        addWarningToGuardarBtn(true);
         view.getNuevoComprobante().addClickListener(event -> nuevoComprobante());
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
         view.getImprimirBtn().addClickListener(event -> {
@@ -100,8 +100,8 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
                     MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
                     MessageBox
                             .createQuestion()
-                            .withCaption("El saldo del proyect/tercero no es suficiente")
-                            .withMessage("Esta seguro que lo quiere guardar?")
+                            .withCaption("Atencion!")
+                            .withMessage("La caja o proyecto/tercero no tiene suficiente recursos.\nEsta seguro que lo quiere guardar?")
                             .withYesButton(() ->  saveComprobante())
                             .withNoButton()
                             .open();

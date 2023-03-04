@@ -16,6 +16,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.CurrentUser;
 import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
 import org.sanjose.converter.BooleanTrafficLightConverter;
@@ -28,10 +29,12 @@ import org.sanjose.model.ScpPlancontable;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.*;
 import org.sanjose.views.ItemsRefreshing;
+import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.SaldoDelDia;
 import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -197,7 +200,7 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
                 .open();
     }
 
-    public void enviarContabilidad(ScpBancocabecera scpBancocabecera) {
+    public void enviarContabilidad(ScpBancocabecera scpBancocabecera, boolean isEnviar) {
         Collection<Object> cabecerasParaEnviar = view.getSelectedRows();
         Collection<ScpBancocabecera> cabecerasParaRefresh = new ArrayList<>();
         if (cabecerasParaEnviar.isEmpty() && scpBancocabecera!=null) {
@@ -205,9 +208,27 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
             cabecerasParaRefresh.add(scpBancocabecera);
         }
         cabecerasParaEnviar.forEach(e -> cabecerasParaRefresh.add((ScpBancocabecera)e));
-        MainUI.get().getProcUtil().enviarContabilidadBanco(cabecerasParaEnviar, view.getService(),this);
-        view.getGridBanco().deselectAll();
+        if (isEnviar) {
+            MainUI.get().getProcUtil().enviarContabilidadBanco(cabecerasParaEnviar, view.getService(),this);
+            view.getGridBanco().deselectAll();
+        } else {
+            for (Object objVcb : cabecerasParaEnviar) {
+                ScpBancocabecera curBancoCabecera = (ScpBancocabecera) objVcb;
+                if (!curBancoCabecera.isEnviado()) {
+                    Notification.show("!Atencion!", "!Omitiendo operacion " + curBancoCabecera.getTxtCorrelativo() + " - no esta enviada!", Notification.Type.TRAY_NOTIFICATION);
+                    continue;
+                }
+                curBancoCabecera.setFlgEnviado('0');
+                curBancoCabecera.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+                curBancoCabecera.setCodUactualiza(CurrentUser.get());
+                view.getService().getBancocabeceraRep().save(curBancoCabecera);
+            }
+            //this.refreshItems(cabecerasParaRefresh);
+            view.refreshData();
+            //....
+        }
     }
+
 
     public void generateComprobante() {
         for (Object obj : view.getSelectedRows()) {
