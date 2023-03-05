@@ -77,3 +77,7 @@ CREATE LOGIN vasja WITH PASSWORD = 'vasja123'
 GO
 CREATE USER vasja FOR LOGIN vasja
 GO
+
+
+exec sp_addrolemember 'db_owner', 'vasja'
+GO
