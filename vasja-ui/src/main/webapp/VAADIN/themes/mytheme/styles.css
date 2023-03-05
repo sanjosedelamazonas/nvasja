@@ -13468,7 +13468,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .login-screen {
 	background: #3b3f42;
-	background-image: url(img/archetype-login-bg.jpg);
+	background-image: url(img/napo.jpg);
 	background-size: cover;
 	background-position: 50% 50%;
 	width: 100%;
@@ -13497,7 +13497,7 @@ div.v-layout.v-horizontal.v-widget {
 	width: 300px;
 	height: 100%;
 	background: #60a0ea;
-	background-color: rgba(96, 160, 234, 0.7);
+	background-color: rgba(136, 85, 129, 0.7);
 	padding: 7px 7px 7px 7px;
 	color: #f2f6fa;
 	-webkit-animation: valo-animate-in-fade 1s 1s backwards;
