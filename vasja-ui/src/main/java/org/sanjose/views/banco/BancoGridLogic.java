@@ -25,6 +25,7 @@ import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.helper.DoubleDecimalFormatter;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpPlancontable;
 import org.sanjose.render.EmptyZeroNumberRendrer;
 import org.sanjose.util.*;
@@ -201,16 +202,42 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
     }
 
     public void enviarContabilidad(ScpBancocabecera scpBancocabecera, boolean isEnviar) {
-        Collection<Object> cabecerasParaEnviar = view.getSelectedRows();
+        Set<Object> cabecerasParaEnviar = new HashSet<>();
+        view.getSelectedRows().forEach(e -> cabecerasParaEnviar.add(e));
         Collection<ScpBancocabecera> cabecerasParaRefresh = new ArrayList<>();
         if (cabecerasParaEnviar.isEmpty() && scpBancocabecera!=null) {
             cabecerasParaEnviar.add(scpBancocabecera);
             cabecerasParaRefresh.add(scpBancocabecera);
         }
+
         cabecerasParaEnviar.forEach(e -> cabecerasParaRefresh.add((ScpBancocabecera)e));
         if (isEnviar) {
-            MainUI.get().getProcUtil().enviarContabilidadBanco(cabecerasParaEnviar, view.getService(),this);
-            view.getGridBanco().deselectAll();
+            Set<ScpBancocabecera> cabecerasEnviados = new HashSet<>();
+            List<String> cabecerasIdsEnviados = new ArrayList<>();
+            // Check if already sent and ask if only marcar...
+            for (Object objVcb : cabecerasParaEnviar) {
+                ScpBancocabecera cajabanco = (ScpBancocabecera) objVcb;
+                if (!cajabanco.isEnviado() && view.getService().checkIfAlreadyEnviado(cajabanco)) {
+                    cabecerasEnviados.add(cajabanco);
+                    cabecerasIdsEnviados.add(cajabanco.getCodBancocabecera().toString());
+                }
+            }
+            for (ScpBancocabecera cajabanco : cabecerasEnviados) {
+                cabecerasParaEnviar.remove(cajabanco);
+            }
+            if (cabecerasEnviados.isEmpty()) {
+                MainUI.get().getProcUtil().enviarContabilidadBanco(cabecerasParaEnviar, view.getService(),this);
+                view.getGridBanco().deselectAll();
+                view.clearSelection();
+            } else {
+                MessageBox
+                        .createQuestion()
+                        .withCaption("!Atencion!")
+                        .withMessage("?Estas operaciones ya fueron enviadas ("+ Arrays.toString(cabecerasIdsEnviados.toArray()) +"), quiere solo marcar los como enviadas?")
+                        .withYesButton(() -> doMarcarEnviados(cabecerasParaEnviar, cabecerasEnviados))
+                        .withNoButton()
+                        .open();
+            }
         } else {
             for (Object objVcb : cabecerasParaEnviar) {
                 ScpBancocabecera curBancoCabecera = (ScpBancocabecera) objVcb;
@@ -218,17 +245,34 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
                     Notification.show("!Atencion!", "!Omitiendo operacion " + curBancoCabecera.getTxtCorrelativo() + " - no esta enviada!", Notification.Type.TRAY_NOTIFICATION);
                     continue;
                 }
+                view.getGridBanco().deselect(curBancoCabecera);
                 curBancoCabecera.setFlgEnviado('0');
                 curBancoCabecera.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
                 curBancoCabecera.setCodUactualiza(CurrentUser.get());
                 view.getService().getBancocabeceraRep().save(curBancoCabecera);
             }
-            //this.refreshItems(cabecerasParaRefresh);
+            view.getGridBanco().deselectAll();
+            view.clearSelection();
             view.refreshData();
             //....
         }
     }
 
+    public void doMarcarEnviados(Collection<Object> cabecerasParaEnviar , Set<ScpBancocabecera> cabecerasEnviados) {
+        for (ScpBancocabecera cabecera : cabecerasEnviados) {
+            view.getGridBanco().deselect(cabecera);
+            cabecera.setFlgEnviado('1');
+            cabecera.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+            cabecera.setCodUactualiza(CurrentUser.get());
+            view.getService().getBancocabeceraRep().save(cabecera);
+        }
+        //this.refreshItems(cabecerasEnviados);
+        if (!cabecerasParaEnviar.isEmpty())
+            MainUI.get().getProcUtil().enviarContabilidadBanco(cabecerasParaEnviar, view.getService(), this);
+        view.getGridBanco().deselectAll();
+        view.clearSelection();
+        view.refreshData();
+    }
 
     public void generateComprobante() {
         for (Object obj : view.getSelectedRows()) {

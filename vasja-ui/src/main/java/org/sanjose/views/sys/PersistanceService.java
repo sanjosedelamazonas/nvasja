@@ -50,6 +50,7 @@ public class PersistanceService {
     private final ScpBancocabeceraRep bancocabeceraRep;
     private final ScpBancodetalleRep bancodetalleRep;
     private final ScpComprobantedetalleRep scpComprobantedetalleRep;
+    private final ScpComprobantecabeceraRep scpComprobantecabeceraRep;
     private final ScpChequependienteRep scpChequependienteRep;
 
 
@@ -63,6 +64,7 @@ public class PersistanceService {
                               ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, ScpTipocambioRep
                                       tipocambioRep, MsgUsuarioRep msgUsuarioRep, ScpCajabancoRep cajabancoRep,
                               ScpBancocabeceraRep bancocabeceraRep, ScpBancodetalleRep bancodetalleRep, ScpComprobantedetalleRep scpComprobantedetalleRep,
+                              ScpComprobantecabeceraRep scpComprobantecabeceraRep,
                               ScpChequependienteRep scpChequependienteRep, EntityManager em) {
         this.rendicioncabeceraRep = rendicioncabeceraRep;
         this.rendiciondetalleRep = rendiciondetalleRep;
@@ -86,6 +88,7 @@ public class PersistanceService {
         this.bancocabeceraRep = bancocabeceraRep;
         this.bancodetalleRep = bancodetalleRep;
         this.scpComprobantedetalleRep = scpComprobantedetalleRep;
+        this.scpComprobantecabeceraRep = scpComprobantecabeceraRep;
         this.scpChequependienteRep = scpChequependienteRep;
         this.em = em;
     }
@@ -490,6 +493,16 @@ public class PersistanceService {
         cabecera.setNumGastototal(gastoTotal);
         cabecera.setNumSaldopendiente(cabecera.getNumTotalanticipo().subtract(gastoTotal));
         rendicioncabeceraRep.save(cabecera);
+    }
+
+    public boolean checkIfAlreadyEnviado(ScpCajabanco it) {
+        List<ScpComprobantecabecera> cabeceras = scpComprobantecabeceraRep.findById_TxtAnoprocesoAndId_CodFilialAndId_CodMesAndId_CodOrigenAndId_CodComprobante(it.getTxtAnoproceso(), "01", it.getCodMes(), "01", GenUtil.getCodComprobante(it.getCodCajabanco()));
+        return !cabeceras.isEmpty();
+    }
+
+    public boolean checkIfAlreadyEnviado(ScpBancocabecera it) {
+        List<ScpComprobantecabecera> cabeceras = scpComprobantecabeceraRep.findById_TxtAnoprocesoAndId_CodFilialAndId_CodMesAndId_CodOrigenAndId_CodComprobante(it.getTxtAnoproceso(), "01", it.getCodMes(), "02", GenUtil.getCodComprobante(it.getCodBancocabecera()));
+        return !cabeceras.isEmpty();
     }
 
     public ScpRendicioncabeceraRep getRendicioncabeceraRep() {

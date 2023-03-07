@@ -25,6 +25,7 @@ import org.sanjose.views.banco.*;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
+import org.sanjose.views.rendicion.RendicionSimpleManejoView;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.PropiedadService;
@@ -62,6 +63,7 @@ public class MainUI extends UI {
     private final BancoConciliacionView bancoConciliacionView;
     private final BancoOperacionesView bancoOperacionesView;
     private final RendicionManejoView rendicionManejoView;
+    private final RendicionSimpleManejoView rendicionSimpleManejoView;
     private final RendicionOperView rendicionOperView;
     private final ReportesView reportesView;
     private final MsgUsuarioRep msgUsuarioRep;
@@ -92,6 +94,7 @@ public class MainUI extends UI {
         this.bancoOperacionesView = new BancoOperacionesView(persistanceService);
         this.bancoConciliacionView = new BancoConciliacionView(persistanceService);
         this.rendicionManejoView = new RendicionManejoView(persistanceService);
+        this.rendicionSimpleManejoView = new RendicionSimpleManejoView(persistanceService);
         this.rendicionOperView = new RendicionOperView(persistanceService);
     }
 
@@ -125,7 +128,7 @@ public class MainUI extends UI {
     protected void showMainView() {
         addStyleName(ValoTheme.UI_WITH_MENU);
         mainScreen = new MainScreen(MainUI.this, cajaManejoView, comprobanteView, transferenciaView, cajaOperacionesView, cajaGridView, confView, configuracionCajaView,
-                propiedadView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView, rendicionManejoView, rendicionOperView, reportesView);
+                propiedadView, bancoOperView, bancoManejoView, bancoConciliacionView, bancoOperacionesView, rendicionManejoView, rendicionOperView, rendicionSimpleManejoView, reportesView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);

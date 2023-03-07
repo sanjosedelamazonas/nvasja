@@ -27,7 +27,7 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
     //protected RendicionManejoView manView;
     private CajaSaldoView saldosView = new CajaSaldoView();
 
-    public void init(RendicionManejoView rendicionManejoView) {
+    public void init(RendicionManejoViewing rendicionManejoView) {
         manView = rendicionManejoView;
         manView.getBtnNueva().addClickListener(e -> nuevaRendicion());
         manView.getBtnModificar().addClickListener(e -> editarRendicion(manView.getSelectedRow()));
