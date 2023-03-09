@@ -27,6 +27,9 @@ public class ScpComprobantecabeceraPK implements Serializable {
     @Column(name = "cod_comprobante")
     private String codComprobante;
 
+    @Column(name = "num_nroitem")
+    private long numNroitem;
+
     public ScpComprobantecabeceraPK() {
     }
 
@@ -70,6 +73,14 @@ public class ScpComprobantecabeceraPK implements Serializable {
         this.codComprobante = codComprobante;
     }
 
+    public long getNumNroitem() {
+        return this.numNroitem;
+    }
+
+    public void setNumNroitem(long numNroitem) {
+        this.numNroitem = numNroitem;
+    }
+
     public boolean equals(Object other) {
         if (this == other) {
             return true;
@@ -83,7 +94,8 @@ public class ScpComprobantecabeceraPK implements Serializable {
                         && this.codFilial.equals(castOther.codFilial)
                         && this.codMes.equals(castOther.codMes)
                         && this.codOrigen.equals(castOther.codOrigen)
-                        && this.codComprobante.equals(castOther.codComprobante);
+                        && this.codComprobante.equals(castOther.codComprobante)
+                        && (this.numNroitem == castOther.numNroitem);
     }
 
     public int hashCode() {
@@ -94,6 +106,7 @@ public class ScpComprobantecabeceraPK implements Serializable {
         hash = hash * prime + this.codMes.hashCode();
         hash = hash * prime + this.codOrigen.hashCode();
         hash = hash * prime + this.codComprobante.hashCode();
+        hash = hash * prime + ((int) (this.numNroitem ^ (this.numNroitem >>> 32)));
 
         return hash;
     }

@@ -434,6 +434,20 @@ public class PersistanceService {
         return rendicionItem;
     }
 
+    @Transactional(readOnly = false)
+    public ScpRendicioncabecera saveRendicionCabecera(ScpRendicioncabecera cabecera) throws FieldGroup.CommitException {
+        //cabecera.setCodTipomoneda(moneda);
+        cabecera.prepareToSave();
+        System.out.println("saving: " + cabecera);
+        cabecera = rendicioncabeceraRep.save(cabecera);
+        if (GenUtil.strNullOrEmpty(cabecera.getCodComprobante())) {
+            cabecera.setCodComprobante(GenUtil.getTxtCorrelativoLen(cabecera.getCodRendicioncabecera(), 6));
+            cabecera = rendicioncabeceraRep.save(cabecera);
+        }
+        //cabecera = rendicioncabeceraRep.save(cabecera);
+        return cabecera;
+    }
+
 
     @Transactional
     public void deleteRendicion(ScpRendicioncabecera cabecera) {

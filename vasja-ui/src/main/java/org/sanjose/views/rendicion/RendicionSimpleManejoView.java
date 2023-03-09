@@ -20,12 +20,10 @@ import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.MsgUsuario;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.VsjItem;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.DataFilterUtil;
-import org.sanjose.util.GenUtil;
-import org.sanjose.util.ViewUtil;
+import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
@@ -52,17 +50,18 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
 
     private final RendicionManejoLogic viewLogic = new RendicionManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{ "codComprobante", "fecComprobante", "codDestino", "txtGlosa",
-            "numGastototal", "codTipomoneda", "flgEnviado", "codComprobanteenlace"
+            "numGastototal", "tipoMoneda", "flgEnviado", "codComprobanteenlace"
+            //, "codTipomoneda"
     };
-    private final String[] HIDDEN_COLUMN_IDS = new String[] {
+    private final String[] HIDDEN_COLUMN_IDS = new String[] { "codTipomoneda"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Numero", "Fecha", "Responsable", "Glosa general", "Monto",
-            "Moneda", "Enviado a contab.", "Comrobante en contab."
+            "Moneda", "Enviado a contab.", "Comprobante en contab."
     };
     private final int[] FILTER_WIDTH = new int[]{
             4, 4, 15, 15, 4, 2, 1, 5
     };
-    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"txtCorrelativo"*/ /*"flgEnviado", "codOrigenenlace",
+    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{ /*"txtCorrelativo"*/ /*"flgEnviado", "codOrigenenlace",
             "codComprobanteenlace"*/};
 
     private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
@@ -77,7 +76,7 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
 
     public Grid.FooterRow gridFooter;
 
-    private Character moneda ='0';
+    private Character moneda = null;
 
     private Boolean onlyEnviados = null;
 
@@ -112,6 +111,21 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
                     }
                 });
 
+        gpContainer = new GeneratedPropertyContainer(container);
+        gpContainer.addGeneratedProperty("tipoMoneda",
+                new PropertyValueGenerator<String>() {
+                    @Override
+                    public String getValue(Item item, Object itemId,
+                                            Object propertyId) {
+
+                        return GenUtil.getSymMoneda(GenUtil.getLitMoneda(((ScpRendicioncabecera) ((BeanItem) item).getBean()).getCodTipomoneda()));
+                    }
+                    @Override
+                    public Class<String> getType() {
+                        return String.class;
+                    }
+                });
+
 
         grid.setContainerDataSource(gpContainer);
 
@@ -120,7 +134,7 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
 
         ViewUtil.setColumnNames(grid, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
-        Arrays.asList(HIDDEN_COLUMN_IDS).forEach( colName ->  grid.getColumn(colName).setHidden(true));
+        //Arrays.asList(HIDDEN_COLUMN_IDS).forEach( colName ->  grid.getColumn(colName).setHidden(true));
 
         ViewUtil.alignMontosInGrid(grid);
 
@@ -141,7 +155,7 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
         DataFilterUtil.bindTipoMonedaComboBox(selMoneda, "cod_tipomoneda", "Moneda", false);
         selMoneda.select(moneda);
 
-        selMoneda.setNullSelectionAllowed(false);
+        selMoneda.setNullSelectionAllowed(true);
         selMoneda.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
                 grid.deselectAll();
@@ -149,9 +163,13 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
                 container.removeContainerFilters("codTipomoneda");
                 container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
                 ViewUtil.filterColumnsByMoneda(grid, moneda);
+            } else {
+                container.removeContainerFilters("codTipomoneda");
+                ViewUtil.filterColumnsByMoneda(grid, moneda);
             }
         });
-        container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
+        if (moneda!=null)
+            container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
 
         // Responsable
         DataFilterUtil.bindComboBox(filtroResponsable, "codDestino", getService().getDestinoRepo().findByIndTipodestinoNot('3'),
@@ -162,6 +180,8 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
                 grid.deselectAll();
                 container.removeContainerFilters("codDestino");
                 container.addContainerFilter(new Compare.Equal("codDestino", (String)e.getProperty().getValue()));
+            } else {
+                container.removeContainerFilters("codDestino");
             }
         });
 

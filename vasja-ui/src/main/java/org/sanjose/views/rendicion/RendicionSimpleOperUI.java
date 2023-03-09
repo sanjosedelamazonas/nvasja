@@ -50,18 +50,9 @@ public class RendicionSimpleOperUI extends CssLayout {
     protected Button btnRegAnticipio;
     protected Button btnEliminarRend;
     protected Button btnVerVoucher;
-    protected TextField numItem;
-    protected TextField txtGlosaDetalle;
-    protected ComboBox selTipoMov;
     protected HorizontalLayout name_wrapper9;
-    protected ComboBox selCodAuxiliar;
-    protected Button btnAuxiliar;
     protected HorizontalLayout name_wrapper10;
     protected PopupDateField fechaPago;
-    protected ComboBox selTipoDoc;
-    protected PopupDateField fechaDoc;
-    protected TextField txtSerieDoc;
-    protected TextField txtNumDoc;
     protected ComboBox setAllProyecto;
     protected ComboBox setAllFuente;
     protected ComboBox setAllPartida;

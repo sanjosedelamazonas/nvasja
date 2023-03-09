@@ -17,7 +17,7 @@
      <vaadin-vertical-layout spacing size-auto>
       <vaadin-horizontal-layout spacing>
        <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante"></vaadin-popup-date-field>
-       <vaadin-text-field caption="Origen" enabled="false" input-prompt="" style-name="form-textfield" width="28px" height="23px" _id="txtOrigen"></vaadin-text-field>
+       <vaadin-text-field caption="Origen" enabled="false" visible="false" input-prompt="" style-name="form-textfield" width="28px" height="23px" _id="txtOrigen"></vaadin-text-field>
        <vaadin-text-field description="Num de Voucher" caption="Nro" enabled="false" input-prompt="Numero " style-name="form-textfield" responsive width="65px" _id="numVoucher"></vaadin-text-field>
        <vaadin-text-field caption="Glosa general" input-prompt="Glosa" width="466px" _id="txtGlosaCabeza"></vaadin-text-field>
       </vaadin-horizontal-layout>
@@ -40,7 +40,7 @@
       </vaadin-horizontal-layout>
      </vaadin-vertical-layout>
      <vaadin-vertical-layout size-auto :right>
-      <vaadin-horizontal-layout spacing width-full height="36px" margin>
+      <vaadin-horizontal-layout spacing height="36px" margin>
        <vaadin-label size-auto plain-text>
          Env. a contab. 
        </vaadin-label>
@@ -48,15 +48,15 @@
        <vaadin-label visible="false" size-auto plain-text>
          Orig. 
        </vaadin-label>
-       <vaadin-text-field enabled="false" visible="false" width="36px" _id="txtOrigenlace"></vaadin-text-field>
+       <vaadin-text-field enabled="false" responsive width="36px" _id="txtOrigenlace" :center></vaadin-text-field>
        <vaadin-label visible="false" size-auto plain-text>
          Comprob. 
        </vaadin-label>
-       <vaadin-text-field enabled="false" visible="false" width="75px" _id="txtComprobenlace"></vaadin-text-field>
-       <vaadin-button width="130px" plain-text _id="btnGuardar">
+       <vaadin-text-field enabled="false" width="70px" _id="txtComprobenlace"></vaadin-text-field>
+       <vaadin-button width="100px" plain-text _id="btnGuardar">
          Guardar 
        </vaadin-button>
-       <vaadin-button width="130px" plain-text _id="btnCerrar">
+       <vaadin-button width="100px" plain-text _id="btnCerrar">
          Cerrar 
        </vaadin-button>
       </vaadin-horizontal-layout>
@@ -93,36 +93,12 @@
     <vaadin-vertical-layout size-auto>
      <vaadin-vertical-layout visible="false" spacing size-auto margin>
       <vaadin-horizontal-layout description="Proyecto" spacing width="119.53%">
-       <vaadin-horizontal-layout visible="false">
-        <vaadin-text-field description="Num de Voucher" enabled="false" input-prompt="Numero " style-name="form-textfield" responsive width="32px" _id="numItem"></vaadin-text-field>
-        <vaadin-text-field input-prompt="Glosa por detalle" width="362px" height="22px" _id="txtGlosaDetalle"></vaadin-text-field>
-        <vaadin-combo-box visible="false" input-prompt="Tipo de movimiento" style-name="form-textfield" item-caption-mode="id" width="179px" _id="selTipoMov">
-         <option>Option 1</option>
-         <option>Option 2</option>
-        </vaadin-combo-box>
-       </vaadin-horizontal-layout>
+       <vaadin-horizontal-layout visible="false"></vaadin-horizontal-layout>
       </vaadin-horizontal-layout>
       <vaadin-horizontal-layout visible="false" spacing width-full>
-       <vaadin-horizontal-layout style-name="name-wrapper" spacing _id="name_wrapper9">
-        <vaadin-combo-box input-prompt="Auxiliar" style-name="form-textfield" item-caption-mode="id" width="260px" _id="selCodAuxiliar">
-         <option>Option 1</option>
-         <option>Option 2</option>
-        </vaadin-combo-box>
-        <vaadin-button plain-text _id="btnAuxiliar" :bottom>
-          +Nuevo 
-        </vaadin-button>
-       </vaadin-horizontal-layout>
+       <vaadin-horizontal-layout style-name="name-wrapper" spacing _id="name_wrapper9"></vaadin-horizontal-layout>
        <vaadin-horizontal-layout style-name="name-wrapper" spacing _id="name_wrapper10">
         <vaadin-popup-date-field style-name="form-textfield" _id="fechaPago"></vaadin-popup-date-field>
-        <vaadin-combo-box input-prompt="Tipo de documento" style-name="form-textfield" item-caption-mode="id" width="138px" _id="selTipoDoc" :bottom>
-         <option>Option 1</option>
-         <option>Option 2</option>
-        </vaadin-combo-box>
-        <vaadin-popup-date-field style-name="form-textfield" _id="fechaDoc" :bottom></vaadin-popup-date-field>
-       </vaadin-horizontal-layout>
-       <vaadin-horizontal-layout spacing width="190px">
-        <vaadin-text-field input-prompt="Serie de doc" width="54px" _id="txtSerieDoc" :bottom></vaadin-text-field>
-        <vaadin-text-field input-prompt="Nr doc" width="165px" _id="txtNumDoc" :bottom></vaadin-text-field>
        </vaadin-horizontal-layout>
       </vaadin-horizontal-layout>
      </vaadin-vertical-layout>
