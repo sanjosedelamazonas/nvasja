@@ -12,7 +12,9 @@ import org.sanjose.util.ConfigurationUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
@@ -36,17 +38,6 @@ public class DestinoListLogic implements Serializable {
 
     public void init() {
     	view.btnNuevo.addClickListener(e -> nuevoDestino());
-//        view.grid.getEditorFieldGroup().addCommitHandler(new CommitHandler() {
-//            @Override
-//            public void preCommit(CommitEvent commitEvent) throws CommitException {
-//            }
-//            @Override
-//            public void postCommit(CommitEvent commitEvent) throws CommitException {
-//                Object item = view.grid.getContainerDataSource().getItem(view.grid.getEditedItemId());
-//                if (item!=null)
-//                    view.getService().getDestinoRepo().save((ScpDestino) ((BeanItem) item).getBean());
-//            }
-//        });
         view.btnEliminar.addClickListener(e -> eliminarDestinos());
     }
     
@@ -58,77 +49,55 @@ public class DestinoListLogic implements Serializable {
     
     private void eliminarDestinos() {
         List<ScpDestino> rows = new ArrayList<>();
-    	
+    	Map<String, String> destinoChecks = new HashMap<>();
+    	StringBuilder confirma = new StringBuilder();
         for (Object vsj : view.getSelectedRow()) {
             log.debug("Got selected: " + vsj);
-            if (vsj instanceof ScpDestino)
-        		rows.add((ScpDestino)vsj);
+            if (vsj instanceof ScpDestino) {
+                ScpDestino destino = (ScpDestino) vsj;
+                rows.add(destino);
+                String msg = view.checkIfcanBeDeleted(destino.getCodDestino());
+                if (!msg.isEmpty()) {
+                    destinoChecks.put(destino.getCodDestino() + " " + destino.getTxtNombredestino(), msg);
+                }
+                confirma.append("\n" + destino.getCodDestino() + " " + destino.getTxtNombredestino());
+            }
+
+
         }
+        MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
+        MessageBox
+                .createQuestion()
+                .withCaption("Atencion!")
+                .withMessage("?Esta seguro que quiere eliminar los siguientes destinos:" + confirma + "?")
+                .withYesButton(() -> {
+                    if (destinoChecks.isEmpty()) {
+                        view.clearSelection();
+                        for (ScpDestino vsj : rows) {
+                            log.debug("Removing: " + vsj.getCodDestino());
+                            view.removeRow(vsj);
+                        }
+                    } else {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("No se puede eliminar los porque los siguientes comprobantes usan los destinos como Responsable o como Codigo Auxiliar:");
+                        sb.append("\n");
+                        for (String key: destinoChecks.keySet()) {
+                            sb.append(key + ": " + destinoChecks.get(key));
+                        }
+
+                        MessageBox
+                                .createWarning()
+                                .withCaption("!Atencion!: ")
+                                .withMessage(sb.toString())
+                                .open();
+                    }
+                })
+                .withNoButton()
+                .open();
 
 
 
-//        MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
-//        MessageBox
-//                .createQuestion()
-//                .withCaption("Eliminar: " + item.getTxtNombredestino())
-//                .withMessage("Esta seguro que lo quiere eliminar?")
-//                .withYesButton(() -> {
-//                    log.debug("To delete: " + item);
-//
-//                    List<ScpCajabanco> comprobantes = getService().getCajabancoRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
-//                    List<ScpBancocabecera> bancoscabeceras = getService().getBancocabeceraRep().findByCodDestino(codDestino);
-//                    List<ScpBancodetalle> bancositems = getService().getBancodetalleRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
-//                    List<ScpRendicioncabecera> rendicionescab = getService().getRendicioncabeceraRep().findByCodDestino(codDestino);
-//                    List<ScpRendiciondetalle> rendicionitems = getService().getRendiciondetalleRep().findByCodDestino(codDestino);
-//
-//                    StringBuilder sb = new StringBuilder();
-//                    for (ScpCajabanco vcb : comprobantes) {
-//                        sb.append("\n").append("Caja: ").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosaitem());
-//                    }
-//                    for (ScpBancodetalle bancodet : bancositems) {
-//                        ScpBancocabecera cab = bancodet.getScpBancocabecera();
-//                        if (!bancoscabeceras.contains(cab))
-//                            bancoscabeceras.add(cab);
-//
-//                    }
-//                    for (ScpRendiciondetalle renddet : rendicionitems) {
-//                        ScpRendicioncabecera cab = renddet.getScpRendicioncabecera();
-//                        if (!rendicionescab.contains(cab))
-//                            rendicionescab.add(cab);
-//
-//                    }
-//
-//                    for (ScpCajabanco vcb : comprobantes) {
-//                        sb.append("\n").append("Caja: ").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosaitem());
-//                    }
-//                    for (ScpBancocabecera vcb : bancoscabeceras) {
-//                        sb.append("\n").append("Banco: ").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosa());
-//                    }
-//                    for (ScpRendicioncabecera vcb : rendicionescab) {
-//                        sb.append("\n").append("Rendicion: ").append(vcb.getCodComprobante()).append(" ").append(vcb.getFecComprobante()).append(" ").append(vcb.getTxtGlosa());
-//                    }
-//                    if (sb.toString().isEmpty()) {
-//                        destinoView.destinoRepo.delete(item);
-//                        refreshData();
-//                        destinoWindow.close();
-//                    } else {
-//                        MessageBox
-//                                .createWarning()
-//                                .withCaption("No se puede eliminar destino: " + item.getTxtNombredestino())
-//                                .withMessage("Los sigientes comprobantes usan este destino como Responsable o como Codigo Auxiliar: " + sb.toString())
-//                                .open();
-//                    }
-//                })
-//                .withNoButton()
-//                .open();
-//
-//
-//
 
-        view.clearSelection();
-        for (ScpDestino vsj : rows) {
-            log.debug("Removing: " + vsj.getCodDestino());
-            view.removeRow(vsj);
-        }
+
     }
 }

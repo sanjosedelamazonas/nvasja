@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta name="vaadin-version" content="7.7.7">
+  <meta name="package-mapping" content="tm_kod_widgets_numberfield:tm.kod.widgets.numberfield">
+ </head>
+ <body>
+  <vaadin-vertical-layout spacing id="verticalMain" height="350px" margin>
+   <vaadin-horizontal-layout spacing height="40px" margin-top margin-bottom _id="horiz1" :center>
+    <vaadin-horizontal-layout spacing :center>
+     <vaadin-label size-auto plain-text>
+       Anticipios para rendicion nro: 
+     </vaadin-label>
+     <vaadin-text-field enabled="false" width="60px" _id="txtCodComprobante"></vaadin-text-field>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout spacing>
+     <vaadin-button width="100px" plain-text _id="btnCerrar">
+       Cerrar 
+     </vaadin-button>
+    </vaadin-horizontal-layout>
+   </vaadin-horizontal-layout>
+   <vaadin-horizontal-layout size-full _id="horiz4" :center :expand>
+    <vaadin-label width="50px" height-full plain-text></vaadin-label>
+    <vaadin-vertical-layout size-full :expand>
+     <vaadin-horizontal-layout size-full :expand>
+      <vaadin-grid editor-cancel-caption="Anular" size-full _id="grid" :expand></vaadin-grid>
+      <vaadin-vertical-layout spacing size-auto margin :middle>
+       <vaadin-button width="100px" plain-text _id="btnNuevo">
+         Nuevo 
+       </vaadin-button>
+       <vaadin-button width="100px" plain-text _id="btnEliminar">
+         Eliminar 
+       </vaadin-button>
+      </vaadin-vertical-layout>
+     </vaadin-horizontal-layout>
+     <vaadin-horizontal-layout spacing margin>
+      <vaadin-label width="200px" plain-text></vaadin-label>
+      <vaadin-label size-auto plain-text>
+        Total 
+      </vaadin-label>
+      <tm_kod_widgets_numberfield-number-field caption-as-html enabled="false" width="80px" _id="txtTotal"></tm_kod_widgets_numberfield-number-field>
+     </vaadin-horizontal-layout>
+     <vaadin-label height="40px" plain-text></vaadin-label>
+    </vaadin-vertical-layout>
+   </vaadin-horizontal-layout>
+  </vaadin-vertical-layout>
+ </body>
+</html>

@@ -9,7 +9,6 @@ import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.OptionGroup;
-import tm.kod.widgets.numberfield.NumberField;
 import org.vaadin.addons.CssCheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.DateField;
@@ -36,7 +35,7 @@ public class RendicionSimpleOperUI extends CssLayout {
     protected ComboBox selResponsable1;
     protected Button btnResponsable;
     protected OptionGroup selMoneda;
-    protected NumberField numTotalAnticipio;
+    protected TextField txtTotalAnticipio;
     protected TextField txtGastoTotal;
     protected TextField txtSaldoPendiente;
     protected CssCheckBox chkEnviado;

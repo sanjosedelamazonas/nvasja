@@ -198,7 +198,7 @@ public class BancoLogic extends BancoItemLogic {
             }
             view.getNumVoucher().setEnabled(false);
             //setCuentaLogic();
-            //view.setTotal(moneda);
+            //view.calcTotal(moneda);
         } else {
             view.getNumVoucher().setValue("");
         }

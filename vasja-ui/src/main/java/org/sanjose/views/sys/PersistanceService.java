@@ -52,6 +52,7 @@ public class PersistanceService {
     private final ScpComprobantedetalleRep scpComprobantedetalleRep;
     private final ScpComprobantecabeceraRep scpComprobantecabeceraRep;
     private final ScpChequependienteRep scpChequependienteRep;
+    private final VsjRendicionanticipioRep vsjRendicionanticipioRep;
 
 
     @Autowired
@@ -65,7 +66,7 @@ public class PersistanceService {
                                       tipocambioRep, MsgUsuarioRep msgUsuarioRep, ScpCajabancoRep cajabancoRep,
                               ScpBancocabeceraRep bancocabeceraRep, ScpBancodetalleRep bancodetalleRep, ScpComprobantedetalleRep scpComprobantedetalleRep,
                               ScpComprobantecabeceraRep scpComprobantecabeceraRep,
-                              ScpChequependienteRep scpChequependienteRep, EntityManager em) {
+                              ScpChequependienteRep scpChequependienteRep, VsjRendicionanticipioRep vsjRendicionanticipioRep, EntityManager em) {
         this.rendicioncabeceraRep = rendicioncabeceraRep;
         this.rendiciondetalleRep = rendiciondetalleRep;
         this.configuractacajabancoRepo = configuractacajabancoRepo;
@@ -90,6 +91,7 @@ public class PersistanceService {
         this.scpComprobantedetalleRep = scpComprobantedetalleRep;
         this.scpComprobantecabeceraRep = scpComprobantecabeceraRep;
         this.scpChequependienteRep = scpChequependienteRep;
+        this.vsjRendicionanticipioRep = vsjRendicionanticipioRep;
         this.em = em;
     }
 
@@ -611,9 +613,15 @@ public class PersistanceService {
         return scpChequependienteRep;
     }
 
+    public ScpComprobantecabeceraRep getScpComprobantecabeceraRep() {
+        return scpComprobantecabeceraRep;
+    }
+
+    public VsjRendicionanticipioRep getVsjRendicionanticipioRep() {
+        return vsjRendicionanticipioRep;
+    }
+
     public EntityManager getEm() {
         return em;
     }
-
-
 }
