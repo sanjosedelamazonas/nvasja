@@ -53,7 +53,7 @@ public class AnticipioManejoView extends AnticipioManejoUI {
             "indTipomoneda", "codComprobante"
     };
     private final int[] FILTER_WIDTH = new int[]{
-            3, 5, 12,
+            2, 5, 18,
             4, 6
     };
     private PersistanceService service;

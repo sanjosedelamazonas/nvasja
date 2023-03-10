@@ -16,10 +16,7 @@ import de.steinwedel.messagebox.MessageBox;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
-import org.sanjose.converter.BigDecimalConverter;
-import org.sanjose.converter.BooleanTrafficLightConverter;
-import org.sanjose.converter.DateToTimestampConverter;
-import org.sanjose.converter.ZeroOneTrafficLightConverter;
+import org.sanjose.converter.*;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.*;
@@ -28,6 +25,7 @@ import org.sanjose.views.caja.*;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.SaldoDelDia;
 import org.sanjose.views.sys.SubWindowing;
+import org.sanjose.views.sys.PersistanceService;
 
 import javax.print.PrintException;
 import java.sql.Timestamp;
@@ -175,7 +173,7 @@ public class ViewUtil {
 
 
     public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width) {
-        setupColumnFilters(grid, visible_cols, filter_cols_width, null);
+        setupColumnFilters(grid, visible_cols, filter_cols_width, null, null);
     }
 
     public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width, SaldoDelDia saldoDelDia) {
@@ -186,7 +184,25 @@ public class ViewUtil {
         setupColumnFilters(grid, filCols, saldoDelDia);
     }
 
+    public static void setupColumnFilters(Grid grid, String[] visible_cols, int[] filter_cols_width, SaldoDelDia saldoDelDia, PersistanceService service) {
+        Map<String, Integer> filCols = new HashMap<>();
+        for (int i = 0; i < filter_cols_width.length; i++) {
+            filCols.put(visible_cols[i], filter_cols_width[i]);
+        }
+        setupColumnFilters(grid, filCols, saldoDelDia, service);
+    }
+
+
     private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, SaldoDelDia saldoDelDia) {
+        setupColumnFilters(grid, filCols, saldoDelDia, null);
+    }
+
+    public static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, PersistanceService service) {
+        setupColumnFilters(grid, filCols, null, service);
+    }
+
+
+    private static void setupColumnFilters(Grid grid, Map<String, Integer> filCols, SaldoDelDia saldoDelDia, PersistanceService service) {
         Map<Object, Container.Filter> columnFilters = new HashMap<>();
         Grid.HeaderRow filterRow = grid.appendHeaderRow();
 
@@ -225,6 +241,40 @@ public class ViewUtil {
                     }
                 });
                 cell.setComponent(filterCombo);
+            } else if (column.getConverter() instanceof TipoDocumentoConverter ||
+                    column.getConverter() instanceof CargoCuartaConverter ||
+                    column.getConverter() instanceof TipoDestinoConverter) {
+
+                ComboBox filterCombo = new ComboBox();
+                if (column.getConverter() instanceof TipoDocumentoConverter) {
+
+                    DataFilterUtil.bindComboBox(filterCombo, "codTipodocumento", service.getTipodocumentoRepo().findAll(),
+                            "Sel Tipo documento", "txtDescripcion");
+                } else if (column.getConverter() instanceof TipoDestinoConverter) {
+                    DataFilterUtil.bindTipoDestinoComboBox(filterCombo, "indTipodestino", "Sel Clasificacion");
+                } else {
+                    DataFilterUtil.bindComboBox(filterCombo, "codCargo", service.getCargocuartaRepo().findAll(), "Sel Cargo 4ta",
+                            "txtDescripcion");
+                }
+                filterCombo.addValueChangeListener(event -> {
+
+                    // Regular container
+                    if (grid.getContainerDataSource() instanceof Container.SimpleFilterable) {
+                        ((Container.SimpleFilterable) grid.getContainerDataSource()).removeContainerFilters(pid);
+                    } else {
+                        // Generated property container
+                        Container.Filter f = columnFilters.get(pid);
+                        if (f!=null)
+                            ((Container.Filterable) grid.getContainerDataSource()).removeContainerFilter(f);
+                    }
+                    if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                        columnFilters.put(pid, new Compare.Equal(pid, event.getProperty().getValue()));
+                        ((Container.Filterable) grid.getContainerDataSource()).addContainerFilter(
+                                columnFilters.get(pid));
+                    }
+                });
+                cell.setComponent(filterCombo);
+
             } else {
                 TextField filterField = new TextField();
                 // Set filter width according to table

@@ -13964,6 +13964,10 @@ div.v-layout.v-horizontal.v-widget {
 	margin-top: 0.4em;
 }
 
+.mytheme .v-ui[width-range~="0-800px"] .login-screen .login-information .v-label h2 {
+	color: #dbc4e3;
+}
+
 .mytheme .v-ui[width-range~="0-800px"] .login-screen .centering-layout {
 	display: block;
 	width: 100%;
