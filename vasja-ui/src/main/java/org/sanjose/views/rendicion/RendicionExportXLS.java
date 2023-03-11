@@ -13,6 +13,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import org.sanjose.helper.XlsExporter;
+import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.ScpRendiciondetalle;
 import org.sanjose.util.GenUtil;
@@ -36,26 +37,38 @@ public class RendicionExportXLS extends XlsExporter {
     public void exportRendicion() {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        writeTitleLine(Arrays.asList(new String[]{ cabecera.getTxtGlosa()}), 0);
-
-        writeDataLine(Arrays.asList(new String[]{ "Fecha de rendicion: ", sdf.format(cabecera.getFecComprobante())}), 1);
-        writeDataLine(Arrays.asList(new String[]{ "Destino", cabecera.getCodDestino()}), 2);
-        writeDataLine(Arrays.asList(new String[]{ "Moneda", GenUtil.getSymMoneda(cabecera.getCodTipomoneda())}), 3);
+        log.info("running export " + cabecera.getCodRendicioncabecera());
+        writeTitleLine(Arrays.asList(new String[]{ " ", cabecera.getTxtGlosa(), " ", " "}), 0);
+        ScpDestino destino = service.getDestinoRepo().findByCodDestino(cabecera.getCodDestino());
+        writeDataLine(Arrays.asList(new String[]{ "Fecha de rendicion: ", sdf.format(cabecera.getFecComprobante()), "", ""}), 1);
+        writeDataLine(Arrays.asList(new String[]{ "Destino", destino.getCodDestino() + " " + destino.getTxtNombredestino(), "", ""}), 2);
+        writeDataLine(Arrays.asList(new String[]{ "Moneda", GenUtil.getSymMoneda(GenUtil.getLitMoneda(cabecera.getCodTipomoneda())), "", ""}), 3);
 
         writeHeaderLine(Arrays.asList(new String[]{ "Nro", "Descripcion", "Ingreso", "Egreso"}), 5);
 
         List<ScpRendiciondetalle> detalles = service.getRendiciondetalleRep().findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera());
         writeDataLines(ScpRendiciondetalle.class,
-                Arrays.asList(new String[]{"id.numNroitem", "txtGlosaitem", "numDebesol", "numHabersol"}),
+                Arrays.asList(new String[]{"id.numNroitem", "txtGlosaitem", "numHabersol", "numDebesol"}),
                 detalles,
-                1);
+                6);
 
-        openExported();
+        //openExported();
+    }
+
+    public ByteArrayOutputStream getExported() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            getWorkbook().write(outputStream);
+            getWorkbook().close();
+        } catch (IOException ex) {
+            log.error("Error exporting to XLS");
+
+        }
+        return outputStream;
     }
 
 
-    public void openExported() {
+    public StreamResource openExported() {
         StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             try {
@@ -75,31 +88,32 @@ public class RendicionExportXLS extends XlsExporter {
         //resource.setMIMEType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");
         //resource.setMIMEType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         resource.setMIMEType("application/xls");
-
-        log.info("Resource: " + resource.getFilename() + " "
-                + resource.getMIMEType());
-
-
-        FileDownloader fileDownloader = new FileDownloader(resource);
-        //UI.getCurrent().
-
-        //)fileDownloader.
-        Embedded emb = new Embedded();
-        emb.setSizeFull();
-        emb.setType(Embedded.TYPE_BROWSER);
-        emb.setSource(resource);
-
-        Window repWindow = new Window();
-        repWindow.setWindowMode(WindowMode.NORMAL);
-        repWindow.setWidth(700, Sizeable.Unit.PIXELS);
-        repWindow.setHeight(600, Sizeable.Unit.PIXELS);
-        repWindow.setPositionX(200);
-        repWindow.setPositionY(50);
-        repWindow.setModal(false);
-        repWindow.setContent(emb);
-        repWindow.setDraggable(true);
-        UI.getCurrent().addWindow(repWindow);
-        //UI.getCurrent().addWindow(fileDownloader);
-        //JavaScript.getCurrent().execute("window.onload = function() { window.print(); } ");
+        return resource;
+//
+//        log.info("Resource: " + resource.getFilename() + " "
+//                + resource.getMIMEType());
+//
+//
+//        FileDownloader fileDownloader = new FileDownloader(resource);
+//        //UI.getCurrent().
+//
+//        //)fileDownloader.
+//        Embedded emb = new Embedded();
+//        emb.setSizeFull();
+//        emb.setType(Embedded.TYPE_BROWSER);
+//        emb.setSource(resource);
+//
+//        Window repWindow = new Window();
+//        repWindow.setWindowMode(WindowMode.NORMAL);
+//        repWindow.setWidth(700, Sizeable.Unit.PIXELS);
+//        repWindow.setHeight(600, Sizeable.Unit.PIXELS);
+//        repWindow.setPositionX(200);
+//        repWindow.setPositionY(50);
+//        repWindow.setModal(false);
+//        repWindow.setContent(emb);
+//        repWindow.setDraggable(true);
+//        UI.getCurrent().addWindow(repWindow);
+//        //UI.getCurrent().addWindow(fileDownloader);
+//        //JavaScript.getCurrent().execute("window.onload = function() { window.print(); } ");
     }
 }

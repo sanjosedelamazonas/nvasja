@@ -5,7 +5,9 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import com.vaadin.server.FileDownloader;
 import com.vaadin.server.Sizeable;
+import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -24,9 +26,12 @@ import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.Viewing;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.sanjose.util.GenUtil.verifyNumMoneda;
@@ -44,6 +49,10 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
     private FieldGroup fieldGroupCabezera;
 
     private BeanItem<ScpRendicioncabecera> beanItem;
+
+    private String exportFileName = null;
+
+    private FileDownloader xlsDownloader;
 
     @Override
     public void init(RendicionSimpleOperView view) {
@@ -69,8 +78,16 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
         view.getBtnNewItem().addClickListener(event -> nuevoItem());
         view.getBtnEliminar().addClickListener(event -> eliminarItem());
         view.getBtnRegAnticipio().addClickListener(event -> registrarAnticipios());
-        view.getBtnGuardarExcel().addClickListener(event -> new RendicionExportXLS(beanItem.getBean(), view.getService()));
-
+//        RendicionExportXLS rendExport = new RendicionExportXLS(beanItem.getBean(), view.getService());
+//        FileDownloader fileDownloader = new FileDownloader(rendExport.openExported());
+//        fileDownloader.extend(view.getBtnGuardarExcel());
+//        view.getBtnGuardarExcel().addClickListener(event -> {
+//            RendicionExportXLS rendExport = new RendicionExportXLS(beanItem.getBean(), view.getService());
+//            FileDownloader fileDownloader = new FileDownloader(rendExport.openExported());
+//            fileDownloader.extend(view.getBtnGuardarExcel());
+////
+//        });
+//
         //view.getBtnAnular().addClickListener(event -> anular());
         view.getBtnCerrar().addClickListener(event -> anular());
         view.getBtnVerVoucher().addClickListener(event -> ReportHelper.generateComprobante(beanItem.getBean()));
@@ -123,6 +140,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
             view.grid.select(renddet);
             switchMode(EDIT);
         });
+        setupExport();
         if (rendicioncabecera.getCodRendicioncabecera()!=null)
             switchMode(EDIT);
         addCommitHandlerToGrid();
@@ -162,6 +180,30 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
             addCommitHandlerToGrid();
         }
         switchMode(EDIT);
+    }
+
+    public void setupExport() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        exportFileName = "RendicionExport_"
+                + beanItem.getBean().getCodComprobante() + "_"
+                + sdf.format(new Date(System.currentTimeMillis()))
+                + ".xlsx";
+        if (xlsDownloader!=null && xlsDownloader.isAttached())
+            xlsDownloader.detach();
+        StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
+            @Override
+            public InputStream getStream() {
+                try {
+                    return new ByteArrayInputStream(new RendicionExportXLS(beanItem.getBean(),
+                            view.getService()).getExported().toByteArray());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }, exportFileName);
+        xlsDownloader = new FileDownloader(resource);
+        xlsDownloader.extend(view.getBtnGuardarExcel());
     }
 
     @Override
@@ -268,6 +310,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 loadDetallesToGrid(cabecera);
 //                view.grid.select(rendicionItem);
 //            }
+            setupExport();
             view.calcFooterSums();
         } catch (Validator.InvalidValueException e) {
             Notification.show("Error al guardar: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
@@ -385,6 +428,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 view.getBtnNewItem().setEnabled(false);
                 view.getBtnEliminarRend().setEnabled(false);
                 view.getBtnRegAnticipio().setEnabled(false);
+                view.getBtnGuardarExcel().setEnabled(false);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
                 break;
@@ -399,6 +443,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 view.getBtnCerrar().setEnabled(true);
                 view.getBtnEliminarRend().setEnabled(false);
                 view.getBtnRegAnticipio().setEnabled(false);
+                view.getBtnGuardarExcel().setEnabled(false);
                 view.setEnableCabezeraFields(true);
                 view.setEnableDetalleFields(false);
                 break;
@@ -414,6 +459,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 view.getBtnNewItem().setEnabled(true);
                 view.getBtnEliminarRend().setEnabled(true);
                 view.getBtnRegAnticipio().setEnabled(true);
+                view.getBtnGuardarExcel().setEnabled(true);
                 view.setEnableCabezeraFields(true);
                 view.setEnableDetalleFields(true);
                 break;
@@ -425,6 +471,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnEliminarRend().setEnabled(true);
                 view.getBtnRegAnticipio().setEnabled(true);
+                view.getBtnGuardarExcel().setEnabled(true);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
                 break;
