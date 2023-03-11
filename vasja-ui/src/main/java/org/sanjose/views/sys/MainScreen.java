@@ -18,9 +18,11 @@ import org.sanjose.views.banco.BancoManejoView;
 import org.sanjose.views.banco.BancoOperView;
 import org.sanjose.views.banco.BancoOperacionesView;
 import org.sanjose.views.caja.*;
+import org.sanjose.views.dict.DestinoListView;
 import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.rendicion.RendicionSimpleManejoView;
+import org.sanjose.views.rendicion.RendicionSimpleOperView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +45,8 @@ public class MainScreen extends HorizontalLayout {
                       BancoOperView bancoOperView, BancoManejoView bancoManejoView,
                       BancoConciliacionView bancoConciliacionView, BancoOperacionesView bancoOperacionesView,
                       RendicionManejoView rendicionManejoView, RendicionOperView rendicionOperView,
-                      RendicionSimpleManejoView rendicionSimpleManejoView,
-                      ReportesView reportesView) {
+                      RendicionSimpleManejoView rendicionSimpleManejoView, RendicionSimpleOperView rendicionSimpleOperView,
+                      ReportesView reportesView, DestinoListView destinoListView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -86,27 +88,33 @@ public class MainScreen extends HorizontalLayout {
         if (Role.isPrivileged()) {
             menu.addView(bancoOperacionesView, BancoOperacionesView.VIEW_NAME,
                     BancoOperacionesView.VIEW_NAME, FontAwesome.EDIT);
+        }
+        // Temporarily disabled access to Rendiciones
+        if (Role.isDigitador()) {
+            rendicionSimpleOperView.init();
+            viewsToIgnoreWhenInit.add(rendicionSimpleOperView);
+            menu.addSeparator("Rendiciones");
+            menu.addView(rendicionSimpleManejoView, RendicionSimpleManejoView.VIEW_NAME,
+                    RendicionSimpleManejoView.VIEW_NAME, FontAwesome.EDIT);
+        }
+        menu.addSeparator("Diccionarios");
+        menu.addView(destinoListView, DestinoListView.VIEW_NAME,
+                DestinoListView.VIEW_NAME, FontAwesome.EDIT);
+
+        if (Role.isPrivileged()) {
             menu.addSeparator("Configuracion");
             menu.addView(configuracionCajaView, ConfiguracionCajaView.VIEW_NAME,
                     ConfiguracionCajaView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
                     ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
         }
-        // Temporarily disabled access to Rendiciones
-        if (Role.isDigitador()) {
-            rendicionOperView.init();
-            viewsToIgnoreWhenInit.add(rendicionOperView);
-            menu.addSeparator("Rendiciones");
-            menu.addView(rendicionSimpleManejoView, RendicionSimpleManejoView.VIEW_NAME,
-                    RendicionSimpleManejoView.VIEW_NAME, FontAwesome.EDIT);
-        }
         if (Role.isAdmin()) {
         //if (Role.isDigitador()) {
-            //rendicionOperView.init();
-            //viewsToIgnoreWhenInit.add(rendicionOperView);
+//            rendicionOperView.init();
+//            viewsToIgnoreWhenInit.add(rendicionOperView);
             //menu.addSeparator("Rendiciones");
-            menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
-                    RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
+//            menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
+//                    RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
 
         if (Role.isAdmin()) {
