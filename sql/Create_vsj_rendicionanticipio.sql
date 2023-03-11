@@ -14,7 +14,7 @@ CREATE TABLE [dbo].[vsj_rendicionanticipio](
 	[cod_comprobante] [varchar](6) NOT NULL,
 	[fec_anticipio] [datetime] NOT NULL,
 	[txt_glosa] [varchar](70),
-	[cod_tipomoneda] [char](1),
+	[ind_tipomoneda] [char](1),
 	[num_anticipio] decimal(12,2) NOT NULL,
 	[cod_uregistro] [varchar](15),
 	[cod_uactualiza] [varchar](15),

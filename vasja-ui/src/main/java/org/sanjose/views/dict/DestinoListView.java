@@ -1,6 +1,5 @@
 package org.sanjose.views.dict;
 
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
@@ -15,15 +14,14 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.renderers.HtmlRenderer;
 import de.steinwedel.messagebox.MessageBox;
-import org.sanjose.converter.BooleanTrafficLightConverter;
+import org.sanjose.converter.CargoCuartaConverter;
+import org.sanjose.converter.TipoDestinoConverter;
+import org.sanjose.converter.TipoDocumentoConverter;
 import org.sanjose.model.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
-import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.caja.ConfiguracionCtaCajaBancoUI;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
@@ -87,8 +85,46 @@ public class DestinoListView extends DestinoListUI implements Viewing {
         grid.setEditorEnabled(false);
 
 //        grid.setEditorFieldGroup(
-//                new BeanFieldGroup<>(ScpDestino.class));
-        ViewUtil.setupColumnFilters(grid, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
+
+
+        ComboBox clasificacion = new ComboBox();
+        DataFilterUtil.bindTipoDestinoComboBox(clasificacion, "indTipodestino", "Sel Clasificacion");
+        grid.getColumn("indTipodestino").setEditorField(clasificacion);
+        grid.getColumn("indTipodestino").setConverter(new TipoDestinoConverter());
+
+        // Tipo doc
+        ComboBox tipoDocumento = new ComboBox();
+        DataFilterUtil.bindComboBox(tipoDocumento, "codTipodocumento", service.getTipodocumentoRepo().findAll(),
+                "Sel Tipo documento", "txtDescripcion");
+        grid.getColumn("indTipodctoidentidad").setEditorField(tipoDocumento);
+        grid.getColumn("indTipodctoidentidad").setConverter(new TipoDocumentoConverter(service.getTipodocumentoRepo()));
+
+        //.setRenderer(new HtmlRenderer());
+
+
+        grid.getColumn("indTipodctoidentidad").setEditorField(tipoDocumento);
+
+
+        // Cargo 4ta
+        ComboBox cargo = new ComboBox();
+        DataFilterUtil.bindComboBox(cargo, "codCargo", service.getCargocuartaRepo().findAll(), "Sel Cargo 4ta",
+                "txtDescripcion");
+        grid.getColumn("codCargo").setEditorField(cargo);
+        grid.getColumn("codCargo").setConverter(new CargoCuartaConverter(service.getCargocuartaRepo()));
+
+
+        // Genero
+        ComboBox genero = new ComboBox();
+        DataFilterUtil.bindGeneroComboBox(genero, "indSexo", "Sel Sexo");
+        grid.getColumn("indSexo").setEditorField(genero);
+
+        // Tipo persona
+        ComboBox tipoDePersona = new ComboBox();
+        DataFilterUtil.bindTipoPersonaComboBox(tipoDePersona, "indTipopersona", "Sel Tipo de persona");
+        grid.getColumn("indTipopersona").setEditorField(tipoDePersona);
+
+        //                new BeanFieldGroup<>(ScpDestino.class));
+        ViewUtil.setupColumnFilters(grid, VISIBLE_COLUMN_IDS, FILTER_WIDTH, null, service);
 
         grid.addItemClickListener(this::setItemLogic);
 
