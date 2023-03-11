@@ -8,7 +8,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.*;
 import org.sanjose.converter.ZeroOneToBooleanConverter;
-import org.sanjose.model.*;
+import org.sanjose.model.ScpRendiciondetalle;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
@@ -26,9 +26,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.sanjose.util.GenUtil.EUR;
-import static org.sanjose.util.GenUtil.PEN;
-import static org.sanjose.util.GenUtil.USD;
+import static org.sanjose.util.GenUtil.*;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -36,47 +34,41 @@ import static org.sanjose.util.GenUtil.USD;
  * See also ... for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class RendicionOperView extends RendicionOperUI implements Viewing, SubWindowing {
+public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Viewing, SubWindowing {
 
-    public static final String VIEW_NAME = "Rendiciones Avanc.";
+    public static final String VIEW_NAME = "Rendiciones";
     public String getWindowTitle() {
         return VIEW_NAME;
     }
 
     private Window subWindow;
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{
-            "id.numNroitem", "codProyecto", "codFinanciera", "codCtaproyecto",
-            "codContraparte", "codCtacontable", "codCtaactividad", "codCtaarea", "codCtaespecial",
-            "fecComprobantepago", "fecPagocomprobantepago",
-            "codTipomoneda", "numTcvdolar",
-            "numDebesol", "numHabersol",
-            "numDebedolar", "numHaberdolar",
-            "numTcmo", "numDebemo", "numHabermo"
+            "id.numNroitem", "codProyecto", "fecComprobantepago", "codTipocomprobantepago", "txtSeriecomprobantepago",
+            "txtComprobantepago", "codDestino", "txtGlosaitem",
+            "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "numHabermo", "numDebemo",
+            "codCtacontable", "codContraparte", "codCtaespecial", "codFinanciera", "codCtaproyecto"
     };
     static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
-            "It", "Proyecto", "Fuente", "Partida P.",
-            "Lug. Gst.", "Contable", "Actividad", "Area", "Rubro Inst",
-            "Fecha Doc", "Fecha Pago",
-            "Mon", "TC $",
-            "Gast S/.", "Ingr S/.",
-            "Gast $", "Ingr $",
-            "TC €", "Gast €", "Ingr €"
+            "It", "Proyecto", "Fecha Doc", "Tipo Doc", "Nro de serie",
+            "Nro de doc", "Razon social/Nombre", "Glosa por detalle",
+            "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
+            "Cuenta", "Lug. Gasto", "Rubro Inst", "Fuente", "Partida P."
+
     };
     static final String[] HIDDEN_COLUMN_NAMES_PEN = new String[]{
-            "codCtaarea", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo", "codTipomoneda", "numTcvdolar", "numTcmo"
+            //"codCtaarea", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo", "codTipomoneda", "numTcvdolar", "numTcmo"
     };
 
     static final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
 
-    private static final Logger log = LoggerFactory.getLogger(RendicionOperView.class);
+    private static final Logger log = LoggerFactory.getLogger(RendicionSimpleOperView.class);
 
-    private final Field[] allFields = new Field[]{ selTipoMov, selCodAuxiliar, fechaPago,
-            selTipoDoc, fechaDoc, txtSerieDoc, txtNumDoc, txtGlosaDetalle
+    private final Field[] allFields = new Field[]{ fechaPago,
     };
     private final Field[] cabezeraFields = new Field[]{dataFechaComprobante, txtGlosaCabeza, selResponsable1, selMoneda,
-            numTotalAnticipio, dataFechaRegistro};
-    
-    private RendicionLogic viewLogic = null;
+            dataFechaRegistro};
+
+    private RendicionSimpleLogic viewLogic = null;
     private BeanItemContainer<ScpRendiciondetalle> container;
     //private GeneratedPropertyContainer gpContainer;
     private org.sanjose.views.sys.PersistanceService PersistanceService;
@@ -85,10 +77,10 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
 
     public Grid.FooterRow gridFooter;
 
-    public RendicionOperView() {
+    public RendicionSimpleOperView() {
     }
 
-    public RendicionOperView(PersistanceService PersistanceService) {
+    public RendicionSimpleOperView(PersistanceService PersistanceService) {
         this.PersistanceService = PersistanceService;
         setSizeFull();
     }
@@ -100,10 +92,10 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
 
     @Override
     public void init() {
-        viewLogic = new RendicionLogic();
+        viewLogic = new RendicionSimpleLogic();
         viewLogic.init(this);
         addStyleName("crud-view");
-        ViewUtil.setDefaultsForNumberField(numTotalAnticipio);
+        //txtTotalAnticipio
 
         // Grid
         initGrid();
@@ -122,7 +114,8 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         });
 
         gridFooter = grid.appendFooterRow();
-        getNumTotalAnticipio().setValue(GenUtil.numFormat(new BigDecimal(0.00)));
+        //getNumTotalAnticipio().setValue(GenUtil.numFormat(new BigDecimal(0.00)));
+        getNumTotalAnticipio().setEnabled(false);
     }
 
     public void initGrid(){
@@ -149,15 +142,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         setTotal(null);
     }
 
-    public void toggleVista() {
-        isVistaFull = !isVistaFull;
-        if (!isVistaFull)
-            ViewUtil.filterColumnsByMoneda(grid, (Character)getSelMoneda().getValue());
-        else
-            ViewUtil.filterColumnsByMoneda(grid, 'A');
-        //getAjusteForm().setVisible(isVistaFull);
-    }
-
     public ScpRendiciondetalle getSelectedRow() {
         if (grid.getSelectedRows().isEmpty()) return null;
         return grid.getSelectedRows().toArray(new ScpRendiciondetalle[0])[0];
@@ -165,14 +149,12 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
 
     public void setEnableDetalleFields(boolean enabled) {
         for (Field f : allFields) f.setEnabled(enabled);
-        btnAuxiliar.setEnabled(enabled);
     }
 
 
     public void setEnableCabezeraFields(boolean enabled) {
         for (Field f : cabezeraFields) f.setEnabled(enabled);
         btnResponsable.setEnabled(enabled);
-        btnAuxiliar.setEnabled(enabled);
     }
 
     public void setTotal(Character locMoneda) {
@@ -215,7 +197,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         getNumDifmo().setValue(GenUtil.numFormat(new BigDecimal(-1).multiply(calcTotal(EUR))));
     }
 
-    private BigDecimal calcTotal(Character locMoneda) {
+    public BigDecimal calcTotal(Character locMoneda) {
         BigDecimal total = new BigDecimal(0.00);
         for (ScpRendiciondetalle det: container.getItemIds()) {
             switch (locMoneda) {
@@ -300,8 +282,8 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         return selMoneda;
     }
 
-    public NumberField getNumTotalAnticipio() {
-        return numTotalAnticipio;
+    public TextField getNumTotalAnticipio() {
+        return txtTotalAnticipio;
     }
 
     public TextField getTxtGastoTotal() {
@@ -328,45 +310,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         return grid;
     }
 
-    public TextField getNumItem() {
-        return numItem;
-    }
-
-    public TextField getTxtGlosaDetalle() {
-        return txtGlosaDetalle;
-    }
-
-    public ComboBox getSelTipoMov() {
-        return selTipoMov;
-    }
-
-    public PopupDateField getFechaPago() {
-        return fechaPago;
-    }
-
-    public ComboBox getSelCodAuxiliar() {
-        return selCodAuxiliar;
-    }
-
-    public Button getBtnAuxiliar() {
-        return btnAuxiliar;
-    }
-
-    public PopupDateField getFechaDoc() {
-        return fechaDoc;
-    }
-
-    public ComboBox getSelTipoDoc() {
-        return selTipoDoc;
-    }
-
-    public TextField getTxtSerieDoc() {
-        return txtSerieDoc;
-    }
-
-    public TextField getTxtNumDoc() {
-        return txtNumDoc;
-    }
 
     public Button getBtnGuardar() {
         return btnGuardar;
@@ -398,10 +341,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
 
     public TextField getTxtComprobenlace() {
         return txtComprobenlace;
-    }
-
-    public Button getBtnToggleVista() {
-        return btnToggleVista;
     }
 
     public ComboBox getSetAllProyecto() {
@@ -436,10 +375,6 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         return setAllFechaPago;
     }
 
-    public Button getBtnSetAll() {
-        return btnSetAll;
-    }
-
     public TextField getNumDifsol() {
         return numDifsol;
     }
@@ -468,12 +403,19 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         return btnImportar;
     }
 
+    public Button getBtnRegAnticipio() {
+        return btnRegAnticipio;
+    }
+
+    public Button getBtnGuardarExcel() {
+        return btnGuardarExcel;
+    }
 
     @Override
     public void enter(ViewChangeEvent event) {
     }
 
-    public RendicionLogic getViewLogic() {
+    public RendicionSimpleLogic getViewLogic() {
         return viewLogic;
     }
 
