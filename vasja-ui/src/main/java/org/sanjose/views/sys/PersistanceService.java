@@ -50,7 +50,9 @@ public class PersistanceService {
     private final ScpBancocabeceraRep bancocabeceraRep;
     private final ScpBancodetalleRep bancodetalleRep;
     private final ScpComprobantedetalleRep scpComprobantedetalleRep;
+    private final ScpComprobantecabeceraRep scpComprobantecabeceraRep;
     private final ScpChequependienteRep scpChequependienteRep;
+    private final VsjRendicionanticipioRep vsjRendicionanticipioRep;
 
 
     @Autowired
@@ -63,7 +65,8 @@ public class PersistanceService {
                               ScpCargocuartaRep cargocuartaRepo, ScpTipodocumentoRep tipodocumentoRepo, ScpTipocambioRep
                                       tipocambioRep, MsgUsuarioRep msgUsuarioRep, ScpCajabancoRep cajabancoRep,
                               ScpBancocabeceraRep bancocabeceraRep, ScpBancodetalleRep bancodetalleRep, ScpComprobantedetalleRep scpComprobantedetalleRep,
-                              ScpChequependienteRep scpChequependienteRep, EntityManager em) {
+                              ScpComprobantecabeceraRep scpComprobantecabeceraRep,
+                              ScpChequependienteRep scpChequependienteRep, VsjRendicionanticipioRep vsjRendicionanticipioRep, EntityManager em) {
         this.rendicioncabeceraRep = rendicioncabeceraRep;
         this.rendiciondetalleRep = rendiciondetalleRep;
         this.configuractacajabancoRepo = configuractacajabancoRepo;
@@ -86,7 +89,9 @@ public class PersistanceService {
         this.bancocabeceraRep = bancocabeceraRep;
         this.bancodetalleRep = bancodetalleRep;
         this.scpComprobantedetalleRep = scpComprobantedetalleRep;
+        this.scpComprobantecabeceraRep = scpComprobantecabeceraRep;
         this.scpChequependienteRep = scpChequependienteRep;
+        this.vsjRendicionanticipioRep = vsjRendicionanticipioRep;
         this.em = em;
     }
 
@@ -431,6 +436,20 @@ public class PersistanceService {
         return rendicionItem;
     }
 
+    @Transactional(readOnly = false)
+    public ScpRendicioncabecera saveRendicionCabecera(ScpRendicioncabecera cabecera) throws FieldGroup.CommitException {
+        //cabecera.setCodTipomoneda(moneda);
+        cabecera.prepareToSave();
+        System.out.println("saving: " + cabecera);
+        cabecera = rendicioncabeceraRep.save(cabecera);
+        if (GenUtil.strNullOrEmpty(cabecera.getCodComprobante())) {
+            cabecera.setCodComprobante(GenUtil.getTxtCorrelativoLen(cabecera.getCodRendicioncabecera(), 6));
+            cabecera = rendicioncabeceraRep.save(cabecera);
+        }
+        //cabecera = rendicioncabeceraRep.save(cabecera);
+        return cabecera;
+    }
+
 
     @Transactional
     public void deleteRendicion(ScpRendicioncabecera cabecera) {
@@ -490,6 +509,16 @@ public class PersistanceService {
         cabecera.setNumGastototal(gastoTotal);
         cabecera.setNumSaldopendiente(cabecera.getNumTotalanticipo().subtract(gastoTotal));
         rendicioncabeceraRep.save(cabecera);
+    }
+
+    public boolean checkIfAlreadyEnviado(ScpCajabanco it) {
+        List<ScpComprobantecabecera> cabeceras = scpComprobantecabeceraRep.findById_TxtAnoprocesoAndId_CodFilialAndId_CodMesAndId_CodOrigenAndId_CodComprobante(it.getTxtAnoproceso(), "01", it.getCodMes(), "01", GenUtil.getCodComprobante(it.getCodCajabanco()));
+        return !cabeceras.isEmpty();
+    }
+
+    public boolean checkIfAlreadyEnviado(ScpBancocabecera it) {
+        List<ScpComprobantecabecera> cabeceras = scpComprobantecabeceraRep.findById_TxtAnoprocesoAndId_CodFilialAndId_CodMesAndId_CodOrigenAndId_CodComprobante(it.getTxtAnoproceso(), "01", it.getCodMes(), "02", GenUtil.getCodComprobante(it.getCodBancocabecera()));
+        return !cabeceras.isEmpty();
     }
 
     public ScpRendicioncabeceraRep getRendicioncabeceraRep() {
@@ -584,9 +613,15 @@ public class PersistanceService {
         return scpChequependienteRep;
     }
 
+    public ScpComprobantecabeceraRep getScpComprobantecabeceraRep() {
+        return scpComprobantecabeceraRep;
+    }
+
+    public VsjRendicionanticipioRep getVsjRendicionanticipioRep() {
+        return vsjRendicionanticipioRep;
+    }
+
     public EntityManager getEm() {
         return em;
     }
-
-
 }

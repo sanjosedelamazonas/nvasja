@@ -161,10 +161,10 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
 
 
         // Proyecto
-       /* DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()),
+        DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().findByFecFinalGreaterThanOrFecFinalLessThan(new Date(), GenUtil.getBegin20thCent()),
                 "txtDescproyecto");
         view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
-
+/*
         // Tercero
         DataFilterUtil.bindComboBox(view.getSelTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'),
                 "txtNombredestino");
@@ -384,9 +384,13 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
                     '0', 'N', GenUtil.getYear(newFecha), "101%", "102%", "104%", "106%"),
                     "id.codCtacontable", "txtDescctacontable", null);
         if (isProyecto())
-            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().
+            DataFilterUtil.refreshComboBox(view.getSelProyectoTercero(), view.getService().getProyectoRepo().
                             findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(newFecha, newFecha, GenUtil.getBegin20thCent()),
-                    "Sel Proyecto", "txtDescproyecto");
+                    "codProyecto", "txtDescproyecto", null);
+        //DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().
+        //                findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(newFecha, newFecha, GenUtil.getBegin20thCent()),
+        //        "Sel Proyecto", "txtDescproyecto");
+        //
         //view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
     }
 
@@ -416,6 +420,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
                     setTerceroLogic(valueChangeEvent);
                 }
             };
+            view.getSelFuente().setValue(null);
             view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroValueChangeListener);
             DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
                     "txtNombredestino");
@@ -555,10 +560,10 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
     private void setEditorProyectoLogic(String codProyecto) {
         if (!GenUtil.strNullOrEmpty(codProyecto)) {
             view.setEnableDetalleFields(true);
-            DataFilterUtil.bindComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
+            DataFilterUtil.refreshComboBox(view.getSelRubroProy(), "id.codCtaproyecto",
                     view.getService().getPlanproyectoRepo().findByFlgMovimientoAndId_TxtAnoprocesoAndId_CodProyecto(
                             "N", GenUtil.getYear(view.getDataFechaComprobante().getValue()!=null ? view.getDataFechaComprobante().getValue() : new Date()), codProyecto),
-                    "Rubro proyecto", "txtDescctaproyecto");
+                    "txtDescctaproyecto");
             DataUtil.setupAndBindproyectoPorFinanciera(codProyecto, view.getSelFuente(),
                     view.getService().getProyectoPorFinancieraRepo(), view.getService().getFinancieraRepo());
 

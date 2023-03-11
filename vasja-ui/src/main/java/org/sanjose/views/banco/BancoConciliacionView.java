@@ -17,6 +17,7 @@ import org.sanjose.MainUI;
 import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
+import org.sanjose.helper.NotImplementedException;
 import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.CajaSaldoView;
@@ -25,7 +26,6 @@ import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 import org.vaadin.addons.CssCheckBox;
 import org.vaadin.gridtree.GridTree;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

@@ -27,7 +27,7 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
     //protected RendicionManejoView manView;
     private CajaSaldoView saldosView = new CajaSaldoView();
 
-    public void init(RendicionManejoView rendicionManejoView) {
+    public void init(RendicionManejoViewing rendicionManejoView) {
         manView = rendicionManejoView;
         manView.getBtnNueva().addClickListener(e -> nuevaRendicion());
         manView.getBtnModificar().addClickListener(e -> editarRendicion(manView.getSelectedRow()));
@@ -64,9 +64,15 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
 
     protected void nuevaRendicion() {
         manView.clearSelection();
-        MainUI.get().getRendicionOperView().getViewLogic().nuevaRendicion();
-        MainUI.get().getRendicionOperView().getViewLogic().setNavigatorView(manView);
-        ViewUtil.openViewInNewWindow(MainUI.get().getRendicionOperView());
+        if (manView instanceof RendicionSimpleManejoView) {
+            MainUI.get().getRendicionSimpleOperView().getViewLogic().nuevaRendicion();
+            MainUI.get().getRendicionSimpleOperView().getViewLogic().setNavigatorView(manView);
+            ViewUtil.openViewInNewWindow(MainUI.get().getRendicionSimpleOperView());
+        } else {
+            MainUI.get().getRendicionOperView().getViewLogic().nuevaRendicion();
+            MainUI.get().getRendicionOperView().getViewLogic().setNavigatorView(manView);
+            ViewUtil.openViewInNewWindow(MainUI.get().getRendicionOperView());
+        }
         //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
@@ -81,8 +87,13 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
     protected void editarRendicion(ScpRendicioncabecera vcb) {
         if (vcb==null) return;
         //MainUI.get().getRendicionOperView().setNavigatorView(manView);
-        MainUI.get().getRendicionOperView().getViewLogic().editarRendicion(vcb);
-        ViewUtil.openViewInNewWindow(MainUI.get().getRendicionOperView());
+        if (manView instanceof RendicionSimpleManejoView) {
+            MainUI.get().getRendicionSimpleOperView().getViewLogic().editarRendicion(vcb);
+            ViewUtil.openViewInNewWindow(MainUI.get().getRendicionSimpleOperView());
+        } else {
+            MainUI.get().getRendicionOperView().getViewLogic().editarRendicion(vcb);
+            ViewUtil.openViewInNewWindow(MainUI.get().getRendicionOperView());
+        }
     }
 
     // Realize logic from View

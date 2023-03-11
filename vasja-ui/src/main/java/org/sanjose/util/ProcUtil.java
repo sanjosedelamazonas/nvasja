@@ -183,7 +183,7 @@ public class ProcUtil {
         for (Object objVcb : vcbs) {
             ScpCajabanco vcb = (ScpCajabanco) objVcb;
             if (vcb.isEnviado()) {
-                Notification.show("!Attention!", "!Omitiendo operacion " + vcb.getTxtCorrelativo() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
+                Notification.show("!Atencion!", "!Omitiendo operacion " + vcb.getTxtCorrelativo() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
                 continue;
             }
             cajabancosAEnviar.add(vcb);
@@ -216,7 +216,6 @@ public class ProcUtil {
                     .open();
         }
     }
-
 
 
     public void enviarContabilidadBanco(Collection<Object> vcbs, PersistanceService service, ItemsRefreshing<ScpBancocabecera> itemsRefreshing) {

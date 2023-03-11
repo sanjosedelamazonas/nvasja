@@ -93,7 +93,10 @@ public class BancoManejoLogic extends BancoGridLogic implements Serializable, Sa
                 }
                 if (Role.isPrivileged()) {
                     gridContextMenu.addItem("Enviar a contabilidad", k -> {
-                        enviarContabilidad((ScpBancocabecera)itemId);
+                        enviarContabilidad((ScpBancocabecera)itemId, true);
+                    });
+                    gridContextMenu.addItem("Marcar no enviado a contabilidad", k -> {
+                        enviarContabilidad((ScpBancocabecera)itemId, false);
                     });
                 }
                 gridContextMenu.addItem("Ver Voucher", k -> ReportHelper.generateComprobante((VsjCajaBancoItem) itemId));

@@ -44,9 +44,9 @@ $v-unit-size: 32px !default;
 
 $login-info-width: 300px !default;
 $login-info-opacity: 0.7 !default;
-$login-background-color: $editor-background-color !default;
+$login-background-color: rgba(136, 85, 129, 0.7) !default;
 // Get more background images from unsplash.com (remember to optimize the filesize)
-$login-background-image: "img/archetype-login-bg.jpg" !default;
+$login-background-image: "img/napo.jpg" !default;
 
 $editor-shadow: 0 0 10px 10px rgba(0,0,0,.1) !default;
 $editor-embed-background-color: darken($editor-background-color, 5%) !default;
@@ -147,7 +147,7 @@ $validation-error-background: #ffe48e;
       width: $login-info-width;
       height: 100%;
       background: $v-selection-color; // For IE8
-      background-color: rgba($v-selection-color, $login-info-opacity);
+      background-color: rgba(136, 85, 129, 0.7);
       padding: $v-layout-margin;
       color: valo-font-color($v-selection-color, 0.9);
       @include animation(valo-animate-in-fade 1s 1s backwards);
@@ -275,6 +275,9 @@ $validation-error-background: #ffe48e;
 
           h1 {
             margin-top: .4em;
+          }
+          h2 {
+            color: #dbc4e3;
           }
         }
       }

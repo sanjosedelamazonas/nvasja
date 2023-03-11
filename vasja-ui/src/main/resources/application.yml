@@ -6,7 +6,7 @@ spring:
   datasource:
     url: jdbc:sqlserver://vasjasqlserver:1433;databaseName=SCP
     username: vasja
-    password: vasja123
+    password: Vasja123
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 #    tomcat:
 #      min-active: 10
@@ -64,13 +64,15 @@ vaadin:
 spring:
   profiles: production
   datasource:
-    url: jdbc:sqlserver://leon.lan:1433;databaseName=SCP
+    #url: jdbc:sqlserver://leon.lan:1433;databaseName=SCP
+    url: jdbc:sqlserver://vasjasqlserver:1433;databaseName=SCP
     username: vasja
-    password: vasja123
+    password: Vasja123
 #    password: tJF/{LJ6h;Z5uW\G
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 server:
-  port: 80
+  #port: 80
+  port: 8000
 logging:
   level:
     org:

@@ -3,14 +3,18 @@ package org.sanjose.views.caja;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.CurrentUser;
 import org.sanjose.helper.NonEditableException;
+import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.VsjCajaBancoItem;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.ItemsRefreshing;
+import org.sanjose.views.sys.PersistanceService;
 
-import java.util.Collection;
+import java.sql.Timestamp;
+import java.util.*;
 
 public abstract class CajaLogic implements ItemsRefreshing<ScpCajabanco> {
 
@@ -52,13 +56,67 @@ public abstract class CajaLogic implements ItemsRefreshing<ScpCajabanco> {
         }
     }
 
-    public void enviarContabilidad(VsjCajaBancoItem scpCajabanco) {
+    public void enviarContabilidad(VsjCajaBancoItem scpCajabanco, boolean isEnviar) {
         Collection<Object> cajabancosParaEnviar = cajaView.getSelectedRows();
         if (cajabancosParaEnviar.isEmpty() && scpCajabanco!=null)
             cajabancosParaEnviar.add(scpCajabanco);
-        MainUI.get().getProcUtil().enviarContabilidad(cajabancosParaEnviar, cajaView.getService(),this);
+        if (isEnviar) {
+            Set<ScpCajabanco> cajabancosEnviados = new HashSet<>();
+            List<String> cajabancoIdsEnviados = new ArrayList<>();
+            // Check if already sent and ask if only marcar...
+            for (Object objVcb : cajabancosParaEnviar) {
+                ScpCajabanco cajabanco = (ScpCajabanco) objVcb;
+                if (!cajabanco.isEnviado() && cajaView.getService().checkIfAlreadyEnviado(cajabanco)) {
+                    cajabancosEnviados.add(cajabanco);
+                    cajabancoIdsEnviados.add(cajabanco.getCodCajabanco().toString());
+                }
+            }
+            for (ScpCajabanco cajabanco : cajabancosEnviados) {
+                cajabancosParaEnviar.remove(cajabanco);
+            }
+            if (cajabancosEnviados.isEmpty()) {
+                MainUI.get().getProcUtil().enviarContabilidad(cajabancosParaEnviar, cajaView.getService(), this);
+                cajaView.getGridCaja().deselectAll();
+            } else {
+                MessageBox
+                        .createQuestion()
+                        .withCaption("!Atencion!")
+                        .withMessage("?Estas operaciones ya fueron enviadas ("+ Arrays.toString(cajabancoIdsEnviados.toArray()) +"), quiere solo marcar los como enviadas?")
+                        .withYesButton(() -> doMarcarEnviados(cajabancosParaEnviar, cajabancosEnviados))
+                        .withNoButton()
+                        .open();
+            }
+        } else {
+            for (Object objVcb : cajabancosParaEnviar) {
+                ScpCajabanco cajabanco = (ScpCajabanco) objVcb;
+                if (!cajabanco.isEnviado()) {
+                    Notification.show("!Atencion!", "!Omitiendo operacion " + cajabanco.getTxtCorrelativo() + " - no esta enviada!", Notification.Type.TRAY_NOTIFICATION);
+                    continue;
+                }
+                cajaView.getGridCaja().deselect(cajabanco);
+                cajabanco.setFlgEnviado('0');
+                cajabanco.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+                cajabanco.setCodUactualiza(CurrentUser.get());
+                cajaView.getService().getCajabancoRep().save(cajabanco);
+            }
+            cajaView.refreshData();
+        }
+    }
+
+    public void doMarcarEnviados(Collection<Object> cajabancosParaEnviar , Set<ScpCajabanco> cajabancosEnviados) {
+        for (ScpCajabanco cajabanco : cajabancosEnviados) {
+            cajaView.getGridCaja().deselect(cajabanco);
+            cajabanco.setFlgEnviado('1');
+            cajabanco.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+            cajabanco.setCodUactualiza(CurrentUser.get());
+            cajaView.getService().getCajabancoRep().save(cajabanco);
+        }
+        cajaView.refreshData();
+        if (!cajabancosParaEnviar.isEmpty())
+            MainUI.get().getProcUtil().enviarContabilidad(cajabancosParaEnviar, cajaView.getService(), this);
         cajaView.getGridCaja().deselectAll();
     }
+
 
     @Override
     public void refreshItems(Collection<ScpCajabanco> cajabancosToRefresh) {

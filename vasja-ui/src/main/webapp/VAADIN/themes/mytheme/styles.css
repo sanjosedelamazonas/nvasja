@@ -1263,7 +1263,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.7.13";
+	content: "7.7.17";
 }
 
 .v-widget {
@@ -2160,6 +2160,12 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-tooltip h1, .mytheme .v-tooltip h2, .mytheme .v-tooltip h3, .mytheme .v-tooltip h4 {
 	color: inherit;
+}
+
+.mytheme .v-tooltip pre.v-tooltip-pre {
+	font: inherit;
+	white-space: pre-wrap;
+	margin: 0;
 }
 
 .mytheme .v-contextmenu {
@@ -9520,6 +9526,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-table-body {
 	border: 1px solid #d4d4d4;
+	overflow-anchor: none;
 	-webkit-user-select: text;
 	-moz-user-select: text;
 	-ms-user-select: text;
@@ -13461,7 +13468,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .login-screen {
 	background: #3b3f42;
-	background-image: url(img/archetype-login-bg.jpg);
+	background-image: url(img/napo.jpg);
 	background-size: cover;
 	background-position: 50% 50%;
 	width: 100%;
@@ -13490,7 +13497,7 @@ div.v-layout.v-horizontal.v-widget {
 	width: 300px;
 	height: 100%;
 	background: #60a0ea;
-	background-color: rgba(96, 160, 234, 0.7);
+	background-color: rgba(136, 85, 129, 0.7);
 	padding: 7px 7px 7px 7px;
 	color: #f2f6fa;
 	-webkit-animation: valo-animate-in-fade 1s 1s backwards;
@@ -14397,6 +14404,12 @@ div.v-layout.v-horizontal.v-widget {
 
 .contextmenu .v-tooltip h1, .contextmenu .v-tooltip h2, .contextmenu .v-tooltip h3, .contextmenu .v-tooltip h4 {
 	color: inherit;
+}
+
+.contextmenu .v-tooltip pre.v-tooltip-pre {
+	font: inherit;
+	white-space: pre-wrap;
+	margin: 0;
 }
 
 .contextmenu .v-contextmenu {
@@ -21757,6 +21770,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .contextmenu .v-table-body {
 	border: 1px solid #d4d4d4;
+	overflow-anchor: none;
 	-webkit-user-select: text;
 	-moz-user-select: text;
 	-ms-user-select: text;

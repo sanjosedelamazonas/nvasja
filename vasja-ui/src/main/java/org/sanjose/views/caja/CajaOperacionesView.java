@@ -165,7 +165,7 @@ public class CajaOperacionesView extends CajaOperacionesUI implements CajaManejo
             ScpCajabanco item = null;
             if (!getSelectedRows().isEmpty()) {
                 item = getSelectedRow();
-                viewLogic.enviarContabilidad(getSelectedRow());
+                viewLogic.enviarContabilidad(getSelectedRow(), true);
                 refreshData();
                 for (Object vcb : container.getItemIds()) {
                     if (((ScpCajabanco)vcb).getCodCajabanco().equals(((ScpCajabanco)item).getCodCajabanco())) {

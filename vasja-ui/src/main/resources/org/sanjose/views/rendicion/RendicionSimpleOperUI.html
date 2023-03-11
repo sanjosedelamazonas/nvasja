@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta name="vaadin-version" content="7.7.7">
+  <meta name="package-mapping" content="org_vaadin_addons:org.vaadin.addons">
+  <meta name="package-mapping" content="tm_kod_widgets_numberfield:tm.kod.widgets.numberfield">
+  <meta name="package-mapping" content="org_sanjose_helper:org.sanjose.helper">
+  <meta name="package-mapping" content="org_vaadin_addons_maskedtextfield:org.vaadin.addons.maskedtextfield">
+  <meta name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
+ </head>
+ <body>
+  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive width-full height="676px">
+   <vaadin-vertical-layout style-name="billing-formlayout" spacing size-auto>
+    <vaadin-horizontal-layout style-name="billing-formlayout" spacing height-full>
+     <vaadin-vertical-layout spacing size-auto>
+      <vaadin-horizontal-layout spacing>
+       <vaadin-popup-date-field caption="Fecha" description="Fecha" style-name="form-textfield" _id="dataFechaComprobante"></vaadin-popup-date-field>
+       <vaadin-text-field caption="Origen" enabled="false" visible="false" input-prompt="" style-name="form-textfield" width="28px" height="23px" _id="txtOrigen"></vaadin-text-field>
+       <vaadin-text-field description="Num de Voucher" caption="Nro" enabled="false" input-prompt="Numero " style-name="form-textfield" responsive width="65px" _id="numVoucher"></vaadin-text-field>
+       <vaadin-text-field caption="Glosa general" input-prompt="Glosa" width="466px" _id="txtGlosaCabeza"></vaadin-text-field>
+      </vaadin-horizontal-layout>
+      <vaadin-horizontal-layout spacing margin>
+       <vaadin-combo-box caption="Responsable" input-prompt="Responsable" style-name="form-textfield" item-caption-mode="id" width="270px" _id="selResponsable1">
+        <option>Option 1</option>
+        <option>Option 2</option>
+       </vaadin-combo-box>
+       <vaadin-button plain-text _id="btnResponsable" :middle :center>
+         +Nuevo 
+       </vaadin-button>
+       <vaadin-option-group _id="selMoneda">
+        <option selected>S/.</option>
+        <option>$</option>
+        <option>€</option>
+       </vaadin-option-group>
+       <vaadin-text-field caption="Total Anticipio" enabled="false" input-prompt="Anticipio" style-name="form-textfield" width="85px" value="------" _id="txtTotalAnticipio"></vaadin-text-field>
+       <vaadin-text-field caption="Gasto Total" enabled="false" visible="false" input-prompt="" style-name="form-textfield" width="85px" value="------" _id="txtGastoTotal"></vaadin-text-field>
+       <vaadin-text-field caption="Saldo Pendiente" enabled="false" input-prompt="Saldo" style-name="form-textfield" width="85px" value="------" _id="txtSaldoPendiente"></vaadin-text-field>
+      </vaadin-horizontal-layout>
+     </vaadin-vertical-layout>
+     <vaadin-vertical-layout size-auto :right>
+      <vaadin-horizontal-layout spacing height="36px" margin>
+       <vaadin-label size-auto plain-text>
+         Env. a contab. 
+       </vaadin-label>
+       <org_vaadin_addons-css-check-box enabled="false" _id="chkEnviado"></org_vaadin_addons-css-check-box>
+       <vaadin-label visible="false" size-auto plain-text>
+         Orig. 
+       </vaadin-label>
+       <vaadin-text-field enabled="false" responsive width="36px" _id="txtOrigenlace" :center></vaadin-text-field>
+       <vaadin-label visible="false" size-auto plain-text>
+         Comprob. 
+       </vaadin-label>
+       <vaadin-text-field enabled="false" width="70px" _id="txtComprobenlace"></vaadin-text-field>
+       <vaadin-button width="100px" plain-text _id="btnGuardar">
+         Guardar 
+       </vaadin-button>
+       <vaadin-button width="100px" plain-text _id="btnCerrar">
+         Cerrar 
+       </vaadin-button>
+      </vaadin-horizontal-layout>
+      <vaadin-horizontal-layout spacing margin>
+       <vaadin-horizontal-layout visible="false">
+        <vaadin-label size-auto plain-text>
+          Fecha Registro 
+        </vaadin-label>
+        <vaadin-popup-date-field description="Fecha" visible="false" style-name="form-textfield" _id="dataFechaRegistro"></vaadin-popup-date-field>
+       </vaadin-horizontal-layout>
+       <vaadin-horizontal-layout visible="false">
+        <vaadin-label size-auto plain-text>
+          Ingresado por: 
+        </vaadin-label>
+        <vaadin-text-field enabled="false" visible="false" width="156px" _id="txtIngresadoPor"></vaadin-text-field>
+       </vaadin-horizontal-layout>
+      </vaadin-horizontal-layout>
+      <vaadin-horizontal-layout spacing margin-top>
+       <vaadin-button width="130px" plain-text _id="btnGuardarExcel">
+         Guardar en Excel 
+       </vaadin-button>
+       <vaadin-button width="130px" plain-text _id="btnRegAnticipio">
+         Registrar Anticipio 
+       </vaadin-button>
+       <vaadin-button width="130px" plain-text _id="btnEliminarRend">
+         Eliminar 
+       </vaadin-button>
+       <vaadin-button width="130px" plain-text _id="btnVerVoucher">
+         Imprimir 
+       </vaadin-button>
+      </vaadin-horizontal-layout>
+     </vaadin-vertical-layout>
+    </vaadin-horizontal-layout>
+    <vaadin-vertical-layout size-auto>
+     <vaadin-vertical-layout visible="false" spacing size-auto margin>
+      <vaadin-horizontal-layout description="Proyecto" spacing width="119.53%">
+       <vaadin-horizontal-layout visible="false"></vaadin-horizontal-layout>
+      </vaadin-horizontal-layout>
+      <vaadin-horizontal-layout visible="false" spacing width-full>
+       <vaadin-horizontal-layout style-name="name-wrapper" spacing _id="name_wrapper9"></vaadin-horizontal-layout>
+       <vaadin-horizontal-layout style-name="name-wrapper" spacing _id="name_wrapper10">
+        <vaadin-popup-date-field style-name="form-textfield" _id="fechaPago"></vaadin-popup-date-field>
+       </vaadin-horizontal-layout>
+      </vaadin-horizontal-layout>
+     </vaadin-vertical-layout>
+     <vaadin-horizontal-layout visible="false">
+      <vaadin-combo-box _id="setAllProyecto">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
+      <vaadin-combo-box _id="setAllFuente">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
+      <vaadin-combo-box _id="setAllPartida">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
+      <vaadin-combo-box _id="setAllLugarGasto">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
+      <vaadin-combo-box _id="setAllContable">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
+      <vaadin-combo-box _id="setAllRubrInst">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
+      <vaadin-text-field input-prompt="Tipo Cambio USD" _id="setAllTcambioText"></vaadin-text-field>
+      <vaadin-date-field _id="setAllFechaDoc"></vaadin-date-field>
+      <vaadin-date-field _id="setAllFechaPago"></vaadin-date-field>
+      <vaadin-button plain-text _id="btnSetAll">
+        Aplicar a marcados 
+      </vaadin-button>
+      <vaadin-horizontal-layout spacing margin-left margin-right>
+       <vaadin-button width="141px" plain-text _id="btnToggleVista">
+         Vista ampliada 
+       </vaadin-button>
+      </vaadin-horizontal-layout>
+     </vaadin-horizontal-layout>
+     <vaadin-horizontal-layout width-full>
+      <vaadin-form-layout style-name="order-summary-layout" responsive size-full margin-top="false" margin-bottom="false" _id="order_summary_layout" :middle :expand>
+       <vaadin-label style-name="header-label-small" plain-text _id="order_heading">
+         Detalles de la rendicion - comprobantes de gastos 
+       </vaadin-label>
+       <vaadin-grid editor-save-caption="Guardar" responsive editor-cancel-caption="Anular" width-full height="250px" tabindex="50" _id="grid"></vaadin-grid>
+       <vaadin-horizontal-layout visible="false" spacing>
+        <vaadin-text-field caption="Dif. S/." enabled="false" input-prompt="Saldo" style-name="form-textfield" width="85px" value="------" _id="numDifsol" :right></vaadin-text-field>
+        <vaadin-text-field caption="Dif. $" enabled="false" input-prompt="Saldo" style-name="form-textfield" width="85px" value="------" _id="numDifdolar" :right></vaadin-text-field>
+        <vaadin-text-field caption="Dif. €" enabled="false" input-prompt="Saldo" style-name="form-textfield" width="85px" value="------" _id="numDifmo" :right></vaadin-text-field>
+        <vaadin-button plain-text _id="btnAjustar" :middle :center>
+          Ajuste 
+        </vaadin-button>
+       </vaadin-horizontal-layout>
+      </vaadin-form-layout>
+     </vaadin-horizontal-layout>
+     <vaadin-horizontal-layout spacing :right>
+      <vaadin-button width="130px" plain-text _id="btnNewItem">
+        Nuevo Item 
+      </vaadin-button>
+      <vaadin-button visible="false" width="130px" plain-text _id="btnImportar">
+        Importar 
+      </vaadin-button>
+      <vaadin-button width="130px" plain-text _id="btnEliminar">
+        Eliminar 
+      </vaadin-button>
+      <vaadin-button visible="false" width="130px" plain-text _id="btnAnular">
+        Anular 
+      </vaadin-button>
+     </vaadin-horizontal-layout>
+    </vaadin-vertical-layout>
+   </vaadin-vertical-layout>
+  </vaadin-css-layout>
+ </body>
+</html>

@@ -148,6 +148,12 @@ public class ViewUtil {
         if (grid.getColumn("numTcmo") != null)
             grid.getColumn("numTcmo").setRenderer(new EmptyZeroNumberRendrer(
                     "%02.4f", ConfigurationUtil.getLocale()));
+        if (grid.getColumn("numGastototal") != null)
+            grid.getColumn("numGastototal").setRenderer(new EmptyZeroNumberRendrer(
+                    "%02.2f", ConfigurationUtil.getLocale()));
+        if (grid.getColumn("numAnticipio") != null)
+            grid.getColumn("numAnticipio").setRenderer(new EmptyZeroNumberRendrer(
+                    "%02.2f", ConfigurationUtil.getLocale()));
 
         grid.setCellStyleGenerator(( Grid.CellReference cellReference ) -> {
             if ( "numHabersol".equals( cellReference.getPropertyId() ) ||
@@ -157,6 +163,8 @@ public class ViewUtil {
                     "numHabermo".equals(cellReference.getPropertyId()) ||
                     "numTcvdolar".equals(cellReference.getPropertyId()) ||
                     "numTcmo".equals(cellReference.getPropertyId()) ||
+                    "numGastototal".equals(cellReference.getPropertyId()) ||
+                    "numAnticipio".equals(cellReference.getPropertyId()) ||
                     "numDebesol".equals( cellReference.getPropertyId() )) {
                 return "v-align-right";
             } else {

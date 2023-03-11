@@ -16,6 +16,7 @@ import org.sanjose.repo.ScpTipocambioRep;
 import org.sanjose.util.GenUtil;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -82,6 +83,14 @@ public class TipoCambioLogic implements Serializable {
     public ScpTipocambio saveTipoCambio() {
         try {
             ScpTipocambio tipocambio = view.getScpTipocambio();
+            if (tipocambio.getNumTccdolar()==null)
+                tipocambio.setNumTccdolar(new BigDecimal(0));
+            if (tipocambio.getNumTcvdolar()==null)
+                tipocambio.setNumTcvdolar(new BigDecimal(0));
+            if (tipocambio.getNumTcceuro()==null)
+                tipocambio.setNumTcceuro(new BigDecimal(0));
+            if (tipocambio.getNumTcveuro()==null)
+                tipocambio.setNumTcveuro(new BigDecimal(0));
             view.getTipocambioRep().save(tipocambio);
             return tipocambio;
         } catch (CommitException ce) {

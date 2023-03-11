@@ -5,7 +5,7 @@ import org.sanjose.model.ScpRendicioncabecera;
 
 public class RendicionSharedLogic {
 
-    protected RendicionManejoView manView;
+    protected RendicionManejoViewing manView;
 
 
     void eliminarRendicion(ScpRendicioncabecera rendicioncabecera) {

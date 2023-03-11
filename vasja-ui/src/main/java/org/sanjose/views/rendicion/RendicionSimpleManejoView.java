@@ -10,15 +10,21 @@ import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
-import org.sanjose.model.*;
+import org.sanjose.model.MsgUsuario;
+import org.sanjose.model.ScpBancocabecera;
+import org.sanjose.model.ScpRendicioncabecera;
+import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
-import org.sanjose.views.caja.*;
+import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.PersistanceService;
@@ -34,31 +40,28 @@ import java.util.Date;
  * See also {@link ConfiguracionCtaCajaBancoLogic} for fetching the data, the actual CRUD
  * operations and controlling the view based on events from outside.
  */
-public class RendicionManejoView extends RendicionManejoUI implements RendicionManejoViewing {
+public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implements RendicionManejoViewing {
 
-    public static final String VIEW_NAME = "Manejo de Rendiciones Avanc.";
+    public static final String VIEW_NAME = "Manejo de Rendiciones";
 
     public String getWindowTitle() {
         return "Registro de rendiciones";
     }
 
     private final RendicionManejoLogic viewLogic = new RendicionManejoLogic();
-    private final String[] VISIBLE_COLUMN_IDS = new String[]{ "codComprobante", "fecComprobante", "txtGlosa",
-            "flgEnviado", "codComprobanteenlace", "msgUsuario"
+    private final String[] VISIBLE_COLUMN_IDS = new String[]{ "codComprobante", "fecComprobante", "codDestino", "txtGlosa",
+            "numGastototal", "tipoMoneda", "flgEnviado", "codComprobanteenlace"
+            //, "codTipomoneda"
     };
-    private final String[] HIDDEN_COLUMN_IDS = new String[] {
+    private final String[] HIDDEN_COLUMN_IDS = new String[] { "codTipomoneda"
     };
-    private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Comprobante", "Fecha", "Glosa", "Enviado", "Voucher Contab", "Ingresado por"
+    private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Numero", "Fecha", "Responsable", "Glosa general", "Monto",
+            "Moneda", "Enviado a contab.", "Comprobante en contab."
     };
     private final int[] FILTER_WIDTH = new int[]{
-            4, 4, 15, 1, 3, 7
-//            5, 6, 4, 4,
-//            5, 15, 6, 6, 6, 6, 6, 6, //
-//            6, 4, 6, 5, 5, 2, // Tipo Doc
-//            4, 5, 5, 5, 4, // Fuente
-//            2, 2, 5
+            4, 4, 15, 15, 4, 2, 1, 5
     };
-    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"txtCorrelativo"*/ /*"flgEnviado", "codOrigenenlace",
+    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{ /*"txtCorrelativo"*/ /*"flgEnviado", "codOrigenenlace",
             "codComprobanteenlace"*/};
 
     private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
@@ -67,13 +70,13 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
 
     private PersistanceService comprobanteService;
 
-    public RendicionManejoView(PersistanceService comprobanteService) {
+    public RendicionSimpleManejoView(PersistanceService comprobanteService) {
         this.comprobanteService = comprobanteService;
     }
 
     public Grid.FooterRow gridFooter;
 
-    private Character moneda ='0';
+    private Character moneda = null;
 
     private Boolean onlyEnviados = null;
 
@@ -108,6 +111,21 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
                     }
                 });
 
+        gpContainer = new GeneratedPropertyContainer(container);
+        gpContainer.addGeneratedProperty("tipoMoneda",
+                new PropertyValueGenerator<String>() {
+                    @Override
+                    public String getValue(Item item, Object itemId,
+                                            Object propertyId) {
+
+                        return GenUtil.getSymMoneda(GenUtil.getLitMoneda(((ScpRendicioncabecera) ((BeanItem) item).getBean()).getCodTipomoneda()));
+                    }
+                    @Override
+                    public Class<String> getType() {
+                        return String.class;
+                    }
+                });
+
 
         grid.setContainerDataSource(gpContainer);
 
@@ -116,7 +134,7 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
 
         ViewUtil.setColumnNames(grid, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
-        Arrays.asList(HIDDEN_COLUMN_IDS).forEach( colName ->  grid.getColumn(colName).setHidden(true));
+        //Arrays.asList(HIDDEN_COLUMN_IDS).forEach( colName ->  grid.getColumn(colName).setHidden(true));
 
         ViewUtil.alignMontosInGrid(grid);
 
@@ -137,7 +155,7 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
         DataFilterUtil.bindTipoMonedaComboBox(selMoneda, "cod_tipomoneda", "Moneda", false);
         selMoneda.select(moneda);
 
-        selMoneda.setNullSelectionAllowed(false);
+        selMoneda.setNullSelectionAllowed(true);
         selMoneda.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {
                 grid.deselectAll();
@@ -145,9 +163,28 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
                 container.removeContainerFilters("codTipomoneda");
                 container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
                 ViewUtil.filterColumnsByMoneda(grid, moneda);
+            } else {
+                container.removeContainerFilters("codTipomoneda");
+                ViewUtil.filterColumnsByMoneda(grid, moneda);
             }
         });
-        container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
+        if (moneda!=null)
+            container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
+
+        // Responsable
+        DataFilterUtil.bindComboBox(filtroResponsable, "codDestino", getService().getDestinoRepo().findByIndTipodestinoNot('3'),
+                "txtNombredestino");
+
+        filtroResponsable.addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                grid.deselectAll();
+                container.removeContainerFilters("codDestino");
+                container.addContainerFilter(new Compare.Equal("codDestino", (String)e.getProperty().getValue()));
+            } else {
+                container.removeContainerFilters("codDestino");
+            }
+        });
+
         grid.addItemClickListener(this::setItemLogic);
         grid.getColumn("flgEnviado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
         grid.getColumn("flgEnviado").setHidden(true);

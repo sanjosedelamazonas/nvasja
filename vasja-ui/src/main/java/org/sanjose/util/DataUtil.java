@@ -45,8 +45,11 @@ public class DataUtil {
         } else {
             financieraEfectList = financieraList;
         }
-        DataFilterUtil.bindComboBox(selFuente, "codFinanciera", financieraEfectList,
-                "Fuente", "txtDescfinanciera");
+        //DataFilterUtil.bindComboBox(selFuente, "codFinanciera", financieraEfectList,
+        //        "Fuente", "txtDescfinanciera");
+        DataFilterUtil.refreshComboBox(selFuente, financieraEfectList,
+                "codFinanciera", "txtDescfinanciera", null);
+
         if (financieraEfectList.size() == 1)
             selFuente.select(financieraEfectList.get(0).getCodFinanciera());
     }

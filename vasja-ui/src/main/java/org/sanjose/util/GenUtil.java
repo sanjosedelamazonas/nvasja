@@ -93,6 +93,9 @@ public class GenUtil {
         return false;
     }
 
+    public static String getCodComprobante(Integer id) {
+        return getTxtCorrelativoLen(id, 6);
+    }
 
     public static String getTxtCorrelativo(Integer id) {
         return getTxtCorrelativoLen(id, 8);
