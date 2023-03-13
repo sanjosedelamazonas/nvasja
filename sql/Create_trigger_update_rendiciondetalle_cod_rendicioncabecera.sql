@@ -7,7 +7,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-drop trigger if exists [dbo].[vsj_scp_rendiciondetalle_cod_rendicioncabecera] on [dbo].[scp_rendiciondetalle];
+drop trigger if exists [dbo].[vsj_scp_rendiciondetalle_cod_rendicioncabecera]
 go
 
 CREATE TRIGGER [dbo].[vsj_scp_rendiciondetalle_cod_rendicioncabecera] on [dbo].[scp_rendiciondetalle]
@@ -35,8 +35,7 @@ BEGIN
       cod_mes=@cod_mes AND
       cod_origen=@cod_origen AND
       cod_comprobante=@cod_comprobante AND
-      txt_anoproceso=@txt_anoproceso AND
-      num_nroitem=@num_nroitem
+      txt_anoproceso=@txt_anoproceso
   UPDATE scp_rendiciondetalle
   SET cod_rendicioncabecera=@cod_rendicioncabecera
   WHERE
