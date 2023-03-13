@@ -44,6 +44,9 @@ public class DestinoReplaceView extends DestinoReplaceUI {
                         .open();
             } else {
                 destinoListView.removeRow(scpDestinoToReplace);
+                destinoListView.clearSelection();
+                this.destinoReplaceWindow.close();
+                //destinoListView.refreshData();
                 MessageBox
                         .createInfo()
                         .withCaption("!Info!")
