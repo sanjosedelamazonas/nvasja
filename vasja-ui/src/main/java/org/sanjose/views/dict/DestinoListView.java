@@ -15,6 +15,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import de.steinwedel.messagebox.MessageBox;
+import org.sanjose.MainUI;
 import org.sanjose.converter.CargoCuartaConverter;
 import org.sanjose.converter.TipoDestinoConverter;
 import org.sanjose.converter.TipoDocumentoConverter;
@@ -83,9 +84,6 @@ public class DestinoListView extends DestinoListUI implements Viewing {
         grid.setSelectionMode(SelectionMode.MULTI);
 
         grid.setEditorEnabled(false);
-
-//        grid.setEditorFieldGroup(
-
 
         ComboBox clasificacion = new ComboBox();
         DataFilterUtil.bindTipoDestinoComboBox(clasificacion, "indTipodestino", "Sel Clasificacion");
@@ -184,7 +182,7 @@ public class DestinoListView extends DestinoListUI implements Viewing {
                         .withCaption("Eliminar: " + item.getTxtNombredestino())
                         .withMessage("Esta seguro que lo quiere eliminar?")
                         .withYesButton(() -> {
-                            String msg = checkIfcanBeDeleted(codDestino);
+                            String msg = MainUI.get().getProcUtil().checkIfcanBeDeleted(codDestino, getService());
                             if (msg.isEmpty()) {
                                 destinoView.destinoRepo.delete(item);
                                 refreshData();
@@ -205,42 +203,6 @@ public class DestinoListView extends DestinoListUI implements Viewing {
             }
         });
         UI.getCurrent().addWindow(destinoWindow);
-    }
-
-    public String checkIfcanBeDeleted(String codDestino) {
-        List<ScpCajabanco> comprobantes = getService().getCajabancoRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
-        List<ScpBancocabecera> bancoscabeceras = getService().getBancocabeceraRep().findByCodDestino(codDestino);
-        List<ScpBancodetalle> bancositems = getService().getBancodetalleRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
-        List<ScpRendicioncabecera> rendicionescab = getService().getRendicioncabeceraRep().findByCodDestino(codDestino);
-        List<ScpRendiciondetalle> rendicionitems = getService().getRendiciondetalleRep().findByCodDestino(codDestino);
-
-        StringBuilder sb = new StringBuilder();
-        for (ScpCajabanco vcb : comprobantes) {
-            sb.append("\n").append("Caja: ").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosaitem());
-        }
-        for (ScpBancodetalle bancodet : bancositems) {
-            ScpBancocabecera cab = bancodet.getScpBancocabecera();
-            if (!bancoscabeceras.contains(cab))
-                bancoscabeceras.add(cab);
-
-        }
-        for (ScpRendiciondetalle renddet : rendicionitems) {
-            ScpRendicioncabecera cab = renddet.getScpRendicioncabecera();
-            if (!rendicionescab.contains(cab))
-                rendicionescab.add(cab);
-
-        }
-
-        for (ScpCajabanco vcb : comprobantes) {
-            sb.append("\n").append("Caja: ").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosaitem());
-        }
-        for (ScpBancocabecera vcb : bancoscabeceras) {
-            sb.append("\n").append("Banco: ").append(vcb.getTxtCorrelativo()).append(" ").append(vcb.getFecFecha()).append(" ").append(vcb.getTxtGlosa());
-        }
-        for (ScpRendicioncabecera vcb : rendicionescab) {
-            sb.append("\n").append("Rendicion: ").append(vcb.getCodComprobante()).append(" ").append(vcb.getFecComprobante()).append(" ").append(vcb.getTxtGlosa());
-        }
-        return sb.toString();
     }
 
 

@@ -3,30 +3,31 @@
  <head>
   <meta charset="UTF-8">
   <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
-  <meta name="vaadin-version" content="7.7.7">
+  <meta name="vaadin-version" content="7.7.17">
   <meta name="package-mapping" content="tm_kod_widgets_numberfield:tm.kod.widgets.numberfield">
  </head>
  <body>
-  <vaadin-horizontal-layout style-name="billing-formlayout" size-full>
-   <vaadin-vertical-layout spacing margin :expand>
+  <vaadin-horizontal-layout style-name="billing-formlayout" width="888px" height-full>
+   <vaadin-vertical-layout spacing width="97.64%" height="50px" margin :expand>
     <vaadin-form-layout width="398px" margin>
      <vaadin-horizontal-layout spacing>
-      <vaadin-date-field caption="Fecha" enabled="false" _id="fecFecha"></vaadin-date-field>
-      <tm_kod_widgets_numberfield-number-field caption="Compra USD" _id="numTccdolar"></tm_kod_widgets_numberfield-number-field>
-      <tm_kod_widgets_numberfield-number-field caption="Venta USD" _id="numTcvdolar"></tm_kod_widgets_numberfield-number-field>
-      <tm_kod_widgets_numberfield-number-field caption="Compra EUR" _id="numTccmo"></tm_kod_widgets_numberfield-number-field>
-      <tm_kod_widgets_numberfield-number-field caption="Venta EUR" _id="numTcvmo"></tm_kod_widgets_numberfield-number-field>
+      <vaadin-text-field width="300px" _id="txtDestinoElimnado"></vaadin-text-field>
+      <vaadin-label caption-as-html size-auto plain-text>
+        remplacar con: 
+      </vaadin-label>
+      <vaadin-combo-box width="300px" _id="selNuevoDestino">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
      </vaadin-horizontal-layout>
     </vaadin-form-layout>
    </vaadin-vertical-layout>
    <vaadin-form-layout width-auto height-full :middle :center>
     <vaadin-vertical-layout size-auto>
      <vaadin-vertical-layout spacing size-auto margin>
-      <vaadin-button width="88px" plain-text _id="btnGuardar">
-        Guardar 
-      </vaadin-button>
-      <vaadin-button width="88px" plain-text _id="btnIgnorar">
-        Ignorar 
+      <vaadin-button width="88px" plain-text _id="btnRemplacar">
+        Remplacar 
       </vaadin-button>
       <vaadin-button width="88px" plain-text _id="btnAnular">
         Cerrar 
