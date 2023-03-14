@@ -583,7 +583,7 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
+									<textElement textAlignment="Right" verticalAlignment="Middle">
 										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<text><![CDATA[PEN S/.]]></text>
@@ -598,7 +598,7 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center" verticalAlignment="Bottom">
+									<textElement textAlignment="Right" verticalAlignment="Bottom">
 										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$V{SumPEN}]]></textFieldExpression>
@@ -613,7 +613,7 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center">
+									<textElement textAlignment="Right">
 										<font fontName="Arial" size="8"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{caja}.getSoles()]]></textFieldExpression>
@@ -637,7 +637,7 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
+									<textElement textAlignment="Right" verticalAlignment="Middle">
 										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<text><![CDATA[USD $]]></text>
@@ -652,7 +652,7 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center" verticalAlignment="Bottom">
+									<textElement textAlignment="Right" verticalAlignment="Bottom">
 										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$V{SumUSD}]]></textFieldExpression>
@@ -667,37 +667,37 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center">
+									<textElement textAlignment="Right">
 										<font fontName="Arial" size="8"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{caja}.getDolares()]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
-						<jr:column width="40" uuid="ebf29303-19c4-457d-a851-01208b198820">
+						<jr:column width="60" uuid="ebf29303-19c4-457d-a851-01208b198820">
 							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 							<jr:columnHeader style="Table 1_CH" height="20" rowSpan="1">
 								<staticText>
-									<reportElement x="0" y="0" width="40" height="20" uuid="068e1e85-19b0-42c7-8b90-f85f59cba3f6"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
+									<reportElement x="0" y="0" width="60" height="20" uuid="068e1e85-19b0-42c7-8b90-f85f59cba3f6"/>
+									<textElement textAlignment="Right" verticalAlignment="Middle">
 										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<text><![CDATA[EUR]]></text>
 								</staticText>
 							</jr:columnHeader>
 							<jr:columnFooter style="Table 1_CH" height="10" rowSpan="1">
-								<textField>
-									<reportElement x="0" y="0" width="40" height="10" uuid="eb6c0c48-4fda-432c-b78b-1fbfbb809c05"/>
-									<textElement>
-										<font fontName="Arial" size="8"/>
+								<textField pattern="#,##0.00;-#,##0.00">
+									<reportElement x="0" y="0" width="60" height="10" uuid="eb6c0c48-4fda-432c-b78b-1fbfbb809c05"/>
+									<textElement textAlignment="Right" verticalAlignment="Bottom" markup="styled">
+										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$V{SumEUR}]]></textFieldExpression>
 								</textField>
 							</jr:columnFooter>
 							<jr:detailCell style="Table 1_TD" height="10">
-								<textField>
-									<reportElement x="0" y="0" width="40" height="10" uuid="20a0da9b-7d08-4fdd-a0ba-543328e89d79"/>
-									<textElement>
+								<textField pattern="#,##0.00;-#,##0.00">
+									<reportElement x="0" y="0" width="60" height="10" uuid="20a0da9b-7d08-4fdd-a0ba-543328e89d79"/>
+									<textElement textAlignment="Right">
 										<font fontName="Arial" size="8"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{caja}.getEuros()]]></textFieldExpression>
@@ -721,7 +721,7 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
+									<textElement textAlignment="Right" verticalAlignment="Middle">
 										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<text><![CDATA[PEN S/.]]></text>
@@ -736,7 +736,7 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center" verticalAlignment="Bottom">
+									<textElement textAlignment="Right" verticalAlignment="Bottom">
 										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$V{SumFinPEN}]]></textFieldExpression>
@@ -751,7 +751,7 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center">
+									<textElement textAlignment="Right">
 										<font fontName="Arial" size="8"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{caja}.getSolesFinal()]]></textFieldExpression>
@@ -769,7 +769,7 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
+									<textElement textAlignment="Right" verticalAlignment="Middle">
 										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<text><![CDATA[USD $]]></text>
@@ -784,7 +784,7 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center" verticalAlignment="Bottom">
+									<textElement textAlignment="Right" verticalAlignment="Bottom">
 										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$V{SumFinUSD}]]></textFieldExpression>
@@ -799,41 +799,40 @@
 										<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 									</box>
-									<textElement textAlignment="Center">
+									<textElement textAlignment="Right">
 										<font fontName="Arial" size="8"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{caja}.getDolaresFinal()]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
-						<jr:column width="40" uuid="f73703af-7131-4051-8c83-2875440c342f">
+						<jr:column width="60" uuid="f73703af-7131-4051-8c83-2875440c342f">
 							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 							<jr:columnHeader style="Table 1_CH" height="20" rowSpan="1">
 								<staticText>
-									<reportElement x="0" y="0" width="40" height="20" uuid="616ef655-8beb-449c-af30-bc4da64586b2"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
+									<reportElement x="0" y="0" width="60" height="20" uuid="616ef655-8beb-449c-af30-bc4da64586b2"/>
+									<textElement textAlignment="Right" verticalAlignment="Middle">
 										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<text><![CDATA[EUR]]></text>
 								</staticText>
 							</jr:columnHeader>
 							<jr:columnFooter style="Table 1_CH" height="10" rowSpan="1">
-								<textField>
-									<reportElement x="0" y="0" width="40" height="10" uuid="1216fb88-d375-45b4-afeb-02dc9f8f424f"/>
-									<textElement>
-										<font fontName="Arial" size="8"/>
+								<textField pattern="#,##0.00;-#,##0.00">
+									<reportElement x="0" y="0" width="60" height="10" uuid="1216fb88-d375-45b4-afeb-02dc9f8f424f"/>
+									<textElement textAlignment="Right" verticalAlignment="Bottom">
+										<font fontName="Arial" size="8" isBold="true"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$V{SumFinEUR}]]></textFieldExpression>
 								</textField>
 							</jr:columnFooter>
 							<jr:detailCell style="Table 1_TD" height="10">
 								<textField>
-									<reportElement x="0" y="0" width="40" height="10" uuid="fbbdcf2a-ba66-488d-9982-6d65d5812007"/>
-									<textElement>
+									<reportElement x="0" y="0" width="60" height="10" uuid="fbbdcf2a-ba66-488d-9982-6d65d5812007"/>
+									<textElement textAlignment="Right">
 										<font fontName="Arial" size="8"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{caja}.getEurosFinal()]]></textFieldExpression>
-									<patternExpression><![CDATA[#,##0.00;-#,##0.00]]></patternExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
