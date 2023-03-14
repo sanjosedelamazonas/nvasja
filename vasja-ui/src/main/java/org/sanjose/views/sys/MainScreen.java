@@ -97,6 +97,13 @@ public class MainScreen extends HorizontalLayout {
             menu.addView(rendicionSimpleManejoView, RendicionSimpleManejoView.VIEW_NAME,
                     RendicionSimpleManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
+        if (Role.isAdmin()) {
+            rendicionOperView.init();
+            viewsToIgnoreWhenInit.add(rendicionOperView);
+            menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
+                    RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
+        }
+
         menu.addSeparator("Diccionarios");
         menu.addView(destinoListView, DestinoListView.VIEW_NAME,
                 DestinoListView.VIEW_NAME, FontAwesome.EDIT);
@@ -108,15 +115,6 @@ public class MainScreen extends HorizontalLayout {
             menu.addView(confView, ConfiguracionCtaCajaBancoView.VIEW_NAME,
                     ConfiguracionCtaCajaBancoView.VIEW_NAME, FontAwesome.EDIT);
         }
-        if (Role.isAdmin()) {
-        //if (Role.isDigitador()) {
-//            rendicionOperView.init();
-//            viewsToIgnoreWhenInit.add(rendicionOperView);
-            //menu.addSeparator("Rendiciones");
-//            menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
-//                    RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
-        }
-
         if (Role.isAdmin()) {
             menu.addSeparator("Sistema");
             menu.addView(reportesView, ReportesView.VIEW_NAME,
