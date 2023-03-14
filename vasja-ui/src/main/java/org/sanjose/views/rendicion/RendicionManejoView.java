@@ -14,6 +14,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
+import org.sanjose.authentication.CurrentUser;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.*;
@@ -85,7 +86,12 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
         addStyleName("crud-view");
 
         //noinspection unchecked
-        container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
+
+        if (Role.isCaja() || Role.isBanco() || Role.isPrivileged()) {
+            container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
+        } else {
+            container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetweenAndCodUregistro(filterInitialDate, new Date(), CurrentUser.get()));
+        }
 
         gpContainer = new GeneratedPropertyContainer(container);
         gpContainer.addGeneratedProperty("msgUsuario",
