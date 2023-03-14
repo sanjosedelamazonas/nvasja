@@ -29,6 +29,7 @@ public class ConfigurationUtil {
 		defaultParamMap.put("DEFAULT_DATE_RENDERER_FORMAT","%1$td/%1$tm/%1$ty");
 		defaultParamMap.put("DEFAULT_FILTER_WIDTH", "5");
 		defaultParamMap.put("COMMON_FIELD_WIDTH", "12em");
+
 		//defaultParamMap.put("CSS_STYLE", "iso3166");
 		//defaultParamMap.put("THEME", "mytheme");
 		defaultParamMap.put("DEV_MODE", "1");
