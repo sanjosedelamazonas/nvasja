@@ -146,10 +146,20 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
         addCommitHandlerToGrid();
     }
 
-    private Optional loadDetallesToGrid(ScpRendicioncabecera rendicioncabecera) {
-        if (rendicioncabecera.getCodRendicioncabecera()==null) return Optional.ofNullable(null);
+    private Optional loadDetallesToGrid(ScpRendicioncabecera rendCab) {
+        if (rendCab.getCodRendicioncabecera()==null) return Optional.ofNullable(null);
         List<ScpRendiciondetalle> bancodetalleList = view.getService().getRendiciondetalleRep()
-                .findById_CodRendicioncabecera(rendicioncabecera.getCodRendicioncabecera());
+                .findById_CodRendicioncabecera(rendCab.getCodRendicioncabecera());
+//        List<ScpRendiciondetalle> bancodetalleListOld = view.getService().getRendiciondetalleRep()
+//                .findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilial(
+//                        rendCab.getCodComprobante(), rendCab.getCodOrigen(), rendCab.getCodMes(), rendCab.getTxtAnoproceso(), "01");
+
+
+//        Set<ScpRendiciondetalle> rendset = new HashSet<>();
+//        rendset.addAll(bancodetalleList);
+//        rendset.addAll(bancodetalleListOld);
+//
+
         view.initGrid();
         if (!bancodetalleList.isEmpty()) {
             view.getContainer().addAll(bancodetalleList);

@@ -17,6 +17,6 @@ public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
 
 	List<ScpDestino> findByCodDestinoLikeOrderByCodDestinoDesc(String cd);
 
-
+	List<ScpDestino> findByCodDestinoNotLike(String cd);
 
 }

@@ -1,0 +1,1 @@
+ALTER TABLE SCP.dbo.scp_destinorendicion ADD CONSTRAINT scp_destinorendicion_pk PRIMARY KEY (cod_destino);
