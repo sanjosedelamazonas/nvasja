@@ -40,7 +40,7 @@ public class TipoCambioLogic implements Serializable {
 
         tipoCambioWindow.setWindowMode(WindowMode.NORMAL);
         tipoCambioWindow.setWidth(720, Sizeable.Unit.PIXELS);
-        tipoCambioWindow.setHeight(90, Sizeable.Unit.PIXELS);
+        tipoCambioWindow.setHeight(105, Sizeable.Unit.PIXELS);
         tipoCambioWindow.setModal(true);
         tipoCambioWindow.setResizable(false);
         tipoCambioWindow.setClosable(false);
