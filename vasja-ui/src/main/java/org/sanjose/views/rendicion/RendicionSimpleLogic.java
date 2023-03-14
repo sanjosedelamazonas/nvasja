@@ -54,6 +54,8 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
 
     private FileDownloader xlsDownloader;
 
+    private BigDecimal gastoTotal = new BigDecimal(0);
+
     @Override
     public void init(RendicionSimpleOperView view) {
         super.init(view);
@@ -245,6 +247,8 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
 
         DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
         view.getTxtGastoTotal().setValue(df.format(item.getNumGastototal()));
+        gastoTotal = item.getNumGastototal();
+
         view.getTxtSaldoPendiente().setValue(df.format(item.getNumSaldopendiente()));
         if (item.getNumTotalanticipo()!=null) {
             view.getNumTotalAnticipo().setValue(df.format(item.getNumTotalanticipo()));
@@ -292,7 +296,8 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
             fieldGroupCabezera.commit();
             log.debug("saved in class: " + rendicioncabecera);
             ScpRendicioncabecera cabecera = beanItem.getBean();
-            cabecera.setNumGastototal(new BigDecimal(view.getTxtGastoTotal().getValue()));
+            //if (view.getTxtGastoTotal()!=null)
+            cabecera.setNumGastototal(gastoTotal);
             if (!verifyNumMoneda(cabecera.getCodTipomoneda()))
                 throw new FieldGroup.CommitException("Moneda no esta de tipo numeral");
             log.debug("cabezera ready: " + cabecera);

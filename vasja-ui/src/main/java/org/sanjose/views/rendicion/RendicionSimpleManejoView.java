@@ -8,6 +8,8 @@ import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
@@ -83,6 +85,8 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
 
     private GeneratedPropertyContainer gpContainer;
 
+    private static final Logger log = LoggerFactory.getLogger(RendicionManejoView.class);
+
     @Override
     public void init() {
         setSizeFull();
@@ -91,8 +95,10 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
         //noinspection unchecked
         if (Role.isCaja() || Role.isBanco() || Role.isPrivileged()) {
             container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
+            log.info("Loading all rendiciones");
         } else {
             container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetweenAndCodUregistro(filterInitialDate, new Date(), CurrentUser.get()));
+            log.info("Loading rendiciones for user: " + CurrentUser.get());
         }
 
         gpContainer = new GeneratedPropertyContainer(container);
