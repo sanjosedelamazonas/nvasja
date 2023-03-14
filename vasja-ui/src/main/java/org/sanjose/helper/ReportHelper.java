@@ -217,7 +217,7 @@ public class ReportHelper {
 	}
 
 	public static void generateCustomReport(String reportName, String codProyecto, String codTercero, String codCategoriaproy, final Date fechaMin, final Date fechaMax) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat(ConfigurationUtil.get("DEFAULT_REPORTS_DATE_FORMAT"));
 		HashMap paramMap = new HashMap();
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
 		paramMap.put("COD_PROYECTO", codProyecto!=null ? codProyecto : "");
@@ -253,7 +253,7 @@ public class ReportHelper {
 
 	public static void generateDiario(String reportName, final Date fechaMin, final Date fechaMax,
 			String format, String revisado) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat(ConfigurationUtil.get("DEFAULT_REPORTS_DATE_FORMAT"));
 		HashMap paramMap = new HashMap();
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
 		List<Caja> cajas = DataUtil.getCajasList(MainUI.get().getComprobanteView().getService().getPlanRepo(), fechaMin, fechaMax);
@@ -281,7 +281,7 @@ public class ReportHelper {
 
 	public static void generateDiarioBanco(Character moneda, final Date fechaMin, final Date fechaMax,
 									  String format) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat(ConfigurationUtil.get("DEFAULT_REPORTS_DATE_FORMAT"));
 		SimpleDateFormat sdfAno = new SimpleDateFormat("yyyy");
 		HashMap paramMap = new HashMap();
 		paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());

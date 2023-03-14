@@ -25,6 +25,7 @@ public class ConfigurationUtil {
 		defaultParamMap.put("DECIMAL_FORMAT", "#,##0.00");
 		defaultParamMap.put("SHORT_DATE_FORMAT", "MM/dd");
 		defaultParamMap.put("DEFAULT_DATE_FORMAT", "yyyy/MM/dd");
+		defaultParamMap.put("DEFAULT_REPORTS_DATE_FORMAT", "yyyy-dd-MM HH:mm:ss");
 		defaultParamMap.put("DEFAULT_DATE_RENDERER_FORMAT","%1$td/%1$tm/%1$ty");
 		defaultParamMap.put("DEFAULT_FILTER_WIDTH", "5");
 		defaultParamMap.put("COMMON_FIELD_WIDTH", "12em");
