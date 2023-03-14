@@ -74,7 +74,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
             selTipoDoc, fechaDoc, txtSerieDoc, txtNumDoc, txtGlosaDetalle
     };
     private final Field[] cabezeraFields = new Field[]{dataFechaComprobante, txtGlosaCabeza, selResponsable1, selMoneda,
-            numTotalAnticipio, dataFechaRegistro};
+            numTotalAnticipo, dataFechaRegistro};
     
     private RendicionLogic viewLogic = null;
     private BeanItemContainer<ScpRendiciondetalle> container;
@@ -103,7 +103,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         viewLogic = new RendicionLogic();
         viewLogic.init(this);
         addStyleName("crud-view");
-        ViewUtil.setDefaultsForNumberField(numTotalAnticipio);
+        ViewUtil.setDefaultsForNumberField(numTotalAnticipo);
 
         // Grid
         initGrid();
@@ -122,7 +122,7 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         });
 
         gridFooter = grid.appendFooterRow();
-        getNumTotalAnticipio().setValue(GenUtil.numFormat(new BigDecimal(0.00)));
+        getNumTotalAnticipo().setValue(GenUtil.numFormat(new BigDecimal(0.00)));
     }
 
     public void initGrid(){
@@ -199,10 +199,10 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         NumberFormat nf = NumberFormat.getInstance(ConfigurationUtil.getLocale());
         try {
             BigDecimal totalAnticipo = null;
-            if (getNumTotalAnticipio().getValue()==null)
+            if (getNumTotalAnticipo().getValue()==null)
                 totalAnticipo = new BigDecimal(0.00);
             else
-                totalAnticipo = new BigDecimal(nf.parse(getNumTotalAnticipio().getValue()).toString());
+                totalAnticipo = new BigDecimal(nf.parse(getNumTotalAnticipo().getValue()).toString());
             if (viewLogic.rendicioncabecera!=null) {
                 viewLogic.rendicioncabecera.setNumSaldopendiente(totalAnticipo.subtract(gastoTotal));
             }
@@ -300,8 +300,8 @@ public class RendicionOperView extends RendicionOperUI implements Viewing, SubWi
         return selMoneda;
     }
 
-    public NumberField getNumTotalAnticipio() {
-        return numTotalAnticipio;
+    public NumberField getNumTotalAnticipo() {
+        return numTotalAnticipo;
     }
 
     public TextField getTxtGastoTotal() {

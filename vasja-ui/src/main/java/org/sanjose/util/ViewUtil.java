@@ -149,8 +149,8 @@ public class ViewUtil {
         if (grid.getColumn("numGastototal") != null)
             grid.getColumn("numGastototal").setRenderer(new EmptyZeroNumberRendrer(
                     "%02.2f", ConfigurationUtil.getLocale()));
-        if (grid.getColumn("numAnticipio") != null)
-            grid.getColumn("numAnticipio").setRenderer(new EmptyZeroNumberRendrer(
+        if (grid.getColumn("numAnticipo") != null)
+            grid.getColumn("numAnticipo").setRenderer(new EmptyZeroNumberRendrer(
                     "%02.2f", ConfigurationUtil.getLocale()));
 
         grid.setCellStyleGenerator(( Grid.CellReference cellReference ) -> {
@@ -162,7 +162,7 @@ public class ViewUtil {
                     "numTcvdolar".equals(cellReference.getPropertyId()) ||
                     "numTcmo".equals(cellReference.getPropertyId()) ||
                     "numGastototal".equals(cellReference.getPropertyId()) ||
-                    "numAnticipio".equals(cellReference.getPropertyId()) ||
+                    "numAnticipo".equals(cellReference.getPropertyId()) ||
                     "numDebesol".equals( cellReference.getPropertyId() )) {
                 return "v-align-right";
             } else {

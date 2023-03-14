@@ -95,7 +95,7 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
         viewLogic = new RendicionSimpleLogic();
         viewLogic.init(this);
         addStyleName("crud-view");
-        //txtTotalAnticipio
+        //txtTotalAnticipo
 
         // Grid
         initGrid();
@@ -114,8 +114,8 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
         });
 
         gridFooter = grid.appendFooterRow();
-        //getNumTotalAnticipio().setValue(GenUtil.numFormat(new BigDecimal(0.00)));
-        getNumTotalAnticipio().setEnabled(false);
+        //getNumTotalAnticipo().setValue(GenUtil.numFormat(new BigDecimal(0.00)));
+        getNumTotalAnticipo().setEnabled(false);
     }
 
     public void initGrid(){
@@ -181,10 +181,10 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
         NumberFormat nf = NumberFormat.getInstance(ConfigurationUtil.getLocale());
         try {
             BigDecimal totalAnticipo = null;
-            if (getNumTotalAnticipio().getValue()==null)
+            if (getNumTotalAnticipo().getValue()==null)
                 totalAnticipo = new BigDecimal(0.00);
             else
-                totalAnticipo = new BigDecimal(nf.parse(getNumTotalAnticipio().getValue()).toString());
+                totalAnticipo = new BigDecimal(nf.parse(getNumTotalAnticipo().getValue()).toString());
             if (viewLogic.rendicioncabecera!=null) {
                 viewLogic.rendicioncabecera.setNumSaldopendiente(totalAnticipo.subtract(gastoTotal));
             }
@@ -282,8 +282,8 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
         return selMoneda;
     }
 
-    public TextField getNumTotalAnticipio() {
-        return txtTotalAnticipio;
+    public TextField getNumTotalAnticipo() {
+        return txtTotalAnticipo;
     }
 
     public TextField getTxtGastoTotal() {
@@ -403,8 +403,8 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
         return btnImportar;
     }
 
-    public Button getBtnRegAnticipio() {
-        return btnRegAnticipio;
+    public Button getBtnRegAnticipo() {
+        return btnRegAnticipo;
     }
 
     public Button getBtnGuardarExcel() {

@@ -15,9 +15,9 @@ import java.text.SimpleDateFormat;
  *
  */
 @Entity
-@Table(name="vsj_rendicionanticipio")
-@NamedQuery(name="VsjRendicionanticipio.findAll", query="SELECT s FROM VsjRendicionanticipio s")
-public class VsjRendicionanticipio implements Serializable {
+@Table(name="vsj_rendicionanticipo")
+@NamedQuery(name="VsjRendicionanticipo.findAll", query="SELECT s FROM VsjRendicionanticipo s")
+public class VsjRendicionanticipo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 
@@ -29,8 +29,8 @@ public class VsjRendicionanticipio implements Serializable {
 	@Column(name="cod_comprobante")
 	private String codComprobante;
 
-	@Column(name="fec_anticipio")
-	private Timestamp fecAnticipio;
+	@Column(name="fec_Anticipo")
+	private Timestamp fecAnticipo;
 
 	@Column(name="txt_glosa")
 	private String txtGlosa;
@@ -38,8 +38,8 @@ public class VsjRendicionanticipio implements Serializable {
 	@Column(name="ind_tipomoneda")
 	private Character indTipomoneda;
 
-	@Column(name="num_anticipio")
-	private BigDecimal numAnticipio;
+	@Column(name="num_Anticipo")
+	private BigDecimal numAnticipo;
 
 	@Column(name="cod_uactualiza")
 	private String codUactualiza;
@@ -53,10 +53,10 @@ public class VsjRendicionanticipio implements Serializable {
 	@Column(name="fec_fregistro")
 	private Timestamp fecFregistro;
 
-	public VsjRendicionanticipio() {
+	public VsjRendicionanticipo() {
 	}
 
-	public VsjRendicionanticipio prepareToSave() throws FieldGroup.CommitException {
+	public VsjRendicionanticipo prepareToSave() throws FieldGroup.CommitException {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM");
 		if (this.getCodUregistro() == null) this.setCodUregistro(CurrentUser.get());
 		if (this.getFecFregistro() == null) this.setFecFregistro(new Timestamp(System.currentTimeMillis()));
@@ -113,12 +113,12 @@ public class VsjRendicionanticipio implements Serializable {
 		this.id = id;
 	}
 
-	public Timestamp getFecAnticipio() {
-		return fecAnticipio;
+	public Timestamp getFecAnticipo() {
+		return fecAnticipo;
 	}
 
-	public void setFecAnticipio(Timestamp fecAnticipio) {
-		this.fecAnticipio = fecAnticipio;
+	public void setFecAnticipo(Timestamp fecAnticipo) {
+		this.fecAnticipo = fecAnticipo;
 	}
 
 	public String getTxtGlosa() {
@@ -137,11 +137,11 @@ public class VsjRendicionanticipio implements Serializable {
 		this.indTipomoneda = indTipomoneda;
 	}
 
-	public BigDecimal getNumAnticipio() {
-		return numAnticipio;
+	public BigDecimal getNumAnticipo() {
+		return numAnticipo;
 	}
 
-	public void setNumAnticipio(BigDecimal numAnticipio) {
-		this.numAnticipio = numAnticipio;
+	public void setNumAnticipo(BigDecimal numAnticipo) {
+		this.numAnticipo = numAnticipo;
 	}
 }

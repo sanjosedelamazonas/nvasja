@@ -6,21 +6,21 @@ GO
 
 SET ANSI_PADDING ON
 GO
-drop table if exists [dbo].[vsj_rendicionanticipio];
+drop table if exists [dbo].[vsj_rendicionanticipo];
 go
 
-CREATE TABLE [dbo].[vsj_rendicionanticipio](
+CREATE TABLE [dbo].[vsj_rendicionanticipo](
   [id] [int] IDENTITY(1,1) NOT NULL,
 	[cod_comprobante] [varchar](6) NOT NULL,
-	[fec_anticipio] [datetime] NOT NULL,
+	[fec_anticipo] [datetime] NOT NULL,
 	[txt_glosa] [varchar](70),
 	[ind_tipomoneda] [char](1),
-	[num_anticipio] decimal(12,2) NOT NULL,
+	[num_anticipo] decimal(12,2) NOT NULL,
 	[cod_uregistro] [varchar](15),
 	[cod_uactualiza] [varchar](15),
 	[fec_factualiza] [datetime],
 	[fec_fregistro] [datetime]
- CONSTRAINT [PK_vsj_rendicionanticipio] PRIMARY KEY CLUSTERED
+ CONSTRAINT [PK_vsj_rendicionanticipo] PRIMARY KEY CLUSTERED
 (
 	[id] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]

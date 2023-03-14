@@ -36,7 +36,7 @@ public class RendicionOperUI extends CssLayout {
     protected ComboBox selResponsable1;
     protected Button btnResponsable;
     protected OptionGroup selMoneda;
-    protected NumberField numTotalAnticipio;
+    protected NumberField numTotalAnticipo;
     protected TextField txtGastoTotal;
     protected TextField txtSaldoPendiente;
     protected CssCheckBox chkEnviado;

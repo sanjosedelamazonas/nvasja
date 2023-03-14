@@ -33,16 +33,16 @@ import java.util.*;
  */
 @SpringComponent
 // @UIScope
-public class AnticipioManejoView extends AnticipioManejoUI {
+public class AnticipoManejoView extends AnticipoManejoUI {
 
-    public static final String VIEW_NAME = "Anticipios";
+    public static final String VIEW_NAME = "Anticipos";
     public String getWindowTitle() {
         return VIEW_NAME;
     }
-    private static final Logger log = LoggerFactory.getLogger(AnticipioManejoView.class);
+    private static final Logger log = LoggerFactory.getLogger(AnticipoManejoView.class);
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
-            "id", "fecAnticipio", "txtGlosa",
-            "numAnticipio", "indTipomoneda", "codComprobante"
+            "id", "fecAnticipo", "txtGlosa",
+            "numAnticipo", "indTipomoneda", "codComprobante"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"ID", "Fecha", "Glosa", "Monto", "Moneda", "Codigo"
     };
@@ -70,7 +70,7 @@ public class AnticipioManejoView extends AnticipioManejoUI {
 
     private BigDecimal total = new BigDecimal(0.00);
 
-    public AnticipioManejoView(PersistanceService service) {
+    public AnticipoManejoView(PersistanceService service) {
         this.service = service;
         setSizeFull();
     }
@@ -80,7 +80,7 @@ public class AnticipioManejoView extends AnticipioManejoUI {
         this.indTipomoneda = rendicioncabecera.getCodTipomoneda();
         this.rendicioncabecera = rendicioncabecera;
         this.getTxtCodComprobante().setValue(codComprobante);
-        @SuppressWarnings("unchecked") BeanItemContainer<VsjRendicionanticipio> container = new BeanItemContainer(VsjRendicionanticipio.class, getService().getVsjRendicionanticipioRep().findByCodComprobante(codComprobante));
+        @SuppressWarnings("unchecked") BeanItemContainer<VsjRendicionanticipo> container = new BeanItemContainer(VsjRendicionanticipo.class, getService().getVsjRendicionanticipoRep().findByCodComprobante(codComprobante));
         grid.setContainerDataSource(container);
         grid.setColumnOrder(VISIBLE_COLUMN_IDS);
         
@@ -89,7 +89,7 @@ public class AnticipioManejoView extends AnticipioManejoUI {
         grid.getColumn("id").setEditable(false);
         grid.setSelectionMode(SelectionMode.MULTI);
 
-        fieldGroup = new BeanFieldGroup<>(VsjRendicionanticipio.class);
+        fieldGroup = new BeanFieldGroup<>(VsjRendicionanticipo.class);
         grid.setEditorFieldGroup(fieldGroup);
 
         grid.setEditorEnabled(true);
@@ -97,16 +97,16 @@ public class AnticipioManejoView extends AnticipioManejoUI {
         TextField tf = (TextField) grid.getColumn("codComprobante").getEditorField();
         tf.setValue(codComprobante);
 
-        PopupDateField fechaAnticipio = new PopupDateField();
-        fechaAnticipio.setConverter(DateToTimestampConverter.INSTANCE);
-        fechaAnticipio.setResolution(Resolution.DAY);
-        fechaAnticipio.setValue(new Date());
-        grid.getColumn("fecAnticipio").setEditorField(fechaAnticipio);
-        grid.getColumn("fecAnticipio").setRenderer(new DateNotNullRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        PopupDateField fechaAnticipo = new PopupDateField();
+        fechaAnticipo.setConverter(DateToTimestampConverter.INSTANCE);
+        fechaAnticipo.setResolution(Resolution.DAY);
+        fechaAnticipo.setValue(new Date());
+        grid.getColumn("fecAnticipo").setEditorField(fechaAnticipo);
+        grid.getColumn("fecAnticipo").setRenderer(new DateNotNullRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
-        NumberField numAnticipio = new NumberField();
-        ViewUtil.setDefaultsForNumberField(numAnticipio);
-        grid.getColumn("numAnticipio").setEditorField(numAnticipio);
+        NumberField numAnticipo = new NumberField();
+        ViewUtil.setDefaultsForNumberField(numAnticipo);
+        grid.getColumn("numAnticipo").setEditorField(numAnticipo);
 
         // Tipo Moneda
         ComboBox selTipomoneda = new ComboBox();
@@ -122,8 +122,8 @@ public class AnticipioManejoView extends AnticipioManejoUI {
         Arrays.asList(HIDDEN_COLUMN_IDS)
                 .forEach( e -> grid.getColumn(e).setHidden(true));
 
-        getBtnNuevo().addClickListener(clickEvent -> nuevoAnticipio());
-        getBtnEliminar().addClickListener(clickEvent -> eliminarAnticipio());
+        getBtnNuevo().addClickListener(clickEvent -> nuevoAnticipo());
+        getBtnEliminar().addClickListener(clickEvent -> eliminarAnticipo());
 
 
         //grid.getEditorFieldGroup().removeCommitHandler(gridCommitHandler);
@@ -137,12 +137,12 @@ public class AnticipioManejoView extends AnticipioManejoUI {
                 Object item = grid.getContainerDataSource().getItem(grid.getEditedItemId());
                 // Attach logic to num fields
                 try {
-                    VsjRendicionanticipio vcb = ((VsjRendicionanticipio)((BeanItem) item).getBean()).prepareToSave();
+                    VsjRendicionanticipo vcb = ((VsjRendicionanticipo)((BeanItem) item).getBean()).prepareToSave();
                     if (vcb != null) {
                         vcb.setIndTipomoneda(indTipomoneda);
                         //fieldGroup.commit();
                         //commitEvent.getFieldBinder();
-                        getService().getVsjRendicionanticipioRep().save(vcb);
+                        getService().getVsjRendicionanticipoRep().save(vcb);
                         grid.refreshRows(item);
                         calcTotal();
                     }
@@ -157,25 +157,25 @@ public class AnticipioManejoView extends AnticipioManejoUI {
     }
 
 
-    private void nuevoAnticipio() {
+    private void nuevoAnticipo() {
         clearSelection();
-        VsjRendicionanticipio anticipio = new VsjRendicionanticipio();
-        anticipio.setIndTipomoneda(indTipomoneda);
-        anticipio.setCodComprobante(codComprobante);
-        anticipio.setTxtGlosa("");
-        anticipio.setNumAnticipio(new BigDecimal(0.00));
-        grid.getContainerDataSource().addItem(anticipio);
+        VsjRendicionanticipo Anticipo = new VsjRendicionanticipo();
+        Anticipo.setIndTipomoneda(indTipomoneda);
+        Anticipo.setCodComprobante(codComprobante);
+        Anticipo.setTxtGlosa("");
+        Anticipo.setNumAnticipo(new BigDecimal(0.00));
+        grid.getContainerDataSource().addItem(Anticipo);
     }
 
-    private void eliminarAnticipio() {
-        List<VsjRendicionanticipio> rows = new ArrayList<>();
+    private void eliminarAnticipo() {
+        List<VsjRendicionanticipo> rows = new ArrayList<>();
 
         for (Object vsj : getSelectedRow()) {
-            if (vsj instanceof VsjRendicionanticipio)
-                rows.add((VsjRendicionanticipio) vsj);
+            if (vsj instanceof VsjRendicionanticipo)
+                rows.add((VsjRendicionanticipo) vsj);
         }
         clearSelection();
-        for (VsjRendicionanticipio vsj : rows) {
+        for (VsjRendicionanticipo vsj : rows) {
             removeRow(vsj);
         }
         calcTotal();
@@ -183,20 +183,20 @@ public class AnticipioManejoView extends AnticipioManejoUI {
 
     public void refreshData(String codComprobante) {
         grid.getContainerDataSource().removeAllItems();
-        ((BeanItemContainer) grid.getContainerDataSource()).addAll(getService().getVsjRendicionanticipioRep().findByCodComprobante(codComprobante));
+        ((BeanItemContainer) grid.getContainerDataSource()).addAll(getService().getVsjRendicionanticipoRep().findByCodComprobante(codComprobante));
         calcTotal();
     }
 
     public void calcTotal() {
-        Collection<VsjRendicionanticipio> anticipios = (Collection<VsjRendicionanticipio>)grid.getContainerDataSource().getItemIds();
+        Collection<VsjRendicionanticipo> Anticipos = (Collection<VsjRendicionanticipo>)grid.getContainerDataSource().getItemIds();
         total = new BigDecimal(0.00);
-        for (VsjRendicionanticipio ant : anticipios) {
-            total = total.add(ant.getNumAnticipio());
+        for (VsjRendicionanticipo ant : Anticipos) {
+            total = total.add(ant.getNumAnticipo());
         }
         getTxtTotal().setValue(GenUtil.numFormat(total));
         rendicioncabecera.setNumTotalanticipo(total);
         getService().getRendicioncabeceraRep().save(rendicioncabecera);
-        //Collection<VsjRendicionanticipio> items = grid.getContainerDataSource().getItemIds();
+        //Collection<VsjRendicionAnticipo> items = grid.getContainerDataSource().getItemIds();
     }
 
     public void enter(ViewChangeEvent event) {
@@ -211,8 +211,8 @@ public class AnticipioManejoView extends AnticipioManejoUI {
         return grid.getSelectedRows();
     }
 
-    public void removeRow(VsjRendicionanticipio vsj) {
-        getService().getVsjRendicionanticipioRep().delete(vsj);
+    public void removeRow(VsjRendicionanticipo vsj) {
+        getService().getVsjRendicionanticipoRep().delete(vsj);
         grid.getContainerDataSource().removeItem(vsj);
     }
 

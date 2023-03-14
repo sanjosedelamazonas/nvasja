@@ -93,6 +93,7 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
             container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetweenAndCodUregistro(filterInitialDate, new Date(), CurrentUser.get()));
         }
 
+
         gpContainer = new GeneratedPropertyContainer(container);
         gpContainer.addGeneratedProperty("msgUsuario",
                 new PropertyValueGenerator<String>() {

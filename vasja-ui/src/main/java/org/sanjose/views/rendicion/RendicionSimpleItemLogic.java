@@ -120,7 +120,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         DataFilterUtil.bindTipoMonedaOptionGroup(view.getSelMoneda(), "codTipomoneda");
         view.getSelMoneda().addValueChangeListener(event -> { if (event.getProperty().getValue()!=null) setMonedaLogic(event.getProperty().getValue().toString().charAt(0));});
 
-        view.getNumTotalAnticipio().addBlurListener(event -> view.setTotal((Character)view.getSelMoneda().getValue()));
+        view.getNumTotalAnticipo().addBlurListener(event -> view.setTotal((Character)view.getSelMoneda().getValue()));
 
         // ------------ DETALLE
 //        // Tipo doc

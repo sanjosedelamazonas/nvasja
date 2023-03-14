@@ -35,7 +35,7 @@ public class RendicionSimpleOperUI extends CssLayout {
     protected ComboBox selResponsable1;
     protected Button btnResponsable;
     protected OptionGroup selMoneda;
-    protected TextField txtTotalAnticipio;
+    protected TextField txtTotalAnticipo;
     protected TextField txtGastoTotal;
     protected TextField txtSaldoPendiente;
     protected CssCheckBox chkEnviado;
@@ -46,7 +46,7 @@ public class RendicionSimpleOperUI extends CssLayout {
     protected PopupDateField dataFechaRegistro;
     protected TextField txtIngresadoPor;
     protected Button btnGuardarExcel;
-    protected Button btnRegAnticipio;
+    protected Button btnRegAnticipo;
     protected Button btnEliminarRend;
     protected Button btnVerVoucher;
     protected HorizontalLayout name_wrapper9;

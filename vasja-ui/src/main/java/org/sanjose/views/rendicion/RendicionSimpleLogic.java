@@ -77,7 +77,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
         view.getBtnAjustar().addClickListener(event -> ajusteTipoCambio());
         view.getBtnNewItem().addClickListener(event -> nuevoItem());
         view.getBtnEliminar().addClickListener(event -> eliminarItem());
-        view.getBtnRegAnticipio().addClickListener(event -> registrarAnticipios());
+        view.getBtnRegAnticipo().addClickListener(event -> registrarAnticipos());
 //        RendicionExportXLS rendExport = new RendicionExportXLS(beanItem.getBean(), view.getService());
 //        FileDownloader fileDownloader = new FileDownloader(rendExport.openExported());
 //        fileDownloader.extend(view.getBtnGuardarExcel());
@@ -241,15 +241,15 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
         fieldGroupCabezera.bind(view.getTxtGlosaCabeza(), "txtGlosa");
         fieldGroupCabezera.bind(view.getSelMoneda(), "codTipomoneda");
         //fieldGroupCabezera.bind(view.getDataFechaRegistro(), "fecFregistro");
-        //fieldGroupCabezera.bind(view.getNumTotalAnticipio(), "numTotalanticipo");
+        //fieldGroupCabezera.bind(view.getNumTotalAnticipo(), "numTotalanticipo");
 
         DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
         view.getTxtGastoTotal().setValue(df.format(item.getNumGastototal()));
         view.getTxtSaldoPendiente().setValue(df.format(item.getNumSaldopendiente()));
         if (item.getNumTotalanticipo()!=null) {
-            view.getNumTotalAnticipio().setValue(df.format(item.getNumTotalanticipo()));
+            view.getNumTotalAnticipo().setValue(df.format(item.getNumTotalanticipo()));
         }
-        view.getNumTotalAnticipio().setEnabled(false);
+        view.getNumTotalAnticipo().setEnabled(false);
         fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigen");
         view.getTxtOrigen().setEnabled(false);
 
@@ -385,36 +385,36 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
         switchMode(VIEW);
     }
 
-    protected void registrarAnticipios() {
-        Window anticipioWindow = new Window();
+    protected void registrarAnticipos() {
+        Window anticipoWindow = new Window();
 
-        anticipioWindow.setWindowMode(WindowMode.NORMAL);
-        anticipioWindow.setWidth(700, Sizeable.Unit.PIXELS);
-        anticipioWindow.setHeight(550, Sizeable.Unit.PIXELS);
-        anticipioWindow.setPositionX(200);
-        anticipioWindow.setPositionY(50);
-        anticipioWindow.setModal(true);
-        anticipioWindow.setClosable(false);
+        anticipoWindow.setWindowMode(WindowMode.NORMAL);
+        anticipoWindow.setWidth(700, Sizeable.Unit.PIXELS);
+        anticipoWindow.setHeight(550, Sizeable.Unit.PIXELS);
+        anticipoWindow.setPositionX(200);
+        anticipoWindow.setPositionY(50);
+        anticipoWindow.setModal(true);
+        anticipoWindow.setClosable(false);
 
-        AnticipioManejoView anticipioView = new AnticipioManejoView(view.getService());
-        anticipioView.init(beanItem.getBean());
-        anticipioWindow.setContent(anticipioView);
+        AnticipoManejoView anticipoView = new AnticipoManejoView(view.getService());
+        anticipoView.init(beanItem.getBean());
+        anticipoWindow.setContent(anticipoView);
 
-//        anticipioView.getBtnGuardar().addClickListener(event -> {
+//        anticipoView.getBtnGuardar().addClickListener(event -> {
 //            ScpDestino editedItem = destinoView.viewLogic.saveDestino();
 //            if (editedItem != null) {
-//                anticipioWindow.close();
+//                anticipoWindow.close();
 //                refreshData();
 //            }
 //        });
-        anticipioView.getBtnCerrar().addClickListener(event -> {
+        anticipoView.getBtnCerrar().addClickListener(event -> {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
-            view.getNumTotalAnticipio().setValue(df.format(anticipioView.getTotal()));
-            view.getTxtSaldoPendiente().setValue(GenUtil.numFormat(anticipioView.getTotal().subtract(view.calcTotal(moneda))));
-            anticipioWindow.close();
+            view.getNumTotalAnticipo().setValue(df.format(anticipoView.getTotal()));
+            view.getTxtSaldoPendiente().setValue(GenUtil.numFormat(anticipoView.getTotal().subtract(view.calcTotal(moneda))));
+            anticipoWindow.close();
         });
 
-        UI.getCurrent().addWindow(anticipioWindow);
+        UI.getCurrent().addWindow(anticipoWindow);
     }
 
 
@@ -437,7 +437,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 view.getBtnVerVoucher().setEnabled(false);
                 view.getBtnNewItem().setEnabled(false);
                 view.getBtnEliminarRend().setEnabled(false);
-                view.getBtnRegAnticipio().setEnabled(false);
+                view.getBtnRegAnticipo().setEnabled(false);
                 view.getBtnGuardarExcel().setEnabled(false);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
@@ -452,7 +452,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 view.getBtnNewItem().setEnabled(true);
                 view.getBtnCerrar().setEnabled(true);
                 view.getBtnEliminarRend().setEnabled(false);
-                view.getBtnRegAnticipio().setEnabled(false);
+                view.getBtnRegAnticipo().setEnabled(false);
                 view.getBtnGuardarExcel().setEnabled(false);
                 view.setEnableCabezeraFields(true);
                 view.setEnableDetalleFields(false);
@@ -468,7 +468,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnNewItem().setEnabled(true);
                 view.getBtnEliminarRend().setEnabled(true);
-                view.getBtnRegAnticipio().setEnabled(true);
+                view.getBtnRegAnticipo().setEnabled(true);
                 view.getBtnGuardarExcel().setEnabled(true);
                 view.setEnableCabezeraFields(true);
                 view.setEnableDetalleFields(true);
@@ -480,7 +480,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 view.getBtnCerrar().setEnabled(true);
                 view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnEliminarRend().setEnabled(true);
-                view.getBtnRegAnticipio().setEnabled(true);
+                view.getBtnRegAnticipo().setEnabled(true);
                 view.getBtnGuardarExcel().setEnabled(true);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
