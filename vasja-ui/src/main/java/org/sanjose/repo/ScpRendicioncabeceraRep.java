@@ -14,5 +14,7 @@ public interface ScpRendicioncabeceraRep extends JpaRepository<ScpRendicioncabec
 
     List<ScpRendicioncabecera> findByFecComprobanteBetween(Date from, Date to);
 
+    List<ScpRendicioncabecera> findByFecComprobanteBetweenAndCodUregistro(Date from, Date to, String codUregistro);
+
     //List<ScpRendicioncabecera> findByFecComprobanteBetweenAndCodCtacontable(Date from, Date to, String ctaCont);
 }
