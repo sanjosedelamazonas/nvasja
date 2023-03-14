@@ -1,3 +1,26 @@
+Nie mialam czasu wytlumaczyc ci moich :
+- tipo de cambio null - zamiast null niech wstawia puste, bo nie mozna modyfikowac ze starego systemu
+
+- bancos - modificar fecha quita numero de proyecto  y rubro presupuestal/financiera, deberia dejar estos datos
+DONE
+
+- comunicado cuando sobregirada cuenta o caja - necesito que salga advertencia cuando la cuenta no tiene fondos (cargo>saldo) de proyecto/tercero o de cuenta caja/cuenta banco - solo advertencia donde hacen click ok
+* banco 00036717 - pokazuje ostrzezenie a ma saldo cuenta bancaria y proyecto. si una vez puso la advertencia, ya queda para todas las operaciones.
+* banco/caja przy abono nie powinno pokazywac ostrzezenia (operacion 36734 banco)
+
+- no funciona preselecion de caja automatica soles ni dolares - creo que te hablo jorge
+DONE
+
+- falta reporte de caja en euros
+DONE
+
+- posibilidad de marcar como no enviado en caja/bancos - solo contador o un privilegio pq muchas veces eliminan de contabilidad y hay que volver enviar
+DONE!!!
+
+- caja - cuando modfica y quita lugardestino o cod_ctaespecial o destino guarda el la base null y wywala nam stary system, ktory nie rozumie nulli
+DONE
+
+- modulo de ingreso de rendiciones simple
 rendicion detalle:
 - copia glosa general a primera glosa detallada
 - al guardar abre nueva linea y deja para editarla
@@ -23,3 +46,17 @@ rendicion cabecera:
 - responsable con nombre nie numero
 - enviado domyslnie na polach, nie schowane
 - visibles rendiciones del mes actual
+
+
+Destino (soñando):
+- sprawdza czy takie codigo, descripcion juz istnieje przy wprowadzaniu nowego
+- dodaje nowego kazde slowo z wielkiej litery
+- eliminar destino: jezeli existen comprobantes que usan este destino pregunta a que numero cambiarlo y wstawia nowego z danymi tymi samymi, zastepuje i usuwa stary
+  update [SCP].[dbo].[scp_comprobantedetalle] set cod_destino='Nowy_destino'  where cod_destino='stary_destino';
+  update [SCP].[dbo].[scp_comprobantecabecera] set cod_destino='Nowy_destino' where cod_destino='stary_destino';
+  update [SCP].[dbo].[scp_cajabanco]  set cod_destino='Nowy_destino'  where cod_destino='stary_destino';
+  update  [SCP].[dbo].[scp_bancocabecera]  set cod_destino='05276644' where cod_destino='052766414';
+  update  [SCP].[dbo].[scp_bancodetalle]   set cod_destino='05276644' where cod_destino='052766414';
+- destino z categoria tercero nie powinno byc mozna usunac, tylko przestawic w inactive
+- dla destino z categoria tercero mozna zdefiniowac email y guzikiem wyslac do wszystkich ktorzy maja zaznaczony check ze chca email reporte de sus movimientos del mes
+- integracja z api portalu sunat zeby pobrac nazwe po RUC cuando anade nuevo destino

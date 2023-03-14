@@ -181,7 +181,10 @@ DONE - testowałem i nie powinno ich być
 - Guzik Eliminar Rend w OperUI
 DONE
 
-- nie ma mozliwosci modyfikowania transferencia w caja - jak sie pomyle i chce poprawic (np date) to nie moge. probuje usunac ale tez sie nie da calosci. probuje po jednym jezeli najpeirw usuwam pierwszy wiersz to sie wywal a z bledem. usuwam wszytkie wiersze i nie mam jak zamknac ekranu bo obydwa guziki (eliminar) y anular nic nie robia. w efekcie nie anuluje nic.
+- nie ma mozliwosci modyfikowania transferencia w caja - jak sie pomyle i chce poprawic (np date) to nie moge. probuje usunac ale tez sie nie da calosci.
+ probuje po jednym jezeli najpeirw usuwam pierwszy wiersz to sie wywal a z bledem. usuwam wszytkie wiersze i nie mam jak zamknac ekranu bo obydwa guziki
+ (eliminar) y anular nic nie robia. w efekcie nie anuluje nic.
 - nie powinno byc mozliwosci ustawienia roznej daty na liniach w transferencia w caja - va descuardar a la caja
-- przy towrzeniu nowej linii cheque nie zapisuje w tabeli [scp_bancodetalle] w polu cod_destino (auxiliar) tego z linii tylko zapisuje tego z cabecera, a powinien z linii
+- przy towrzeniu nowej linii cheque nie zapisuje w tabeli [scp_bancodetalle] w polu cod_destino (auxiliar) tego z linii
+tylko zapisuje tego z cabecera, a powinien z linii
 - powinna byc mozliwosc zmiany cobrado nawet jezeli jest wyslany do contabilidad, wtedy musi zmieniac tez w tabeli comprobante
