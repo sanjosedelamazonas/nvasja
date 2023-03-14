@@ -54,6 +54,10 @@ public class ScpTipocambio implements Serializable {
 		if (this.getFecFregistro() == null) this.setFecFregistro(new Timestamp(System.currentTimeMillis()));
 		this.setCodUactualiza(CurrentUser.get());
 		this.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+		if (this.getNumTccdolar()==null) this.setNumTccdolar(new BigDecimal(0));
+		if (this.getNumTcvdolar()==null) this.setNumTcvdolar(new BigDecimal(0));
+		if (this.getNumTcceuro()==null) this.setNumTcceuro(new BigDecimal(0));
+		if (this.getNumTcveuro()==null) this.setNumTcveuro(new BigDecimal(0));
 	}
 
 	public ScpTipocambioPK getId() {
