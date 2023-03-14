@@ -145,6 +145,7 @@ public class DestinoListView extends DestinoListUI implements Viewing {
         Window destinoWindow = new Window();
 
         destinoWindow.setWindowMode(WindowMode.NORMAL);
+        destinoWindow.setDraggable(true);
         destinoWindow.setWidth(700, Sizeable.Unit.PIXELS);
         destinoWindow.setHeight(550, Sizeable.Unit.PIXELS);
         destinoWindow.setPositionX(200);

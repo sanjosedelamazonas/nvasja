@@ -12,10 +12,7 @@ import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.ScpRendiciondetalle;
 import org.sanjose.model.ScpRendiciondetallePK;
 import org.sanjose.render.DateNotNullRenderer;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.DataFilterUtil;
-import org.sanjose.util.GenUtil;
-import org.sanjose.util.ViewUtil;
+import org.sanjose.util.*;
 import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.validator.NotBoundComboBoxValidator;
 import org.sanjose.validator.NotNullNotBoundValidator;
@@ -112,8 +109,8 @@ public class ImportView extends ImportUI implements SubWindowing {
         fieldGroup.bind(pdf, "fecComprobantepago");
 
         // Auxiliar
-        DataFilterUtil.bindComboBox(row.getSelDestino(), "codDestino", rendicionItemLogic.view.getService().getDestinoRepo().findByIndTipodestinoNot('3'), item.getCodDestino(),
-                "txtNombredestino");
+        DataFilterUtil.bindComboBox(row.getSelDestino(), "codDestino", DataUtil.loadDestinos(rendicionItemLogic.view.getService()), item.getCodDestino(),
+                "txtNombre");
         row.getSelDestino().setInvalidAllowed(true);
         row.getSelDestino().setNewItemsAllowed(true);
         fieldGroup.bind(row.getSelDestino(), "codDestino");

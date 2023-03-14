@@ -182,6 +182,7 @@ public class ReportHelper {
 
 		Window repWindow = new Window();
 		repWindow.setWindowMode(WindowMode.NORMAL);
+        repWindow.setDraggable(true);
 		repWindow.setWidth(700, Sizeable.Unit.PIXELS);
 		repWindow.setHeight(600, Sizeable.Unit.PIXELS);
 		repWindow.setPositionX(200);
@@ -380,6 +381,7 @@ public class ReportHelper {
 
 		Window repWindow = new Window();
 		repWindow.setWindowMode(WindowMode.NORMAL);
+        repWindow.setDraggable(true);
 		repWindow.setWidth(700, Sizeable.Unit.PIXELS);
 		repWindow.setHeight(600, Sizeable.Unit.PIXELS);
 		repWindow.setPositionX(200);

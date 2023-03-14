@@ -2,8 +2,12 @@ package org.sanjose.views.rendicion;
 
 import com.vaadin.data.sort.Sort;
 import com.vaadin.data.sort.SortOrder;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.filter.Compare;
 import com.vaadin.shared.data.sort.SortDirection;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.CurrentUser;
+import org.sanjose.authentication.Role;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.util.ViewUtil;
@@ -100,7 +104,16 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
     public void filter(Date fechaDesde, Date fechaHasta) {
         manView.getContainer().removeAllItems();
         manView.setFilterInitialDate(fechaDesde);
+        if (Role.isCaja() || Role.isBanco() || Role.isPrivileged()) {
+            manView.getContainer().addAll(manView.getService().getRendicioncabeceraRep().findByFecComprobanteBetween(fechaDesde, fechaHasta));
+            manView.getContainer().removeContainerFilters("codUregistro");
+        } else {
+            manView.getContainer().addAll(manView.getService().getRendicioncabeceraRep().findByCodUregistroAndFecComprobanteBetween(CurrentUser.get(), fechaDesde, fechaHasta));
+            manView.getContainer().removeContainerFilters("codUregistro");
+            manView.getContainer().addContainerFilter(new Compare.Equal("codUregistro", CurrentUser.get()));
+        }
         manView.getContainer().addAll(manView.getService().getRendicioncabeceraRep().findByFecComprobanteBetween(fechaDesde, fechaHasta));
+
         manView.getGrid().setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
         //calcFooterSums();
     }

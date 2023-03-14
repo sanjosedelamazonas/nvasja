@@ -178,6 +178,7 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
 
         BigDecimal gastoTotal = calcTotal(locMoneda);
         getTxtGastoTotal().setValue(GenUtil.numFormat(gastoTotal));
+        viewLogic.setGastoTotal(gastoTotal);
         NumberFormat nf = NumberFormat.getInstance(ConfigurationUtil.getLocale());
         try {
             BigDecimal totalAnticipo = null;
@@ -202,13 +203,13 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
         for (ScpRendiciondetalle det: container.getItemIds()) {
             switch (locMoneda) {
                 case '0':
-                    total = total.add(det.getNumDebesol()).subtract(det.getNumHabersol());
+                    total = total.add(det.getNumDebesol());
                     break;
                 case '1':
-                    total = total.add(det.getNumDebedolar()).subtract(det.getNumHaberdolar());
+                    total = total.add(det.getNumDebedolar());
                     break;
                 case '2':
-                    total = total.add(det.getNumDebemo()).subtract(det.getNumHabermo());
+                    total = total.add(det.getNumDebemo());
                     break;
             }
         }

@@ -28,7 +28,7 @@ public class DestinoReplaceView extends DestinoReplaceUI {
         this.getTxtDestinoElimnado().setEnabled(false);
         this.getTxtDestinoElimnado().setValue(scpDestinoToReplace.getCodDestino() + " " + scpDestinoToReplace.getTxtNombredestino());
         DataFilterUtil.bindComboBox(getSelNuevoDestino(), "codDestino", service.getDestinoRepo().findByCodDestinoNotLike(codDestinoToReplace.getCodDestino()),
-                "txtNombredestino");
+                "txtNombre");
 
         getBtnAnular().addClickListener(clickEvent -> destinoReplaceWindow.close());
         getBtnRemplacar().addClickListener(clickEvent -> {

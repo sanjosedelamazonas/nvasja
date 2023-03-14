@@ -252,4 +252,8 @@ public class DataUtil {
         }
         return null;
     }
+
+    public static List<ScpDestino> loadDestinos(PersistanceService service) {
+        return service.getDestinoRepo().findByCodDestinoNotLikeOrderByTxtNombre("3");
+    }
 }

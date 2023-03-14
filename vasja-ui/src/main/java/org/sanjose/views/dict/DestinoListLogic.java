@@ -111,6 +111,7 @@ public class DestinoListLogic implements Serializable {
             Window destinoReplaceWindow = new Window();
 
             destinoReplaceWindow.setWindowMode(WindowMode.NORMAL);
+            destinoReplaceWindow.setDraggable(true);
             destinoReplaceWindow.setWidth(900, Sizeable.Unit.PIXELS);
             destinoReplaceWindow.setHeight(90, Sizeable.Unit.PIXELS);
             destinoReplaceWindow.setModal(true);

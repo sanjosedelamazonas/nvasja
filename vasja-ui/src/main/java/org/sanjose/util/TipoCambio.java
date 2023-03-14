@@ -23,7 +23,7 @@ import static org.sanjose.util.GenUtil.USD;
 public class TipoCambio {
     private static final Logger log = LoggerFactory.getLogger(TipoCambio.class);
 
-    final static String EXCHANGE_RATE_URL_API = "http://www.sbs.gob.pe/app/stats/seriesH-tipo_cambio_moneda_excel.asp?fecha1={0}&fecha2={0}&moneda={1}&cierre=";
+    final static String EXCHANGE_RATE_URL_API = "https://www.sbs.gob.pe/app/stats/seriesH-tipo_cambio_moneda_excel.asp?fecha1={0}&fecha2={0}&moneda={1}&cierre=";
 
     private static Map<Character, String> monedaNombres = new HashMap<>();
     private static Map<Character, String> monedaSimbolos = new HashMap<>();
@@ -92,6 +92,7 @@ public class TipoCambio {
             String stUrl = EXCHANGE_RATE_URL_API.replace("{0}", sdf.format(fecha));
             stUrl = stUrl.replace("{1}", monedaSimbolos.get(moneda));
             URL url = new URL(stUrl);
+            System.out.println(url);
             BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
 
             String line = "";
@@ -173,7 +174,7 @@ public class TipoCambio {
     public static void main(String[] args) throws TipoCambioNoExiste, IOException, ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-        TipoCambio tc = new TipoCambio(sdf.parse("01/10/2019"), EUR);
+        TipoCambio tc = new TipoCambio(sdf.parse("13/03/2023"), USD);
         System.out.println(tc);
     }
 

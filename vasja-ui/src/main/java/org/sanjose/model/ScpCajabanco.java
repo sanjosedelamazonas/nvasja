@@ -171,10 +171,11 @@ public class ScpCajabanco extends VsjCajaBancoItem implements Serializable {
 		if (item.getCodContracta()==null) item.setCodContracta("");
 		if (item.getCodContraparte()==null) item.setCodContraparte("");
 		if (item.getCodCtaespecial()==null) item.setCodCtaespecial("");
+		if (item.getCodCtaproyecto()==null) item.setCodCtaproyecto("");
 		if (item.getCodDestino()==null) item.setCodDestino("");
 		if (item.getCodDestinoitem()==null) item.setCodDestinoitem("");
 		if (item.getCodFinanciera()==null) item.setCodFinanciera("");
-
+		if (item.getCodTipocomprobantepago()==null) item.setCodTipocomprobantepago("");
 		return item;
 	}
 

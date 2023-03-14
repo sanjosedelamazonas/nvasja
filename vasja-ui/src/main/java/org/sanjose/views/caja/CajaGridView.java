@@ -143,7 +143,7 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
         gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
         // Tercero
-        DataFilterUtil.bindComboBox(selTercero, "codDestino", getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero", "txtNombredestino");
+        DataFilterUtil.bindComboBox(selTercero, "codDestino", DataUtil.loadDestinos(getService()), "Sel Tercero", "txtNombre");
         selTercero.addValueChangeListener(this::setTerceroLogic);
         selTercero.addValidator(new TwoCombosValidator(selProyecto, true, null));
         gridCaja.getColumn("codTercero").setEditorField(selTercero);
@@ -167,8 +167,8 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
 
         // Responsable
         ComboBox selResponsable = new ComboBox();
-        DataFilterUtil.bindComboBox(selResponsable, "codDestino", getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "Responsable", "txtNombredestino");
+        DataFilterUtil.bindComboBox(selResponsable, "codDestino", DataUtil.loadDestinos(getService()),
+                "Responsable", "txtNombre");
         gridCaja.getColumn("codDestino").setEditorField(selResponsable);
 
         ComboBox selLugarGasto = new ComboBox();
@@ -178,8 +178,8 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
 
         // Cod. Auxiliar
         ComboBox selAuxiliar = new ComboBox();
-        DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "Auxiliar", "txtNombredestino");
+        DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", DataUtil.loadDestinos(getService()),
+                "Auxiliar", "txtNombre");
         gridCaja.getColumn("codDestinoitem").setEditorField(selAuxiliar);
 
         // Tipo doc

@@ -125,8 +125,8 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         view.getFechaDoc().setResolution(Resolution.DAY);
 
         // Cod. Auxiliar
-        DataFilterUtil.bindComboBox(view.getSelCodAuxCabeza(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.bindComboBox(view.getSelCodAuxCabeza(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
 
         view.getSelCodAuxCabeza().addValueChangeListener(valueChangeEvent -> {
             if (valueChangeEvent.getProperty().getValue() != null)
@@ -192,8 +192,8 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         );
 
         // Responsable
-        DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
 
         view.getSelResponsable().addValueChangeListener(valueChangeEvent -> {
             if (valueChangeEvent.getProperty().getValue() != null)
@@ -205,8 +205,8 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
                 "txtDescContraparte");
 
         // Cod. Auxiliar
-        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
 
         // Tipo doc
         DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getService().getComprobantepagoRepo().findAll(),
@@ -289,6 +289,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
         Window destinoWindow = new Window();
 
         destinoWindow.setWindowMode(WindowMode.NORMAL);
+        destinoWindow.setDraggable(true);
         destinoWindow.setWidth(700, Sizeable.Unit.PIXELS);
         destinoWindow.setHeight(550, Sizeable.Unit.PIXELS);
         destinoWindow.setPositionX(200);
@@ -366,12 +367,12 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
     }
 
     private void refreshDestino() {
-        DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
-        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
-        DataFilterUtil.refreshComboBox(view.getSelCodAuxCabeza(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
+        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
+        DataFilterUtil.refreshComboBox(view.getSelCodAuxCabeza(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
     }
 
     private void refreshProyectoYcuentaPorFecha(Date newFecha) {
@@ -422,8 +423,8 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             };
             view.getSelFuente().setValue(null);
             view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroValueChangeListener);
-            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
-                    "txtNombredestino");
+            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", DataUtil.loadDestinos(view.getService()), "Sel Tercero",
+                    "txtNombre");
         }
     }
 

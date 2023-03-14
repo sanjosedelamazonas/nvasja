@@ -17,13 +17,11 @@ import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.MsgUsuario;
-import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.ScpRendiciondetalle;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.Viewing;
 
 import java.io.ByteArrayInputStream;
@@ -398,6 +396,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
         anticipoWindow.setHeight(550, Sizeable.Unit.PIXELS);
         anticipoWindow.setPositionX(200);
         anticipoWindow.setPositionY(50);
+        anticipoWindow.setDraggable(true);
         anticipoWindow.setModal(true);
         anticipoWindow.setClosable(false);
 
@@ -497,5 +496,13 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
     void closeWindow() {
         if (view.getSubWindow()!=null)
             view.getSubWindow().close();
+    }
+
+    public BigDecimal getGastoTotal() {
+        return gastoTotal;
+    }
+
+    public void setGastoTotal(BigDecimal gastoTotal) {
+        this.gastoTotal = gastoTotal;
     }
 }

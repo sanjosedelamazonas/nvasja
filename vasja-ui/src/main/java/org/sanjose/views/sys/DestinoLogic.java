@@ -42,7 +42,7 @@ public class DestinoLogic implements Serializable {
 
     public ScpDestino saveDestino() {
         try {
-            if (GenUtil.strNullOrEmpty(view.codigo.getValue())) {
+            if (GenUtil.strNullOrEmpty(view.selCodigo.getValue().toString())) {
                 try {
                     // Generate cod destino if wasn't given
                     List<ScpDestino> lastDestinos = view.destinoRepo.findByCodDestinoLikeOrderByCodDestinoDesc("%");
@@ -55,7 +55,7 @@ public class DestinoLogic implements Serializable {
                     }
                     Long newId = Long.valueOf(lastCodigoDestino) + 1;
                     String cod = String.format("%08d", newId);
-                    view.codigo.setValue(cod);
+                    view.selCodigo.setValue(cod);
                 } catch (NumberFormatException pe) {
                     MessageBox
                             .createWarning()
@@ -85,7 +85,8 @@ public class DestinoLogic implements Serializable {
             item.setCodUactualiza(CurrentUser.get());
             item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
 
-           if (item.getTxtNombre() == null) item.setTxtNombre("");
+            if (item.getTxtNombre() == null) item.setTxtNombre("");
+            if (item.getTxtNombredestino() == null) item.setTxtNombredestino(item.getTxtNombre());
             if (item.getCodCargo() == null) item.setCodCargo(vacio);
             if (item.getCodFilial()== null) item.setCodFilial(vacio);
             if (item.getTxtApellidomaterno() == null) item.setTxtApellidomaterno(vacio);

@@ -89,13 +89,7 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
 
         //noinspection unchecked
 
-        if (Role.isCaja() || Role.isBanco() || Role.isPrivileged()) {
-
-            container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
-        } else {
-            container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetweenAndCodUregistro(filterInitialDate, new Date(), CurrentUser.get()));
-        }
-
+        container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
 
         gpContainer = new GeneratedPropertyContainer(container);
         gpContainer.addGeneratedProperty("msgUsuario",

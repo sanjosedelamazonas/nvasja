@@ -19,6 +19,7 @@ BEGIN
   @cod_mes varchar(2),
   @txt_anoproceso varchar(4),
   @cod_rendicioncabecera int,
+  @cod_cabecera_in_detalle int,
   @num_nroitem numeric(4)
   SET NOCOUNT ON;
   SELECT
@@ -26,23 +27,28 @@ BEGIN
          @cod_origen=inserted.cod_origen,
          @cod_comprobante=inserted.cod_comprobante,
          @txt_anoproceso=inserted.txt_anoproceso,
-         @num_nroitem=inserted.num_nroitem
+         @num_nroitem=inserted.num_nroitem,
+         @cod_cabecera_in_detalle=inserted.cod_rendicioncabecera
   FROM inserted;
-  SELECT @cod_rendicioncabecera=cod_rendicioncabecera
-  FROM
-       scp_rendicioncabecera
-  WHERE
-      cod_mes=@cod_mes AND
-      cod_origen=@cod_origen AND
-      cod_comprobante=@cod_comprobante AND
-      txt_anoproceso=@txt_anoproceso
-  UPDATE scp_rendiciondetalle
-  SET cod_rendicioncabecera=@cod_rendicioncabecera
-  WHERE
-      cod_mes=@cod_mes AND
-      cod_origen=@cod_origen AND
-      cod_comprobante=@cod_comprobante AND
-      txt_anoproceso=@txt_anoproceso AND
-      num_nroitem=@num_nroitem
+  IF (@cod_cabecera_in_detalle IS NULL) OR (@cod_cabecera_in_detalle=0)
+  BEGIN
+
+    SELECT @cod_rendicioncabecera=cod_rendicioncabecera
+    FROM
+         scp_rendicioncabecera
+    WHERE
+        cod_mes=@cod_mes AND
+        cod_origen=@cod_origen AND
+        cod_comprobante=@cod_comprobante AND
+        txt_anoproceso=@txt_anoproceso
+    UPDATE scp_rendiciondetalle
+    SET cod_rendicioncabecera=@cod_rendicioncabecera
+    WHERE
+        cod_mes=@cod_mes AND
+        cod_origen=@cod_origen AND
+        cod_comprobante=@cod_comprobante AND
+        txt_anoproceso=@txt_anoproceso AND
+        num_nroitem=@num_nroitem
+  END
 END
 GO

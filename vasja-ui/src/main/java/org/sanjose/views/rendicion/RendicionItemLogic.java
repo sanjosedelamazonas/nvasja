@@ -106,8 +106,8 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
         //manView.getNumVoucher().setEnabled(false);
 
         // Responsable
-        DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
 
         // Tipo Moneda
         DataFilterUtil.bindTipoMonedaOptionGroup(view.getSelMoneda(), "codTipomoneda");
@@ -120,8 +120,8 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
         view.getNumItem().setEnabled(false);
 
         // Auxiliar
-        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
 
         // Tipo doc
         DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getService().getComprobantepagoRepo().findAll(),
@@ -494,6 +494,7 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
         Window destinoWindow = new Window();
 
         destinoWindow.setWindowMode(WindowMode.NORMAL);
+        destinoWindow.setDraggable(true);
         destinoWindow.setWidth(700, Sizeable.Unit.PIXELS);
         destinoWindow.setHeight(550, Sizeable.Unit.PIXELS);
         destinoWindow.setPositionX(200);
@@ -571,10 +572,10 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
     }
 
     private void refreshDestino() {
-        DataFilterUtil.refreshComboBox(view.getSelResponsable1(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
-        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.refreshComboBox(view.getSelResponsable1(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
+        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
     }
 
     private void refreshProyectoYcuentaPorFecha(Date newFecha) {

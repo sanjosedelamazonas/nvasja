@@ -10,7 +10,11 @@
    <vaadin-vertical-layout spacing margin :expand>
     <vaadin-form-layout width="398px" margin>
      <vaadin-horizontal-layout spacing>
-      <vaadin-text-field caption="RUC o DNI" width="200px" _id="codigo"></vaadin-text-field>
+      <vaadin-combo-box caption="RUC o DNI" width="200px" _id="selCodigo">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
       <vaadin-combo-box caption="Clasificacion" item-caption-mode="id" width="200px" _id="clasificacion">
        <option>Option 1</option>
        <option>Option 2</option>
@@ -26,7 +30,11 @@
       <vaadin-text-field caption="Nº de documento" width="200px" _id="ruc"></vaadin-text-field>
      </vaadin-horizontal-layout>
      <vaadin-horizontal-layout>
-      <vaadin-text-field caption="Nombre o descripcion completa" width="412px" _id="nombreCompleta"></vaadin-text-field>
+      <vaadin-combo-box caption="Nombre o descripcion completa" width="412px" _id="selNombreCompleta">
+       <option>Option 1</option>
+       <option>Option 2</option>
+       <option>Option 3</option>
+      </vaadin-combo-box>
      </vaadin-horizontal-layout>
     </vaadin-form-layout>
     <vaadin-form-layout size-auto>

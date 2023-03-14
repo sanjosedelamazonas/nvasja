@@ -95,12 +95,13 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
         //noinspection unchecked
         if (Role.isCaja() || Role.isBanco() || Role.isPrivileged()) {
             container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
-            log.info("Loading all rendiciones");
+            container.removeContainerFilters("codUregistro");
         } else {
-            container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetweenAndCodUregistro(filterInitialDate, new Date(), CurrentUser.get()));
-            log.info("Loading rendiciones for user: " + CurrentUser.get());
+            container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByCodUregistroAndFecComprobanteBetween(CurrentUser.get(), filterInitialDate, new Date()));
+            log.info("Loading rendiciones for user: " + CurrentUser.get() + " " + container.getItemIds().size());
+            container.removeContainerFilters("codUregistro");
+            container.addContainerFilter(new Compare.Equal("codUregistro", CurrentUser.get()));
         }
-
         gpContainer = new GeneratedPropertyContainer(container);
         gpContainer.addGeneratedProperty("msgUsuario",
                 new PropertyValueGenerator<String>() {
@@ -139,6 +140,7 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
 
 
         grid.setContainerDataSource(gpContainer);
+        log.info("Items " + gpContainer.getItemIds().size());
 
         grid.setEditorEnabled(false);
         grid.setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
@@ -183,8 +185,8 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
             container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
 
         // Responsable
-        DataFilterUtil.bindComboBox(filtroResponsable, "codDestino", getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.bindComboBox(filtroResponsable, "codDestino", DataUtil.loadDestinos(getService()),
+                "txtNombre", false);
 
         filtroResponsable.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {

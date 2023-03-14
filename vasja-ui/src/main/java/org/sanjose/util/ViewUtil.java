@@ -490,6 +490,7 @@ public class ViewUtil {
     public static void openInNewWindow(ComprobanteViewing component) {
         Window subWindow = new Window();
         subWindow.setWindowMode(WindowMode.NORMAL);
+        subWindow.setDraggable(true);
         int width = component instanceof TransferenciaView ? 1280 : 990;
         int height = component instanceof TransferenciaView ? 600 : 500;
         String caption = component instanceof TransferenciaView ? "Cargo/Abono" : "Comprobante";

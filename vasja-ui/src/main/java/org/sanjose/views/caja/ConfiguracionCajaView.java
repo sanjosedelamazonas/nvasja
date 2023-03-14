@@ -10,6 +10,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid.SelectionMode;
 import org.sanjose.model.VsjConfiguracioncaja;
 import org.sanjose.util.DataFilterUtil;
+import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.sys.PersistanceService;
@@ -82,7 +83,7 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewin
         
 
         ComboBox selDestino = new ComboBox();
-        DataFilterUtil.bindComboBox(selDestino, "codDestino", getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero", "txtNombredestino");
+        DataFilterUtil.bindComboBox(selDestino, "codDestino", DataUtil.loadDestinos(getService()), "Sel Tercero", "txtNombre");
         gridConfigCaja.getColumn("codDestino").setEditorField(selDestino);
 
         ComboBox selProyecto = new ComboBox();

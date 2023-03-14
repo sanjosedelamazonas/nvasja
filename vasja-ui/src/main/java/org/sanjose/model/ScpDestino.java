@@ -70,10 +70,10 @@ public class ScpDestino implements Serializable {
 	@Column(name="txt_direccion")
 	private String txtDireccion;
 
+	@NotBlank
 	@Column(name="txt_nombre")
 	private String txtNombre;
 
-	@NotBlank
 	@Column(name="txt_nombredestino")
 	private String txtNombredestino;
 

@@ -8,6 +8,7 @@ import com.vaadin.ui.Button;
 import org.sanjose.helper.CustomReport;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.util.DataFilterUtil;
+import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 
@@ -55,8 +56,8 @@ public class ReportesView extends ReportesUI implements Viewing {
         selProyecto.addValueChangeListener(this::setProyectoLogic);
 
         // Tercero
-        DataFilterUtil.bindComboBox(selTercero, "codDestino", comprobanteService.getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
-                "txtNombredestino");
+        DataFilterUtil.bindComboBox(selTercero, "codDestino", DataUtil.loadDestinos(comprobanteService), "Sel Tercero",
+                "txtNombre");
         selTercero.addValueChangeListener(this::setTerceroLogic);
 
         DataFilterUtil.bindComboBox(selCategoria, "codCategoriaproyecto", comprobanteService.getScpCategoriaproyectoRep().findAll(), "Sel Cat Proyecto", "txtDescripcion");

@@ -315,6 +315,14 @@ public class DataFilterUtil {
 		bindComboBox(combo, column, elements, null, concatenatedColumn);
 	}
 
+	public static void bindComboBox(final ComboBox combo, String firstColumn, List elements,
+									String concatenatedColumn, boolean isSort) {
+
+		bindComboBox(combo, elements, null, firstColumn, concatenatedColumn, null, true);
+	}
+
+
+
 	public static void bindComboBox(final ComboBox combo, String column, List elements,
 									final String prompt, String concatenatedColumn) {
 		bindComboBox(combo, elements, prompt, column, concatenatedColumn, null);
@@ -323,6 +331,13 @@ public class DataFilterUtil {
 
 	public static void bindComboBox(final ComboBox combo, List elements,
 									final String prompt, String firstColumn, String concatenatedColumn, String idColumn) {
+
+		bindComboBox(combo, elements, prompt, firstColumn, concatenatedColumn, idColumn, true);
+	}
+
+
+	public static void bindComboBox(final ComboBox combo, List elements,
+									final String prompt, String firstColumn, String concatenatedColumn, String idColumn, boolean isSort) {
 		@SuppressWarnings("unchecked")
 
 		IndexedContainer c = new IndexedContainer();
@@ -348,7 +363,7 @@ public class DataFilterUtil {
 					mth.setAccessible(true);
 					value = mth.invoke(idObj);					
 				} catch (NoSuchMethodException nsm) { 
-					logger.severe("Problem binding Combobox no method found for: " + column + " " + prompt + " " + concatenatedColumn + "\n" + nsm.getMessage());					
+					logger.severe("Problem binding Combobox no method found for: " + column + " " + prompt + " " + concatenatedColumn + "\n" + nsm.getMessage());
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					logger.severe("Problem binding Combobox for: " + column + " " + prompt + " " + concatenatedColumn + "\n" + e.getMessage() );
 					e.printStackTrace();
@@ -361,10 +376,11 @@ public class DataFilterUtil {
 			if (concatenatedColumn != null)
 				c.getContainerProperty(value, contProp).setValue((idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value)
 						+ " " + bItem.getItemProperty(concatenatedColumn).getValue());
-			else
+			else if (value!=null)
 				c.getContainerProperty(value, contProp).setValue(idColumn != null ? bItem.getItemProperty(firstColumn).getValue() : value);
 		}
-		c.sort(new String[]{contProp},  new boolean[]{true});
+		if (isSort && !firstColumn.equals("codDestino"))
+			c.sort(new String[]{contProp},  new boolean[]{true});
 		combo.setContainerDataSource(c);
 		combo.setItemCaptionPropertyId(contProp);
 		combo.setImmediate(true);

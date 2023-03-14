@@ -9,6 +9,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.TextField;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.repo.ScpCargocuartaRep;
@@ -56,6 +57,24 @@ public class DestinoView extends DestinoUI implements View {
         btnGuardar.setEnabled(false);
         btnAnular.setEnabled(false);
 
+
+        // Codigo
+        DataFilterUtil.bindComboBox(selCodigo, "codDestino", destinoRepo.findAll(), null);
+        selCodigo.setTextInputAllowed(true);
+        selCodigo.setInvalidAllowed(true);
+        selCodigo.setNewItemsAllowed(true);
+
+        // Nombre
+        DataFilterUtil.bindComboBox(selNombreCompleta, "txtNombre", destinoRepo.findAll(), null);
+        selNombreCompleta.setTextInputAllowed(true);
+        selNombreCompleta.setInvalidAllowed(true);
+        selNombreCompleta.setNewItemsAllowed(true);
+
+
+        // Clasificacion
+        DataFilterUtil.bindTipoDestinoComboBox(clasificacion, "indTipodestino", "Sel Clasificacion");
+
+
         // Clasificacion
         DataFilterUtil.bindTipoDestinoComboBox(clasificacion, "indTipodestino", "Sel Clasificacion");
 
@@ -74,10 +93,12 @@ public class DestinoView extends DestinoUI implements View {
         DataFilterUtil.bindTipoPersonaComboBox(tipoDePersona, "indTipopersona", "Sel Tipo de persona");
 
         // Validators
-        codigo.addValidator(new LocalizedBeanValidator(ScpDestino.class, "codDestino"));
+        selCodigo.addValidator(new LocalizedBeanValidator(ScpDestino.class, "codDestino"));
         clasificacion.addValidator(new LocalizedBeanValidator(ScpDestino.class, "indTipodestino"));
-        nombreCompleta.setDescription("Nombre Completa");
-        nombreCompleta.addValidator(new LocalizedBeanValidator(ScpDestino.class, "txtNombredestino"));
+
+        selNombreCompleta.setDescription("Nombre");
+
+        selNombreCompleta.addValidator(new LocalizedBeanValidator(ScpDestino.class, "txtNombre"));
         tipoDePersona.addValidator(new LocalizedBeanValidator(ScpDestino.class, "indTipopersona"));
         viewLogic.init();
     }
@@ -90,9 +111,9 @@ public class DestinoView extends DestinoUI implements View {
         beanItem = new BeanItem<>(item);
         fieldGroup = new FieldGroup(beanItem);
         fieldGroup.setItemDataSource(beanItem);
-        fieldGroup.bind(codigo, "codDestino");
+        fieldGroup.bind(selCodigo, "codDestino");
         fieldGroup.bind(clasificacion, "indTipodestino");
-        fieldGroup.bind(nombreCompleta, "txtNombredestino");
+        fieldGroup.bind(selNombreCompleta, "txtNombre");
         fieldGroup.bind(apellidoPaterno, "txtApellidopaterno");
         fieldGroup.bind(apellidoMaterno, "txtApellidomaterno");
         fieldGroup.bind(genero, "indSexo");
@@ -109,9 +130,9 @@ public class DestinoView extends DestinoUI implements View {
         isLoading = false;
         if (isEdit) {
             // EDITING
-            codigo.setEnabled(false);
+            selCodigo.setEnabled(false);
         } else
-            codigo.setEnabled(true);
+            selCodigo.setEnabled(true);
         isEdit = false;
     }
 
@@ -157,5 +178,13 @@ public class DestinoView extends DestinoUI implements View {
 
     public FieldGroup getFieldGroup() {
         return fieldGroup;
+    }
+
+    public ComboBox getSelCodigo() {
+        return selCodigo;
+    }
+
+    public ComboBox getSelNombreCompleta() {
+        return selNombreCompleta;
     }
 }

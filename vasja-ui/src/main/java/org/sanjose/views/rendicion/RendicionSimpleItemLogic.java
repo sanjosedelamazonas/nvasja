@@ -113,8 +113,8 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         //manView.getNumVoucher().setEnabled(false);
 
         // Responsable
-        DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
 
         // Tipo Moneda
         DataFilterUtil.bindTipoMonedaOptionGroup(view.getSelMoneda(), "codTipomoneda");
@@ -192,8 +192,8 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
 
         // Auxiliar
         ComboBox selAuxiliar = new ComboBox();
-        DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
         view.grid.getColumn("codDestino").setEditorField(selAuxiliar);
 
 
@@ -473,6 +473,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         Window destinoWindow = new Window();
 
         destinoWindow.setWindowMode(WindowMode.NORMAL);
+        destinoWindow.setDraggable(true);
         destinoWindow.setWidth(700, Sizeable.Unit.PIXELS);
         destinoWindow.setHeight(550, Sizeable.Unit.PIXELS);
         destinoWindow.setPositionX(200);
@@ -550,8 +551,8 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
     }
 
     private void refreshDestino() {
-        DataFilterUtil.refreshComboBox(view.getSelResponsable1(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.refreshComboBox(view.getSelResponsable1(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
         //DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
         //        "txtNombredestino");
     }
@@ -640,7 +641,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
             item.getId().setNumNroitem(view.getContainer().size()+1);
         item.setTxtComprobantepago("");
         item.setTxtSeriecomprobantepago("");
-        item.setTxtGlosaitem("");
+        item.setTxtGlosaitem(rendicioncabecera.getTxtGlosa());
 
         if (rendicioncabecera != null)
             item.setScpRendicioncabecera(rendicioncabecera);
@@ -656,6 +657,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
                     item.setTxtSeriecomprobantepago(prevItem.getTxtSeriecomprobantepago());
                     item.setFecComprobantepago(prevItem.getFecComprobantepago());
                     item.setFecPagocomprobantepago(prevItem.getFecPagocomprobantepago());
+                    item.setTxtGlosaitem(prevItem.getTxtGlosaitem());
                     item.setCodProyecto(prevItem.getCodProyecto());
                     item.setCodFinanciera(prevItem.getCodFinanciera());
                     item.setCodCtaproyecto(prevItem.getCodCtaproyecto());

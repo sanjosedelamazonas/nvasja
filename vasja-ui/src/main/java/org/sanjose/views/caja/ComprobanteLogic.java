@@ -315,10 +315,10 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
         view.getSelCaja().addValueChangeListener(e -> setSaldoCaja());
         view.getSelCaja().setNullSelectionAllowed(false);
 
-        List<ScpDestino> destinoList = view.getService().getDestinoRepo().findByIndTipodestinoNot('3');
+        List<ScpDestino> destinoList = DataUtil.loadDestinos(view.getService());
         // Responsable
         DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", destinoList,
-                "Responsable", "txtNombredestino");
+                "Responsable", "txtNombre");
 
         view.getSelResponsable().addValueChangeListener(valueChangeEvent ->  {
             if (valueChangeEvent.getProperty().getValue()!=null)
@@ -331,7 +331,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
 
         // Cod. Auxiliar
         DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", destinoList,
-                "Auxiliar", "txtNombredestino");
+                "Auxiliar", "txtNombre");
 
         // Tipo doc
         DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getService().getComprobantepagoRepo().findAll(),
@@ -420,6 +420,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
         Window destinoWindow = new Window();
 
         destinoWindow.setWindowMode(WindowMode.NORMAL);
+        destinoWindow.setDraggable(true);
         destinoWindow.setWidth(700, Sizeable.Unit.PIXELS);
         destinoWindow.setHeight(550, Sizeable.Unit.PIXELS);
         destinoWindow.setPositionX(200);
@@ -491,10 +492,10 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
 
 
     private void refreshDestino() {
-        DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
-        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-                "txtNombredestino");
+        DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
+        DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", DataUtil.loadDestinos(view.getService()),
+                "txtNombre");
     }
 
     private void refreshProyectoYcuentaPorFecha(Date newFecha) {
@@ -697,8 +698,8 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
                     setTerceroLogic(valueChangeEvent);
                 }
             };
-            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestino('3'), "Sel Tercero",
-                     "txtNombredestino");
+            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", DataUtil.loadDestinos(view.getService()), "Sel Tercero",
+                     "txtNombre");
         }
         view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroChangeListener);
     }
