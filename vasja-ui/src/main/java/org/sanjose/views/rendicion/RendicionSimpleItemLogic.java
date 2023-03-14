@@ -646,25 +646,27 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
             item.setScpRendicioncabecera(rendicioncabecera);
         item.setFecComprobantepago(new Timestamp(view.getDataFechaComprobante().getValue().getTime()));
         // if selected other item then copy most fields
-        if (!view.getGrid().getSelectedRows().isEmpty()) {
-            for (Object o : view.getGrid().getSelectedRows()) {
+        if (!view.getGrid().getContainerDataSource().getItemIds().isEmpty()) {
+            for (Object o : view.getGrid().getContainerDataSource().getItemIds()) {
                 ScpRendiciondetalle prevItem = (ScpRendiciondetalle)o;
-                item.setCodDestino(prevItem.getCodDestino());
-                item.setCodTipocomprobantepago(prevItem.getCodTipocomprobantepago());
-                item.setTxtComprobantepago(prevItem.getTxtComprobantepago());
-                item.setTxtSeriecomprobantepago(prevItem.getTxtSeriecomprobantepago());
-                item.setFecComprobantepago(prevItem.getFecComprobantepago());
-                item.setFecPagocomprobantepago(prevItem.getFecPagocomprobantepago());
-                item.setCodProyecto(prevItem.getCodProyecto());
-                item.setCodFinanciera(prevItem.getCodFinanciera());
-                item.setCodCtaproyecto(prevItem.getCodCtaproyecto());
-                item.setCodContraparte(prevItem.getCodContraparte());
-                item.setCodCtacontable(prevItem.getCodCtacontable());
-                item.setCodCtaactividad(prevItem.getCodCtaactividad());
-                item.setCodCtaespecial(prevItem.getCodCtaespecial());
-                item.setNumTcvdolar(prevItem.getNumTcvdolar());
-                item.setNumTcmo(prevItem.getNumTcmo());
-                break;
+                if (prevItem.getId().getNumNroitem()==item.getId().getNumNroitem()-1) {
+                    item.setCodDestino(prevItem.getCodDestino());
+                    item.setCodTipocomprobantepago(prevItem.getCodTipocomprobantepago());
+                    item.setTxtComprobantepago(prevItem.getTxtComprobantepago());
+                    item.setTxtSeriecomprobantepago(prevItem.getTxtSeriecomprobantepago());
+                    item.setFecComprobantepago(prevItem.getFecComprobantepago());
+                    item.setFecPagocomprobantepago(prevItem.getFecPagocomprobantepago());
+                    item.setCodProyecto(prevItem.getCodProyecto());
+                    item.setCodFinanciera(prevItem.getCodFinanciera());
+                    item.setCodCtaproyecto(prevItem.getCodCtaproyecto());
+                    item.setCodContraparte(prevItem.getCodContraparte());
+                    item.setCodCtacontable(prevItem.getCodCtacontable());
+                    item.setCodCtaactividad(prevItem.getCodCtaactividad());
+                    item.setCodCtaespecial(prevItem.getCodCtaespecial());
+                    item.setNumTcvdolar(prevItem.getNumTcvdolar());
+                    item.setNumTcmo(prevItem.getNumTcmo());
+                    break;
+                }
             }
         }
         view.setEnableCabezeraFields(true);
