@@ -199,7 +199,7 @@
 		<groupFooter>
 			<band height="10">
 				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement style="SubTitle" x="380" y="0" width="50" height="10" forecolor="#000000" uuid="de642dac-bcb6-4ff4-a7f7-bf33e9e4aa7a"/>
+					<reportElement style="SubTitle" x="380" y="0" width="56" height="10" forecolor="#000000" uuid="de642dac-bcb6-4ff4-a7f7-bf33e9e4aa7a"/>
 					<textElement textAlignment="Right">
 						<font fontName="Arial" size="8" isBold="true"/>
 					</textElement>
@@ -362,7 +362,7 @@
 				<textFieldExpression><![CDATA[$F{op_fecha}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement style="Detail" x="380" y="0" width="50" height="10" uuid="a46702dd-ec45-42a5-958a-2a9a93f06911"/>
+				<reportElement style="Detail" x="380" y="0" width="56" height="10" uuid="a46702dd-ec45-42a5-958a-2a9a93f06911"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="7"/>
 				</textElement>
@@ -482,28 +482,28 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="294" y="2" width="57" height="18" uuid="423a5056-ac15-4167-9781-7c9f9f50e6ae"/>
+				<reportElement x="380" y="2" width="57" height="18" uuid="423a5056-ac15-4167-9781-7c9f9f50e6ae"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<text><![CDATA[Saldos finales de caja al]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="352" y="3" width="50" height="17" uuid="c0cedafa-a63c-4dd0-9095-9e9c40d0f946"/>
+				<reportElement x="438" y="3" width="50" height="17" uuid="c0cedafa-a63c-4dd0-9095-9e9c40d0f946"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{STR_SALDO_FECHA_MAX}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="88" y="3" width="69" height="17" uuid="dd2565cc-55fe-41af-94c5-568d073a464a"/>
+				<reportElement x="180" y="3" width="69" height="17" uuid="dd2565cc-55fe-41af-94c5-568d073a464a"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="9"/>
 				</textElement>
 				<text><![CDATA[Saldos iniciales de caja al]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="159" y="3" width="48" height="17" uuid="76be602a-959a-4d14-8815-d48784785a89"/>
+				<reportElement x="251" y="3" width="48" height="17" uuid="76be602a-959a-4d14-8815-d48784785a89"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="9"/>
 				</textElement>
@@ -827,7 +827,7 @@
 								</textField>
 							</jr:columnFooter>
 							<jr:detailCell style="Table 1_TD" height="10">
-								<textField>
+								<textField pattern="#,##0.00;-#,##0.00">
 									<reportElement x="0" y="0" width="60" height="10" uuid="fbbdcf2a-ba66-488d-9982-6d65d5812007"/>
 									<textElement textAlignment="Right">
 										<font fontName="Arial" size="8"/>
