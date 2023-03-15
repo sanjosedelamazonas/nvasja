@@ -488,7 +488,11 @@ FROM
 								<text><![CDATA[Proy]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0" lineStyle="Solid"/>
+							</box>
+						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="83" height="15" uuid="96b51c0b-5c55-4ef0-8df6-0a9ac481f74d"/>
