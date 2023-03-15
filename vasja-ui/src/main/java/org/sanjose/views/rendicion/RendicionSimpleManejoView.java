@@ -22,10 +22,7 @@ import com.vaadin.ui.renderers.HtmlRenderer;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
-import org.sanjose.model.MsgUsuario;
-import org.sanjose.model.ScpBancocabecera;
-import org.sanjose.model.ScpRendicioncabecera;
-import org.sanjose.model.VsjItem;
+import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.GridViewing;
@@ -52,7 +49,7 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
     }
 
     private final RendicionManejoLogic viewLogic = new RendicionManejoLogic();
-    private final String[] VISIBLE_COLUMN_IDS = new String[]{ "codComprobante", "fecComprobante", "codDestino", "txtGlosa",
+    private final String[] VISIBLE_COLUMN_IDS = new String[]{ "codComprobante", "fecComprobante", "destinoNombre", "txtGlosa",
             "numGastototal", "tipoMoneda", "flgEnviado", "codComprobanteenlace"
             //, "codTipomoneda"
     };
@@ -122,8 +119,24 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
                         return String.class;
                     }
                 });
+        gpContainer.addGeneratedProperty("destinoNombre",
+                new PropertyValueGenerator<String>() {
+                    @Override
+                    public String getValue(Item item, Object itemId,
+                                           Object propertyId) {
+                        if (((BeanItem)item).getBean()!=null && ((ScpRendicioncabecera)((BeanItem)item).getBean()).getCodUregistro()!=null) {
+                            ScpDestino destino = getService().getDestinoRepo().findByCodDestino((((ScpRendicioncabecera) ((BeanItem) item).getBean())).getCodDestino());
+                            if (destino != null)
+                                return destino.getTxtNombre();
+                        }
+                        return "";
+                    }
+                    @Override
+                    public Class<String> getType() {
+                        return String.class;
+                    }
+                });
 
-        gpContainer = new GeneratedPropertyContainer(container);
         gpContainer.addGeneratedProperty("tipoMoneda",
                 new PropertyValueGenerator<String>() {
                     @Override

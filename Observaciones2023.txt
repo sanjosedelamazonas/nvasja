@@ -26,25 +26,33 @@ NOT POSSIBLE
 - ordena razon social alfabeticamente segun nombre completo
 DONE
 - orden: it, proyecto, cta contable, lug de gasto, rubro inst, fuente (automatico), partida p.(segun proyecto), glosa, ing, egr, razon social, tipo doc, nroserie, doc
+DONE
 - guzik enviar a contabilidad dentro de la rendicion
+!!!!
 - guzik imprimir rendicion
+!!!!
 - po wyslaniu do contabilidad nie odwwieza na zielono
+DONE
 - no se debe poder modificar despues de haber enviado a contabilidad - jak będzie wyłączenie wysłąnia.
 - nie powinno byc mozliwosci wpisania jednoczescnie wartosci ingr jak i egreso - wpisywanie jednej powoduje wyzerowanie drugiej
+DONE
 - przy wysylaniu do contabilidad powinno sprawdzic czy:
 - suma(ingr por proyecto)=suma(egr por proyecto) - jak nie komunikat que esta descuadrado por proyecto y pregunta si de todos modos quieres enviar.
 - si existe tipo de cambio para tal dia y si de todos modos quieres enviar.
 - czy pola cta contable, proyecto sa wypelnione
 - (na pozniej bylo by super jezeli by sprawdzalo ze jezeli cuenta contable like 6% or 3% to musi miec rubro institucional, lugar de gasto a jezeli cta contable like '46%' to musi miec tylko rubro institucional)
 - okno registar anticipo powinno sie dac przesuwac
+NOT POSSIBLE
 - mozliwosc "marcar como no enviado"
 - ? jezeli suma(ingr por proyecto)=suma(egr por proyecto) to moglaby na liscie rendiciones pokazywac sie na czerwono? y tez jezeli nie zawiera na liscie cta_contable like '14%'?
 - brakuje raportu na rendiciones (comprobante del sistema contable)
+!!!!
 
 rendicion cabecera:
 - responsable con nombre nie numero
 - enviado domyslnie na polach, nie schowane
 - visibles rendiciones del mes actual
+!!!!
 
 
 Destino (soñando):
@@ -58,5 +66,9 @@ Destino (soñando):
   update  [SCP].[dbo].[scp_bancodetalle]   set cod_destino='05276644' where cod_destino='052766414';
 DONE
 - destino z categoria tercero nie powinno byc mozna usunac, tylko przestawic w inactive
+- marcar tercero con color
 - dla destino z categoria tercero mozna zdefiniowac email y guzikiem wyslac do wszystkich ktorzy maja zaznaczony check ze chca email reporte de sus movimientos del mes
 - integracja z api portalu sunat zeby pobrac nazwe po RUC cuando anade nuevo destino
+
+
+envio
