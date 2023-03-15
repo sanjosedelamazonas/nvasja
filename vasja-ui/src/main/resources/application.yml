@@ -5,8 +5,8 @@ server:
 spring:
   datasource:
     url: jdbc:sqlserver://vasjasqlserver:1433;databaseName=SCP
-    username: vasja
-    password: Vasja123
+    username: sa
+    password: sanjose
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 #    tomcat:
 #      min-active: 10

@@ -71,4 +71,12 @@ DONE
 - integracja z api portalu sunat zeby pobrac nazwe po RUC cuando anade nuevo destino
 
 
-envio
+- calcular saldos para bancos, cuentas proyectos, terceros, caja - calcula saldos antes de la operacion y no al final del dia. critico: modulo de bancos
+
+- reporte diario terceros
+- guzik zeby zaciagnac tipo de cambio tam gdzie go nie ma aktualizowac w ksiegowosci
+  - rendiciones marcar no enviado
+  -  caja - cargo abono - cuando cambia fecha a una operacion se cambia en todas.
+  - formato para registrar cambio de moneda - caja/banco
+  - acceso a reporte de cuenta por usuario tercero
+

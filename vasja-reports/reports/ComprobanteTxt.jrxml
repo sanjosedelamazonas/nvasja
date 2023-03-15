@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2018-10-23T13:58:41 -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Comprobante" pageWidth="682" pageHeight="218" columnWidth="666" leftMargin="8" rightMargin="8" topMargin="0" bottomMargin="0" uuid="e6e4b764-eb4a-44ec-8aa8-52e244f987a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -35,10 +34,12 @@
      OPERACION.cod_tipomoneda AS OPERACION_TIPOMONEDA,
      OPERACION.txt_correlativo AS OPERACION_ID,
 	firma.txt_nombredestino AS OPERACION_FIRMA,
-	firma.txt_ruc AS OPERACION_DNI, OPERACION.cod_ctacontable  cta_caja,
+	firma.txt_ruc AS OPERACION_DNI,
 	isnull(CUENTA.txt_descproyecto,tercero.txt_nombredestino) AS CUENTA_NOMBRE,
 	isnull(CUENTA.cod_proyecto,tercero.cod_destino) AS CUENTA_NUMERO,
-	isnull(OPERACION.cod_ctacontable,'') AS OPERACION_CODCTACONTABLE,
+	isnull(CUENTA.cod_proyecto,"TERCERO") AS IS_PROYECTO,
+	isnull(OPERACION.cod_ctacontable,'') AS OPERACION_CODCAJA,
+	isnull(OPERACION.cod_contracta,'') AS OPERACION_CODCTACONTABLE,
 	isnull(OPERACION.cod_contraparte,'') AS OPERACION_LUGARGASTO,
 	isnull(OPERACION.cod_ctaespecial,'') AS OPERACION_RUBROINST
 FROM   dbo.scp_cajabanco OPERACION
@@ -57,7 +58,8 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 	<field name="OPERACION_ID" class="java.lang.String"/>
 	<field name="OPERACION_FIRMA" class="java.lang.String"/>
 	<field name="OPERACION_DNI" class="java.lang.String"/>
-	<field name="cta_caja" class="java.lang.String"/>
+	<field name="OPERACION_CODCAJA" class="java.lang.String"/>
+	<field name="IS_PROYECTO" class="java.lang.String"/>
 	<field name="CUENTA_NOMBRE" class="java.lang.String"/>
 	<field name="CUENTA_NUMERO" class="java.lang.String"/>
 	<field name="OPERACION_CODCTACONTABLE" class="java.lang.String"/>
@@ -71,7 +73,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 		<band height="218" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="cm"/>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="74" y="108" width="678" height="14" uuid="9503d1ad-9f42-4338-a7bf-e203fb042538"/>
+				<reportElement x="74" y="108" width="586" height="14" uuid="9503d1ad-9f42-4338-a7bf-e203fb042538"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
@@ -85,7 +87,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textFieldExpression><![CDATA[$F{OPERACION_FIRMA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="74" y="83" width="692" height="13" uuid="48436bfa-9d44-408f-a4e3-ce8b02c9b06e"/>
+				<reportElement x="74" y="83" width="586" height="13" uuid="48436bfa-9d44-408f-a4e3-ce8b02c9b06e"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
@@ -107,7 +109,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textFieldExpression><![CDATA[(($F{OPERACION_PEN_haber}.compareTo(new BigDecimal(0))>0 || $F{OPERACION_USD_haber}.compareTo(new BigDecimal(0))>0) ? "--- ABONO ---" : " --- CARGO --- ")]]></textFieldExpression>
 			</textField>
 			<textField pattern="yyyy.MM.dd HH:mm" isBlankWhenNull="false">
-				<reportElement style="Column header" x="74" y="191" width="103" height="11" forecolor="#050505" uuid="1d136d8f-75e4-4978-9866-3c7e9fafd633"/>
+				<reportElement style="Column header" x="74" y="190" width="103" height="11" forecolor="#050505" uuid="1d136d8f-75e4-4978-9866-3c7e9fafd633"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="8" isBold="false"/>
 				</textElement>
@@ -118,7 +120,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cta_caja}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{OPERACION_CODCAJA}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="383" y="58" width="50" height="13" uuid="2dd05be2-785f-452f-8b2a-a22160819084"/>
@@ -143,7 +145,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<textFieldExpression><![CDATA[$F{OPERACION_FECHA}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="74" y="205" width="91" height="13" uuid="5f2f44b7-5c12-475d-8783-85a42a4818c4"/>
+				<reportElement x="74" y="203" width="91" height="13" uuid="5f2f44b7-5c12-475d-8783-85a42a4818c4"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="10"/>
 				</textElement>
@@ -151,7 +153,7 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 				<patternExpression><![CDATA["#,##0.00"]]></patternExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="74" y="125" width="692" height="14" uuid="3481f83f-8d38-4b13-ae2e-ed0fb116d49a"/>
+				<reportElement x="74" y="125" width="586" height="14" uuid="3481f83f-8d38-4b13-ae2e-ed0fb116d49a"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
@@ -164,6 +166,13 @@ WHERE OPERACION.cod_cajabanco = $P{OP_ID}]]>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["/C"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="510" y="16" width="100" height="17" backcolor="#FFFFFF" uuid="7d7810e9-b4c7-4fc0-97db-1436bdbb4497"/>
+				<textElement>
+					<font fontName="Arial" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IS_PROYECTO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
