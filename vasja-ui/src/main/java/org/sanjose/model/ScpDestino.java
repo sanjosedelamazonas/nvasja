@@ -2,6 +2,7 @@ package org.sanjose.model;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import org.sanjose.authentication.CurrentUser;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -89,8 +90,46 @@ public class ScpDestino implements Serializable {
 	@Column(name="txt_telefono2")
 	private String txtTelefono2;
 
+	@Column(name="txt_email")
+	private String txtEmail;
+
+	@Column(name="txt_usuario")
+	private String txtUsuario;
+
+	@Column(name="flg_activo")
+	private boolean activo;
+
+	@Column(name="flg_enviar_reporte")
+	private boolean isEnviarreporte;
+
+
 	public ScpDestino() {
 	}
+
+	public void prepToSave() {
+        if (getCodUregistro() == null) setCodUregistro(CurrentUser.get());
+        if (getFecFregistro() == null) setFecFregistro(new Timestamp(System.currentTimeMillis()));
+        setCodUactualiza(CurrentUser.get());
+        setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+
+        if (getTxtNombre() == null) setTxtNombre("");
+        if (getTxtNombredestino() == null) setTxtNombredestino(getTxtNombre());
+        if (getCodCargo() == null) setCodCargo("");
+        if (getCodFilial()== null) setCodFilial("");
+        if (getTxtApellidomaterno() == null) setTxtApellidomaterno("");
+        if (getTxtDireccion() == null) setTxtDireccion("");
+        if (getTxtApellidopaterno() == null) setTxtApellidopaterno("");
+        if (getTxtNumerodctoidentidad() == null) setTxtNumerodctoidentidad("");
+        if (getTxtRuc() == null) setTxtRuc("");
+        if (getTxtTelefono1() == null) setTxtTelefono1("");
+        if (getTxtTelefono2() == null) setTxtTelefono2("");
+        if (getTxtEmail() == null) setTxtEmail("");
+        if (getTxtUsuario() == null) setTxtUsuario("");
+        if (getIndSexo() == null) setIndSexo(' ');
+        if (getIndTipodctoidentidad() == null) setIndTipodctoidentidad("");
+        setFlgIm('1');
+    }
+	
 
 	public String getCodDestino() {
 		return this.codDestino;
@@ -260,6 +299,46 @@ public class ScpDestino implements Serializable {
 		this.txtTelefono2 = txtTelefono2;
 	}
 
+	public String getTxtEmail() {
+		return txtEmail;
+	}
+
+	public void setTxtEmail(String txtEmail) {
+		this.txtEmail = txtEmail;
+	}
+
+	public String getTxtUsuario() {
+		return txtUsuario;
+	}
+
+	public void setTxtUsuario(String txtUsuario) {
+		this.txtUsuario = txtUsuario;
+	}
+
+	public boolean isActivo() {
+		return activo;
+	}
+
+    public boolean getActivo() {
+        return activo;
+    }
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
+
+	public boolean isEnviarreporte() {
+		return isEnviarreporte;
+	}
+
+
+    public boolean getEnviarreporte() {
+        return isEnviarreporte;
+    }
+
+    public void setEnviarreporte(boolean enviarreporte) {
+		isEnviarreporte = enviarreporte;
+	}
 
 	@Override
 	public String toString() {

@@ -9,9 +9,13 @@ public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
 
 	List<ScpDestino> findByIndTipodestino(Character s);
 
+	List<ScpDestino> findByIndTipodestinoAndActivo(Character s, Boolean isActive);
+
 	List<ScpDestino> findByIndTipodestinoNot(Character s);
 
 	List<ScpDestino> findByIndTipodestinoOrderByTxtNombre(Character s);
+
+	List<ScpDestino> findByIndTipodestinoAndActivoOrderByTxtNombre(Character s, Boolean isActive);
 
 	List<ScpDestino> findByIndTipodestinoNotOrderByTxtNombre(Character s);
 

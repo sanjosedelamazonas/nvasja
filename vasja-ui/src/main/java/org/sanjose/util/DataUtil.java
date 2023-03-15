@@ -259,7 +259,7 @@ public class DataUtil {
 
     public static List<ScpDestino> loadDestinos(PersistanceService service, boolean isTercero) {
         if (isTercero)
-            return service.getDestinoRepo().findByIndTipodestinoOrderByTxtNombre('3');
+            return service.getDestinoRepo().findByIndTipodestinoAndActivoOrderByTxtNombre('3', true);
         else
             return service.getDestinoRepo().findByIndTipodestinoNotOrderByTxtNombre('3');
     }

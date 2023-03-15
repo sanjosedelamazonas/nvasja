@@ -170,7 +170,7 @@ public class DataFilterUtil {
 		valMap.put('0',"Proveedor");
 		valMap.put('1',"Empleado");
 		valMap.put('2',"Cliente");
-		valMap.put('3',"Tercero");
+		//valMap.put('3',"Tercero");
 		bindFixedValComboBox(combo, column, prompt, valMap);
 	}
 
