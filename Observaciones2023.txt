@@ -78,5 +78,8 @@ DONE
   - rendiciones marcar no enviado
   -  caja - cargo abono - cuando cambia fecha a una operacion se cambia en todas.
   - formato para registrar cambio de moneda - caja/banco
-  - acceso a reporte de cuenta por usuario tercero
+  - acceso a reporte de cuenta por usuario tercero (habilitado/no habilitado)
+
+  - rendiciones - lista de anticipos pendintes del sistema
+  - tercero jezeli inactivo to nie wyswietla sie na liscie w caja ani w bancos
 
