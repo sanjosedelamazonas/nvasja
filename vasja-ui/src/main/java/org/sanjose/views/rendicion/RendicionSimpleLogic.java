@@ -330,12 +330,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
             //boolean isNew = rendicionItem.getFecFregistro() == null;
             //setNumVoucher(rendicionItem);
             moneda = rendicioncabecera.getCodTipomoneda();
-//            if (isNew) {
-//                item = rendicionItem;
-//            } else {
             loadDetallesToGrid(cabecera);
-//                view.grid.select(rendicionItem);
-//            }
             setupExport();
             view.calcFooterSums();
         } catch (Validator.InvalidValueException e) {

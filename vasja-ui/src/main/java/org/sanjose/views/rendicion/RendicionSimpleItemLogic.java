@@ -1,5 +1,6 @@
 package org.sanjose.views.rendicion;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
@@ -21,6 +22,7 @@ import org.sanjose.model.*;
 import org.sanjose.render.DateNotNullRenderer;
 import org.sanjose.util.*;
 import org.sanjose.validator.LocalizedBeanValidator;
+import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.ComprobanteWarnGuardar;
 import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
@@ -69,6 +71,9 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
     private ItemClickEvent.ItemClickListener gridItemClickListener;
     private FieldGroup.CommitHandler gridCommitHandler;
     private Property.ValueChangeListener tipoCambioListener;
+
+    private Property.ValueChangeListener ingresoFieldValueChangeListener;
+    private Property.ValueChangeListener egresoFieldValueChangeListener;
 
     public void init(RendicionSimpleOperView view) {
         this.view = view;
@@ -242,7 +247,6 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
             }
             view.grid.getColumn(f).setEditorField(nf);
         });
-
         addValidators();
         // Editing Destino
         view.getBtnResponsable().addClickListener(event -> editDestino(view.getSelResponsable1()));
@@ -324,22 +328,22 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         if (moneda==GenUtil.PEN) {
             if (!GenUtil.isNullOrZero(tcDolar))
                 bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.USD)).setValue(
-                        newNum.setScale(2).divide(tcDolar, RoundingMode.HALF_EVEN));
+                        newNum.setScale(2, RoundingMode.HALF_EVEN).divide(tcDolar, RoundingMode.HALF_EVEN));
             if (!GenUtil.isNullOrZero(tcEuro))
                 bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.EUR)).setValue(
-                        newNum.setScale(2).divide(tcEuro, RoundingMode.HALF_EVEN));
+                        newNum.setScale(2, RoundingMode.HALF_EVEN).divide(tcEuro, RoundingMode.HALF_EVEN));
         } else if (moneda==GenUtil.USD) {
             if (!GenUtil.isNullOrZero(tcDolar))
                 bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.PEN)).setValue(
-                    newNum.setScale(2).multiply(tcDolar));
+                    newNum.setScale(2, RoundingMode.HALF_EVEN).multiply(tcDolar));
             if (!GenUtil.isNullOrZero(tcEuro) && !GenUtil.isNullOrZero(tcDolar))
                 bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.EUR)).setValue(
-                    newNum.setScale(2).multiply(tcDolar).divide(tcEuro, RoundingMode.HALF_EVEN));
+                    newNum.setScale(2, RoundingMode.HALF_EVEN).multiply(tcDolar).divide(tcEuro, RoundingMode.HALF_EVEN));
         } else if (!GenUtil.isNullOrZero(tcEuro) && !GenUtil.isNullOrZero(tcDolar)) {
                 bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.PEN)).setValue(
-                        newNum.setScale(2).multiply(tcEuro));
+                        newNum.setScale(2, RoundingMode.HALF_EVEN).multiply(tcEuro));
                 bItem.getItemProperty("num" + haberDebe + GenUtil.getDescMoneda(GenUtil.USD)).setValue(
-                        newNum.setScale(2).multiply(tcEuro).divide(tcDolar, RoundingMode.HALF_EVEN));
+                        newNum.setScale(2, RoundingMode.HALF_EVEN).multiply(tcEuro).divide(tcDolar, RoundingMode.HALF_EVEN));
         }
     }
 
@@ -385,6 +389,17 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
     // END OF TIPO CAMBIO LOGIC
 
     private void setMonedaLogic(Character moneda) {
+        // Remove validators on ingreso and egreso fields
+
+        NumberField egresoField = (NumberField)view.grid.getColumn("numDebe" + GenUtil.getDescMoneda(this.moneda)).getEditorField();
+        NumberField ingresoField = (NumberField)view.grid.getColumn("numHaber" + GenUtil.getDescMoneda(this.moneda)).getEditorField();
+        if (egresoField!=null && ingresoField!=null) {
+            egresoField.removeAllValidators();
+            ingresoField.removeAllValidators();
+            egresoField.removeValueChangeListener(egresoFieldValueChangeListener);
+            ingresoField.removeValueChangeListener(ingresoFieldValueChangeListener);
+        }
+
         // Update Tipo Moneda on every item only if not advanced manView
         this.moneda = moneda;
         if (!view.isVistaFull) {
@@ -396,6 +411,9 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         view.setTotal(moneda);
         if (moneda.equals(GenUtil.EUR)) view.getSetAllTcambioText().setInputPrompt("T. Cambio EUR");
         else view.getSetAllTcambioText().setInputPrompt("T. Cambio USD");
+
+        // add new validators for ingreso and egreso
+        addEgresoAndIngresoValidatorsForMoneda(moneda);
     }
 
     private void updateProperty(Field f, String itemProperty) {
@@ -453,9 +471,48 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         txtGlosaDetalle.addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "txtGlosaitem"));
         txtSerieDoc.addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "txtSeriecomprobantepago"));
         txtNumDoc.addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "txtComprobantepago"));
+
 //        view.getSelTipoMov().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "codTipomov"));
 //        // Check saldos and warn
 //        saldoChecker = new SaldoChecker(manView.getNumEgreso(), manView.getSaldoCuenta(), manView.getSaldoProyPEN(), this);
+    }
+
+
+
+    public void addEgresoAndIngresoValidatorsForMoneda(Character moneda) {
+        NumberField egresoField = (NumberField)view.grid.getColumn("numDebe" + GenUtil.getDescMoneda(moneda)).getEditorField();
+        NumberField ingresoField = (NumberField)view.grid.getColumn("numHaber" + GenUtil.getDescMoneda(moneda)).getEditorField();
+
+        egresoField.addValidator(
+                new TwoNumberfieldsValidator(ingresoField,
+                        false, "Ingreso y egreso debe tener valor"));
+        ingresoField.addValidator(
+                new TwoNumberfieldsValidator(egresoField,
+                        false, "Ingreso y egreso debe tener valor"));
+
+        ingresoFieldValueChangeListener = new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                    if (GenUtil.isInvertedZero(event.getProperty().getValue())) {
+                        egresoField.setValue("");
+                    }
+                }
+            }
+        };
+        egresoFieldValueChangeListener = new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (!GenUtil.objNullOrEmpty(event.getProperty().getValue())) {
+                    if (GenUtil.isInvertedZero(event.getProperty().getValue())) {
+                        ingresoField.setValue("");
+                    }
+                }
+            }
+        };
+
+        ingresoField.addValueChangeListener(ingresoFieldValueChangeListener);
+        egresoField.addValueChangeListener(egresoFieldValueChangeListener);
     }
 
     private void setProyectoLogic(Property.ValueChangeEvent event) {
@@ -723,11 +780,13 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         gridCommitHandler = new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws CommitException {
+
             }
             @Override
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws CommitException {
                 Object item = view.grid.getContainerDataSource().getItem(view.grid.getEditedItemId());
                 // Attach logic to num fields
+
                 try {
                     ScpRendiciondetalle vcb = prepToSave();
                     if (vcb != null) {
