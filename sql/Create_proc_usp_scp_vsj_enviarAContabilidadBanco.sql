@@ -1,6 +1,6 @@
 USE [SCP]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidadBanco]    Script Date: 08/02/2020 19:50:20 ******/
+/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidadBanco]    Script Date: 14/03/2023 23:31:29 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -98,9 +98,9 @@ BEGIN TRY
 			  ,[cod_uregistro]
 			  ,[fec_factualiza]
 			  ,[cod_uactualiza])
-		(SELECT [txt_anoproceso]
+		(SELECT @txt_ano
 			  ,@cod_filial
-			  ,[cod_mes]
+			  ,@txt_mes
 			  ,@cod_origen
 			  ,@cod_comprobante
 			  ,Convert(date, fec_fecha, 103)
@@ -157,7 +157,7 @@ BEGIN TRY
 			  ,[flg_im],[fec_fregistro],[cod_uregistro],[fec_factualiza],[cod_uactualiza]
     )
     (
-			SELECT txt_anoproceso,cod_filial,cod_mes,cod_origen,cod_comprobante,
+			SELECT @txt_ano,cod_filial,@txt_mes,cod_origen,cod_comprobante,
 			ROW_NUMBER() OVER(ORDER BY cod_proyecto,cod_contracta desc) AS num_nroitem
 			  ,fec_fecha,cod_tipomoneda,txt_glosaitem,cod_destino,txt_cheque
 			  ,flg_chequecobrado,cod_mescobr,cod_tipocomprobantepago,txt_seriecomprobantepago
@@ -321,7 +321,7 @@ begin
 			  ,[flg_im],[fec_fregistro],[cod_uregistro],[fec_factualiza],[cod_uactualiza]
     )
     (
-			SELECT txt_anoproceso,cod_filial,cod_mes,cod_origen,cod_comprobante,
+			SELECT @txt_ano,cod_filial,@txt_mes,cod_origen,cod_comprobante,
 			ROW_NUMBER() OVER(ORDER BY cod_proyecto,cod_contracta desc) AS num_nroitem
 			  ,fec_fecha,cod_tipomoneda,txt_glosaitem,cod_destino,txt_cheque
 			  ,flg_chequecobrado,cod_mescobr,cod_tipocomprobantepago,txt_seriecomprobantepago
@@ -467,8 +467,8 @@ end
 begin
 			SELECT @ErrorStep = 'No existe tipo de cambio EUR';
 			--select @test=1/@num_tc_mo
-		   SELECT  @ErrorStep = 'Error al insertar lineas de detalle de comprobante para EUR'
-		   	  insert into dbo.scp_comprobantedetalle
+		   SELECT  @ErrorStep = 'Error al insertar lineas de detalle de comprobante para EUR';
+	 insert into dbo.scp_comprobantedetalle
    (
 		  [txt_anoproceso],[cod_filial],[cod_mes],[cod_origen],[cod_comprobante]
 			  ,[num_nroitem]
@@ -495,7 +495,7 @@ begin
 			  ,[flg_im],[fec_fregistro],[cod_uregistro],[fec_factualiza],[cod_uactualiza]
     )
     (
-			SELECT txt_anoproceso,cod_filial,cod_mes,cod_origen,cod_comprobante,
+			SELECT @txt_ano,cod_filial,@txt_mes,cod_origen,cod_comprobante,
 			ROW_NUMBER() OVER(ORDER BY cod_proyecto,cod_contracta desc) AS num_nroitem
 			  ,fec_fecha,cod_tipomoneda,txt_glosaitem,cod_destino,txt_cheque
 			  ,flg_chequecobrado,cod_mescobr,cod_tipocomprobantepago,txt_seriecomprobantepago
@@ -506,7 +506,7 @@ begin
 			  ,[cod_contracta],[cod_ctacontable9] ,[cod_ctacontable79],[cod_ctaarea]
 			  ,[cod_ctaactividad],cod_ctaespecial,cod_financiera,[cod_flujocaja]
 			  ,[num_tcvdolar],[num_habersol],[num_debesol],num_haberdolar
-			  ,num_debedolar,[num_tcmo],[num_debemo],[num_habermo],[cod_monedaoriginal]
+			  ,num_debedolar,[num_tcmo],[num_habermo],[num_debemo],[cod_monedaoriginal]
 			  ,[flg_tcreferencia],[flg_conversion],[cod_pais],[cod_departamento]
 			  ,[flg_recuperaigv],[por_igv],[por_ies],
 			  ROW_NUMBER() OVER(ORDER BY cod_proyecto,cod_contracta desc) as num_nroitem2,
@@ -538,13 +538,13 @@ begin
 			  ,isnull([cod_ctaespecial],'') as cod_ctaespecial,isnull([cod_financiera],'') as cod_financiera
 			  ,'' as [cod_flujocaja],
 			  @num_tc_usd as [num_tcvdolar]
-			  ,case when @num_tc_usd>0 then [num_haberdolar]*@num_tc_usd else 0 end as num_habersol
-			  ,case when @num_tc_usd>0 then [num_debedolar]*@num_tc_usd else 0 end as num_debesol
-			  , num_haberdolar
-			  , num_debedolar
-			  ,@num_tc_mo as num_tcmo
-			  ,0 as [num_debemo],
-			  0 as [num_habermo]
+			  ,case when @num_tc_mo>0 then [num_habermo]*@num_tc_mo else 0 end as num_habersol
+			  ,case when @num_tc_mo>0 then [num_debemo]*@num_tc_mo else 0 end as num_debesol
+				,0 as [num_haberdolar]
+			  ,0 as [num_debedolar]
+			  ,@num_tc_mo as [num_tcmo]
+			  ,[num_habermo] --case when @num_tc_usd>0 then ([num_haberdolar]/@num_tc_usd)*@num_tc_mo else 0 end as [num_debemo]
+			  ,[num_debemo]--case when @num_tc_usd>0 then ([num_debedolar]/@num_tc_usd)*@num_tc_mo else 0 end as [num_habermo]
 			  ,'' as [cod_monedaoriginal]
 			  ,0 as [flg_tcreferencia],0 as [flg_conversion],'' as[cod_pais],'' as [cod_departamento]
 			  ,'1' as [flg_recuperaigv],0 as [por_igv],0 as [por_ies],1 as [num_nroitem2]
@@ -588,13 +588,13 @@ begin
 			  ,''--isnull(bd.[cod_ctaespecial],'')
 			  ,isnull(bd.[cod_financiera],''),'' --[cod_flujocaja]
 			,  @num_tc_usd as [num_tcvdolar]
-			,case when @num_tc_usd>0 then sum(bd.[num_debemo]*@num_tc_mo) else 0 end as num_debesol
-			  ,case when @num_tc_usd>0 then sum(bd.[num_habermo]*@num_tc_mo) else 0 end as num_habersol
-			  ,case when @num_tc_usd>0 then sum((bd.[num_debemo]*@num_tc_mo)/@num_tc_usd) else 0 end as num_debedolar
-			  ,case when @num_tc_usd>0 then sum((bd.[num_habermo]*@num_tc_mo)/@num_tc_usd) else 0 end as num_haberdolar
+			,case when @num_tc_mo>0 then sum(bd.[num_debemo]*@num_tc_mo) else 0 end as num_debesol
+			  ,case when @num_tc_mo>0 then sum(bd.[num_habermo]*@num_tc_mo) else 0 end as num_habersol
+			  ,0 as num_debedolar
+			  ,0 as num_haberdolar
 				  ,@num_tc_mo
-			  ,sum(bd.[num_habermo])
-			  ,sum(bd.[num_debemo])
+			  ,sum(bd.num_debemo) as num_debemo--case when @num_tc_mo>0 then sum((bd.[num_debedolar]*@num_tc_usd)/@num_tc_mo) else 0 end as num_debemo
+			  ,sum(bd.num_habermo) as num_habermo--case when @num_tc_mo>0 then sum((bd.[num_haberdolar]*@num_tc_usd)/@num_tc_mo) else 0 end as num_habermo
 			  ,'' --[cod_monedaoriginal]
 			  ,0--[flg_tcreferencia]
 			  ,0--[flg_conversion]
