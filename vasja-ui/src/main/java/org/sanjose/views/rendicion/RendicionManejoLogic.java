@@ -143,11 +143,13 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
     @Override
     public void refreshItems(Collection<ScpRendicioncabecera> rendicioncabeceras) {
         rendicioncabeceras.forEach(scb -> {
-//            ScpCajabanco newScb = manView.getService().getRendicioncabeceraRep().findByCodCajabanco(scb.getCodCajabanco());
-//            manView.getGrid().getContainerDataSource().removeItem(scb);
-//            manView.getGrid().getContainerDataSource().addItem(newScb);
+            ScpRendicioncabecera newScb = manView.getService().getRendicioncabeceraRep().findByCodRendicioncabecera(scb.getCodRendicioncabecera());
+            manView.getGrid().getContainerDataSource().removeItem(scb);
+            manView.getGrid().getContainerDataSource().addItem(newScb);
         });
-        manView.refreshData();
+        SortOrder[] sortOrders = manView.getGrid().getSortOrder().toArray(new SortOrder[1]);
+        manView.getGrid().setSortOrder(Arrays.asList(sortOrders));
+        //manView.refreshData();
     }
 
 }

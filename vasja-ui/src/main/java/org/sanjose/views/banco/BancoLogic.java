@@ -19,6 +19,7 @@ import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.validator.SaldoChecker;
 import org.sanjose.views.sys.Viewing;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class BancoLogic extends BancoItemLogic {
     @Override
     public void init(BancoOperView view) {
         super.init(view);
-        addWarningToGuardarBtn(true);
+        view.getGuardarBtn().addClickListener(clickEvent -> saveCabecera());
         view.getNewChequeBtn().addClickListener(ev -> nuevoCheque(null));
         //view.getGuardarBtn().addClickListener(event -> saveCabecera());
         view.getNewItemBtn().addClickListener(event -> nuevoComprobante());
@@ -235,34 +236,6 @@ public class BancoLogic extends BancoItemLogic {
         view.getService().deleteBancoOperacion(bancocabecera, bancoItem);
         loadDetallesToGrid(bancocabecera);
         view.refreshData();
-    }
-
-    public void addWarningToGuardarBtn(boolean isWarn) {
-        view.getGuardarBtn().removeClickListener(guardarBtnListner);
-        if (isWarn) {
-            guardarBtnListner = new Button.ClickListener() {
-                @Override
-                public void buttonClick(Button.ClickEvent clickEvent) {
-                    MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
-                    MessageBox
-                            .createQuestion()
-                            .withCaption("Atencion!")
-                            .withMessage("La cuenta o proyecto/tercero no tiene suficiente " +
-                                    "recursos.\nEsta seguro que lo quiere guardar?")
-                            .withYesButton(() ->  saveCabecera())
-                            .withNoButton()
-                            .open();
-                }
-            };
-        } else {
-            guardarBtnListner = new Button.ClickListener() {
-                @Override
-                public void buttonClick(Button.ClickEvent clickEvent) {
-                    saveCabecera();
-                }
-            };
-        }
-        view.getGuardarBtn().addClickListener(guardarBtnListner);
     }
 
     private void saveCabecera() {

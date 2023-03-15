@@ -387,7 +387,6 @@ public class PersistanceService {
     public ScpRendiciondetalle saveRendicionOperacion(ScpRendicioncabecera cabecera, ScpRendiciondetalle rendicionItem) throws FieldGroup.CommitException {
         //cabecera.setCodTipomoneda(moneda);
         cabecera.prepareToSave();
-        System.out.println("saving: " + cabecera);
         cabecera = rendicioncabeceraRep.save(cabecera);
         if (GenUtil.strNullOrEmpty(cabecera.getCodComprobante())) {
             cabecera.setCodComprobante(GenUtil.getTxtCorrelativoLen(cabecera.getCodRendicioncabecera(), 6));
@@ -409,15 +408,16 @@ public class PersistanceService {
             rendicionItem.setScpRendicioncabecera(cabecera);
             if (rendicionItem.getId() == null) {
                 ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+                id.setCodComprobante(cabecera.getCodComprobante());
                 id = id.prepareToSave(rendicionItem);
                 id.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
                 id.setNumNroitem(rendiciondetalleRep.findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera()).size() + 1);
                 id.setCodFilial(cabecera.getCodFilial());
                 id.setCodOrigen(cabecera.getCodOrigen());
-                id.setCodComprobante(cabecera.getCodComprobante());
                 rendicionItem.setId(id);
+            } else {
+                rendicionItem.getId().prepareToSave(rendicionItem);
             }
-
             rendicionItem.setScpRendicioncabecera(cabecera);
             if (GenUtil.strNullOrEmpty(rendicionItem.getId().getCodComprobante())) {
                 rendicionItem.getId().setCodComprobante(cabecera.getCodComprobante());

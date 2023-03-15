@@ -18,18 +18,16 @@ public class SaldoChecker {
     private final TextField egresoField;
     private TextField saldoField;
     private TextField proyectoField;
-    private ComprobanteWarnGuardar comprobanteWarnGuardar;
 
-    public SaldoChecker(TextField egresoField, TextField saldoField, TextField proyectoField, ComprobanteWarnGuardar comprobanteWarnGuardar) {
+    public SaldoChecker(TextField egresoField, TextField saldoField, TextField proyectoField) {
         this.egresoField = egresoField;
         this.saldoField = saldoField;
         this.proyectoField = proyectoField;
-        this.comprobanteWarnGuardar = comprobanteWarnGuardar;
     }
 
-    public void check() {
+    public boolean check() {
         String strVal = egresoField.getValue();
-        if (GenUtil.strNullOrEmpty(strVal) || GenUtil.objNullOrEmpty(saldoField.getValue())) return;
+        if (GenUtil.strNullOrEmpty(strVal) || GenUtil.objNullOrEmpty(saldoField.getValue())) return false;
         BigDecimal newVal = null;
         BigDecimal caja = null;
         BigDecimal proyecto = null;
@@ -63,7 +61,7 @@ public class SaldoChecker {
         } else {
             egresoField.removeStyleName("warning");
         }
-        comprobanteWarnGuardar.addWarningToGuardarBtn(isWarn);
+        return isWarn;
     }
 
     public TextField getSaldoField() {

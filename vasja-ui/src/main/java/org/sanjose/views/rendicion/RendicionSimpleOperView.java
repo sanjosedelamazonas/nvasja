@@ -42,17 +42,24 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
     }
 
     private Window subWindow;
+
+//    - orden: it, proyecto, cta contable, lug de gasto, rubro inst, fuente (automatico), partida p.(segun proyecto),
+// glosa, ing, egr, razon social, tipo doc, nroserie, doc
+
+
     static final String[] VISIBLE_COLUMN_IDS_PEN = new String[]{
-            "id.numNroitem", "codProyecto", "fecComprobantepago", "codTipocomprobantepago", "txtSeriecomprobantepago",
-            "txtComprobantepago", "codDestino", "txtGlosaitem",
+            "id.numNroitem", "fecPagocomprobantepago", "codProyecto", "codCtacontable", "codContraparte",
+            "codCtaespecial", "codFinanciera", "codCtaproyecto", "txtGlosaitem",
             "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "numHabermo", "numDebemo",
-            "codCtacontable", "codContraparte", "codCtaespecial", "codFinanciera", "codCtaproyecto"
+            "codDestino", "codTipocomprobantepago", "txtSeriecomprobantepago", "txtComprobantepago",
+
+
     };
     static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
-            "It", "Proyecto", "Fecha Doc", "Tipo Doc", "Nro de serie",
-            "Nro de doc", "Razon social/Nombre", "Glosa por detalle",
+            "It", "Fecha Doc", "Proyecto", "Cuenta", "Lug. Gasto",
+            "Rubro Inst", "Fuente", "Partida P.", "Glosa por detalle",
             "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
-            "Cuenta", "Lug. Gasto", "Rubro Inst", "Fuente", "Partida P."
+            "Razon social/Nombre", "Tipo Doc", "Nro de serie", "Nro de doc",
 
     };
     static final String[] HIDDEN_COLUMN_NAMES_PEN = new String[]{
@@ -310,7 +317,6 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
     public Grid getGrid() {
         return grid;
     }
-
 
     public Button getBtnGuardar() {
         return btnGuardar;
