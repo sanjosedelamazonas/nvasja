@@ -582,6 +582,7 @@ class ComprobanteLogic implements Serializable {
         if (view.getDataFechaComprobante().getValue()!=null) {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             Date fechaCajas = view.getDataFechaComprobante().getValue()!=null ? view.getDataFechaComprobante().getValue() : new Date();
+            fechaCajas = GenUtil.getEndOfDay(fechaCajas);
             ProcUtil.Saldos res = null;
             if (isProyecto() && !GenUtil.objNullOrEmpty(view.getSelProyectoTercero().getValue())) {
                 res = procUtil.getSaldos(fechaCajas, view.getSelProyectoTercero().getValue().toString(), null);
@@ -601,29 +602,12 @@ class ComprobanteLogic implements Serializable {
 
     private void setSaldoCaja() {
         if (view.getDataFechaComprobante().getValue()!=null && view.getSelCaja().getValue()!=null && view.getSelMoneda().getValue()!=null) {
-            BigDecimal saldo = procUtil.getSaldoCaja(view.getDataFechaComprobante().getValue(),
+            BigDecimal saldo = procUtil.getSaldoCaja(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()),
                     view.getSelCaja().getValue().toString(), view.getSelMoneda().getValue().toString().charAt(0));
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
 
             view.getSaldoCaja().setValue(df.format(saldo));
             saldoChecker.setSaldoField(view.getSaldoCaja());
-
-            /*if (PEN.equals(view.getSelMoneda().getValue().toString().charAt(0))) {
-                view.getSaldoCaja().setValue(saldo.toString());
-                view.getSaldoCajaUSD().setValue("");
-                view.getSaldoCajaEUR().setValue("");
-                saldoChecker.setSaldoField(view.getSaldoCaja());
-            } else if (USD.equals(view.getSelMoneda().getValue().toString().charAt(0))) {
-                view.getSaldoCajaUSD().setValue(saldo.toString());
-                view.getSaldoCaja().setValue("");
-                view.getSaldoCajaEUR().setValue("");
-                saldoChecker.setSaldoField(view.getSaldoCajaUSD());
-            } else {
-                view.getSaldoCajaEUR().setValue(saldo.toString());
-                view.getSaldoCaja().setValue("");
-                view.getSaldoCajaUSD().setValue("");
-                saldoChecker.setSaldoField(view.getSaldoCajaEUR());
-            }*/
         } else {
             view.getSaldoCaja().setValue("");
         }

@@ -510,12 +510,12 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             ProcUtil.Saldos res = null;
             if (isProyecto()) {
-                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), proyTerc.toString(), null);
+                res = procUtil.getSaldos(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()), proyTerc.toString(), null);
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue(df.format(res.getSaldoEUR()));
             } else {
-                res = procUtil.getSaldos(view.getDataFechaComprobante().getValue(), null, proyTerc.toString());
+                res = procUtil.getSaldos(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()), null, proyTerc.toString());
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue(df.format(res.getSaldoEUR()));
