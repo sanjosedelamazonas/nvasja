@@ -423,7 +423,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             };
             view.getSelFuente().setValue(null);
             view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroValueChangeListener);
-            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", DataUtil.loadDestinos(view.getService()), "Sel Tercero",
+            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", DataUtil.loadDestinos(view.getService(), true), "Sel Tercero",
                     "txtNombre");
         }
     }

@@ -83,7 +83,7 @@ public class ConfiguracionCajaView extends ConfiguracionCajaUI implements Viewin
         
 
         ComboBox selDestino = new ComboBox();
-        DataFilterUtil.bindComboBox(selDestino, "codDestino", DataUtil.loadDestinos(getService()), "Sel Tercero", "txtNombre");
+        DataFilterUtil.bindComboBox(selDestino, "codDestino", DataUtil.loadDestinos(getService(), true), "Sel Tercero", "txtNombre");
         gridConfigCaja.getColumn("codDestino").setEditorField(selDestino);
 
         ComboBox selProyecto = new ComboBox();

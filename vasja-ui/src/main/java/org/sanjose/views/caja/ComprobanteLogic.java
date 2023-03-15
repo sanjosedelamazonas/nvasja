@@ -513,9 +513,9 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
                 "id.codCtacontable", "txtDescctacontable", null);
         //TODO Proy
         if (isProyecto())
-            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codProyecto", view.getService().getProyectoRepo().
-                        findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(newFecha, newFecha, GenUtil.getBegin20thCent()),
-                "Sel Proyecto", "txtDescproyecto");
+            DataFilterUtil.refreshComboBox(view.getSelProyectoTercero(),
+                    view.getService().getProyectoRepo().findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(newFecha, newFecha, GenUtil.getBegin20thCent()),
+                    "codProyecto", "txtDescproyecto", null);
         //view.getSelProyectoTercero().addValueChangeListener(this::setProyectoLogic);
     }
 
@@ -698,7 +698,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
                     setTerceroLogic(valueChangeEvent);
                 }
             };
-            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", DataUtil.loadDestinos(view.getService()), "Sel Tercero",
+            DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", DataUtil.loadDestinos(view.getService(), true), "Sel Tercero",
                      "txtNombre");
         }
         view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroChangeListener);
