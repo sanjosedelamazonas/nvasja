@@ -163,8 +163,8 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         selFechaDoc.setPropertyDataSource(prop);
         selFechaDoc.setConverter(DateToTimestampConverter.INSTANCE);
         selFechaDoc.setResolution(Resolution.DAY);
-        view.grid.getColumn("fecComprobantepago").setEditorField(selFechaDoc);
-        view.grid.getColumn("fecComprobantepago").setRenderer(new DateNotNullRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        view.grid.getColumn("fecPagocomprobantepago").setEditorField(selFechaDoc);
+        view.grid.getColumn("fecPagocomprobantepago").setRenderer(new DateNotNullRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         selFechaDoc.removeValueChangeListener(tipoCambioListener);
         selFechaDoc.addValueChangeListener(tipoCambioListener);
 
@@ -442,8 +442,8 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
 
     public void addValidators() {
         // Validators
-        view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecComprobante"));
-        selFechaDoc.addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecComprobantepago"));
+        //view.getDataFechaComprobante().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecComprobante"));
+        selFechaDoc.addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecPagocomprobantepago"));
         view.getDataFechaRegistro().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "fecFregistro"));
         view.getSelResponsable1().addValidator(new LocalizedBeanValidator(ScpRendicioncabecera.class, "codDestino"));
         //view.getSelCodAuxiliar().addValidator(new LocalizedBeanValidator(ScpRendiciondetalle.class, "codDestino"));
@@ -639,6 +639,8 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         item.getId().setCodComprobante(rendicioncabecera.getCodComprobante());
         if (item.getId().getNumNroitem()==null)
             item.getId().setNumNroitem(view.getContainer().size()+1);
+        item.setFecComprobante(rendicioncabecera.getFecComprobante());
+        item.setFecComprobantepago(rendicioncabecera.getFecComprobante());
         item.setTxtComprobantepago("");
         item.setTxtSeriecomprobantepago("");
         item.setTxtGlosaitem(rendicioncabecera.getTxtGlosa());
@@ -655,7 +657,6 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
                     item.setCodTipocomprobantepago(prevItem.getCodTipocomprobantepago());
                     item.setTxtComprobantepago(prevItem.getTxtComprobantepago());
                     item.setTxtSeriecomprobantepago(prevItem.getTxtSeriecomprobantepago());
-                    item.setFecComprobantepago(prevItem.getFecComprobantepago());
                     item.setFecPagocomprobantepago(prevItem.getFecPagocomprobantepago());
                     item.setTxtGlosaitem(prevItem.getTxtGlosaitem());
                     item.setCodProyecto(prevItem.getCodProyecto());
@@ -746,6 +747,10 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
                         fieldGroup.commit();
                         commitEvent.getFieldBinder();
                         final ScpRendiciondetalle vcbToSave = setEmptyStrings(vcb);
+                        vcbToSave.setFecComprobante(vcb.getScpRendicioncabecera().getFecComprobante());
+                        ScpRendiciondetallePK id = vcbToSave.getId().prepareToSave(vcbToSave);
+                        vcbToSave.setId(id);
+
                         if (vcb.getScpRendicioncabecera().isEnviado()) {
                             MessageBox
                                     .createQuestion()
@@ -755,10 +760,12 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
                                         view.getService().getRendiciondetalleRep().save(vcbToSave);
                                         view.getGrid().refreshRows(item);
                                         bindForm(vcbToSave);
+                                        //.getRendiciondetalleRep().save(vcbToSave);
                                     })
                                     .withNoButton()
                                     .open();
                         } else {
+                            //view.getService().getRendiciondetalleRep().save(vcbToSave);
                             view.getService().getRendiciondetalleRep().save(vcbToSave);
                             view.getGrid().refreshRows(item);
                             bindForm(vcbToSave);

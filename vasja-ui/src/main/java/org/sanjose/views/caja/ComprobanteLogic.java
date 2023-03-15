@@ -46,7 +46,7 @@ import static org.sanjose.views.sys.Viewing.Mode.NEW;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
+class ComprobanteLogic implements Serializable {
 
 	private static final Logger log = LoggerFactory.getLogger(ComprobanteLogic.class);
 
@@ -66,7 +66,25 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
 
     public void init(ComprobanteViewing comprobanteView) {
         view = comprobanteView;
-        addWarningToGuardarBtn(true);
+        guardarBtnListner = new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                /// Check...
+                if (new SaldoChecker(view.getNumEgreso(), view.getSaldoCaja(), view.getSaldoProyPEN()).check()) {
+                    MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
+                    MessageBox
+                            .createQuestion()
+                            .withCaption("Atencion!")
+                            .withMessage("La caja o proyecto/tercero no tiene suficiente recursos.\nEsta seguro que lo quiere guardar?")
+                            .withYesButton(() -> saveComprobante())
+                            .withNoButton()
+                            .open();
+                } else {
+                    saveComprobante();
+                }
+            }
+        };
+        view.getGuardarBtn().addClickListener(guardarBtnListner);
         view.getNuevoComprobante().addClickListener(event -> nuevoComprobante());
         view.getCerrarBtn().addClickListener(event -> cerrarAlManejo());
         view.getImprimirBtn().addClickListener(event -> {
@@ -89,33 +107,6 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
         } else if (view.getSubWindow()!=null && view instanceof TransferenciaView) {
             ((TransferenciaView) view).getNuevaTransBtn().setVisible(false);
         }
-    }
-
-    public void addWarningToGuardarBtn(boolean isWarn) {
-        view.getGuardarBtn().removeClickListener(guardarBtnListner);
-        if (isWarn) {
-            guardarBtnListner = new Button.ClickListener() {
-                @Override
-                public void buttonClick(Button.ClickEvent clickEvent) {
-                    MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
-                    MessageBox
-                            .createQuestion()
-                            .withCaption("Atencion!")
-                            .withMessage("La caja o proyecto/tercero no tiene suficiente recursos.\nEsta seguro que lo quiere guardar?")
-                            .withYesButton(() ->  saveComprobante())
-                            .withNoButton()
-                            .open();
-                }
-            };
-        } else {
-            guardarBtnListner = new Button.ClickListener() {
-                @Override
-                public void buttonClick(Button.ClickEvent clickEvent) {
-                    saveComprobante();
-                }
-            };
-        }
-        view.getGuardarBtn().addClickListener(guardarBtnListner);
     }
 
     void closeWindow() {
@@ -398,7 +389,7 @@ class ComprobanteLogic implements Serializable, ComprobanteWarnGuardar {
         view.getSelTipoMov().addValidator(new LocalizedBeanValidator(ScpCajabanco.class, "codTipomov"));
 
         // Check saldos and warn
-        saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCaja(), view.getSaldoProyPEN(), this);
+        saldoChecker = new SaldoChecker(view.getNumEgreso(), view.getSaldoCaja(), view.getSaldoProyPEN());
         view.getNumEgreso().addBlurListener(event -> saldoChecker.check());
 
         // Editing Destino

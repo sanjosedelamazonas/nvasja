@@ -19,6 +19,7 @@ import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.ScpRendicioncabecera;
 import org.sanjose.model.ScpRendiciondetalle;
+import org.sanjose.model.ScpRendiciondetallePK;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
@@ -218,6 +219,8 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
 
     @Override
     public void cerrarAlManejo() {
+        if (xlsDownloader!=null && xlsDownloader.isAttached())
+            xlsDownloader.detach();
         view.getGrid().deselectAll();
         item = null;
         beanItem = null;
@@ -300,6 +303,16 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 throw new FieldGroup.CommitException("Moneda no esta de tipo numeral");
             log.debug("cabezera ready: " + cabecera);
 
+
+            List<ScpRendiciondetalle> bancodetalleList = view.getService().getRendiciondetalleRep()
+                    .findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera());
+            for (ScpRendiciondetalle det : bancodetalleList) {
+                det.setFecComprobante(cabecera.getFecComprobante());
+                det.setFecComprobantepago(cabecera.getFecComprobante());
+                ScpRendiciondetallePK detId = det.getId().prepareToSave(det);
+                det.prepareToSave();
+                view.getService().getRendiciondetalleRep().save(det);
+            }
             // Committing detalle
             /*if (rendicionItem!=null) {
                 BeanItem<ScpRendiciondetalle> beanItem = new BeanItem<>(item);
@@ -320,7 +333,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
 //            if (isNew) {
 //                item = rendicionItem;
 //            } else {
-                loadDetallesToGrid(cabecera);
+            loadDetallesToGrid(cabecera);
 //                view.grid.select(rendicionItem);
 //            }
             setupExport();
@@ -397,7 +410,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
         anticipoWindow.setPositionX(200);
         anticipoWindow.setPositionY(50);
         anticipoWindow.setDraggable(true);
-        anticipoWindow.setModal(true);
+        anticipoWindow.setModal(false);
         anticipoWindow.setClosable(false);
 
         AnticipoManejoView anticipoView = new AnticipoManejoView(view.getService());
