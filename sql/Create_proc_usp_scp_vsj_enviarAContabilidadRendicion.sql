@@ -238,7 +238,7 @@ BEGIN TRY
 			  ,Convert(date, '01/01/1900', 103) --[fec_refcomprobante]
 			  ,isnull([cod_proyecto],'')
 			  ,isnull([cod_ctaproyecto],'')
-			  ,''--isnull([cod_contracta],'')
+			  ,isnull([cod_contracta],'')
 			  ,'' --[cod_ctacontable9]
 			  ,'' --[cod_ctacontable79]
 			  ,'' --[cod_ctaarea]
@@ -247,10 +247,10 @@ BEGIN TRY
 			  ,isnull([cod_financiera],'')
 			  ,'' --[cod_flujocaja]
 			  ,@num_tc_usd --[num_tcvdolar]
-			  ,[num_habersol]
 			  ,[num_debesol]
-			  ,case when @num_tc_usd>0 then [num_habersol]/@num_tc_usd else 0 end
+    		  ,[num_habersol]
 			  ,case when @num_tc_usd>0 then [num_debesol]/@num_tc_usd else 0 end
+			  ,case when @num_tc_usd>0 then [num_habersol]/@num_tc_usd else 0 end
 			  ,0 --[num_tcmo]
 			  ,0--[num_debemo]
 			  ,0--[num_habermo]
@@ -578,8 +578,6 @@ BEGIN TRY
 				  ,@num_tc_usd --[num_tcvdolar]
 				  ,([num_debemo]*@num_tc_mo)
 				  ,([num_habermo]*@num_tc_mo)
-			    ,case when @num_tc_usd>0 then ([num_debemo]*@num_tc_mo)/@num_tc_usd else 0 end   --[num_haberdolar]
-				  ,case when @num_tc_usd>0 then ([num_habermo]*@num_tc_mo)/@num_tc_usd else 0 end  --[num_debedolar]
 				  ,@num_tc_mo
 				  ,[num_debemo]
 				  ,[num_habermo]
@@ -620,7 +618,7 @@ BEGIN TRY
 
 		/****************************************************************************
         * Step 6
-        * Actualiza scp_cajabanco cuando ya esta en contabilidad la operacion
+        * Actualiza scp_rendicioncabecera  cuando ya esta en contabilidad la operacion
         ****************************************************************************/
         SELECT  @ErrorStep = 'Error al actualizar el registro de rendicion'
 		 update dbo.scp_rendicioncabecera
