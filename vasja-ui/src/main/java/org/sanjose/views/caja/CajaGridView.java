@@ -143,7 +143,7 @@ public class CajaGridView extends CajaGridUI implements CajaViewing, NavigatorVi
         gridCaja.getColumn("codProyecto").setEditorField(selProyecto);
 
         // Tercero
-        DataFilterUtil.bindComboBox(selTercero, "codDestino", DataUtil.loadDestinos(getService()), "Sel Tercero", "txtNombre");
+        DataFilterUtil.bindComboBox(selTercero, "codDestino", DataUtil.loadDestinos(getService(), true), "Sel Tercero", "txtNombre");
         selTercero.addValueChangeListener(this::setTerceroLogic);
         selTercero.addValidator(new TwoCombosValidator(selProyecto, true, null));
         gridCaja.getColumn("codTercero").setEditorField(selTercero);

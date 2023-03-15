@@ -254,6 +254,13 @@ public class DataUtil {
     }
 
     public static List<ScpDestino> loadDestinos(PersistanceService service) {
-        return service.getDestinoRepo().findByCodDestinoNotLikeOrderByTxtNombre("3");
+        return loadDestinos(service, false);
+    }
+
+    public static List<ScpDestino> loadDestinos(PersistanceService service, boolean isTercero) {
+        if (isTercero)
+            return service.getDestinoRepo().findByIndTipodestinoOrderByTxtNombre('3');
+        else
+            return service.getDestinoRepo().findByIndTipodestinoNotOrderByTxtNombre('3');
     }
 }
