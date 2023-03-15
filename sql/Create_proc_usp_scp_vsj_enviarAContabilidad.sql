@@ -1,11 +1,11 @@
-DROP PROCEDURE if exists [dbo].[usp_scp_vsj_enviarAContabilidad];
-go
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidad]    Script Date: 10/25/2018 07:52:37 ******/
+USE [SCP]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidad]    Script Date: 14/03/2023 23:53:45 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidad]
+ALTER PROCEDURE [dbo].[usp_scp_vsj_enviarAContabilidad]
 	@cod_cajabanco int, --id de operacion de scp_cajabanco
 	@user varchar(15), -- nombre del usuario segun SCP
 	@fecha_operacion varchar(10),-- fecha de operacion en formato 'dd/mm/yyyy'
@@ -264,7 +264,7 @@ BEGIN TRY
 			  ,fec_fecha
 			  ,[cod_tipomoneda]
 			  ,isnull([txt_glosaitem],'')
-			  ,isnull([cod_destino],'')
+			  ,isnull([cod_destinoitem],isnull([cod_destino],''))
 			  ,'' --[txt_cheque]
 			  ,'0' --[flg_chequecobrado]
 			  ,'' --[cod_mescobr]
@@ -421,7 +421,7 @@ BEGIN TRY
 			  ,fec_fecha
 			  ,[cod_tipomoneda]
 			  ,isnull([txt_glosaitem],'')
-			  ,isnull([cod_destino],'')
+			  ,isnull([cod_destinoitem],isnull([cod_destino],''))
 			  ,'' --[txt_cheque]
 			  ,'0' --[flg_chequecobrado]
 			  ,'' --[cod_mescobr]
@@ -521,8 +521,8 @@ BEGIN CATCH
     SELECT @ErrorCode = ERROR_NUMBER()
         , @Return_Message = @ErrorStep + ' '
         + cast(ERROR_NUMBER() as varchar(20)) + ' linia: '
-        + cast(ERROR_LINE() as varchar(20)) + ' ' 
-        + ERROR_MESSAGE() + ' > ' 
+        + cast(ERROR_LINE() as varchar(20)) + ' '
+        + ERROR_MESSAGE() + ' > '
         + ERROR_PROCEDURE()
 
 Print @ErrorCode+' '+@Return_Message
@@ -538,3 +538,4 @@ END CATCH
 /*
 Exec usp_scp_vsj_enviarAContabilidad 25557,'abork','24/08/2016','1',0,815,'170410',0
 */
+DROP PROCEDURE if exists [dbo].[usp_scp_vsj_enviarAContabilidadBanco];
