@@ -28,9 +28,9 @@ DONE
 - orden: it, proyecto, cta contable, lug de gasto, rubro inst, fuente (automatico), partida p.(segun proyecto), glosa, ing, egr, razon social, tipo doc, nroserie, doc
 DONE
 - guzik enviar a contabilidad dentro de la rendicion
-!!!!
+DONE
 - guzik imprimir rendicion
-!!!!
+DONE
 - po wyslaniu do contabilidad nie odwwieza na zielono
 DONE
 - no se debe poder modificar despues de haber enviado a contabilidad - jak będzie wyłączenie wysłąnia.
@@ -46,15 +46,15 @@ NOT POSSIBLE
 - mozliwosc "marcar como no enviado"
 - ? jezeli suma(ingr por proyecto)=suma(egr por proyecto) to moglaby na liscie rendiciones pokazywac sie na czerwono? y tez jezeli nie zawiera na liscie cta_contable like '14%'?
 - brakuje raportu na rendiciones (comprobante del sistema contable)
-!!!!
+DONE
 
 rendicion cabecera:
 - responsable con nombre nie numero
 DONE
 - enviado domyslnie na polach, nie schowane
+DONE
 - visibles rendiciones del mes actual
-!!!!
-
+DONE
 
 Destino (soñando):
 - sprawdza czy takie codigo, descripcion juz istnieje przy wprowadzaniu nowego
@@ -85,4 +85,4 @@ DONE
 
   - rendiciones - lista de anticipos pendintes del sistema
   - tercero jezeli inactivo to nie wyswietla sie na liscie w caja ani w bancos
-
+DONE

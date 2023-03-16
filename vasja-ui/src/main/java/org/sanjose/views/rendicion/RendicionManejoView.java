@@ -64,7 +64,7 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"txtCorrelativo"*/ /*"flgEnviado", "codOrigenenlace",
             "codComprobanteenlace"*/};
 
-    private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
+    private Date filterInitialDate = GenUtil.getBeginningOfMonth(new Date());
 
     private BeanItemContainer<ScpRendicioncabecera> container;
 
@@ -133,7 +133,7 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
         }
 
         // Fecha Desde Hasta
-        ViewUtil.setupDateFiltersRendicionesPreviousMonth(container, fechaDesde, fechaHasta, this);
+        ViewUtil.setupDateFiltersRendicionesThisMonth(container, fechaDesde, fechaHasta, this);
 
         //grid.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         grid.getColumn("fecComprobante").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));

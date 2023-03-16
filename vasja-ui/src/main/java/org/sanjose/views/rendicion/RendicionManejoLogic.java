@@ -36,33 +36,9 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
         manView.getBtnNueva().addClickListener(e -> nuevaRendicion());
         manView.getBtnModificar().addClickListener(e -> editarRendicion(manView.getSelectedRow()));
         manView.getBtnEnviar().addClickListener(e -> enviarContabilidad(manView.getSelectedRow()));
-        //manView.getBtnVerImprimir().addClickListener(e -> generateComprobante());
-        //
-        //manView.btnImprimir.setVisible(ConfigurationUtil.is("REPORTS_COMPROBANTE_PRINT"));
-        //manView.btnImprimir.addClickListener(e -> printComprobante());
+        manView.getBtnVerImprimir().addClickListener(e -> ReportHelper.generateComprobante(manView.getSelectedRow()));
         manView.getBtnEliminar().addClickListener(e -> eliminarRendicion(manView.getSelectedRow()));
         saldosView.getBtnReporte().addClickListener(clickEvent ->  ReportHelper.generateDiarioCaja(manView.getFechaDesde().getValue(), manView.getFechaHasta().getValue(), null));
-
-//        GridContextMenu gridContextMenu = new GridContextMenu(manView.getGrid());
-//        gridContextMenu.addGridBodyContextMenuListener(e -> {
-//            gridContextMenu.removeItems();
-//            final Object itemId = e.getItemId();
-//            if (itemId == null) {
-//                gridContextMenu.addItem("Nuevo comprobante", k -> nuevaRendicion());
-//                gridContextMenu.addItem("Nuevo cargo/abono", k -> newTransferencia());
-//            } else {
-//
-//                gridContextMenu.addItem(!GenUtil.strNullOrEmpty(((ScpCajabanco) itemId).getCodTranscorrelativo()) ? "Ver detalle" : "Editar",
-//                        k -> modificarRendicion((ScpCajabanco) itemId));
-//                gridContextMenu.addItem("Nuevo comprobante", k -> nuevaRendicion());
-//                gridContextMenu.addItem("Ver Voucher", k -> generateComprobante());
-//                if (ViewUtil.isPrinterReady()) gridContextMenu.addItem("Imprimir Voucher", k -> printComprobante());
-//
-//                if (Role.isPrivileged()) {
-//                    gridContextMenu.addItem("Enviar a contabilidad", k -> { enviarContabilidad((ScpCajabanco)itemId); });
-//                }
-//            }
-//        });
     }
 
 
@@ -79,14 +55,6 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
         }
         //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
-
-//    private void generateComprobante() {
-//        ReportHelper.generateComprobante(manView.getSelectedRow());
-//    }
-//
-//    private void printComprobante() {
-//        ViewUtil.printComprobante(manView.getSelectedRow());
-//    }
 
     protected void editarRendicion(ScpRendicioncabecera vcb) {
         if (vcb==null) return;

@@ -474,7 +474,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 //view.getBtnAnular().setEnabled(true);
                 if (view.getContainer().size() > 1) view.getBtnEliminar().setEnabled(true);
                 else view.getBtnEliminar().setEnabled(false);
-                if (ViewUtil.isPrinterReady()) view.getBtnVerVoucher().setEnabled(true);
+                //if (ViewUtil.isPrinterReady()) view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnNewItem().setEnabled(true);
                 view.getBtnEliminarRend().setEnabled(true);
@@ -496,7 +496,6 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
                 view.setEnableDetalleFields(false);
                 break;
         }
-        view.getBtnVerVoucher().setVisible(ViewUtil.isPrinterReady());
     }
 
     void closeWindow() {

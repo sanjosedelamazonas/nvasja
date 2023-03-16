@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComprobanteCheque" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="42" uuid="e6e4b764-eb4a-44ec-8aa8-52e244f987a5">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComprobanteRendicion" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="42" uuid="e6e4b764-eb4a-44ec-8aa8-52e244f987a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="net.sf.jasperreports.export.text.character.width" value="7.238"/>
 	<property name="net.sf.jasperreports.export.text.character.height" value="13.948"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SCP_TEST on LEON"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -52,70 +52,89 @@
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="192.168.1.114"/>
 		<parameter name="OP_ID" class="java.lang.Integer">
-			<defaultValueExpression><![CDATA[10430]]></defaultValueExpression>
+			<defaultValueExpression><![CDATA[14666]]></defaultValueExpression>
 		</parameter>
 		<queryString language="SQL">
 			<![CDATA[SELECT
-  scp_bancodetalle.cod_bancocabecera AS CHEQUE_ID,
-  scp_bancodetalle.num_item AS OPERACION_ID,
-  scp_bancodetalle.cod_proyecto AS OPERACION_PROYECTO,
-  scp_bancodetalle.cod_destino AS OPERACION_CODDESTINO,
-  scp_bancodetalle.cod_tercero AS OPERACION_TERCERO,
-  scp_bancodetalle.cod_ctaproyecto AS OPERACION_RUBRO_PROY,
-  scp_bancodetalle.cod_contracta AS OPERACION_CTA_CONTABLE,
-  scp_bancodetalle.cod_ctaespecial AS OPERACION_RUBRO_INST,
-  scp_bancodetalle.cod_contraparte AS OPERACION_LUGAR_GASTO,
-  scp_bancodetalle.txt_seriecomprobantepago AS OPERACION_SERIE_DOCUMENTO,
-  scp_bancodetalle.txt_comprobantepago AS OPERACION_DOCUMENTO,
-  scp_bancodetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
-  scp_bancodetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
-    CASE
-            WHEN ((scp_bancodetalle.[num_habersol] - scp_bancodetalle.[num_debesol] > 0)
-            		OR (scp_bancodetalle.num_haberdolar - scp_bancodetalle.num_debedolar > 0)
-            		OR (scp_bancodetalle.num_habermo - scp_bancodetalle.num_debemo > 0))
-               THEN 1
-               ELSE 0
-       END as OPERACION_ISCARGO,
-
+  scp_rendicioncabecera.cod_rendicioncabecera AS CHEQUE_ID,
+  scp_rendicioncabecera.cod_comprobante AS CHEQUE_COMPROBANTE,
+  scp_rendicioncabecera.txt_glosa AS CHEQUE_DESCRIPCION,
+  scp_rendicioncabecera.fec_comprobante AS CHEQUE_FECHA,
+  scp_rendicioncabecera.cod_tipomoneda AS CHEQUE_MONEDA,
+  scp_rendicioncabecera.cod_destino AS CHEQUE_CODDESTINO,
+  scp_rendicioncabecera.num_totalanticipo AS CHEQUE_ANTICIPO,
+  scp_rendicioncabecera.num_gastototal AS CHEQUE_GASTO,
+  scp_rendicioncabecera.num_saldopendiente AS CHEQUE_SALDO,  
+  scp_rendiciondetalle.num_nroitem AS OPERACION_ID,
+  scp_rendiciondetalle.fec_pagocomprobantepago AS OPERACION_FECHA,
+  scp_rendiciondetalle.cod_proyecto AS OPERACION_PROYECTO,
+  scp_rendiciondetalle.cod_destino AS OPERACION_CODDESTINO,
+  scp_rendiciondetalle.cod_financiera AS OPERACION_FINANCIERA,
+  scp_rendiciondetalle.cod_ctaproyecto AS OPERACION_RUBRO_PROY,
+  scp_rendiciondetalle.cod_ctacontable AS OPERACION_CTA_CONTABLE,
+  scp_rendiciondetalle.cod_ctaespecial AS OPERACION_RUBRO_INST,
+  scp_rendiciondetalle.cod_contraparte AS OPERACION_LUGAR_GASTO,
+  scp_rendiciondetalle.txt_seriecomprobantepago AS OPERACION_SERIE_DOCUMENTO,
+  scp_rendiciondetalle.txt_comprobantepago AS OPERACION_DOCUMENTO,
+  scp_rendiciondetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
+  scp_rendiciondetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
   CASE
-		WHEN (scp_bancodetalle.cod_tipomoneda ='0')
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='0')
                THEN
-					scp_bancodetalle.[num_debesol] - scp_bancodetalle.[num_habersol]
-		WHEN (scp_bancodetalle.cod_tipomoneda ='1')
+					scp_rendiciondetalle.[num_habersol]
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='1')
                THEN
-					scp_bancodetalle.[num_debedolar] - scp_bancodetalle.[num_haberdolar]
-		WHEN (scp_bancodetalle.cod_tipomoneda ='2')
+					scp_rendiciondetalle.[num_haberdolar]
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='2')
                THEN
-					scp_bancodetalle.[num_debemo] - scp_bancodetalle.[num_habermo]
+					scp_rendiciondetalle.[num_habermo]
                ELSE 0
-       END as OPERACION_IMPORTE
+       END as OPERACION_HABER,
+  CASE
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='0')
+               THEN
+					scp_rendiciondetalle.[num_debesol]
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='1')
+               THEN
+					scp_rendiciondetalle.[num_debedolar]
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='2')
+               THEN
+					scp_rendiciondetalle.[num_debemo]
+               ELSE 0
+       END as OPERACION_DEBE,
+	firma.txt_nombre AS OPERACION_DESTINO_NOMBRE,
+	dest2.txt_nombre AS CHEQUE_FIRMA
 FROM
-	scp_bancodetalle
-	INNER JOIN scp_bancocabecera ON scp_bancodetalle.cod_bancocabecera = scp_bancocabecera.cod_bancocabecera
-	INNER JOIN scp_plancontable ON scp_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable
-	AND scp_bancocabecera.txt_anoproceso = scp_plancontable.txt_anoproceso
-	LEFT JOIN scp_destino firma ON scp_bancodetalle.cod_destino = firma.cod_destino
-	LEFT JOIN scp_destino dest2 ON scp_bancocabecera.cod_destino = dest2.cod_destino
-	LEFT JOIN scp_destino tercero ON scp_bancodetalle.cod_tercero = tercero.cod_destino
-	LEFT JOIN dbo.scp_proyecto CUENTA ON scp_bancodetalle.cod_proyecto = CUENTA.cod_proyecto
+	scp_rendiciondetalle
+	INNER JOIN scp_rendicioncabecera ON scp_rendiciondetalle.cod_rendicioncabecera = scp_rendicioncabecera.cod_rendicioncabecera
+	LEFT JOIN scp_destino firma ON scp_rendiciondetalle.cod_destino = firma.cod_destino
+	LEFT JOIN scp_destino dest2 ON scp_rendicioncabecera.cod_destino = dest2.cod_destino	
  WHERE
-	scp_bancocabecera.cod_bancocabecera = $P{OP_ID}
- ORDER BY     scp_bancocabecera.txt_correlativo,
-     scp_bancodetalle.num_item ASC]]>
+	scp_rendicioncabecera.cod_rendicioncabecera = $P{OP_ID}
+ ORDER BY scp_rendicioncabecera.cod_comprobante,
+     scp_rendiciondetalle.num_nroitem ASC]]>
 		</queryString>
 		<field name="OPERACION_ID" class="java.lang.Integer"/>
+		<field name="OPERACION_FECHA" class="java.sql.Timestamp"/>
 		<field name="OPERACION_PROYECTO" class="java.lang.String"/>
-		<field name="OPERACION_CODDESTINO" class="java.lang.String"/>
+		<field name="OPERACION_FINANCIERA" class="java.lang.String"/>
 		<field name="OPERACION_LUGAR_GASTO" class="java.lang.String"/>
 		<field name="OPERACION_RUBRO_INST" class="java.lang.String"/>
+		<field name="OPERACION_RUBRO_PROY" class="java.lang.String"/>
 		<field name="OPERACION_CTA_CONTABLE" class="java.lang.String"/>
 		<field name="OPERACION_DOCUMENTO" class="java.lang.String"/>
 		<field name="OPERACION_SERIE_DOCUMENTO" class="java.lang.String"/>
 		<field name="OPERACION_DESCRIPCION" class="java.lang.String"/>
-		<field name="OPERACION_TIPOMONEDA" class="java.lang.String"/>
-		<field name="OPERACION_IMPORTE" class="java.math.BigDecimal"/>
-		<variable name="V_SUM_IMPORTE" class="java.math.BigDecimal" calculation="Sum">
-			<variableExpression><![CDATA[$F{OPERACION_IMPORTE}]]></variableExpression>
+		<field name="OPERACION_CODDESTINO" class="java.lang.String"/>
+		<field name="OPERACION_DESTINO_NOMBRE" class="java.lang.String"/>
+		<field name="OPERACION_DEBE" class="java.math.BigDecimal"/>
+		<field name="OPERACION_HABER" class="java.math.BigDecimal"/>
+		<variable name="V_SUM_DEBE" class="java.math.BigDecimal" calculation="Sum">
+			<variableExpression><![CDATA[$F{OPERACION_DEBE}]]></variableExpression>
+			<initialValueExpression><![CDATA[new java.math.BigDecimal(0)]]></initialValueExpression>
+		</variable>
+		<variable name="V_SUM_HABER" class="java.math.BigDecimal" calculation="Sum">
+			<variableExpression><![CDATA[$F{OPERACION_HABER}]]></variableExpression>
 			<initialValueExpression><![CDATA[new java.math.BigDecimal(0)]]></initialValueExpression>
 		</variable>
 	</subDataset>
@@ -123,97 +142,73 @@ FROM
 		<defaultValueExpression><![CDATA[10430]]></defaultValueExpression>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[SELECT
-  scp_bancocabecera.cod_ctacontable AS CHEQUE_CUENTA_NUMERO,
-  scp_plancontable.txt_descctacontable AS CHEQUE_CUENTA_NOMBRE,
-  scp_bancodetalle.cod_bancocabecera AS CHEQUE_ID,
-  scp_bancocabecera.txt_glosa AS CHEQUE_DESCRIPCION,
-  scp_bancocabecera.txt_correlativo AS OPERACION_ID,
-  scp_bancocabecera.fec_fecha AS CHEQUE_FECHA,
-  scp_bancocabecera.txt_cheque AS CHEQUE_CHEQUENUMERO,
-  scp_bancodetalle.cod_proyecto AS OPERACION_PROYECTO,
-  scp_bancodetalle.cod_tercero AS OPERACION_TERCERO,
-  scp_bancodetalle.cod_financiera AS OPERACION_FINANCIERA,
-  scp_bancodetalle.cod_ctaproyecto AS OPERACION_RUBRO_PROY,
-  scp_bancodetalle.cod_contracta AS OPERACION_CTA_CONTABLE,
-  scp_bancodetalle.cod_ctaespecial AS OPERACION_RUBRO_INST,
-  scp_bancodetalle.cod_contraparte AS OPERACION_LUGAR_GASTO,
-  scp_bancodetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
-  scp_bancodetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
-  scp_bancodetalle.fec_fecha AS OPERACION_FECHA,
-  firma.txt_ruc AS CHEQUE_DNI,
-  firma.txt_nombredestino AS OPERACION_FIRMA,
-  firma.cod_destino AS OPERACION_CODDESTINO,
-  dest2.txt_ruc AS OPERACION_DNI,
-  dest2.txt_nombredestino AS CHEQUE_FIRMA,
-  dest2.cod_destino AS CHEQUE_CODDESTINO,
-  isnull(CUENTA.txt_descproyecto,tercero.txt_nombredestino) AS CUENTA_NOMBRE,
-  isnull(CUENTA.cod_proyecto,tercero.cod_destino) AS CUENTA_NUMERO,
+		<![CDATA[SELECT	
+  scp_rendicioncabecera.cod_rendicioncabecera AS CHEQUE_ID,
+  scp_rendicioncabecera.cod_comprobante AS CHEQUE_COMPROBANTE,
+  scp_rendicioncabecera.txt_glosa AS CHEQUE_DESCRIPCION,
+  scp_rendicioncabecera.fec_comprobante AS CHEQUE_FECHA,
+  scp_rendicioncabecera.cod_tipomoneda AS CHEQUE_MONEDA,
+  scp_rendicioncabecera.cod_destino AS CHEQUE_CODDESTINO,
+  scp_rendicioncabecera.num_totalanticipo AS CHEQUE_ANTICIPO,
+  scp_rendicioncabecera.num_gastototal AS CHEQUE_GASTO,
+  scp_rendicioncabecera.num_saldopendiente AS CHEQUE_SALDO,  
+  scp_rendiciondetalle.num_nroitem AS OPERACION_ID,
+  scp_rendiciondetalle.fec_pagocomprobantepago AS OPERACION_FECHA,
+  scp_rendiciondetalle.cod_proyecto AS OPERACION_PROYECTO,
+  scp_rendiciondetalle.cod_destino AS OPERACION_CODDESTINO,
+  scp_rendiciondetalle.cod_financiera AS OPERACION_FINANCIERA,
+  scp_rendiciondetalle.cod_ctaproyecto AS OPERACION_RUBRO_PROY,
+  scp_rendiciondetalle.cod_ctacontable AS OPERACION_CTA_CONTABLE,
+  scp_rendiciondetalle.cod_ctaespecial AS OPERACION_RUBRO_INST,
+  scp_rendiciondetalle.cod_contraparte AS OPERACION_LUGAR_GASTO,
+  scp_rendiciondetalle.txt_seriecomprobantepago AS OPERACION_SERIE_DOCUMENTO,
+  scp_rendiciondetalle.txt_comprobantepago AS OPERACION_DOCUMENTO,
+  scp_rendiciondetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
+  scp_rendiciondetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
   CASE
-            WHEN ((scp_bancocabecera.[num_habersol] - scp_bancocabecera.[num_debesol] > 0)
-            		OR (scp_bancocabecera.num_haberdolar - scp_bancocabecera.num_debedolar > 0)
-            		OR (scp_bancocabecera.num_habermo - scp_bancocabecera.num_debemo > 0))
-               THEN 1
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='0')
+               THEN
+					scp_rendiciondetalle.[num_habersol]
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='1')
+               THEN
+					scp_rendiciondetalle.[num_haberdolar]
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='2')
+               THEN
+					scp_rendiciondetalle.[num_habermo]
                ELSE 0
-       END as CHEQUE_ISCARGO,
+       END as OPERACION_HABER,
   CASE
-		WHEN (scp_bancocabecera.cod_tipomoneda ='0')
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='0')
                THEN
-					scp_bancocabecera.[num_debesol] - scp_bancocabecera.[num_habersol]
-		WHEN (scp_bancocabecera.cod_tipomoneda ='1')
+					scp_rendiciondetalle.[num_debesol]
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='1')
                THEN
-					scp_bancocabecera.[num_debedolar] - scp_bancocabecera.[num_haberdolar]
-		WHEN (scp_bancocabecera.cod_tipomoneda ='2')
+					scp_rendiciondetalle.[num_debedolar]
+		WHEN (scp_rendiciondetalle.cod_tipomoneda ='2')
                THEN
-					scp_bancocabecera.[num_debemo] - scp_bancocabecera.[num_habermo]
+					scp_rendiciondetalle.[num_debemo]
                ELSE 0
-       END as CHEQUE_IMPORTE,
-  CASE
-            WHEN ((scp_bancodetalle.[num_habersol] - scp_bancodetalle.[num_debesol] > 0)
-            		OR (scp_bancodetalle.num_haberdolar - scp_bancodetalle.num_debedolar > 0)
-            		OR (scp_bancodetalle.num_habermo - scp_bancodetalle.num_debemo > 0))
-               THEN 1
-               ELSE 0
-       END as OPERACION_ISCARGO,
-
-  CASE
-		WHEN (scp_bancodetalle.cod_tipomoneda ='0')
-               THEN
-					scp_bancodetalle.[num_debesol] - scp_bancodetalle.[num_habersol]
-		WHEN (scp_bancodetalle.cod_tipomoneda ='1')
-               THEN
-					scp_bancodetalle.[num_debedolar] - scp_bancodetalle.[num_haberdolar]
-		WHEN (scp_bancodetalle.cod_tipomoneda ='2')
-               THEN
-					scp_bancodetalle.[num_debemo] - scp_bancodetalle.[num_habermo]
-               ELSE 0
-       END as OPERACION_IMPORTE
- FROM
-	scp_bancodetalle
-	INNER JOIN scp_bancocabecera ON scp_bancodetalle.cod_bancocabecera = scp_bancocabecera.cod_bancocabecera
-	INNER JOIN scp_plancontable ON scp_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable
-	AND scp_bancocabecera.txt_anoproceso = scp_plancontable.txt_anoproceso
-	LEFT JOIN scp_destino firma ON scp_bancodetalle.cod_destino = firma.cod_destino
-	LEFT JOIN scp_destino dest2 ON scp_bancocabecera.cod_destino = dest2.cod_destino
-	LEFT JOIN scp_destino tercero ON scp_bancodetalle.cod_tercero = tercero.cod_destino
-	LEFT JOIN dbo.scp_proyecto CUENTA ON scp_bancodetalle.cod_proyecto = CUENTA.cod_proyecto
+       END as OPERACION_DEBE,
+	firma.txt_nombre AS OPERACION_DESTINO_NOMBRE,
+	dest2.txt_nombre AS CHEQUE_FIRMA
+FROM
+	scp_rendiciondetalle
+	INNER JOIN scp_rendicioncabecera ON scp_rendiciondetalle.cod_rendicioncabecera = scp_rendicioncabecera.cod_rendicioncabecera
+	LEFT JOIN scp_destino firma ON scp_rendiciondetalle.cod_destino = firma.cod_destino
+	LEFT JOIN scp_destino dest2 ON scp_rendicioncabecera.cod_destino = dest2.cod_destino	
  WHERE
-	 scp_bancocabecera.cod_bancocabecera = $P{OP_ID}
- ORDER BY     scp_bancocabecera.txt_correlativo,
-     scp_bancodetalle.num_item ASC]]>
+	scp_rendicioncabecera.cod_rendicioncabecera = $P{OP_ID}
+ ORDER BY scp_rendicioncabecera.cod_comprobante,
+     scp_rendiciondetalle.num_nroitem ASC]]>
 	</queryString>
-	<field name="CHEQUE_CUENTA_NUMERO" class="java.lang.String"/>
-	<field name="CHEQUE_CUENTA_NOMBRE" class="java.lang.String"/>
 	<field name="CHEQUE_DESCRIPCION" class="java.lang.String"/>
 	<field name="CHEQUE_CODDESTINO" class="java.lang.String"/>
-	<field name="CHEQUE_ISCARGO" class="java.lang.Integer"/>
-	<field name="CHEQUE_IMPORTE" class="java.math.BigDecimal"/>
+	<field name="CHEQUE_MONEDA" class="java.lang.Integer"/>
+	<field name="CHEQUE_ANTICIPO" class="java.math.BigDecimal"/>
 	<field name="CHEQUE_FECHA" class="java.sql.Timestamp"/>
 	<field name="CHEQUE_ID" class="java.lang.Integer"/>
-	<field name="CHEQUE_CHEQUENUMERO" class="java.lang.String"/>
 	<field name="OPERACION_PROYECTO" class="java.lang.String"/>
 	<field name="OPERACION_CODDESTINO" class="java.lang.String"/>
-	<field name="OPERACION_TERCERO" class="java.lang.String"/>
 	<field name="OPERACION_FINANCIERA" class="java.lang.String"/>
 	<field name="OPERACION_RUBRO_PROY" class="java.lang.String"/>
 	<field name="OPERACION_CTA_CONTABLE" class="java.lang.String"/>
@@ -221,194 +216,97 @@ FROM
 	<field name="OPERACION_LUGAR_GASTO" class="java.lang.String"/>
 	<field name="OPERACION_DESCRIPCION" class="java.lang.String"/>
 	<field name="OPERACION_FECHA" class="java.sql.Timestamp"/>
-	<field name="OPERACION_ISCARGO" class="java.lang.Integer"/>
-	<field name="OPERACION_IMPORTE" class="java.math.BigDecimal"/>
 	<field name="OPERACION_TIPOMONEDA" class="java.lang.String"/>
 	<field name="OPERACION_ID" class="java.lang.String"/>
-	<field name="OPERACION_FIRMA" class="java.lang.String"/>
-	<field name="OPERACION_DNI" class="java.lang.String"/>
-	<field name="CUENTA_NOMBRE" class="java.lang.String"/>
-	<field name="CUENTA_NUMERO" class="java.lang.String"/>
-	<field name="CHEQUE_DNI" class="java.lang.String"/>
 	<field name="CHEQUE_FIRMA" class="java.lang.String"/>
+	<field name="CHEQUE_GASTO" class="java.math.BigDecimal"/>
+	<field name="CHEQUE_SALDO" class="java.math.BigDecimal"/>
+	<field name="OPERACION_DEBE" class="java.math.BigDecimal"/>
+	<field name="OPERACION_HABER" class="java.math.BigDecimal"/>
+	<field name="OPERACION_DOCUMENTO" class="java.lang.String"/>
+	<field name="OPERACION_SERIE_DOCUMENTO" class="java.lang.String"/>
+	<field name="OPERACION_DESTINO_NOMBRE" class="java.lang.String"/>
+	<field name="CHEQUE_COMPROBANTE" class="java.lang.String"/>
 	<variable name="operacion_ID" class="java.lang.Integer">
 		<variableExpression><![CDATA[]]></variableExpression>
 		<initialValueExpression><![CDATA[8963]]></initialValueExpression>
 	</variable>
 	<title>
-		<band height="328">
+		<band height="225">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="50" y="97" width="488" height="14" uuid="e8f87842-221f-4600-90e8-aabf13745b72"/>
+				<reportElement x="50" y="74" width="288" height="14" uuid="e8f87842-221f-4600-90e8-aabf13745b72"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CHEQUE_DESCRIPCION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="50" y="117" width="228" height="31" uuid="27d89db4-1f57-40af-a250-d14d9be807b7"/>
+				<reportElement x="50" y="55" width="206" height="14" uuid="27d89db4-1f57-40af-a250-d14d9be807b7"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{CHEQUE_FIRMA} + " " + $F{CHEQUE_CODDESTINO}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="50" y="79" width="350" height="13" uuid="c9742bd8-13ab-466b-9f18-824c58395a5d"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{CHEQUE_CUENTA_NUMERO}+" "+$F{CHEQUE_CUENTA_NOMBRE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{CHEQUE_FIRMA}!=null ? $F{CHEQUE_FIRMA} : "") +  " " + $F{CHEQUE_CODDESTINO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="79" width="40" height="13" uuid="7e881d06-a9a3-469d-ac86-4308ea0cb851"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isItalic="true"/>
-				</textElement>
-				<text><![CDATA[Cuenta: ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="97" width="48" height="14" uuid="e7e45923-580b-4024-a696-9817bae973e4"/>
+				<reportElement x="0" y="74" width="50" height="14" uuid="e7e45923-580b-4024-a696-9817bae973e4"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[Detalle:]]></text>
+				<text><![CDATA[Concepto:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="117" width="49" height="31" uuid="0e04bcb7-4cda-452e-8248-e6c95e96afce"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isItalic="true"/>
-				</textElement>
-				<text><![CDATA[Entregado a/por:]]></text>
-			</staticText>
-			<line>
-				<reportElement x="0" y="150" width="280" height="1" uuid="6a3868a4-2d4b-405a-aa79-fc00e2d6a1b8"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-			<staticText>
-				<reportElement x="0" y="2" width="538" height="18" uuid="a96ccdbe-93fa-41fc-b9ef-f4e2a8e7b78a"/>
+				<reportElement x="0" y="-8" width="536" height="18" uuid="a96ccdbe-93fa-41fc-b9ef-f4e2a8e7b78a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial Rounded MT Bold" size="10" isBold="false"/>
+					<font fontName="Arial Black" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[VICARIATO APOSTOLICO DE SAN JOSE DEL AMAZONAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="0" y="43" width="110" height="14" uuid="c382b0c0-bab5-4268-81f2-bf612e2e3ba9"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement key="" x="0" y="55" width="50" height="14" uuid="c382b0c0-bab5-4268-81f2-bf612e2e3ba9"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="10" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[Comprobante Número:]]></text>
+				<text><![CDATA[Nombre:]]></text>
 			</staticText>
-			<textField>
-				<reportElement mode="Transparent" x="115" y="43" width="166" height="14" forecolor="#030303" backcolor="#FFFFFF" uuid="5226a211-4e1b-4424-b7e1-d388a8c53689"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["02-" + $F{OPERACION_ID}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="59" width="340" height="15" uuid="2f85be0a-263e-43c2-af1b-274a2b739eb9"/>
-				<textElement textAlignment="Center" verticalAlignment="Bottom" markup="none">
-					<font fontName="Arial" size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($F{CHEQUE_ISCARGO}.compareTo(1)==0  ? "--- CARGO ---" : " --- ABONO --- ")]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="0" y="74" width="539" height="1" uuid="6e46bdb9-f118-4229-bc52-493006c8c7e2"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement x="0" y="40" width="539" height="1" uuid="d2404793-3cfa-47c6-a79a-349b4dbafa98"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement x="348" y="41" width="1" height="33" uuid="b40c740b-33ba-4b8b-9e4c-023300340a66"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement x="0" y="113" width="539" height="1" uuid="b4f8725c-67ee-4cd9-b8d4-6e1211475f24"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement x="280" y="113" width="1" height="52" uuid="98018c4a-224e-4544-afb1-668d469c97de"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement x="0" y="165" width="539" height="1" uuid="b343ee2e-ab43-472c-893a-c9ac40d92495"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
 			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="false">
-				<reportElement style="Column header" x="420" y="-20" width="141" height="11" forecolor="#050505" uuid="7f842df8-979a-4499-8ca0-8656644d72a6"/>
+				<reportElement style="Column header" x="458" y="-21" width="81" height="11" forecolor="#050505" uuid="7f842df8-979a-4499-8ca0-8656644d72a6"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="371" y="-20" width="41" height="11" uuid="6f1d70cc-e9b2-407d-8832-74c66b284822"/>
+				<reportElement x="413" y="-21" width="41" height="11" uuid="6f1d70cc-e9b2-407d-8832-74c66b284822"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="9" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[Impreso:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="354" y="43" width="50" height="14" uuid="b528dc91-b88d-4d49-aadf-58fad48a3777"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<reportElement x="0" y="92" width="50" height="14" uuid="b528dc91-b88d-4d49-aadf-58fad48a3777"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="354" y="59" width="50" height="15" uuid="004e6df6-0bea-4de3-ba83-ba7000840ffb"/>
-				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
-					<font fontName="Arial" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($F{OPERACION_TIPOMONEDA}.toString().equals("0") ? "Importe S/.:" : ($F{OPERACION_TIPOMONEDA}.toString().equals("1") ? "Importe U$D:" : "Importe €:"))]]></textFieldExpression>
-			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="411" y="59" width="128" height="15" uuid="cf8033e9-4f64-4f12-9184-e470ba7a5fca"/>
-				<textElement verticalAlignment="Bottom">
+				<reportElement x="194" y="92" width="56" height="14" uuid="cf8033e9-4f64-4f12-9184-e470ba7a5fca"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{CHEQUE_IMPORTE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{CHEQUE_ANTICIPO}]]></textFieldExpression>
 				<patternExpression><![CDATA["#,##0.00"]]></patternExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="411" y="43" width="126" height="14" uuid="7f03e7cd-10e6-4377-bbbe-893c7dd982bb"/>
+				<reportElement x="50" y="92" width="70" height="14" uuid="7f03e7cd-10e6-4377-bbbe-893c7dd982bb"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CHEQUE_FECHA}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="450" y="80" width="88" height="13" uuid="f7ce9de2-575a-4b29-9f56-873d52e96ca2"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{CHEQUE_CHEQUENUMERO}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="403" y="80" width="38" height="13" uuid="e1889701-e93a-4923-94cc-7ee9b0237efb"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isItalic="true"/>
-				</textElement>
-				<text><![CDATA[Cheque:]]></text>
-			</staticText>
 			<componentElement>
-				<reportElement x="0" y="180" width="540" height="55" uuid="22b1a0ed-1962-4933-906f-368bc5aba501">
+				<reportElement x="0" y="122" width="540" height="88" uuid="22b1a0ed-1962-4933-906f-368bc5aba501">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -416,6 +314,7 @@ FROM
 					<property name="com.jaspersoft.studio.components.autoresize.next" value="true"/>
 					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value=""/>
 					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DatasetTable" uuid="b8400420-641d-49ac-bbfd-30c5b521174e">
@@ -424,12 +323,12 @@ FROM
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="30" uuid="25bf2483-6856-4172-b372-360b6344dab1">
+					<jr:column width="23" uuid="25bf2483-6856-4172-b372-360b6344dab1">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement stretchType="ContainerHeight" x="0" y="0" width="30" height="25" uuid="9a11cc66-ac50-41f9-b24e-ed34ebe1e0b0">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="23" height="25" uuid="9a11cc66-ac50-41f9-b24e-ed34ebe1e0b0">
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -440,13 +339,17 @@ FROM
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<box>
 								<pen lineWidth="0.5"/>
 							</box>
 						</jr:tableFooter>
-						<jr:detailCell style="Table_TD" height="15">
+						<jr:detailCell style="Table_TD" height="45">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<textField>
-								<reportElement x="0" y="0" width="30" height="15" uuid="2856b825-b980-4569-bd3a-083e7f46fcd4"/>
+								<reportElement x="0" y="0" width="23" height="45" uuid="2856b825-b980-4569-bd3a-083e7f46fcd4">
+									<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								</reportElement>
 								<box>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -460,11 +363,39 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="83" uuid="02569495-d55c-4a45-9854-38d268ba6b60">
+					<jr:column width="44" uuid="c3307c2d-7d03-4a64-9ca8-685c888a51cf">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="83" height="25" uuid="e3de857c-3e95-4d64-aa87-701d0920ab85"/>
+								<reportElement x="0" y="0" width="44" height="25" uuid="2e437eee-f7aa-4018-b7ed-b394f2724a22"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="9"/>
+								</textElement>
+								<text><![CDATA[Fecha]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:detailCell style="Table_TD" height="45">
+							<textField pattern="dd/MM/yy" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="44" height="45" uuid="a30d7399-4978-4263-a18c-4b15ff42fdb0"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="SansSerif" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{OPERACION_FECHA}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="42" uuid="02569495-d55c-4a45-9854-38d268ba6b60">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="42" height="25" uuid="e3de857c-3e95-4d64-aa87-701d0920ab85"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -476,9 +407,9 @@ FROM
 								<pen lineWidth="0.5"/>
 							</box>
 						</jr:tableFooter>
-						<jr:detailCell style="Table_TD" height="15">
+						<jr:detailCell style="Table_TD" height="45">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="83" height="15" uuid="96b51c0b-5c55-4ef0-8df6-0a9ac481f74d"/>
+								<reportElement x="0" y="0" width="42" height="45" uuid="96b51c0b-5c55-4ef0-8df6-0a9ac481f74d"/>
 								<box>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -492,11 +423,39 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="61" uuid="decd1a81-c897-4a49-9d56-4f248c4e4b97">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+					<jr:column width="41" uuid="7ca135ef-d175-4e5f-8337-f24b2438da19">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="61" height="25" uuid="2aee6996-8d29-41b0-9af2-39410559f84f"/>
+								<reportElement x="0" y="0" width="41" height="25" uuid="6360f56e-172a-4a80-b19d-ad2bc47a0b8d"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="9"/>
+								</textElement>
+								<text><![CDATA[Fina]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:detailCell style="Table_TD" height="45">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="41" height="45" uuid="4297016f-0b0f-42b7-ac35-398bbbf6bc16"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="SansSerif" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{OPERACION_FINANCIERA}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="42" uuid="decd1a81-c897-4a49-9d56-4f248c4e4b97">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="42" height="25" uuid="2aee6996-8d29-41b0-9af2-39410559f84f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -508,9 +467,9 @@ FROM
 								<pen lineWidth="0.5"/>
 							</box>
 						</jr:tableFooter>
-						<jr:detailCell style="Table_TD" height="15">
+						<jr:detailCell style="Table_TD" height="45">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="61" height="15" uuid="c202c540-8944-4a1b-93bd-fff7428cedd6"/>
+								<reportElement x="0" y="0" width="42" height="45" uuid="c202c540-8944-4a1b-93bd-fff7428cedd6"/>
 								<box>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -524,11 +483,11 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="57" uuid="8cedaca9-5522-4e27-bdc6-3bebd9808ab7">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+					<jr:column width="40" uuid="8cedaca9-5522-4e27-bdc6-3bebd9808ab7">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="57" height="25" uuid="e0680329-58a8-45b5-bcc6-3679d700b462"/>
+								<reportElement x="0" y="0" width="40" height="25" uuid="e0680329-58a8-45b5-bcc6-3679d700b462"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -540,9 +499,9 @@ FROM
 								<pen lineWidth="0.5"/>
 							</box>
 						</jr:tableFooter>
-						<jr:detailCell style="Table_TD" height="15">
+						<jr:detailCell style="Table_TD" height="45">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="57" height="15" uuid="36c08a43-079f-444f-a2ef-74abd8f80545"/>
+								<reportElement x="0" y="0" width="40" height="45" uuid="36c08a43-079f-444f-a2ef-74abd8f80545"/>
 								<box>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -556,15 +515,43 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="49" uuid="406c7509-fda0-4e09-850f-d32a0d7a441c">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+					<jr:column width="38" uuid="2a19ccf2-7594-42f5-a073-3ee4267159fe">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="49" height="25" uuid="79f3a45e-15a5-4e02-b3a7-e3db6688b2cc"/>
+								<reportElement x="0" y="0" width="38" height="25" uuid="cccc9b14-fbb4-417a-87fc-3aafc52305b7"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
-								<text><![CDATA[Contra Cta]]></text>
+								<text><![CDATA[Partida]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:detailCell style="Table_TD" height="45">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="38" height="45" uuid="172a0415-6b64-4ce8-bfda-973d51632f89"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="SansSerif" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{OPERACION_RUBRO_PROY}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="41" uuid="406c7509-fda0-4e09-850f-d32a0d7a441c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="41" height="25" uuid="79f3a45e-15a5-4e02-b3a7-e3db6688b2cc"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="9"/>
+								</textElement>
+								<text><![CDATA[Contable]]></text>
 							</staticText>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
@@ -572,9 +559,9 @@ FROM
 								<pen lineWidth="0.5"/>
 							</box>
 						</jr:tableFooter>
-						<jr:detailCell style="Table_TD" height="15">
+						<jr:detailCell style="Table_TD" height="45">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="49" height="15" uuid="f0f66761-fbf2-4cfd-bb01-8df7426432af"/>
+								<reportElement x="0" y="0" width="41" height="45" uuid="f0f66761-fbf2-4cfd-bb01-8df7426432af"/>
 								<box>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -588,11 +575,11 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="145" uuid="938f3bd3-0eb5-4826-afab-fe7e43022ec3">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+					<jr:column width="60" uuid="938f3bd3-0eb5-4826-afab-fe7e43022ec3">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="145" height="25" uuid="3c621432-0dfa-4dff-8ddb-82b275da43a1"/>
+								<reportElement x="0" y="0" width="60" height="25" uuid="3c621432-0dfa-4dff-8ddb-82b275da43a1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -600,13 +587,14 @@ FROM
 							</staticText>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<box>
 								<pen lineWidth="0.5"/>
 							</box>
 						</jr:tableFooter>
-						<jr:detailCell style="Table_TD" height="15">
+						<jr:detailCell style="Table_TD" height="45">
 							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="145" height="15" uuid="d36bb8b4-cc85-4174-86dd-606ab818b2bf"/>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="60" height="45" uuid="d36bb8b4-cc85-4174-86dd-606ab818b2bf"/>
 								<box>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -620,11 +608,11 @@ FROM
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="51" uuid="5182a92a-8514-4bc4-986b-a665cd254a09">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+					<jr:column width="93" uuid="5182a92a-8514-4bc4-986b-a665cd254a09">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="51" height="25" uuid="f9beb7ea-fdaa-4e7d-b095-36a86a14cc20"/>
+								<reportElement x="0" y="0" width="93" height="25" uuid="f9beb7ea-fdaa-4e7d-b095-36a86a14cc20"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -632,13 +620,18 @@ FROM
 							</staticText>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<box>
 								<pen lineWidth="0.5"/>
 							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="93" height="15" uuid="b84198fa-e3eb-4304-bbbb-b4a35d904aa8"/>
+								<text><![CDATA[Total:]]></text>
+							</staticText>
 						</jr:tableFooter>
-						<jr:detailCell style="Table_TD" height="15">
+						<jr:detailCell style="Table_TD" height="45">
 							<textField>
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="51" height="15" uuid="881c86c4-3678-480a-812f-a3fc74a63e8b"/>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="93" height="45" uuid="881c86c4-3678-480a-812f-a3fc74a63e8b"/>
 								<box>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -648,36 +641,36 @@ FROM
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[" " +$F{OPERACION_DESCRIPCION}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{OPERACION_DESCRIPCION} + "\n" + $F{OPERACION_CODDESTINO} + " " + $F{OPERACION_DESTINO_NOMBRE}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="64" uuid="13f7fd67-c200-492b-b14e-4a623bb160dc">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+					<jr:column width="38" uuid="51ad0939-9c3a-4e53-a414-70a69edb1379">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="64" height="25" uuid="8bd06813-06ba-47fb-9618-38e8712a0ae3"/>
+								<reportElement x="0" y="0" width="38" height="25" uuid="3f0293b0-4867-4883-8906-0cf8a2b394d6"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
-								<text><![CDATA[Importe]]></text>
+								<text><![CDATA[Debe]]></text>
 							</staticText>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="64" height="15" uuid="75a328d0-805a-4c80-9eee-c9f5447f786e"/>
+								<reportElement x="0" y="0" width="38" height="15" uuid="b0126ff5-fa67-4b58-8c77-647feb1d8a7a"/>
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{V_SUM_IMPORTE}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{V_SUM_DEBE}]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
-						<jr:detailCell style="Table_TD" height="15">
+						<jr:detailCell style="Table_TD" height="45">
 							<textField>
-								<reportElement x="0" y="0" width="64" height="15" uuid="4b451fd5-1cd6-4c75-acd5-04a6d89f50b9"/>
+								<reportElement x="0" y="0" width="38" height="45" uuid="1f789e70-cd59-4d3f-91df-3254d27af9af"/>
 								<box>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -687,89 +680,238 @@ FROM
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{OPERACION_IMPORTE}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{OPERACION_DEBE}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="38" uuid="13f7fd67-c200-492b-b14e-4a623bb160dc">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="38" height="25" uuid="8bd06813-06ba-47fb-9618-38e8712a0ae3"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="9"/>
+								</textElement>
+								<text><![CDATA[Haber]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="38" height="15" uuid="75a328d0-805a-4c80-9eee-c9f5447f786e"/>
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="SansSerif" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{V_SUM_HABER}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
+						<jr:detailCell style="Table_TD" height="45">
+							<textField>
+								<reportElement x="0" y="0" width="38" height="45" uuid="4b451fd5-1cd6-4c75-acd5-04a6d89f50b9"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="SansSerif" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{OPERACION_HABER}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement positionType="FixRelativeToBottom" x="381" y="263" width="100" height="16" uuid="c4479a9a-9387-46d2-9ff7-d762c5f40982"/>
+				<reportElement x="0" y="12" width="538" height="18" isPrintInFirstWholeBand="true" uuid="4b174877-3518-4d14-b4f6-911c9bce4aaf"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9"/>
+					<font fontName="Arial Black" size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[VºBº]]></text>
+				<text><![CDATA[Rendición]]></text>
 			</staticText>
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="313" y="262" width="227" height="1" uuid="d1143ed7-4604-4c84-8bfc-72fd49b995fc"/>
-			</line>
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="188" y="300" width="163" height="1" uuid="60b8c5ac-9e00-4e03-909d-686dd77218c6"/>
-			</line>
 			<staticText>
-				<reportElement positionType="FixRelativeToBottom" x="223" y="301" width="100" height="16" uuid="93cb673c-d4c5-44b1-bf98-8c11e109c44f"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9"/>
+				<reportElement x="124" y="92" width="70" height="14" uuid="5371a305-0dba-4753-9137-d350b5166a3c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[Aprobado]]></text>
+				<text><![CDATA[Total Anticipo:]]></text>
 			</staticText>
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="300" width="163" height="1" uuid="cd435441-82de-45e0-9be4-c570f5e5f5a7"/>
-			</line>
-			<staticText>
-				<reportElement positionType="FixRelativeToBottom" x="35" y="301" width="100" height="16" uuid="2281bc17-ece6-4e65-9378-64a2b246ecef"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="313" y="92" width="62" height="14" uuid="c5c065fe-214c-4bb9-b724-bc458e304e07"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
 				</textElement>
-				<text><![CDATA[Realizado por]]></text>
+				<textFieldExpression><![CDATA[$F{CHEQUE_GASTO}]]></textFieldExpression>
+				<patternExpression><![CDATA["#,##0.00"]]></patternExpression>
+			</textField>
+			<staticText>
+				<reportElement x="253" y="92" width="60" height="14" uuid="4aa05ae3-4e17-49f2-998e-8c7b480c6965"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Gasto Total:]]></text>
 			</staticText>
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="376" y="300" width="163" height="1" uuid="f1a670d6-2461-4c69-ae5b-261563dbdbbb"/>
-			</line>
-			<staticText>
-				<reportElement positionType="FixRelativeToBottom" x="411" y="301" width="100" height="16" uuid="c60719d6-df19-432d-a5ce-d22cd84aa2b3"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="474" y="92" width="62" height="14" uuid="d3504225-fa97-47f3-aeb3-ccffeecd3699"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
 				</textElement>
-				<text><![CDATA[Contabilidad]]></text>
+				<textFieldExpression><![CDATA[$F{CHEQUE_SALDO}]]></textFieldExpression>
+				<patternExpression><![CDATA["#,##0.00"]]></patternExpression>
+			</textField>
+			<staticText>
+				<reportElement x="390" y="92" width="84" height="14" uuid="b6f6cb51-11a1-4212-bc05-1db331681a99"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Saldo Pendiente:]]></text>
 			</staticText>
-			<line>
-				<reportElement x="0" y="94" width="539" height="1" uuid="834b38aa-66c6-4abf-93b5-bc97f09aefe0"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
 			<staticText>
-				<reportElement x="0" y="20" width="538" height="18" isPrintInFirstWholeBand="true" uuid="4b174877-3518-4d14-b4f6-911c9bce4aaf"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial Rounded MT Bold" size="10" isBold="false"/>
+				<reportElement x="257" y="55" width="50" height="14" uuid="4bb2bddf-e8e7-4383-a6ae-a296d72c6371"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[VICARIATO APOSTOLICO DE SAN JOSE DEL AMAZONAS]]></text>
+				<text><![CDATA[Moneda:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="310" y="55" width="50" height="14" uuid="be8c999e-c2c8-4efd-a20c-7b2451d09e37"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{CHEQUE_MONEDA}==0 ?  "PEN"  : ($F{CHEQUE_MONEDA}==1 ? "USD" : "EUR"))]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="380" y="50" width="160" height="33" uuid="2edf8b03-0cba-47db-b845-617e7891e0f5"/>
+			</rectangle>
+			<textField>
+				<reportElement mode="Transparent" x="427" y="54" width="106" height="26" forecolor="#030303" backcolor="#FFFFFF" uuid="5226a211-4e1b-4424-b7e1-d388a8c53689"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="Arial" size="14" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["08 - " + $F{CHEQUE_ID}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="" x="392" y="54" width="30" height="26" uuid="38d668f1-f96a-4c5e-af35-89bf27cf6286"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="14" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nro:]]></text>
 			</staticText>
 		</band>
 	</title>
-	<detail>
-		<band height="127" splitType="Prevent">
+	<lastPageFooter>
+		<band height="180">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="0" y="26" width="30" height="12" uuid="472381f9-f2b7-4f9b-a765-9c7177c4e0bd"/>
+				<reportElement x="1" y="80" width="40" height="12" uuid="8324deea-566e-4bba-8b0a-d73154d6b898"/>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="41" y="101" width="208" height="1" uuid="68a45998-7f76-4724-bfb3-41987882789c"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="141" width="41" height="12" uuid="577d4bc1-fc8e-4a09-9a82-a78dd8934126"/>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="42" y="154" width="208" height="1" uuid="3931de3c-3cbd-4edb-ad4a-b43675b5c103"/>
+			</line>
+			<staticText>
+				<reportElement x="80" y="10" width="100" height="19" uuid="ba3aab7f-7d21-481d-b549-aa9c9db5dd34"/>
+				<textElement>
+					<font size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Responsable]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="80" width="40" height="12" uuid="dff3f7eb-7ef6-43b2-bbde-c6ef3fd0d95a"/>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="320" y="101" width="208" height="1" uuid="5c7de476-94e0-46c1-b399-bdaedc9ee28d"/>
+			</line>
+			<staticText>
+				<reportElement x="280" y="141" width="41" height="12" uuid="4def90bc-317a-4592-aa88-2c5f0778df24"/>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="322" y="154" width="208" height="1" uuid="49d417e9-ac34-4517-93af-5efcb240540a"/>
+			</line>
+			<staticText>
+				<reportElement x="367" y="11" width="100" height="19" uuid="128371c2-60f7-4730-97bc-4c282ef2d0a5"/>
+				<textElement>
+					<font size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Aprobado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="111" width="41" height="12" uuid="16424e46-fd53-4919-9e03-146b67489b27"/>
 				<textElement textAlignment="Left">
 					<font fontName="Arial" size="10" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[DNI:]]></text>
 			</staticText>
+			<line>
+				<reportElement x="322" y="124" width="208" height="1" uuid="288590a2-ec3c-436b-a6d3-7db56f8b0e3f"/>
+			</line>
 			<staticText>
-				<reportElement key="" x="0" y="2" width="30" height="15" uuid="2e400a6e-b3ed-4f49-8869-6a73d82c8e17"/>
+				<reportElement key="" x="280" y="50" width="41" height="15" uuid="73596960-bfbc-41b3-89be-d22b30399e3a"/>
 				<textElement>
 					<font fontName="Arial" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[Firma:]]></text>
 			</staticText>
 			<line>
-				<reportElement x="30" y="17" width="227" height="1" uuid="0cb212d9-4270-47af-897a-6829355a4bda"/>
+				<reportElement x="322" y="66" width="208" height="1" uuid="018ba91b-2b9f-4bc1-ab59-b7fcf8643a31"/>
 			</line>
+			<staticText>
+				<reportElement key="" x="0" y="51" width="41" height="15" uuid="2e400a6e-b3ed-4f49-8869-6a73d82c8e17"/>
+				<textElement>
+					<font fontName="Arial" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Firma:]]></text>
+			</staticText>
 			<line>
-				<reportElement x="30" y="38" width="227" height="1" uuid="192504ec-5148-4fcb-a80e-2a8d78ccc451"/>
+				<reportElement x="42" y="67" width="208" height="1" uuid="0cb212d9-4270-47af-897a-6829355a4bda"/>
+			</line>
+			<textField>
+				<reportElement x="50" y="72" width="190" height="30" uuid="571d8229-5f62-4d32-9f76-beb4b870c694"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{CHEQUE_FIRMA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="44" y="135" width="195" height="14" uuid="d34603ee-ec26-4cc7-886f-7cc16e78e887"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CHEQUE_FECHA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="111" width="41" height="12" uuid="472381f9-f2b7-4f9b-a765-9c7177c4e0bd"/>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[DNI:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="42" y="124" width="208" height="1" uuid="192504ec-5148-4fcb-a80e-2a8d78ccc451"/>
 			</line>
 		</band>
-	</detail>
+	</lastPageFooter>
 </jasperReport>
