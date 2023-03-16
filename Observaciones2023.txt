@@ -50,6 +50,7 @@ NOT POSSIBLE
 
 rendicion cabecera:
 - responsable con nombre nie numero
+DONE
 - enviado domyslnie na polach, nie schowane
 - visibles rendiciones del mes actual
 !!!!
@@ -57,7 +58,8 @@ rendicion cabecera:
 
 Destino (soñando):
 - sprawdza czy takie codigo, descripcion juz istnieje przy wprowadzaniu nowego
-- dodaje nowego kazde slowo z wielkiej litery
+DONE
+- dodaje nowego kazde slowo z wielkiej litery i trim
 - eliminar destino: jezeli existen comprobantes que usan este destino pregunta a que numero cambiarlo y wstawia nowego z danymi tymi samymi, zastepuje i usuwa stary
   update [SCP].[dbo].[scp_comprobantedetalle] set cod_destino='Nowy_destino'  where cod_destino='stary_destino';
   update [SCP].[dbo].[scp_comprobantecabecera] set cod_destino='Nowy_destino' where cod_destino='stary_destino';
@@ -66,10 +68,11 @@ Destino (soñando):
   update  [SCP].[dbo].[scp_bancodetalle]   set cod_destino='05276644' where cod_destino='052766414';
 DONE
 - destino z categoria tercero nie powinno byc mozna usunac, tylko przestawic w inactive
+DONE
 - marcar tercero con color
+DONE
 - dla destino z categoria tercero mozna zdefiniowac email y guzikiem wyslac do wszystkich ktorzy maja zaznaczony check ze chca email reporte de sus movimientos del mes
 - integracja z api portalu sunat zeby pobrac nazwe po RUC cuando anade nuevo destino
-
 
 - calcular saldos para bancos, cuentas proyectos, terceros, caja - calcula saldos antes de la operacion y no al final del dia. critico: modulo de bancos
 
