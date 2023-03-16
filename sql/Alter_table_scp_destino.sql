@@ -1,7 +1,7 @@
-ALTER TABLE SCP.dbo.scp_destino ADD txt_email varchar(100) NULL
-ALTER TABLE SCP.dbo.scp_destino ADD flg_activo bit DEFAULT 'true'
-ALTER TABLE SCP.dbo.scp_destino ADD flg_enviar_reporte bit DEFAULT 'true'
-ALTER TABLE SCP.dbo.scp_destino ADD txt_usuario varchar(20) DEFAULT ''
+ALTER TABLE scp_destino ADD txt_email varchar(100) NULL
+ALTER TABLE scp_destino ADD flg_activo bit DEFAULT 'true'
+ALTER TABLE dbo.scp_destino ADD flg_enviar_reporte bit DEFAULT 'true'
+ALTER TABLE dbo.scp_destino ADD txt_usuario varchar(20) DEFAULT ''
 
 
 UPDATE scp_destino SET scp_destino.txt_usuario='' WHERE scp_destino.txt_usuario IS NULL

@@ -59,6 +59,7 @@
   scp_bancodetalle.cod_bancocabecera AS CHEQUE_ID,
   scp_bancodetalle.num_item AS OPERACION_ID,
   scp_bancodetalle.cod_proyecto AS OPERACION_PROYECTO,
+  scp_bancodetalle.cod_destino AS OPERACION_CODDESTINO,
   scp_bancodetalle.cod_tercero AS OPERACION_TERCERO,
   scp_bancodetalle.cod_ctaproyecto AS OPERACION_RUBRO_PROY,
   scp_bancodetalle.cod_contracta AS OPERACION_CTA_CONTABLE,
@@ -104,6 +105,7 @@ FROM
 		</queryString>
 		<field name="OPERACION_ID" class="java.lang.Integer"/>
 		<field name="OPERACION_PROYECTO" class="java.lang.String"/>
+		<field name="OPERACION_CODDESTINO" class="java.lang.String"/>
 		<field name="OPERACION_LUGAR_GASTO" class="java.lang.String"/>
 		<field name="OPERACION_RUBRO_INST" class="java.lang.String"/>
 		<field name="OPERACION_CTA_CONTABLE" class="java.lang.String"/>
@@ -141,8 +143,10 @@ FROM
   scp_bancodetalle.fec_fecha AS OPERACION_FECHA,
   firma.txt_ruc AS CHEQUE_DNI,
   firma.txt_nombredestino AS OPERACION_FIRMA,
+  firma.cod_destino AS OPERACION_CODDESTINO,
   dest2.txt_ruc AS OPERACION_DNI,
   dest2.txt_nombredestino AS CHEQUE_FIRMA,
+  dest2.cod_destino AS CHEQUE_CODDESTINO,
   isnull(CUENTA.txt_descproyecto,tercero.txt_nombredestino) AS CUENTA_NOMBRE,
   isnull(CUENTA.cod_proyecto,tercero.cod_destino) AS CUENTA_NUMERO,
   CASE
@@ -201,12 +205,14 @@ FROM
 	<field name="CHEQUE_CUENTA_NUMERO" class="java.lang.String"/>
 	<field name="CHEQUE_CUENTA_NOMBRE" class="java.lang.String"/>
 	<field name="CHEQUE_DESCRIPCION" class="java.lang.String"/>
+	<field name="CHEQUE_CODDESTINO" class="java.lang.String"/>
 	<field name="CHEQUE_ISCARGO" class="java.lang.Integer"/>
 	<field name="CHEQUE_IMPORTE" class="java.math.BigDecimal"/>
 	<field name="CHEQUE_FECHA" class="java.sql.Timestamp"/>
 	<field name="CHEQUE_ID" class="java.lang.Integer"/>
 	<field name="CHEQUE_CHEQUENUMERO" class="java.lang.String"/>
 	<field name="OPERACION_PROYECTO" class="java.lang.String"/>
+	<field name="OPERACION_CODDESTINO" class="java.lang.String"/>
 	<field name="OPERACION_TERCERO" class="java.lang.String"/>
 	<field name="OPERACION_FINANCIERA" class="java.lang.String"/>
 	<field name="OPERACION_RUBRO_PROY" class="java.lang.String"/>
@@ -243,7 +249,7 @@ FROM
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{CHEQUE_FIRMA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{CHEQUE_FIRMA} + " " + $F{CHEQUE_CODDESTINO} ]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="50" y="59" width="350" height="13" uuid="c9742bd8-13ab-466b-9f18-824c58395a5d"/>
@@ -455,10 +461,7 @@ FROM
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<box>
-								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<pen lineWidth="0.5"/>
 							</box>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
@@ -488,7 +491,11 @@ FROM
 								<text><![CDATA[Proy]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="83" height="15" uuid="96b51c0b-5c55-4ef0-8df6-0a9ac481f74d"/>
@@ -518,15 +525,18 @@ FROM
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<box>
-								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<pen lineWidth="0.5"/>
 							</box>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="61" height="15" uuid="c202c540-8944-4a1b-93bd-fff7428cedd6"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -545,10 +555,20 @@ FROM
 								<text><![CDATA[Rubro Inst]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="57" height="15" uuid="36c08a43-079f-444f-a2ef-74abd8f80545"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -567,10 +587,20 @@ FROM
 								<text><![CDATA[Contra Cta]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="49" height="15" uuid="f0f66761-fbf2-4cfd-bb01-8df7426432af"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -589,10 +619,20 @@ FROM
 								<text><![CDATA[Documento]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="145" height="15" uuid="d36bb8b4-cc85-4174-86dd-606ab818b2bf"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -611,10 +651,20 @@ FROM
 								<text><![CDATA[Detalle]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
+						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
 							<textField>
 								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="51" height="15" uuid="881c86c4-3678-480a-812f-a3fc74a63e8b"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -636,6 +686,9 @@ FROM
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<textField>
 								<reportElement x="0" y="0" width="64" height="15" uuid="75a328d0-805a-4c80-9eee-c9f5447f786e"/>
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -645,6 +698,12 @@ FROM
 						<jr:detailCell style="Table_TD" height="15">
 							<textField>
 								<reportElement x="0" y="0" width="64" height="15" uuid="4b451fd5-1cd6-4c75-acd5-04a6d89f50b9"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
@@ -712,11 +771,11 @@ FROM
 				<textFieldExpression><![CDATA[$F{OPERACION_DESCRIPCION}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="54" y="86" width="164" height="19" uuid="d2bc4c34-e963-4496-9566-ea51937f5e5b"/>
+				<reportElement x="54" y="86" width="186" height="19" uuid="d2bc4c34-e963-4496-9566-ea51937f5e5b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{OPERACION_FIRMA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{OPERACION_FIRMA} + " " + $F{OPERACION_CODDESTINO}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="69" width="40" height="14" uuid="2f343a9b-7318-4568-a190-19d95cf18217"/>
@@ -842,7 +901,7 @@ FROM
 				<text><![CDATA[Proyecto:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="218" y="86" width="212" height="19" uuid="85fd5fa9-5af8-4420-9e04-f2b5263b3805"/>
+				<reportElement x="242" y="86" width="188" height="19" uuid="85fd5fa9-5af8-4420-9e04-f2b5263b3805"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="false"/>
 				</textElement>

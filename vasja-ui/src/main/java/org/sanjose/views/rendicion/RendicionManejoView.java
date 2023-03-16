@@ -235,6 +235,11 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
     }
 
     @Override
+    public RendicionManejoLogic getViewLogic() {
+        return viewLogic;
+    }
+
+    @Override
     public String getNavigatorViewName() {
         return VIEW_NAME;
     }
@@ -304,4 +309,6 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
     public ComboBox getFiltroEnviadasCombo() {
         return filtroEnviadasCombo;
     }
+
+
 }

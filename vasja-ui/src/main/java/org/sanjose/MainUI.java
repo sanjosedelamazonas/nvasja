@@ -120,14 +120,14 @@ public class MainUI extends UI {
         setLocale(ConfigurationUtil.getLocale());
         getPage().setTitle("Vicariato San Jose del Amazonas - Sistema de Gestion de Caja y Bancos");
         if (ConfigurationUtil.is("DEV_MODE")) {
-            accessControl.signIn(ConfigurationUtil.get("DEV_USER"), "");
+         //   accessControl.signIn(ConfigurationUtil.get("DEV_USER"), "");
         }
         if (!accessControl.isUserSignedIn()) {
             setContent(new LoginScreen(accessControl, (LoginListener) () -> showMainView()));
         } else {
             showMainView();
         }
-        if (Role.isPrivileged()) {
+        if (Role.isPrivileged() && !ConfigurationUtil.is("DEV_MODE")) {
             try {
                 TipoCambio.checkTipoCambio(new Date(), this.getBancoOperacionesView().getService().getTipocambioRep());
             } catch (TipoCambio.TipoCambioNoExiste e) {

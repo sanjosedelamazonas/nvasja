@@ -73,7 +73,7 @@ public class TerceroListView extends TerceroListUI implements Viewing {
 
     @Override
     public void init() {
-        @SuppressWarnings("unchecked") BeanItemContainer<ScpDestino> container = new BeanItemContainer(ScpDestino.class, service.getDestinoRepo().findByIndTipodestino('3'));
+        @SuppressWarnings("unchecked") BeanItemContainer<ScpDestino> container = new BeanItemContainer(ScpDestino.class, new ArrayList());
         grid.setContainerDataSource(container);
         ViewUtil.setColumnNames(grid, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, new String[] {});
 

@@ -28,7 +28,7 @@ public class MsgAccessControl implements AccessControl {
         this.devMode = devMode;
         this.devUser = devUser;
         if (!GenUtil.strNullOrEmpty(devUser))
-            signIn(devUser, null);
+            signIn(devUser, "");
     }
 
     @Override
