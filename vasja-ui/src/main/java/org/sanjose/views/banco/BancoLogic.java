@@ -15,15 +15,12 @@ import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpBancodetalle;
 import org.sanjose.model.ScpPlancontable;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.DataUtil;
-import org.sanjose.util.GenUtil;
-import org.sanjose.util.ViewUtil;
+import org.sanjose.util.*;
 import org.sanjose.validator.SaldoChecker;
 import org.sanjose.views.sys.Viewing;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.verifyNumMoneda;
@@ -43,10 +40,31 @@ public class BancoLogic extends BancoItemLogic {
     private BeanItem<ScpBancocabecera> beanItem;
 
     private Button.ClickListener guardarBtnListner;
+
+    private Map<String, ProcUtil.Saldos> proyectosTercerosSaldos = new HashMap<>();
+
     @Override
     public void init(BancoOperView view) {
         super.init(view);
-        view.getGuardarBtn().addClickListener(clickEvent -> saveCabecera());
+        view.getGuardarBtn().addClickListener(new Button.ClickListener() {
+                  @Override
+                  public void buttonClick(Button.ClickEvent clickEvent) {
+                      /// Check - solo para una operacion
+                      if (checkSobregirado()) {
+                          MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
+                          MessageBox
+                                  .createQuestion()
+                                  .withCaption("Atencion!")
+                                  .withMessage("La caja o proyecto/tercero no tiene suficiente recursos.\nEsta seguro que lo quiere guardar?")
+                                  .withYesButton(() -> saveCabecera())
+                                  .withNoButton()
+                                  .open();
+                      } else {
+                          saveCabecera();
+                      }
+                  }
+              }
+        );
         view.getNewChequeBtn().addClickListener(ev -> nuevoCheque(null));
         //view.getGuardarBtn().addClickListener(event -> saveCabecera());
         view.getNewItemBtn().addClickListener(event -> nuevoComprobante());
@@ -58,6 +76,71 @@ public class BancoLogic extends BancoItemLogic {
         view.getVerVoucherBtn().addClickListener(event -> ReportHelper.generateComprobante(beanItem.getBean()));
         view.getAnularChequeBtn().addClickListener(clickEvent -> anularCheque(bancocabecera));
         switchMode(EMPTY);
+    }
+
+    private boolean checkSobregirado() {
+        boolean checkSingleOper = new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN()).check();
+        if (checkSingleOper) return true;
+
+        boolean checkAllItems = false;
+
+        Map<String, BigDecimal> proyectoSaldo = new HashMap<>();
+        Map<String, BigDecimal> terceroSaldo = new HashMap<>();
+
+        for (Object detObj : view.gridBanco.getContainerDataSource().getItemIds()) {
+            ScpBancodetalle det = (ScpBancodetalle)detObj;
+
+            ScpBancocabecera cab = beanItem.getBean();
+            Character mon = cab.getCodTipomoneda();
+            BigDecimal elSaldo = new BigDecimal(0);
+            switch (mon) {
+                case '0':
+                    elSaldo = elSaldo.add(det.getNumHabersol()).subtract(det.getNumDebesol());
+                    break;
+                case '1':
+                    elSaldo = elSaldo.add(det.getNumHaberdolar()).subtract(det.getNumDebedolar());
+                    break;
+                case '2':
+                    elSaldo = elSaldo.add(det.getNumHaberdolar()).subtract(det.getNumDebedolar());
+            }
+            String codDes = det.getCodProyecto();
+            String codTerc = det.getCodTercero();
+            if (!GenUtil.strNullOrEmpty(codDes)) {
+                if (proyectoSaldo.containsKey(codDes))
+                    proyectoSaldo.put(codDes, proyectoSaldo.get(codDes).add(elSaldo));
+                else
+                    proyectoSaldo.put(codDes, elSaldo);
+
+            } else if (!GenUtil.strNullOrEmpty(codTerc)) {
+                if (terceroSaldo.containsKey(codTerc))
+                    terceroSaldo.put(codTerc, terceroSaldo.get(codTerc).add(elSaldo));
+                else
+                    terceroSaldo.put(codTerc, elSaldo);
+            }
+        }
+        for (String codProy : proyectoSaldo.keySet()) {
+            if (proyectoSaldo.get(codProy).compareTo(getSaldosForMoneda(codProy, true, moneda)) > 0)
+                return true;
+        }
+
+        for (String codTerc : terceroSaldo.keySet()) {
+            if (terceroSaldo.get(codTerc).compareTo(getSaldosForMoneda(codTerc, false, moneda)) > 0)
+                return true;
+        }
+        return false;
+    }
+
+    private BigDecimal getSaldosForMoneda(String codProy, boolean isProyecto, Character moneda) {
+        ProcUtil.Saldos res = getSaldosFor(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()), codProy, true);
+        switch (moneda) {
+            case '0':
+                return res.getSaldoPEN();
+            case '1':
+                return res.getSaldoUSD();
+            case '2':
+                return res.getSaldoEUR();
+        }
+        return null;
     }
 
     private void anularComprobante() {
@@ -93,6 +176,7 @@ public class BancoLogic extends BancoItemLogic {
         moneda = vsjBancocabecera.getCodTipomoneda();
         isLoading=true;
         clearFields();
+        proyectosTercerosSaldos = new HashMap<>();
         //clearSaldos();
         view.setTotal(null);
         item = null;
@@ -388,5 +472,9 @@ public class BancoLogic extends BancoItemLogic {
                 })
                 .withNoButton()
                 .open();
+    }
+
+    public Map<String, ProcUtil.Saldos> getProyectosTercerosSaldos() {
+        return proyectosTercerosSaldos;
     }
 }

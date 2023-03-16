@@ -6,7 +6,7 @@ DONE
 - comunicado cuando sobregirada cuenta o caja - necesito que salga advertencia cuando la cuenta no tiene fondos (cargo>saldo) de proyecto/tercero o de cuenta caja/cuenta banco - solo advertencia donde hacen click ok
 * banco 00036717 - pokazuje ostrzezenie a ma saldo cuenta bancaria y proyecto. si una vez puso la advertencia, ya queda para todas las operaciones.
 * banco/caja przy abono nie powinno pokazywac ostrzezenia (operacion 36734 banco)
-
+DONE
 - no funciona preselecion de caja automatica soles ni dolares - creo que te hablo jorge
 DONE
 - falta reporte de caja en euros
