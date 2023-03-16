@@ -1,6 +1,6 @@
 USE [SCP]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidadBanco]    Script Date: 14/03/2023 23:31:29 ******/
+/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_enviarAContabilidadRendicion]    Script Date: 15/03/2023 23:35:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
