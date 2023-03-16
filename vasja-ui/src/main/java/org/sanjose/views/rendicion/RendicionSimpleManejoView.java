@@ -363,4 +363,8 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
     public ComboBox getFiltroEnviadasCombo() {
         return filtroEnviadasCombo;
     }
+
+    public RendicionManejoLogic getViewLogic() {
+        return viewLogic;
+    }
 }

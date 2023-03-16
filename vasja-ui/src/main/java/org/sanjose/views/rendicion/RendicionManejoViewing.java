@@ -53,4 +53,7 @@ public interface RendicionManejoViewing extends NavigatorViewing, Viewing, GridV
     Collection<Object> getSelectedRows();
 
     ScpRendicioncabecera getSelectedRow();
+
+    RendicionManejoLogic getViewLogic();
+
 }

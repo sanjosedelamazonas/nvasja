@@ -440,5 +440,8 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
         return gridFooter;
     }
 
+    public Button getBtnEnviarAcontab() {
+        return btnEnviarAcontab;
+    }
 
 }

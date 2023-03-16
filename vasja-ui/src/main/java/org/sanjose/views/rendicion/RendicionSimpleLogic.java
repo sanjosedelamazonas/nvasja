@@ -15,6 +15,7 @@ import com.vaadin.ui.Window;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
+import org.sanjose.authentication.Role;
 import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.ScpRendicioncabecera;
@@ -79,24 +80,20 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
         view.getBtnNewItem().addClickListener(event -> nuevoItem());
         view.getBtnEliminar().addClickListener(event -> eliminarItem());
         view.getBtnRegAnticipo().addClickListener(event -> registrarAnticipos());
-//        RendicionExportXLS rendExport = new RendicionExportXLS(beanItem.getBean(), view.getService());
-//        FileDownloader fileDownloader = new FileDownloader(rendExport.openExported());
-//        fileDownloader.extend(view.getBtnGuardarExcel());
-//        view.getBtnGuardarExcel().addClickListener(event -> {
-//            RendicionExportXLS rendExport = new RendicionExportXLS(beanItem.getBean(), view.getService());
-//            FileDownloader fileDownloader = new FileDownloader(rendExport.openExported());
-//            fileDownloader.extend(view.getBtnGuardarExcel());
-////
-//        });
-//
-        //view.getBtnAnular().addClickListener(event -> anular());
         view.getBtnCerrar().addClickListener(event -> anular());
         view.getBtnVerVoucher().addClickListener(event -> ReportHelper.generateComprobante(beanItem.getBean()));
-        //view.getBtnToggleVista().addClickListener(event -> view.toggleVista());
-        view.getBtnEliminarRend().addClickListener(clickEvent -> {
-            eliminarRendicion(beanItem.getBean());
+        view.getBtnEliminarRend().addClickListener(clickEvent -> eliminarRendicion(beanItem.getBean()));
 
-        });
+        if (!Role.isPrivileged()) {
+            view.getBtnEnviarAcontab().setVisible(false);
+        } else {
+            view.getBtnEnviarAcontab().addClickListener(event -> {
+                Collection<Object> rendiciones = new ArrayList<>();
+                rendiciones.add(beanItem.getBean());
+                MainUI.get().getProcUtil().enviarContabilidadRendicion(rendiciones, manView.getService(), manView.getViewLogic());
+                view.getBtnEnviarAcontab().setEnabled(false);
+            });
+        }
         view.getBtnImportar().addClickListener(clickEvent -> importDetalles());
         switchMode(EMPTY);
     }
@@ -141,6 +138,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
             view.grid.select(renddet);
             switchMode(EDIT);
         });
+        view.getBtnEnviarAcontab().setEnabled(!rendicioncabecera.isEnviado());
         setupExport();
         if (rendicioncabecera.getCodRendicioncabecera()!=null)
             switchMode(EDIT);

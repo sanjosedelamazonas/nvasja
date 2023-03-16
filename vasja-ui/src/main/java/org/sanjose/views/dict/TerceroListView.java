@@ -1,12 +1,12 @@
 package org.sanjose.views.dict;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.ComboBox;
@@ -14,12 +14,14 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.converter.BooleanTrafficLightConverter;
 import org.sanjose.converter.CargoCuartaConverter;
 import org.sanjose.converter.TipoDestinoConverter;
 import org.sanjose.converter.TipoDocumentoConverter;
-import org.sanjose.model.*;
+import org.sanjose.model.ScpDestino;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.ViewUtil;
@@ -37,28 +39,24 @@ import java.util.*;
  */
 @SpringComponent
 // @UIScope
-public class DestinoListView extends DestinoListUI implements Viewing {
+public class TerceroListView extends TerceroListUI implements Viewing {
 
-    public static final String VIEW_NAME = "Destinos";
+    public static final String VIEW_NAME = "Terceros";
     public String getWindowTitle() {
         return VIEW_NAME;
     }
-    private static final Logger log = LoggerFactory.getLogger(DestinoListView.class);
-    private final DestinoListLogic viewLogic = new DestinoListLogic(this);
+    private static final Logger log = LoggerFactory.getLogger(TerceroListView.class);
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
-            "codDestino", "txtNombre", "txtNombredestino", "indTipopersona", "indTipodestino", "indSexo",
-            "indTipodctoidentidad", "txtRuc", "txtNumerodctoidentidad", "codCargo", "txtDireccion",
-            "txtApellidomaterno", "txtApellidopaterno", "txtTelefono1", "txtTelefono2",
+            "activo", "codDestino", "txtNombre", "txtNombredestino", "indSexo",
+            "txtEmail", "enviarreporte", "txtUsuario",
             "fecFregistro", "codUregistro", "fecFactualiza", "codUactualiza"
     };
     private final String[] HIDDEN_COLUMN_IDS = new String[] {
-            "txtApellidomaterno", "txtApellidopaterno", "txtTelefono1", "txtTelefono2",
             "fecFregistro", "codUregistro", "fecFactualiza", "codUactualiza"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
-            "Codigo", "Nombre", "Descripcion", "Tipo persona", "Clasificacion", "Genero",
-            "Tipo doc", "RUC o DNI", "Num de doc", "Cargo", "Direccion",
-            "Appelido materno", "Appelido paterno", "Telefono 1", "Telefono 2",
+            "Activo", "Codigo", "Nombre", "Descripcion", "Genero",
+            "Correo", "Enviar reporte", "Usuario",
             "Fecha reg.", "Usuario reg.", "Fecha actual.", "Usuario actual."
     };
     private final int[] FILTER_WIDTH = new int[]{
@@ -68,7 +66,7 @@ public class DestinoListView extends DestinoListUI implements Viewing {
 
     private PersistanceService service;
 
-    public DestinoListView(PersistanceService comprobanteService) {
+    public TerceroListView(PersistanceService comprobanteService) {
         this.service = comprobanteService;
         setSizeFull();
     }
@@ -83,50 +81,53 @@ public class DestinoListView extends DestinoListUI implements Viewing {
 
         grid.setSelectionMode(SelectionMode.MULTI);
 
-        grid.setEditorEnabled(false);
+        grid.setEditorEnabled(true);
 
-        ComboBox clasificacion = new ComboBox();
-        DataFilterUtil.bindTipoDestinoComboBox(clasificacion, "indTipodestino", "Sel Clasificacion");
-        grid.getColumn("indTipodestino").setEditorField(clasificacion);
-        grid.getColumn("indTipodestino").setConverter(new TipoDestinoConverter());
-
-        // Tipo doc
-        ComboBox tipoDocumento = new ComboBox();
-        DataFilterUtil.bindComboBox(tipoDocumento, "codTipodocumento", service.getTipodocumentoRepo().findAll(),
-                "Sel Tipo documento", "txtDescripcion");
-        grid.getColumn("indTipodctoidentidad").setEditorField(tipoDocumento);
-        grid.getColumn("indTipodctoidentidad").setConverter(new TipoDocumentoConverter(service.getTipodocumentoRepo()));
-
-        //.setRenderer(new HtmlRenderer());
-
-
-        grid.getColumn("indTipodctoidentidad").setEditorField(tipoDocumento);
-
-
-        // Cargo 4ta
-        ComboBox cargo = new ComboBox();
-        DataFilterUtil.bindComboBox(cargo, "codCargo", service.getCargocuartaRepo().findAll(), "Sel Cargo 4ta",
-                "txtDescripcion");
-        grid.getColumn("codCargo").setEditorField(cargo);
-        grid.getColumn("codCargo").setConverter(new CargoCuartaConverter(service.getCargocuartaRepo()));
-
+        // Usuario
+        ComboBox usuario = new ComboBox();
+        DataFilterUtil.bindComboBox(usuario, "txtUsuario", service.getMsgUsuarioRep().findAll(), "", null);
+        grid.getColumn("txtUsuario").setEditorField(usuario);
 
         // Genero
         ComboBox genero = new ComboBox();
         DataFilterUtil.bindGeneroComboBox(genero, "indSexo", "Sel Sexo");
         grid.getColumn("indSexo").setEditorField(genero);
 
-        // Tipo persona
-        ComboBox tipoDePersona = new ComboBox();
-        DataFilterUtil.bindTipoPersonaComboBox(tipoDePersona, "indTipopersona", "Sel Tipo de persona");
-        grid.getColumn("indTipopersona").setEditorField(tipoDePersona);
+
+        grid.getColumn("activo").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
+        grid.getColumn("enviarreporte").setConverter(new BooleanTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
         //                new BeanFieldGroup<>(ScpDestino.class));
         ViewUtil.setupColumnFilters(grid, VISIBLE_COLUMN_IDS, FILTER_WIDTH, null, service);
 
-        grid.addItemClickListener(this::setItemLogic);
+        //grid.addItemClickListener(this::setItemLogic);
+        btnNuevo.addClickListener(e -> nuevoDestino());
 
-        viewLogic.init();
+        FieldGroup.CommitHandler gridCommitHandler = new FieldGroup.CommitHandler() {
+            @Override
+            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+
+            }
+            @Override
+            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+                BeanItem beanItem = (BeanItem)grid.getContainerDataSource().getItem(grid.getEditedItemId());
+                ScpDestino destinoToSave  = (ScpDestino)beanItem.getBean();
+                // Attach logic to num fields
+                destinoToSave.prepToSave();
+                getService().getDestinoRepo().save(destinoToSave);
+            }
+        };
+        grid.getEditorFieldGroup().addCommitHandler(gridCommitHandler);
+    }
+
+
+    private void nuevoDestino() {
+        clearSelection();
+        ScpDestino newTercero = new ScpDestino();
+        newTercero.setIndTipodestino('3');
+        newTercero.setActivo(true);
+        grid.addRow(newTercero);
+        //view.grid.getContainerDataSource().addItemAt(0, new ScpDestino());
     }
 
 
@@ -146,8 +147,8 @@ public class DestinoListView extends DestinoListUI implements Viewing {
 
         destinoWindow.setWindowMode(WindowMode.NORMAL);
         destinoWindow.setDraggable(true);
-        destinoWindow.setWidth(700, Sizeable.Unit.PIXELS);
-        destinoWindow.setHeight(550, Sizeable.Unit.PIXELS);
+        destinoWindow.setWidth(700, Unit.PIXELS);
+        destinoWindow.setHeight(550, Unit.PIXELS);
         destinoWindow.setPositionX(200);
         destinoWindow.setPositionY(50);
         destinoWindow.setModal(true);
@@ -209,7 +210,7 @@ public class DestinoListView extends DestinoListUI implements Viewing {
 
     public void refreshData() {
         grid.getContainerDataSource().removeAllItems();
-        ((BeanItemContainer) grid.getContainerDataSource()).addAll(service.getDestinoRepo().findByIndTipodestinoNot('3'));
+        ((BeanItemContainer) grid.getContainerDataSource()).addAll(service.getDestinoRepo().findByIndTipodestino('3'));
     }
 
     @Override

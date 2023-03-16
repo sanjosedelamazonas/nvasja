@@ -16,10 +16,7 @@ import org.hibernate.Session;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.Caja;
-import org.sanjose.model.MsgUsuario;
-import org.sanjose.model.ScpCajabanco;
-import org.sanjose.model.ScpBancocabecera;
-import org.sanjose.model.VsjItem;
+import org.sanjose.model.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
@@ -118,12 +115,14 @@ public class ReportHelper {
 	private static String getReportFromItem(VsjItem op) {
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT");
-		return (op instanceof ScpCajabanco ? (isTxt ? "ComprobanteTxt" : "Comprobante") : "ComprobanteCheque");
+		return (op instanceof ScpCajabanco ? (isTxt ? "ComprobanteTxt" : "Comprobante") :
+				(op instanceof ScpBancocabecera ? "ComprobanteCheque" : "ComprobanteRendicion"));
 	}
 
 	private static Integer getIdFromItem(VsjItem op) {
 		return (op instanceof ScpCajabanco ? ((ScpCajabanco) op).getCodCajabanco()
-				: ((ScpBancocabecera) op).getCodBancocabecera());
+				: (op instanceof ScpBancocabecera ? ((ScpBancocabecera) op).getCodBancocabecera() :
+				((ScpRendicioncabecera)op).getCodRendicioncabecera()));
 	}
 
 	@SuppressWarnings({"serial", "unchecked"})
@@ -166,7 +165,8 @@ public class ReportHelper {
         };
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		StreamResource resource = new StreamResource(source,
-				(GenUtil.isIngreso(op) ? "Ingreso_" : "Egreso_")
+				(op instanceof ScpRendicioncabecera ? "Rendicion_" :
+						(GenUtil.isIngreso(op) ? "Ingreso_" : "Egreso_"))
 						+ op.getTxtAnoproceso() + "_" + op.getCodMes() + "_" + getIdFromItem(op) + "_"
 						+ df.format(new Date(System.currentTimeMillis()))
 						+ (isPdf ? ".pdf" : (isTxt ? ".txt" : ".html")));
@@ -183,10 +183,10 @@ public class ReportHelper {
 		Window repWindow = new Window();
 		repWindow.setWindowMode(WindowMode.NORMAL);
         repWindow.setDraggable(true);
-		repWindow.setWidth(700, Sizeable.Unit.PIXELS);
+		repWindow.setWidth(800, Sizeable.Unit.PIXELS);
 		repWindow.setHeight(600, Sizeable.Unit.PIXELS);
-		repWindow.setPositionX(200);
-		repWindow.setPositionY(50);
+		repWindow.setPositionX(150);
+		repWindow.setPositionY(30);
 		repWindow.setModal(false);
         repWindow.setContent(emb);
         repWindow.setDraggable(true);

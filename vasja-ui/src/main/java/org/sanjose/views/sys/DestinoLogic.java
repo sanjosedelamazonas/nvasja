@@ -80,25 +80,7 @@ public class DestinoLogic implements Serializable {
                         .open();
                 return null;
             }
-            if (item.getCodUregistro() == null) item.setCodUregistro(CurrentUser.get());
-            if (item.getFecFregistro() == null) item.setFecFregistro(new Timestamp(System.currentTimeMillis()));
-            item.setCodUactualiza(CurrentUser.get());
-            item.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
-
-            if (item.getTxtNombre() == null) item.setTxtNombre("");
-            if (item.getTxtNombredestino() == null) item.setTxtNombredestino(item.getTxtNombre());
-            if (item.getCodCargo() == null) item.setCodCargo(vacio);
-            if (item.getCodFilial()== null) item.setCodFilial(vacio);
-            if (item.getTxtApellidomaterno() == null) item.setTxtApellidomaterno(vacio);
-            if (item.getTxtDireccion() == null) item.setTxtDireccion(vacio);
-            if (item.getTxtApellidopaterno() == null) item.setTxtApellidopaterno(vacio);
-            if (item.getTxtNumerodctoidentidad() == null) item.setTxtNumerodctoidentidad(vacio);
-            if (item.getTxtRuc() == null) item.setTxtRuc(vacio);
-            if (item.getTxtTelefono1() == null) item.setTxtTelefono1(vacio);
-            if (item.getTxtTelefono2() == null) item.setTxtTelefono2(vacio);
-            if (item.getIndSexo() == null) item.setIndSexo(Nada);
-            if (item.getIndTipodctoidentidad() == null) item.setIndTipodctoidentidad(vacio);
-            item.setFlgIm(FlgImg);
+            item.prepToSave();
 
             view.btnGuardar.setEnabled(false);
             view.btnAnular.setEnabled(false);

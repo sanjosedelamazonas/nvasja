@@ -24,6 +24,7 @@ import org.sanjose.util.ProcUtil;
 import org.sanjose.views.banco.*;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.dict.DestinoListView;
+import org.sanjose.views.dict.TerceroListView;
 import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.rendicion.RendicionSimpleManejoView;
@@ -55,6 +56,7 @@ public class MainUI extends UI {
     private final ConfiguracionCtaCajaBancoView confView;
     private final ConfiguracionCajaView configuracionCajaView;
     private final DestinoListView destinoListView;
+    private final TerceroListView terceroListView;
     private final CajaGridView cajaGridView;
     private final CajaOperacionesView cajaOperacionesView;
     private final PropiedadView propiedadView;
@@ -102,6 +104,7 @@ public class MainUI extends UI {
         this.rendicionOperView = new RendicionOperView(persistanceService);
         this.rendicionSimpleOperView = new RendicionSimpleOperView(persistanceService);
         this.destinoListView = new DestinoListView(persistanceService);
+        this.terceroListView = new TerceroListView(persistanceService);
     }
 
     public static MainUI get() {
@@ -116,12 +119,15 @@ public class MainUI extends UI {
         Responsive.makeResponsive(this);
         setLocale(ConfigurationUtil.getLocale());
         getPage().setTitle("Vicariato San Jose del Amazonas - Sistema de Gestion de Caja y Bancos");
+        if (ConfigurationUtil.is("DEV_MODE")) {
+         //   accessControl.signIn(ConfigurationUtil.get("DEV_USER"), "");
+        }
         if (!accessControl.isUserSignedIn()) {
             setContent(new LoginScreen(accessControl, (LoginListener) () -> showMainView()));
         } else {
             showMainView();
         }
-        if (Role.isPrivileged()) {
+        if (Role.isPrivileged() && !ConfigurationUtil.is("DEV_MODE")) {
             try {
                 TipoCambio.checkTipoCambio(new Date(), this.getBancoOperacionesView().getService().getTipocambioRep());
             } catch (TipoCambio.TipoCambioNoExiste e) {
@@ -136,7 +142,7 @@ public class MainUI extends UI {
         mainScreen = new MainScreen(MainUI.this, cajaManejoView, comprobanteView, transferenciaView, cajaOperacionesView,
                 cajaGridView, confView, configuracionCajaView, propiedadView, bancoOperView, bancoManejoView,
                 bancoConciliacionView, bancoOperacionesView, rendicionManejoView, rendicionOperView,
-                rendicionSimpleManejoView, rendicionSimpleOperView, reportesView, destinoListView);
+                rendicionSimpleManejoView, rendicionSimpleOperView, reportesView, destinoListView, terceroListView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);

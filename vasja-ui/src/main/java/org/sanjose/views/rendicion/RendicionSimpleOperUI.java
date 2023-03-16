@@ -45,6 +45,7 @@ public class RendicionSimpleOperUI extends CssLayout {
     protected Button btnCerrar;
     protected PopupDateField dataFechaRegistro;
     protected TextField txtIngresadoPor;
+    protected Button btnEnviarAcontab;
     protected Button btnGuardarExcel;
     protected Button btnRegAnticipo;
     protected Button btnEliminarRend;
@@ -78,4 +79,5 @@ public class RendicionSimpleOperUI extends CssLayout {
     public RendicionSimpleOperUI() {
         Design.read(this);
     }
+
 }

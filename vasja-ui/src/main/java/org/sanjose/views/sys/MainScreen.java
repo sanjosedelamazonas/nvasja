@@ -19,6 +19,7 @@ import org.sanjose.views.banco.BancoOperView;
 import org.sanjose.views.banco.BancoOperacionesView;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.dict.DestinoListView;
+import org.sanjose.views.dict.TerceroListView;
 import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.rendicion.RendicionSimpleManejoView;
@@ -46,7 +47,7 @@ public class MainScreen extends HorizontalLayout {
                       BancoConciliacionView bancoConciliacionView, BancoOperacionesView bancoOperacionesView,
                       RendicionManejoView rendicionManejoView, RendicionOperView rendicionOperView,
                       RendicionSimpleManejoView rendicionSimpleManejoView, RendicionSimpleOperView rendicionSimpleOperView,
-                      ReportesView reportesView, DestinoListView destinoListView) {
+                      ReportesView reportesView, DestinoListView destinoListView, TerceroListView terceroListView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -109,6 +110,8 @@ public class MainScreen extends HorizontalLayout {
                 DestinoListView.VIEW_NAME, FontAwesome.EDIT);
 
         if (Role.isPrivileged()) {
+            menu.addView(terceroListView, TerceroListView.VIEW_NAME,
+                    TerceroListView.VIEW_NAME, FontAwesome.EDIT);
             menu.addSeparator("Configuracion");
             menu.addView(configuracionCajaView, ConfiguracionCajaView.VIEW_NAME,
                     ConfiguracionCajaView.VIEW_NAME, FontAwesome.EDIT);
