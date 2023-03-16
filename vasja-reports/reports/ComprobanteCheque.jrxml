@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ComprobanteCheque" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="42" uuid="e6e4b764-eb4a-44ec-8aa8-52e244f987a5">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -7,7 +7,7 @@
 	<property name="net.sf.jasperreports.export.text.character.width" value="7.238"/>
 	<property name="net.sf.jasperreports.export.text.character.height" value="13.948"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Vasja Leon SCP_TEST"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -141,10 +141,10 @@ FROM
   scp_bancodetalle.txt_glosaitem AS OPERACION_DESCRIPCION,
   scp_bancodetalle.cod_tipomoneda AS OPERACION_TIPOMONEDA,
   scp_bancodetalle.fec_fecha AS OPERACION_FECHA,
-  firma.txt_ruc AS CHEQUE_DNI,
+  firma.txt_ruc AS OPERACION_DNI,
   firma.txt_nombredestino AS OPERACION_FIRMA,
   firma.cod_destino AS OPERACION_CODDESTINO,
-  dest2.txt_ruc AS OPERACION_DNI,
+  dest2.txt_ruc AS CHEQUE_DNI,
   dest2.txt_nombredestino AS CHEQUE_FIRMA,
   dest2.cod_destino AS CHEQUE_CODDESTINO,
   isnull(CUENTA.txt_descproyecto,tercero.txt_nombredestino) AS CUENTA_NOMBRE,
@@ -193,7 +193,7 @@ FROM
 	INNER JOIN scp_bancocabecera ON scp_bancodetalle.cod_bancocabecera = scp_bancocabecera.cod_bancocabecera
 	INNER JOIN scp_plancontable ON scp_bancocabecera.cod_ctacontable = scp_plancontable.cod_ctacontable
 	AND scp_bancocabecera.txt_anoproceso = scp_plancontable.txt_anoproceso
-	LEFT JOIN scp_destino firma ON scp_bancodetalle.cod_destino = firma.cod_destino
+	LEFT JOIN scp_destino firma ON scp_bancodetalle.cod_destinoitem = firma.cod_destino
 	LEFT JOIN scp_destino dest2 ON scp_bancocabecera.cod_destino = dest2.cod_destino
 	LEFT JOIN scp_destino tercero ON scp_bancodetalle.cod_tercero = tercero.cod_destino
 	LEFT JOIN dbo.scp_proyecto CUENTA ON scp_bancodetalle.cod_proyecto = CUENTA.cod_proyecto
@@ -237,7 +237,7 @@ FROM
 	</variable>
 	<title>
 		<band height="328">
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="50" y="77" width="488" height="14" uuid="e8f87842-221f-4600-90e8-aabf13745b72"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>
@@ -249,7 +249,7 @@ FROM
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{CHEQUE_FIRMA} + " " + $F{CHEQUE_CODDESTINO} ]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{CHEQUE_FIRMA} + " " + $F{CHEQUE_CODDESTINO}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="50" y="59" width="350" height="13" uuid="c9742bd8-13ab-466b-9f18-824c58395a5d"/>
@@ -625,7 +625,7 @@ FROM
 							</box>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="15">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="145" height="15" uuid="d36bb8b4-cc85-4174-86dd-606ab818b2bf"/>
 								<box>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -763,7 +763,7 @@ FROM
 	</title>
 	<detail>
 		<band height="127" splitType="Prevent">
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="49" y="69" width="490" height="14" uuid="66f825a1-b311-487b-83ed-949d908ccb98"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial"/>

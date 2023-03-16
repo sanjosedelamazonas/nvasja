@@ -27,6 +27,7 @@ import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -89,7 +90,8 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
 
         //noinspection unchecked
 
-        container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
+        //container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
+        container = new BeanItemContainer(ScpRendicioncabecera.class, new ArrayList());
 
         gpContainer = new GeneratedPropertyContainer(container);
         gpContainer.addGeneratedProperty("msgUsuario",

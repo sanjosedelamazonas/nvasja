@@ -19,6 +19,7 @@ public class ConfigurationUtil {
 	private static final HashMap<String, String> paramMap = new HashMap<>();
 	private static VsjPropiedadRep propRepo = null;
 	private static String OS = null;
+	private static Locale locale = null;
 
 	private static void init() {
 		defaultParamMap.put("LOCALE", "es_PE");
@@ -60,9 +61,16 @@ public class ConfigurationUtil {
 	}
 
 	public static Locale getLocale() {
-	    String locStr = get("LOCALE");
-        return new Locale(locStr.substring(0,2), locStr.substring(3,5));
+        return getLocale(false);
     }
+
+    public static Locale getLocale(boolean refresh) {
+		if (locale==null || refresh) {
+			String locStr = get("LOCALE");
+			locale = new Locale(locStr.substring(0, 2), locStr.substring(3, 5));
+		}
+		return locale;
+	}
 
 	private static String getDefaultValue(String name) {
 		if (defaultParamMap.isEmpty())
