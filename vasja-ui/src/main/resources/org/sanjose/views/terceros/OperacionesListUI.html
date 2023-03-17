@@ -10,7 +10,15 @@
    <vaadin-horizontal-layout spacing height="40px" margin-top margin-bottom _id="horiz1">
     <vaadin-horizontal-layout spacing :center>
      <vaadin-label size-auto plain-text>
-       Operaciones del día: 
+       Operaciones de la cuenta: 
+     </vaadin-label>
+     <vaadin-combo-box _id="selCuenta">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+     </vaadin-combo-box>
+     <vaadin-label size-auto plain-text>
+       del día: 
      </vaadin-label>
      <vaadin-date-field _id="fechaDesde"></vaadin-date-field>
      <vaadin-label size-auto plain-text>
@@ -30,9 +38,13 @@
     </vaadin-horizontal-layout>
     <vaadin-horizontal-layout spacing>
      <vaadin-label size-auto plain-text>
-       Saldo actual: 
+       Saldo inicial: 
      </vaadin-label>
-     <vaadin-text-field _id="saldoCaja"></vaadin-text-field>
+     <vaadin-text-field enabled="false" _id="saldoInicial"></vaadin-text-field>
+     <vaadin-label size-auto plain-text>
+       Saldo final: 
+     </vaadin-label>
+     <vaadin-text-field enabled="false" _id="saldoFinal"></vaadin-text-field>
     </vaadin-horizontal-layout>
     <vaadin-horizontal-layout spacing>
      <vaadin-button plain-text _id="btnReporteImprimirCaja" :right>

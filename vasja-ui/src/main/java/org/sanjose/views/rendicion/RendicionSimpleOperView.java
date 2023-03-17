@@ -324,10 +324,6 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
         return btnNewItem;
     }
 
-    public Button getBtnAnular() {
-        return btnAnular;
-    }
-
     public Button getBtnEliminar() {
         return btnEliminar;
     }
@@ -440,6 +436,11 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
 
     public Button getBtnEnviarAcontab() {
         return btnEnviarAcontab;
+    }
+
+    public Button getBtnNuevoDestino() {
+
+        return btnNuevoDestino;
     }
 
 }

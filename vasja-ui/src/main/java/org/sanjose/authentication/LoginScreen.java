@@ -92,15 +92,16 @@ public class LoginScreen extends CssLayout {
 
         //loginForm.addComponent(username = new TextField("Usuario", "ggomez"));
         loginForm.addComponent(username = new TextField("Usuario", ""));
-        username.setWidth(15, Unit.EM);
+        username.setWidth(16, Unit.EM);
         loginForm.addComponent(password = new PasswordField("Clave"));
-        password.setWidth(15, Unit.EM);
+        password.setWidth(16, Unit.EM);
         password.setDescription("");
         CssLayout buttons = new CssLayout();
         buttons.setStyleName("buttons");
         loginForm.addComponent(buttons);
 
         buttons.addComponent(login = new Button("Login"));
+        login.setWidth(10, Unit.EM);
         login.setDisableOnClick(true);
         login.addClickListener((Button.ClickListener) event -> {
             try {
@@ -111,8 +112,10 @@ public class LoginScreen extends CssLayout {
         });
         login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         login.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        buttons.addComponent(new Label("  "));
 
-        buttons.addComponent(forgotPassword = new Button("?Clave Olvidado?"));
+        buttons.addComponent(forgotPassword = new Button("Clave Olvidado"));
+        forgotPassword.setWidth(10, Unit.EM);
         forgotPassword.addClickListener(clickEvent -> showForgotPassForm());
         forgotPassword.addStyleName(ValoTheme.BUTTON_FRIENDLY);
         return loginForm;

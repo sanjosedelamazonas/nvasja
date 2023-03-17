@@ -442,7 +442,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
             case EMPTY:
                 view.getBtnGuardar().setEnabled(false);
                 view.getBtnCerrar().setEnabled(true);
-                view.getBtnAnular().setEnabled(false);
+                view.getBtnNuevoDestino().setEnabled(false);
                 view.getBtnEliminar().setEnabled(false);
                 view.getBtnVerVoucher().setEnabled(false);
                 view.getBtnNewItem().setEnabled(false);
@@ -455,7 +455,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
 
             case NEW:
                 view.getBtnGuardar().setEnabled(true);
-                view.getBtnAnular().setEnabled(true);
+                view.getBtnNuevoDestino().setEnabled(true);
                 if (view.getContainer().size() > 1) view.getBtnEliminar().setEnabled(true);
                 else view.getBtnEliminar().setEnabled(false);
                 view.getBtnVerVoucher().setEnabled(false);
@@ -486,7 +486,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
 
             case VIEW:
                 view.getBtnGuardar().setEnabled(false);
-                view.getBtnAnular().setEnabled(false);
+                view.getBtnNuevoDestino().setEnabled(false);
                 view.getBtnCerrar().setEnabled(true);
                 view.getBtnVerVoucher().setEnabled(true);
                 view.getBtnEliminarRend().setEnabled(true);

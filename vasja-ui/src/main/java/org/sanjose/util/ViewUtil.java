@@ -156,6 +156,15 @@ public class ViewUtil {
         if (grid.getColumn("numAnticipo") != null)
             grid.getColumn("numAnticipo").setRenderer(new EmptyZeroNumberRendrer(
                     "%02.2f", ConfigurationUtil.getLocale()));
+        if (grid.getColumn("numSaldosol") != null)
+            grid.getColumn("numSaldosol").setRenderer(new EmptyZeroNumberRendrer(
+                    "%02.2f", ConfigurationUtil.getLocale()));
+        if (grid.getColumn("numSaldodolar") != null)
+            grid.getColumn("numSaldodolar").setRenderer(new EmptyZeroNumberRendrer(
+                    "%02.2f", ConfigurationUtil.getLocale()));
+        if (grid.getColumn("numSaldomo") != null)
+            grid.getColumn("numSaldomo").setRenderer(new EmptyZeroNumberRendrer(
+                    "%02.2f", ConfigurationUtil.getLocale()));
 
         grid.setCellStyleGenerator(( Grid.CellReference cellReference ) -> {
             if ( "numHabersol".equals( cellReference.getPropertyId() ) ||
@@ -167,6 +176,9 @@ public class ViewUtil {
                     "numTcmo".equals(cellReference.getPropertyId()) ||
                     "numGastototal".equals(cellReference.getPropertyId()) ||
                     "numAnticipo".equals(cellReference.getPropertyId()) ||
+                    "numSaldosol".equals(cellReference.getPropertyId()) ||
+                    "numSaldodolar".equals(cellReference.getPropertyId()) ||
+                    "numSaldomo".equals(cellReference.getPropertyId()) ||
                     "numDebesol".equals( cellReference.getPropertyId() )) {
                 return "v-align-right";
             } else {
@@ -427,7 +439,7 @@ public class ViewUtil {
     private static void allColumnsHide(Grid grid, boolean isHide) {
         for (int i=0;i<3;i++) {
             String mon = GenUtil.getDescMoneda(Character.forDigit(i, 10));
-            for (String col : new String[] { "numDebe", "numHaber"}) {
+            for (String col : new String[] { "numDebe", "numHaber", "numSaldo"}) {
                 if (grid.getColumn(col + mon)!=null) grid.getColumn(col + mon).setHidden(isHide);
             }
         }
@@ -442,7 +454,7 @@ public class ViewUtil {
             return;
         }
         allColumnsHide(grid, true);
-        for (String col : new String[] { "numDebe", "numHaber"}) {
+        for (String col : new String[] { "numDebe", "numHaber", "numSaldo"}) {
             if (grid.getColumn(col + GenUtil.getDescMoneda(moneda))!=null)
                 grid.getColumn(col + GenUtil.getDescMoneda(moneda)).setHidden(false);
         }

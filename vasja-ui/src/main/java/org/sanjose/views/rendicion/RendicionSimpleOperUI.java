@@ -72,12 +72,11 @@ public class RendicionSimpleOperUI extends CssLayout {
     protected TextField numDifmo;
     protected Button btnAjustar;
     protected Button btnNewItem;
+    protected Button btnNuevoDestino;
     protected Button btnImportar;
     protected Button btnEliminar;
-    protected Button btnAnular;
 
     public RendicionSimpleOperUI() {
         Design.read(this);
     }
-
 }

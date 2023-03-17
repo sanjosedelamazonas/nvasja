@@ -3,7 +3,6 @@ package org.sanjose.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Objects;
 
 
@@ -30,6 +29,10 @@ public class VsjOperaciontercero implements Serializable {
     private BigDecimal numHabermc;
     private BigDecimal numHabermo;
     private BigDecimal numHabersol;
+    private BigDecimal numSaldosol;
+    private BigDecimal numSaldodolar;
+    private BigDecimal numSaldomo;
+
     private String codContraparte;
     private Boolean enviado;
 
@@ -37,7 +40,53 @@ public class VsjOperaciontercero implements Serializable {
     public VsjOperaciontercero() {
     }
 
-    public VsjOperaciontercero(Long id, String codTercero, Timestamp fecComprobante, String codVoucher, String txtGlosaitem, String codDestino, String txtDestinonombre, String codCtacontable, Character codTipomoneda, BigDecimal numDebedolar, BigDecimal numDebemc, BigDecimal numDebemo, BigDecimal numDebesol, BigDecimal numHaberdolar, BigDecimal numHabermc, BigDecimal numHabermo, BigDecimal numHabersol, String codContraparte) {
+//    public VsjOperaciontercero(Long id, String codTercero, Timestamp fecComprobante, String codVoucher, String txtGlosaitem, String codDestino, String txtDestinonombre, String codCtacontable, Character codTipomoneda, BigDecimal numDebedolar, BigDecimal numDebemc, BigDecimal numDebemo, BigDecimal numDebesol, BigDecimal numHaberdolar, BigDecimal numHabermc, BigDecimal numHabermo, BigDecimal numHabersol, String codContraparte) {
+//        this.id = id;
+//        this.codTercero = codTercero;
+//        this.fecComprobante = fecComprobante;
+//        this.codVoucher = codVoucher;
+//        this.txtGlosaitem = txtGlosaitem;
+//        this.codDestino = codDestino;
+//        this.txtDestinonombre = txtDestinonombre;
+//        this.codCtacontable = codCtacontable;
+//        this.codTipomoneda = codTipomoneda;
+//        this.numDebedolar = numDebedolar;
+//        this.numDebemc = numDebemc;
+//        this.numDebemo = numDebemo;
+//        this.numDebesol = numDebesol;
+//        this.numHaberdolar = numHaberdolar;
+//        this.numHabermc = numHabermc;
+//        this.numHabermo = numHabermo;
+//        this.numHabersol = numHabersol;
+//        this.codContraparte = codContraparte;
+//    }
+
+    public VsjOperaciontercero(Long id, String codTercero, Timestamp fecComprobante, String codVoucher, String txtGlosaitem, String codDestino, String txtDestinonombre, String codCtacontable, Character codTipomoneda, BigDecimal numDebedolar, BigDecimal numDebemc, BigDecimal numDebemo, BigDecimal numDebesol, BigDecimal numHaberdolar, BigDecimal numHabermc, BigDecimal numHabermo, BigDecimal numHabersol, BigDecimal numSaldosol, BigDecimal numSaldodolar, BigDecimal numSaldomo, String codContraparte, Boolean enviado) {
+        this.id = id;
+        this.codTercero = codTercero;
+        this.fecComprobante = fecComprobante;
+        this.codVoucher = codVoucher;
+        this.txtGlosaitem = txtGlosaitem;
+        this.codDestino = codDestino;
+        this.txtDestinonombre = txtDestinonombre;
+        this.codCtacontable = codCtacontable;
+        this.codTipomoneda = codTipomoneda;
+        this.numDebedolar = numDebedolar;
+        this.numDebemc = numDebemc;
+        this.numDebemo = numDebemo;
+        this.numDebesol = numDebesol;
+        this.numHaberdolar = numHaberdolar;
+        this.numHabermc = numHabermc;
+        this.numHabermo = numHabermo;
+        this.numHabersol = numHabersol;
+        this.numSaldosol = numSaldosol;
+        this.numSaldodolar = numSaldodolar;
+        this.numSaldomo = numSaldomo;
+        this.codContraparte = codContraparte;
+        this.enviado = enviado;
+    }
+
+    public VsjOperaciontercero(Long id, String codTercero, Timestamp fecComprobante, String codVoucher, String txtGlosaitem, String codDestino, String txtDestinonombre, String codCtacontable, Character codTipomoneda, BigDecimal numDebedolar, BigDecimal numDebemc, BigDecimal numDebemo, BigDecimal numDebesol, BigDecimal numHaberdolar, BigDecimal numHabermc, BigDecimal numHabermo, BigDecimal numHabersol, String codContraparte, Boolean enviado) {
         this.id = id;
         this.codTercero = codTercero;
         this.fecComprobante = fecComprobante;
@@ -56,6 +105,7 @@ public class VsjOperaciontercero implements Serializable {
         this.numHabermo = numHabermo;
         this.numHabersol = numHabersol;
         this.codContraparte = codContraparte;
+        this.enviado = enviado;
     }
 
     public String getCodTercero() {
@@ -210,6 +260,30 @@ public class VsjOperaciontercero implements Serializable {
         this.enviado = enviado;
     }
 
+    public BigDecimal getNumSaldosol() {
+        return numSaldosol;
+    }
+
+    public void setNumSaldosol(BigDecimal numSaldosol) {
+        this.numSaldosol = numSaldosol;
+    }
+
+    public BigDecimal getNumSaldodolar() {
+        return numSaldodolar;
+    }
+
+    public void setNumSaldodolar(BigDecimal numSaldodolar) {
+        this.numSaldodolar = numSaldodolar;
+    }
+
+    public BigDecimal getNumSaldomo() {
+        return numSaldomo;
+    }
+
+    public void setNumSaldomo(BigDecimal numSaldomo) {
+        this.numSaldomo = numSaldomo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -232,12 +306,15 @@ public class VsjOperaciontercero implements Serializable {
                 Objects.equals(numHabermc, that.numHabermc) &&
                 Objects.equals(numHabermo, that.numHabermo) &&
                 Objects.equals(numHabersol, that.numHabersol) &&
+                Objects.equals(numSaldosol, that.numSaldosol) &&
+                Objects.equals(numSaldodolar, that.numSaldodolar) &&
+                Objects.equals(numSaldomo, that.numSaldomo) &&
                 Objects.equals(codContraparte, that.codContraparte) &&
                 Objects.equals(enviado, that.enviado);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, codTercero, fecComprobante, codVoucher, txtGlosaitem, codDestino, txtDestinonombre, codCtacontable, codTipomoneda, numDebedolar, numDebemc, numDebemo, numDebesol, numHaberdolar, numHabermc, numHabermo, numHabersol, codContraparte, enviado);
+        return Objects.hash(id, codTercero, fecComprobante, codVoucher, txtGlosaitem, codDestino, txtDestinonombre, codCtacontable, codTipomoneda, numDebedolar, numDebemc, numDebemo, numDebesol, numHaberdolar, numHabermc, numHabermo, numHabersol, numSaldosol, numSaldodolar, numSaldomo, codContraparte, enviado);
     }
 }

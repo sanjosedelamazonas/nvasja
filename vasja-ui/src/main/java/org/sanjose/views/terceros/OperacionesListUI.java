@@ -24,10 +24,12 @@ import com.vaadin.ui.TextField;
 @SuppressWarnings("serial")
 public class OperacionesListUI extends VerticalLayout {
     protected HorizontalLayout horiz1;
+    protected ComboBox selCuenta;
     protected DateField fechaDesde;
     protected DateField fechaHasta;
     protected ComboBox selMoneda;
-    protected TextField saldoCaja;
+    protected TextField saldoInicial;
+    protected TextField saldoFinal;
     protected Button btnReporteImprimirCaja;
     protected Grid grid;
 
