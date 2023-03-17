@@ -35,6 +35,7 @@ import org.sanjose.views.sys.MainScreen;
 import org.sanjose.views.sys.PropiedadService;
 import org.sanjose.views.sys.PropiedadView;
 import org.sanjose.views.sys.ReportesView;
+import org.sanjose.views.terceros.OperacionesListView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -73,6 +74,8 @@ public class MainUI extends UI {
     private final RendicionOperView rendicionOperView;
     private final RendicionSimpleOperView rendicionSimpleOperView;
     private final ReportesView reportesView;
+    private final OperacionesListView operacionesListView;
+
     private final MsgUsuarioRep msgUsuarioRep;
     private final VsjPasswordresettokenRep vsjPasswordresettokenRep;
     private ProcUtil procUtil;
@@ -109,6 +112,7 @@ public class MainUI extends UI {
         this.rendicionSimpleOperView = new RendicionSimpleOperView(persistanceService);
         this.destinoListView = new DestinoListView(persistanceService);
         this.terceroListView = new TerceroListView(persistanceService);
+        this.operacionesListView = new OperacionesListView(persistanceService);
     }
 
     public static MainUI get() {
@@ -146,7 +150,7 @@ public class MainUI extends UI {
         mainScreen = new MainScreen(MainUI.this, cajaManejoView, comprobanteView, transferenciaView, cajaOperacionesView,
                 cajaGridView, confView, configuracionCajaView, propiedadView, bancoOperView, bancoManejoView,
                 bancoConciliacionView, bancoOperacionesView, rendicionManejoView, rendicionOperView,
-                rendicionSimpleManejoView, rendicionSimpleOperView, reportesView, destinoListView, terceroListView);
+                rendicionSimpleManejoView, rendicionSimpleOperView, reportesView, destinoListView, terceroListView, operacionesListView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);

@@ -220,6 +220,10 @@ public class ScpComprobantedetalle implements Serializable {
     @Column(name = "txt_seriecomprobantepago")
     private String txtSeriecomprobantepago;
 
+//    @ManyToOne(targetEntity = ScpDestino.class)
+//    @JoinColumn(name = "cod_destino", insertable = false, updatable = false)
+//    private ScpDestino scpDestino;
+
     public ScpComprobantedetalle() {
     }
 
@@ -775,4 +779,12 @@ public class ScpComprobantedetalle implements Serializable {
         this.txtSeriecomprobantepago = txtSeriecomprobantepago;
     }
 
+
+//    public ScpDestino getScpDestino() {
+//        return scpDestino;
+//    }
+//
+//    public void setScpDestino(ScpDestino scpDestino) {
+//        this.scpDestino = scpDestino;
+//    }
 }

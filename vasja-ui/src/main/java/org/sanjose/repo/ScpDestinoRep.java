@@ -29,4 +29,6 @@ public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
 
 	List<ScpDestino> findByCodDestinoNotLikeOrderByTxtNombre(String cd);
 
+	List<ScpDestino> findByTxtUsuario(String cd);
+
 }

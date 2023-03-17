@@ -52,8 +52,6 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
             "codCtaespecial", "codFinanciera", "codCtaproyecto", "txtGlosaitem",
             "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar", "numHabermo", "numDebemo",
             "codDestino", "codTipocomprobantepago", "txtSeriecomprobantepago", "txtComprobantepago",
-
-
     };
     static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{
             "It", "Fecha Doc", "Proyecto", "Cuenta", "Lug. Gasto",

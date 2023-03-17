@@ -10,8 +10,10 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
+import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.ScpComprobantedetalle;
+import org.sanjose.model.ScpDestino;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.*;
@@ -21,9 +23,7 @@ import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -39,18 +39,23 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
         return "Operaciones de la cuenta";
     }
 
-    private final String[] VISIBLE_COLUMN_IDS = new String[]{"txtCorrelativo", "fecFecha", "txtGlosaitem",
-            "codTercero", "codDestino", "numDebesol", "codContracta",
-            "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
-            "codCtacontable"
+    private final String[] VISIBLE_COLUMN_IDS = new String[]{"id.codComprobante",
+            //"id.num_nroitem",
+            "fecComprobante", "txtGlosaitem",
+            //"scpDestino.txtNombredestino",
+            "codDestino",
+            "codCtacontable",
+            "numHabersol", "numDebesol", "numHaberdolar", "numDebedolar",  "numHabermo", "numDebemo"
     };
     private final String[] HIDDEN_COLUMN_IDS = new String[] {
 
     };
-    private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Numero", "Fecha", "Descripcion",
+    private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Numero",
+            //"Item",
+            "Fecha", "Descripcion",
             "Entregado a/por", "Contra Cta,",
             "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
-            "Cuenta"
+            //"Cuenta"
     };
 //    private final int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
 //            5, 15, 6, 6, 6, 6, 6, 6, //
@@ -58,12 +63,11 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
 //            4, 5, 5, 5, 4, // Fuente
 //            2, 2, 5
 //    };
-    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"txtCorrelativo", /*"flgEnviado", "codOrigenenlace",
-            "codComprobanteenlace"*/};
+    private final String[] NONEDITABLE_COLUMN_IDS = new String[]{};
 
     private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
 
-    private BeanItemContainer<ScpCajabanco> container;
+    private BeanItemContainer<ScpComprobantedetalle> container;
 
     private PersistanceService comprobanteService;
 
@@ -75,17 +79,20 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
 
     private Character moneda ='0';
 
+    private List<String> codigosTerc = new ArrayList<>();
+
     @Override
     public void init() {
         setSizeFull();
         addStyleName("crud-view");
 
         //noinspection unchecked
-        container = new BeanItemContainer(ScpComprobantedetalle.class, getService().getScpComprobantedetalleRep().findByFecFechaBetween(filterInitialDate, new Date()));
-        container.addNestedContainerBean("scpDestino");
+        container = new BeanItemContainer(ScpComprobantedetalle.class, new ArrayList());
+        container.addNestedContainerBean("id");
+        //container.addNestedContainerBean("scpDestino");
         grid.setContainerDataSource(container);
         grid.setEditorEnabled(false);
-        grid.setSortOrder(Sort.by("fecFecha", SortDirection.DESCENDING).then("txtCorrelativo", SortDirection.DESCENDING).build());
+        //grid.setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("id.codComprobante", SortDirection.ASCENDING).build());
 
         ViewUtil.setColumnNames(grid, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
@@ -94,10 +101,10 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
         ViewUtil.alignMontosInGrid(grid);
 
         // Fecha Desde Hasta
-        ViewUtil.setupDateFiltersThisDay(container, fechaDesde, fechaHasta, this);
+        ViewUtil.setupDateFiltersRendicionesPreviousMonth(container, fechaDesde, fechaHasta, this);
 
         //gridCaja.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
-        grid.getColumn("fecFecha").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
+        grid.getColumn("fecComprobante").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
 
         DataFilterUtil.bindTipoMonedaComboBox(selMoneda, "cod_tipomoneda", "Moneda", false);
         selMoneda.select(moneda);
@@ -107,20 +114,20 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
 //                "txtDescctacontable");
 
         selMoneda.setNullSelectionAllowed(false);
-//        selMoneda.addValueChangeListener(e -> {
-//            if (e.getProperty().getValue() != null) {
-//                moneda = (Character)e.getProperty().getValue();
-//                container.removeContainerFilters("codTipomoneda");
-//                container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
-//                ViewUtil.filterColumnsByMoneda(gridCaja, moneda);
-//                viewLogic.calcFooterSums();
-//                DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
-//                        DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
-//                        "txtDescctacontable");
-//            }
-//            viewLogic.setSaldoDelDia();
-//            viewLogic.setSaldosFinal();
-//        });
+        selMoneda.addValueChangeListener(e -> {
+            if (e.getProperty().getValue() != null) {
+                moneda = (Character)e.getProperty().getValue();
+                container.removeContainerFilters("codTipomoneda");
+                container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
+                ViewUtil.filterColumnsByMoneda(grid, moneda);
+                //viewLogic.calcFooterSums();
+                //DataFilterUtil.refreshComboBox(selFiltroCaja, "id.codCtacontable",
+                //        DataUtil.getCajas(fechaDesde.getValue(), getService().getPlanRepo(), moneda),
+                //        "txtDescctacontable");
+            }
+            //view.setSaldoDelDia();
+            //view.setSaldosFinal();
+        });
 //        container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
 //        selFiltroCaja.addValueChangeListener(e -> {
 //            if (e.getProperty().getValue() != null) {
@@ -145,15 +152,15 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
         //ViewUtil.setupColumnFilters(gridCaja, VISIBLE_COLUMN_IDS, FILTER_WIDTH, viewLogic);
 
         // Run date filter
-        ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
+        ViewUtil.filterComprobantes(container, "fecComprobante", fechaDesde, fechaHasta, this);
 
-        ViewUtil.colorizeRows(grid);
+        //ViewUtil.colorizeRows(grid);
 
         gridCajaFooter = grid.appendFooterRow();
 
         // Set Saldos Inicial
-//    fechaDesde.addValueChangeListener(ev -> refreshCajas());
-//    fechaHasta.addValueChangeListener(ev -> refreshCajas());
+        fechaDesde.addValueChangeListener(ev -> filter(fechaDesde.getValue(), fechaHasta.getValue()));
+        fechaHasta.addValueChangeListener(ev -> filter(fechaDesde.getValue(), fechaHasta.getValue()));
 
         //viewLogic.init(this);
     }
@@ -169,9 +176,16 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
 //    }
     @Override
     public void refreshData() {
-        SortOrder[] sortOrders = grid.getSortOrder().toArray(new SortOrder[1]);
-        filter(fechaDesde.getValue(), fechaHasta.getValue());
-        grid.setSortOrder(Arrays.asList(sortOrders));
+        container.removeAllItems();
+        if (codigosTerc.isEmpty()) {
+            List<ScpDestino> destinosTerc = getService().getDestinoRepo().findByTxtUsuario(CurrentUser.get());
+            destinosTerc.forEach(destino -> codigosTerc.add(destino.getCodDestino()));
+        }
+        container.addAll(getService().getScpComprobantedetalleRep().findByFecComprobanteBetweenAndCodTerceroIsIn(filterInitialDate, new Date(), codigosTerc));
+
+        //SortOrder[] sortOrders = grid.getSortOrder().toArray(new SortOrder[1]);
+        //filter(fechaDesde.getValue(), fechaHasta.getValue());
+        //grid.setSortOrder(Arrays.asList(sortOrders));
     }
 
     @Override
@@ -189,8 +203,11 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
     public void filter(Date fechaDesde, Date fechaHasta) {
         container.removeAllItems();
         setFilterInitialDate(fechaDesde);
-        container.addAll(getService().getCajabancoRep().findByFecFechaBetween(fechaDesde, fechaHasta));
-        grid.sort("fecFecha", SortDirection.DESCENDING);
+        container.addAll(getService().getScpComprobantedetalleRep().findByFecComprobanteBetweenAndCodTerceroIsInAndCodCtacontableStartingWith(fechaDesde, fechaHasta, codigosTerc, "4"));
+
+        //container.addAll(getService().getScpComprobantedetalleRep().findByFecComprobanteBetweenAndCodTerceroIsIn(filterInitialDate, new Date(), codigosTerc));
+        //container.addAll(getService().getCajabancoRep().findByFecFechaBetween(fechaDesde, fechaHasta));
+        grid.sort("fecComprobante", SortDirection.DESCENDING);
     }
 //
 //    private void setItemLogic(ItemClickEvent event) {
@@ -260,7 +277,7 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
         return moneda;
     }
 
-    public BeanItemContainer<ScpCajabanco> getContainer() {
+    public BeanItemContainer<ScpComprobantedetalle> getContainer() {
         return container;
     }
 

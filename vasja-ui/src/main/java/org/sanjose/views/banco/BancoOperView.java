@@ -49,7 +49,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
             "codFinanciera", "codCtaproyecto","codCtaespecial","codContraparte","codDestino",
             "codContracta", "txtGlosaitem", "numDebesol", "numHabersol"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"It", "Proyecto", "Tercero",
+    static final String[] VISIBLE_COLUMN_NAMES_PEN = new String[]{"Item", "Proyecto", "Tercero",
             "Fuente", "Partida","Rubro inst.","Lugar","Auxiliar",
             "Cuenta", "Glosa", "Ing S/.", "Egr S/."
     };
@@ -57,7 +57,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
             "codFinanciera", "codCtaproyecto","codCtaespecial","codContraparte","codDestino",
             "codContracta", "txtGlosaitem", "numDebedolar", "numHaberdolar"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"It", "Proyecto", "Tercero",
+    static final String[] VISIBLE_COLUMN_NAMES_USD = new String[]{"Item", "Proyecto", "Tercero",
             "Fuente", "Partida","Rubro inst.","Lugar","Auxiliar",
             "Cuenta", "Glosa", "Ing $", "Egr $"
     };
@@ -65,7 +65,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
             "codFinanciera", "codCtaproyecto","codCtaespecial","codContraparte","codDestino",
             "codContracta", "txtGlosaitem", "numDebemo", "numHabermo"
     };
-    static final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{"It", "Proyecto", "Tercero",
+    static final String[] VISIBLE_COLUMN_NAMES_EUR = new String[]{"Item", "Proyecto", "Tercero",
             "Fuente", "Partida","Rubro inst.","Lugar","Auxiliar",
             "Cuenta", "Glosa", "Ing €", "Egr €"
     };

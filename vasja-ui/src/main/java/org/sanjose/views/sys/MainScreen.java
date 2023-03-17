@@ -10,8 +10,10 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.JavaScript;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.CurrentUser;
 import org.sanjose.authentication.Role;
 import org.sanjose.helper.PrintHelper;
+import org.sanjose.model.ScpDestino;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.views.banco.BancoConciliacionView;
 import org.sanjose.views.banco.BancoManejoView;
@@ -24,6 +26,7 @@ import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.rendicion.RendicionSimpleManejoView;
 import org.sanjose.views.rendicion.RendicionSimpleOperView;
+import org.sanjose.views.terceros.OperacionesListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,8 @@ public class MainScreen extends HorizontalLayout {
                       BancoConciliacionView bancoConciliacionView, BancoOperacionesView bancoOperacionesView,
                       RendicionManejoView rendicionManejoView, RendicionOperView rendicionOperView,
                       RendicionSimpleManejoView rendicionSimpleManejoView, RendicionSimpleOperView rendicionSimpleOperView,
-                      ReportesView reportesView, DestinoListView destinoListView, TerceroListView terceroListView) {
+                      ReportesView reportesView, DestinoListView destinoListView, TerceroListView terceroListView,
+                      OperacionesListView operacionesListView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -61,6 +65,13 @@ public class MainScreen extends HorizontalLayout {
 
         List<View> viewsToIgnoreWhenInit = new ArrayList<>();
         menu = new Menu(navigator);
+
+        List<ScpDestino> destinosTerc = operacionesListView.getService().getDestinoRepo().findByTxtUsuario(CurrentUser.get());
+        if (!destinosTerc.isEmpty()) {
+            menu.addSeparator("Cuentas");
+            menu.addView(operacionesListView, OperacionesListView.VIEW_NAME,
+                    OperacionesListView.VIEW_NAME, FontAwesome.EDIT);
+        }
         if (Role.isCaja()) {
             menu.addSeparator("Caja");
             comprobanteView.init();
