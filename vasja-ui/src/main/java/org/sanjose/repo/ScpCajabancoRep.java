@@ -1,6 +1,7 @@
 package org.sanjose.repo;
 
 import org.sanjose.model.ScpCajabanco;
+import org.sanjose.model.ScpComprobantedetalle;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
@@ -15,4 +16,6 @@ public interface ScpCajabancoRep extends JpaRepository<ScpCajabanco, Long> {
     List<ScpCajabanco> findByCodTranscorrelativo(String s);
 
     List<ScpCajabanco> findByFecFechaBetween(Date from, Date to);
+
+    List<ScpCajabanco> findByFecFechaBetweenAndCodTerceroIsInAndFlgEnviadoOrderByFecFechaAscCodCajabancoAsc(Date from, Date to, List<String> s, Character c);
 }
