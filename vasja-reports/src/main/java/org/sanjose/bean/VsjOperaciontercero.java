@@ -2,6 +2,7 @@ package org.sanjose.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
 
@@ -14,7 +15,7 @@ public class VsjOperaciontercero implements Serializable {
 
     private Long id;
     private String codTercero;
-    private Date fecComprobante;
+    private Timestamp fecComprobante;
     private String codVoucher;
     private String txtGlosaitem;
     private String codDestino;
@@ -36,6 +37,27 @@ public class VsjOperaciontercero implements Serializable {
     public VsjOperaciontercero() {
     }
 
+    public VsjOperaciontercero(Long id, String codTercero, Timestamp fecComprobante, String codVoucher, String txtGlosaitem, String codDestino, String txtDestinonombre, String codCtacontable, Character codTipomoneda, BigDecimal numDebedolar, BigDecimal numDebemc, BigDecimal numDebemo, BigDecimal numDebesol, BigDecimal numHaberdolar, BigDecimal numHabermc, BigDecimal numHabermo, BigDecimal numHabersol, String codContraparte) {
+        this.id = id;
+        this.codTercero = codTercero;
+        this.fecComprobante = fecComprobante;
+        this.codVoucher = codVoucher;
+        this.txtGlosaitem = txtGlosaitem;
+        this.codDestino = codDestino;
+        this.txtDestinonombre = txtDestinonombre;
+        this.codCtacontable = codCtacontable;
+        this.codTipomoneda = codTipomoneda;
+        this.numDebedolar = numDebedolar;
+        this.numDebemc = numDebemc;
+        this.numDebemo = numDebemo;
+        this.numDebesol = numDebesol;
+        this.numHaberdolar = numHaberdolar;
+        this.numHabermc = numHabermc;
+        this.numHabermo = numHabermo;
+        this.numHabersol = numHabersol;
+        this.codContraparte = codContraparte;
+    }
+
     public String getCodTercero() {
         return codTercero;
     }
@@ -44,11 +66,19 @@ public class VsjOperaciontercero implements Serializable {
         this.codTercero = codTercero;
     }
 
-    public Date getFecComprobante() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Timestamp getFecComprobante() {
         return fecComprobante;
     }
 
-    public void setFecComprobante(Date fecComprobante) {
+    public void setFecComprobante(Timestamp fecComprobante) {
         this.fecComprobante = fecComprobante;
     }
 
