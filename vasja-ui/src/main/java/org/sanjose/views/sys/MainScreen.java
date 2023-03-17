@@ -99,10 +99,10 @@ public class MainScreen extends HorizontalLayout {
                     RendicionSimpleManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
         if (Role.isAdmin()) {
-            rendicionOperView.init();
-            viewsToIgnoreWhenInit.add(rendicionOperView);
-            menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
-                    RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
+            //rendicionOperView.init();
+            //viewsToIgnoreWhenInit.add(rendicionOperView);
+            //menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
+            //        RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
 
         menu.addSeparator("Diccionarios");

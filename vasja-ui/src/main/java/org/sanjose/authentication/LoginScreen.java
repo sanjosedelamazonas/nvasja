@@ -1,9 +1,13 @@
 package org.sanjose.authentication;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -16,6 +20,15 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import org.sanjose.helper.MailerSender;
+import org.sanjose.model.MsgUsuario;
+import org.sanjose.model.VsjPasswordresettoken;
+import org.sanjose.repo.MsgUsuarioRep;
+import org.sanjose.repo.VsjPasswordresettokenRep;
+import org.sanjose.util.ConfigurationUtil;
+import org.sanjose.views.sys.MainScreen;
+import org.simplejavamail.api.email.Email;
+import org.simplejavamail.email.EmailBuilder;
 
 /**
  * UI content when the user is not logged in yet.
@@ -26,12 +39,24 @@ public class LoginScreen extends CssLayout {
     private PasswordField password;
     private Button login;
     private Button forgotPassword;
+    private Button recoverPassword;
+    private Button returnToLogin;
+    private TextField email;
     private final LoginListener loginListener;
     private final AccessControl accessControl;
+    private FormLayout loginForm = new FormLayout();
+    private MsgUsuarioRep msgUsuarioRep;
+    private VsjPasswordresettokenRep vsjPasswordresettokenRep;
+    private VaadinRequest vaadinRequest;
+    private static final Logger log = LoggerFactory.getLogger(LoginScreen.class);
 
-    public LoginScreen(AccessControl accessControl, LoginListener loginListener) {
+    public LoginScreen(AccessControl accessControl, MsgUsuarioRep msgUsuarioRep,
+                       VsjPasswordresettokenRep vsjPasswordresettokenRep, VaadinRequest vaadinRequest, LoginListener loginListener) {
         this.loginListener = loginListener;
         this.accessControl = accessControl;
+        this.msgUsuarioRep = msgUsuarioRep;
+        this.vaadinRequest = vaadinRequest;
+        this.vsjPasswordresettokenRep = vsjPasswordresettokenRep;
         buildUI();
         username.focus();
     }
@@ -59,7 +84,7 @@ public class LoginScreen extends CssLayout {
     }
 
     private Component buildLoginForm() {
-        FormLayout loginForm = new FormLayout();
+        loginForm = new FormLayout();
 
         loginForm.addStyleName("login-form");
         loginForm.setSizeUndefined();
@@ -87,15 +112,66 @@ public class LoginScreen extends CssLayout {
         login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         login.addStyleName(ValoTheme.BUTTON_FRIENDLY);
 
-/*        buttons.addComponent(forgotPassword = new Button("Forgot password?"));
-        forgotPassword.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                showNotification(new Notification("Hint: Try anything"));
-            }
-        });
-        forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);*/
+        buttons.addComponent(forgotPassword = new Button("?Clave Olvidado?"));
+        forgotPassword.addClickListener(clickEvent -> showForgotPassForm());
+        forgotPassword.addStyleName(ValoTheme.BUTTON_FRIENDLY);
         return loginForm;
+    }
+
+    private void showForgotPassForm() {
+        username.setVisible(false);
+        password.setVisible(false);
+        login.setVisible(false);
+        forgotPassword.setVisible(false);
+        loginForm.addComponent(email = new TextField("Email:"));
+        email.setWidth(300, Unit.PIXELS);
+        loginForm.addComponent(recoverPassword = new Button("Recupera su clave"));
+        recoverPassword.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        recoverPassword.addClickListener(clickEvent -> remindPassword());
+        loginForm.addComponent(returnToLogin = new Button("Regresa a al entrada"));
+        returnToLogin.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        returnToLogin.addClickListener(clickEvent -> showLoginForm());
+    }
+
+    private void showLoginForm() {
+        username.setVisible(true);
+        password.setVisible(true);
+        login.setVisible(true);
+        forgotPassword.setVisible(true);
+        email.setVisible(false);
+        recoverPassword.setVisible(false);
+        returnToLogin.setVisible(false);
+    }
+
+    private void remindPassword() {
+        MsgUsuario usuario = msgUsuarioRep.findByTxtCorreoIgnoreCase(email.getValue());
+        if (usuario==null) {
+            showNotification(new Notification("No se podia encontrar un usuario con este correo: " + email.getValue()));
+        } else {
+            VsjPasswordresettoken token = new VsjPasswordresettoken(usuario);
+            vsjPasswordresettokenRep.save(token);
+            String link = Page.getCurrent().getLocation().getScheme() + ":" +
+                    Page.getCurrent().getLocation().getSchemeSpecificPart() +
+                    "resetpass/?token=" + token.getToken();
+            Email message = EmailBuilder.startingBlank()
+                    .to(email.getValue())
+                    .from("Vicariato San Jose del Amazonas", ConfigurationUtil.get("MAIL_FROM"))
+                    .withSubject("Reset clave")
+                    .withHTMLText("<p>Hello,</p>"
+                            + "<p>You have requested to reset your password.</p>"
+                            + "<p>Click the link below to change your password:</p>"
+                            + "<p><a href=\"" + link + "\">Change my password</a></p>"
+                            + "<br>"
+                            + "<p>Ignore this email if you do remember your password, "
+                            + "or you have not made the request.</p>")
+                    .buildEmail();
+
+            log.info(message.toString());
+            //new MailerSender().sendEmail(message);
+
+            showNotification(new Notification("Reset link enviado a: " + email.getValue()));
+            showLoginForm();
+        }
     }
 
     private CssLayout buildLoginInformation() {

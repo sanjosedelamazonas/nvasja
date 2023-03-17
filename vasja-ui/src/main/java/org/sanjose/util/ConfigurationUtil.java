@@ -58,6 +58,14 @@ public class ConfigurationUtil {
 		defaultParamMap.put("REPORTE_BANCOS_REVISADOR_POR", "Claudia Urrunaga R�os");
 		defaultParamMap.put("PRINTER_LIST_SHOW", "FALSE");
 		defaultParamMap.put("DEFAULT_PRINTER_test", "PDF");
+		// SENDING EMAILS
+		defaultParamMap.put("MAIL_FROM", "p.rubach@cent.uw.edu.pl");
+		defaultParamMap.put("MAIL_SMTP_SERVER", "smtp.gmail.com");
+		defaultParamMap.put("MAIL_SMTP_SERVER_PORT", "587");
+        // OAUTH2, SSL, TLS, NO
+		defaultParamMap.put("MAIL_SMTP_AUTH", "OAUTH2");
+		defaultParamMap.put("MAIL_SMTP_USER", "p.rubach@cent.uw.edu.pl");
+		defaultParamMap.put("MAIL_SMTP_PASS", "ya29.a0AVvZVsrX5egANSShswP95XTqjf_DAL5KR90a71fqhVRvMljdF1Gmz41T2lfz71avVoCKGG8mrHMl9Cizg21bxWHkyqVjYynIbkpUVIy4Z2t9TL2QkrQuYpxK3jfB08igiuFW_3CxiheJ7WWp8M4yA4MnCSVfaCgYKAQwSARASFQGbdwaIc5rsGulbysqS41kqxQwLNA0163");
 	}
 
 	public static Locale getLocale() {

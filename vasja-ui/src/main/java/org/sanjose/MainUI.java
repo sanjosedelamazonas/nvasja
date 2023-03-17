@@ -17,6 +17,7 @@ import org.sanjose.authentication.LoginScreen.LoginListener;
 import org.sanjose.authentication.MsgAccessControl;
 import org.sanjose.authentication.Role;
 import org.sanjose.repo.MsgUsuarioRep;
+import org.sanjose.repo.VsjPasswordresettokenRep;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.TipoCambio;
 import org.sanjose.util.GenUtil;
@@ -46,7 +47,7 @@ import java.util.Date;
  * mobile devices. Instead of device based scaling (default), using responsive
  * layouts.
  */
-@SpringUI(path="/*")
+@SpringUI(path="/")
 @Viewport("user-scalable=yes,initial-scale=1.0")
 @Theme("mytheme")
 @Widgetset("org.sanjose.MyAppWidgetset")
@@ -73,6 +74,7 @@ public class MainUI extends UI {
     private final RendicionSimpleOperView rendicionSimpleOperView;
     private final ReportesView reportesView;
     private final MsgUsuarioRep msgUsuarioRep;
+    private final VsjPasswordresettokenRep vsjPasswordresettokenRep;
     private ProcUtil procUtil;
     private AccessControl accessControl;
     private MainScreen mainScreen;
@@ -83,10 +85,12 @@ public class MainUI extends UI {
     private MainUI(PropiedadService propiedadService,
                    PersistanceService persistanceService,
                    MsgUsuarioRep msgUsuarioRep,
+                   VsjPasswordresettokenRep vsjPasswordresettokenRep,
                    ProcUtil procUtil) {
         this.propiedadView = new PropiedadView(propiedadService);
         this.reportesView = new ReportesView(persistanceService);
         this.msgUsuarioRep = msgUsuarioRep;
+        this.vsjPasswordresettokenRep = vsjPasswordresettokenRep;
         this.procUtil = procUtil;
         this.confView = new ConfiguracionCtaCajaBancoView(persistanceService);
         this.cajaGridView = new CajaGridView(persistanceService);
@@ -123,7 +127,7 @@ public class MainUI extends UI {
          //   accessControl.signIn(ConfigurationUtil.get("DEV_USER"), "");
         }
         if (!accessControl.isUserSignedIn()) {
-            setContent(new LoginScreen(accessControl, (LoginListener) () -> showMainView()));
+            setContent(new LoginScreen(accessControl, msgUsuarioRep, vsjPasswordresettokenRep, vaadinRequest, (LoginListener) () -> showMainView()));
         } else {
             showMainView();
         }

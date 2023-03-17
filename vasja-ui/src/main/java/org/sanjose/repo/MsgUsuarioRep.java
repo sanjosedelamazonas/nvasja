@@ -9,4 +9,5 @@ public interface MsgUsuarioRep extends JpaRepository<MsgUsuario, Long> {
 
 	MsgUsuario findByTxtUsuario(String username);
 
+	MsgUsuario findByTxtCorreoIgnoreCase(String email);
 }
