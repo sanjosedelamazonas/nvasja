@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta name="vaadin-version" content="7.7.7">
+ </head>
+ <body>
+  <vaadin-vertical-layout spacing size-full margin>
+   <vaadin-horizontal-layout spacing height="40px" margin-top margin-bottom _id="horiz1">
+    <vaadin-horizontal-layout spacing :center>
+     <vaadin-label size-auto plain-text>
+       Operaciones del día: 
+     </vaadin-label>
+     <vaadin-date-field _id="fechaDesde"></vaadin-date-field>
+     <vaadin-label size-auto plain-text>
+       al 
+     </vaadin-label>
+     <vaadin-date-field _id="fechaHasta"></vaadin-date-field>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout spacing>
+     <vaadin-label size-auto plain-text>
+       Moneda: 
+     </vaadin-label>
+     <vaadin-combo-box input-prompt="Filtrar por Moneda" item-caption-mode="id" width="65px" _id="selMoneda">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+     </vaadin-combo-box>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout spacing>
+     <vaadin-label size-auto plain-text>
+       Saldo actual: 
+     </vaadin-label>
+     <vaadin-text-field _id="saldoCaja"></vaadin-text-field>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout spacing>
+     <vaadin-button plain-text _id="btnReporteImprimirCaja" :right>
+       Reporte 
+     </vaadin-button>
+    </vaadin-horizontal-layout>
+   </vaadin-horizontal-layout>
+   <vaadin-grid editor-save-caption="Guardar" editor-cancel-caption="Cerrar" width-full height="96.69%" editable _id="grid" :expand></vaadin-grid>
+  </vaadin-vertical-layout>
+ </body>
+</html>
