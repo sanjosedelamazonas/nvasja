@@ -52,12 +52,15 @@ public class ConfigurationUtil {
 		defaultParamMap.put("REPORTS_COMPROBANTE_TYPE", "PDF");
 		defaultParamMap.put("REPORTS_COMPROBANTE_OPEN", "TRUE");
 		defaultParamMap.put("REPORTS_COMPROBANTE_PRINT", "FALSE");
+
 		defaultParamMap.put("REPORTE_CAJA_PREPARADO_POR", "Gilmer G�mez Ochoa");
 		defaultParamMap.put("REPORTE_CAJA_REVISADOR_POR", "Claudia Urrunaga R�os");
 		defaultParamMap.put("REPORTE_BANCOS_PREPARADO_POR", "Cinthia del Castillo Segovia");
 		defaultParamMap.put("REPORTE_BANCOS_REVISADOR_POR", "Claudia Urrunaga R�os");
 		defaultParamMap.put("PRINTER_LIST_SHOW", "FALSE");
 		defaultParamMap.put("DEFAULT_PRINTER_test", "PDF");
+		// Terceros
+		defaultParamMap.put("REPORTS_TERCEROS_TYPE", "PDF");
 		// SENDING EMAILS
 		defaultParamMap.put("MAIL_FROM", "p.rubach@cent.uw.edu.pl");
 		defaultParamMap.put("MAIL_SMTP_SERVER", "smtp.gmail.com");

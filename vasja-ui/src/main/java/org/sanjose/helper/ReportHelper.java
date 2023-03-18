@@ -334,7 +334,7 @@ public class ReportHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void generateReport(final String reportName, String typeParamName,
+	public static void generateReport(final String reportName, String typeParamName,
 									   final HashMap paramMap, final String inFormat) {
 		final String format;
 		if (inFormat==null) format = ConfigurationUtil.get(typeParamName);
@@ -382,7 +382,7 @@ public class ReportHelper {
 		Window repWindow = new Window();
 		repWindow.setWindowMode(WindowMode.NORMAL);
         repWindow.setDraggable(true);
-		repWindow.setWidth(700, Sizeable.Unit.PIXELS);
+		repWindow.setWidth(800, Sizeable.Unit.PIXELS);
 		repWindow.setHeight(600, Sizeable.Unit.PIXELS);
 		repWindow.setPositionX(200);
 		repWindow.setPositionY(50);

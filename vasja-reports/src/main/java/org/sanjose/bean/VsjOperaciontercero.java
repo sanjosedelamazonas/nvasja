@@ -37,10 +37,6 @@ public class VsjOperaciontercero implements Serializable, Comparable<VsjOperacio
     private String codContraparte;
     private Boolean enviado;
 
-
-    public VsjOperaciontercero() {
-    }
-
     public VsjOperaciontercero(Long id, String codTercero, Timestamp fecComprobante, String codVoucher, String codComprobante, String txtGlosaitem, String codDestino, String txtDestinonombre, String codCtacontable, Character codTipomoneda, BigDecimal numDebedolar, BigDecimal numDebemc, BigDecimal numDebemo, BigDecimal numDebesol, BigDecimal numHaberdolar, BigDecimal numHabermc, BigDecimal numHabermo, BigDecimal numHabersol, BigDecimal numSaldosol, BigDecimal numSaldodolar, BigDecimal numSaldomo, String codContraparte, Boolean enviado) {
         this.id = id;
         this.codTercero = codTercero;

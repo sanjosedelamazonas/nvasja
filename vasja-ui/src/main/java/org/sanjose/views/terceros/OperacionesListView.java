@@ -2,11 +2,12 @@ package org.sanjose.views.terceros;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.DateRenderer;
-import org.sanjose.MainUI;
+import net.sf.jasperreports.engine.JRException;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.VsjOperaciontercero;
 import org.sanjose.model.ScpCajabanco;
@@ -20,10 +21,13 @@ import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
+
+import static org.sanjose.util.TercerosUtil.getAllSaldoPorFecha;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -38,6 +42,8 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
     public String getWindowTitle() {
         return "Operaciones de la cuenta";
     }
+
+    private static final Logger log = LoggerFactory.getLogger(OperacionesListView.class.getName());
 
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
             "id", "codVoucher", "fecComprobante", "txtGlosaitem",
@@ -125,6 +131,17 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
         fechaHasta.addValueChangeListener(ev -> filter(fechaDesde.getValue(), fechaHasta.getValue()));
 
         ViewUtil.setupColumnFilters(grid, VISIBLE_COLUMN_IDS, FILTER_WIDTH);
+
+        getBtnReporteImprimirCaja().addClickListener(clickEvent -> {
+            try {
+                TercerosUtil.generateTerceroOperacionesReport(
+                        fechaDesde.getValue(), fechaHasta.getValue(), "PDF", curCodTercero, getService());
+            } catch (JRException jre) {
+                log.error("Problem: " + jre.toString());
+            } catch (FileNotFoundException e) {
+                log.error("Problem: " + e.toString());
+            }
+        });
     }
 
     private void setSaldos() {
@@ -136,16 +153,12 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
     private String getSaldoPorFecha(Date fecha) {
         if (fecha==null || curCodTercero==null) return "";
         DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
-        ProcUtil.Saldos res = getAllSaldoPorFecha(fecha);
+        ProcUtil.Saldos res = getAllSaldoPorFecha(fecha, curCodTercero);
         Map<Character, BigDecimal> saldos = new HashMap<>();
         saldos.put('0', res.getSaldoPEN());
         saldos.put('1', res.getSaldoUSD());
         saldos.put('2', res.getSaldoEUR());
         return df.format(saldos.get(moneda));
-    }
-
-    private ProcUtil.Saldos getAllSaldoPorFecha(Date fecha) {
-        return MainUI.get().getProcUtil().getSaldos(fecha, null, curCodTercero);
     }
 
     
@@ -221,16 +234,15 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
     public void filter(Date fechaDesde, Date fechaHasta) {
         container.removeAllItems();
         setFilterInitialDate(fechaDesde);
-        container.addAll(TercerosUtil.getFrom(
-                getService().getScpComprobantedetalleRep().
-                        findByFecComprobanteBetweenAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, codigosTerc, "4"),
-                getService().getScpComprobantedetalleRep().
-                        findByFecComprobanteBetweenAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, codigosTerc, "1"),
-                getService().getCajabancoRep().findByFecFechaBetweenAndCodTerceroIsInAndFlgEnviadoOrderByFecFechaAscCodCajabancoAsc(fechaDesde, fechaHasta, codigosTerc, '0'),
-                getService().getBancodetalleRep().findByFecFechaBetweenAndCodTerceroIsInAndVsjBancocabecera_FlgEnviadoOrderByFecFechaAscId_CodBancocabeceraAsc(fechaDesde, fechaHasta, codigosTerc, '0'),
-                getService().getDestinoRepo(),
-                getAllSaldoPorFecha(fechaDesde)
-        ));
+        container.addAll(
+                TercerosUtil.getAll(
+                        fechaDesde,
+                        fechaHasta,
+                        codigosTerc,
+                        curCodTercero,
+                        getService(),
+                        false)
+        );
         //grid.sort("fecComprobante", SortDirection.ASCENDING);
         setSaldos();
     }
