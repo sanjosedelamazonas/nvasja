@@ -26,6 +26,7 @@ import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.rendicion.RendicionSimpleManejoView;
 import org.sanjose.views.rendicion.RendicionSimpleOperView;
+import org.sanjose.views.terceros.EnviarDiarioTercerosView;
 import org.sanjose.views.terceros.OperacionesListView;
 
 import java.util.ArrayList;
@@ -51,7 +52,8 @@ public class MainScreen extends HorizontalLayout {
                       RendicionManejoView rendicionManejoView, RendicionOperView rendicionOperView,
                       RendicionSimpleManejoView rendicionSimpleManejoView, RendicionSimpleOperView rendicionSimpleOperView,
                       ReportesView reportesView, DestinoListView destinoListView, TerceroListView terceroListView,
-                      OperacionesListView operacionesListView) {
+                      OperacionesListView operacionesListView, EnviarDiarioTercerosView enviarDiarioTercerosView,
+                      TipoCambioManejoView tipoCambioManejoView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -72,49 +74,49 @@ public class MainScreen extends HorizontalLayout {
             menu.addView(operacionesListView, OperacionesListView.VIEW_NAME,
                     OperacionesListView.VIEW_NAME, FontAwesome.EDIT);
         }
-        if (Role.isCaja()) {
-            menu.addSeparator("Caja");
-            comprobanteView.init();
-            viewsToIgnoreWhenInit.add(comprobanteView);
-            transferenciaView.init();
-            viewsToIgnoreWhenInit.add(transferenciaView);
-            menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
-                    CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
-        }
-        if (Role.isPrivileged()) {
-            menu.addView(cajaOperacionesView, CajaOperacionesView.VIEW_NAME,
-                    CajaOperacionesView.VIEW_NAME, FontAwesome.EDIT);
-            menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
-                    CajaGridView.VIEW_NAME, FontAwesome.EDIT);
-                    }
-
-        if (Role.isBanco()) {
-            bancoOperView.init();
-            viewsToIgnoreWhenInit.add(bancoOperView);
-            menu.addSeparator("Banco");
-            menu.addView(bancoManejoView, BancoManejoView.VIEW_NAME,
-                    BancoManejoView.VIEW_NAME, FontAwesome.EDIT);
-            menu.addView(bancoConciliacionView, BancoConciliacionView.VIEW_NAME,
-                    BancoConciliacionView.VIEW_NAME, FontAwesome.EDIT);
-        }
-        if (Role.isPrivileged()) {
-            menu.addView(bancoOperacionesView, BancoOperacionesView.VIEW_NAME,
-                    BancoOperacionesView.VIEW_NAME, FontAwesome.EDIT);
-        }
+//        if (Role.isCaja()) {
+//            menu.addSeparator("Caja");
+//            comprobanteView.init();
+//            viewsToIgnoreWhenInit.add(comprobanteView);
+//            transferenciaView.init();
+//            viewsToIgnoreWhenInit.add(transferenciaView);
+//            menu.addView(cajaManejoView, CajaManejoView.VIEW_NAME,
+//                    CajaManejoView.VIEW_NAME, FontAwesome.EDIT);
+//        }
+//        if (Role.isPrivileged()) {
+//            menu.addView(cajaOperacionesView, CajaOperacionesView.VIEW_NAME,
+//                    CajaOperacionesView.VIEW_NAME, FontAwesome.EDIT);
+//            menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
+//                    CajaGridView.VIEW_NAME, FontAwesome.EDIT);
+//                    }
+//
+//        if (Role.isBanco()) {
+//            bancoOperView.init();
+//            viewsToIgnoreWhenInit.add(bancoOperView);
+//            menu.addSeparator("Banco");
+//            menu.addView(bancoManejoView, BancoManejoView.VIEW_NAME,
+//                    BancoManejoView.VIEW_NAME, FontAwesome.EDIT);
+//            menu.addView(bancoConciliacionView, BancoConciliacionView.VIEW_NAME,
+//                    BancoConciliacionView.VIEW_NAME, FontAwesome.EDIT);
+//        }
+//        if (Role.isPrivileged()) {
+//            menu.addView(bancoOperacionesView, BancoOperacionesView.VIEW_NAME,
+//                    BancoOperacionesView.VIEW_NAME, FontAwesome.EDIT);
+//        }
         // Temporarily disabled access to Rendiciones
-        if (Role.isDigitador()) {
-            rendicionSimpleOperView.init();
-            viewsToIgnoreWhenInit.add(rendicionSimpleOperView);
-            menu.addSeparator("Rendiciones");
-            menu.addView(rendicionSimpleManejoView, RendicionSimpleManejoView.VIEW_NAME,
-                    RendicionSimpleManejoView.VIEW_NAME, FontAwesome.EDIT);
-        }
-        if (Role.isAdmin()) {
-            //rendicionOperView.init();
-            //viewsToIgnoreWhenInit.add(rendicionOperView);
-            //menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
-            //        RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
-        }
+//        if (Role.isDigitador()) {
+//            rendicionSimpleOperView.init();
+//            viewsToIgnoreWhenInit.add(rendicionSimpleOperView);
+//            menu.addSeparator("Rendiciones");
+//            menu.addView(rendicionSimpleManejoView, RendicionSimpleManejoView.VIEW_NAME,
+//                    RendicionSimpleManejoView.VIEW_NAME, FontAwesome.EDIT);
+//        }
+//        if (Role.isAdmin()) {
+//            rendicionOperView.init();
+//            viewsToIgnoreWhenInit.add(rendicionOperView);
+//            menu.addView(rendicionManejoView, RendicionManejoView.VIEW_NAME,
+//                    RendicionManejoView.VIEW_NAME, FontAwesome.EDIT);
+//        }
 
         menu.addSeparator("Diccionarios");
         menu.addView(destinoListView, DestinoListView.VIEW_NAME,
@@ -123,6 +125,10 @@ public class MainScreen extends HorizontalLayout {
         if (Role.isPrivileged()) {
             menu.addView(terceroListView, TerceroListView.VIEW_NAME,
                     TerceroListView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(tipoCambioManejoView, TipoCambioManejoView.VIEW_NAME,
+                    TipoCambioManejoView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(enviarDiarioTercerosView, EnviarDiarioTercerosView.VIEW_NAME,
+                    EnviarDiarioTercerosView.VIEW_NAME, FontAwesome.EDIT);
             menu.addSeparator("Configuracion");
             menu.addView(configuracionCajaView, ConfiguracionCajaView.VIEW_NAME,
                     ConfiguracionCajaView.VIEW_NAME, FontAwesome.EDIT);

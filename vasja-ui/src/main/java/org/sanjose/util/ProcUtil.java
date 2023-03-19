@@ -191,7 +191,7 @@ public class ProcUtil {
             if (!existeTipoDeCambio(vcb.getFecFecha(), vcb.getCodTipomoneda(), service.getTipocambioRep())) {
                 try {
                     TipoCambio.checkTipoCambio(vcb.getFecFecha(), service.getTipocambioRep());
-                } catch (TipoCambio.TipoCambioNoExiste e) {
+                } catch (TipoCambio.TipoCambioNoExiste | TipoCambio.TipoCambioNoSePuedeBajar e) {
                     cajaBancosFaltaTipoCambio.put(vcb, e.getMessage());
                 }
             }
@@ -231,7 +231,7 @@ public class ProcUtil {
             if (!existeTipoDeCambio(curBancoCabecera.getFecFecha(), curBancoCabecera.getCodTipomoneda(), service.getTipocambioRep())) {
                 try {
                     TipoCambio.checkTipoCambio(curBancoCabecera.getFecFecha(), service.getTipocambioRep());
-                } catch (TipoCambio.TipoCambioNoExiste e) {
+                } catch (TipoCambio.TipoCambioNoExiste | TipoCambio.TipoCambioNoSePuedeBajar e) {
                     bancosFaltaTipoCambio.put(curBancoCabecera, e.getMessage());
                 }
             }
@@ -396,7 +396,7 @@ public class ProcUtil {
             if (!existeTipoDeCambio(curRendicionCabecera.getFecComprobante(), curRendicionCabecera.getCodTipomoneda(), service.getTipocambioRep())) {
                 try {
                     TipoCambio.checkTipoCambio(curRendicionCabecera.getFecComprobante(), service.getTipocambioRep());
-                } catch (TipoCambio.TipoCambioNoExiste e) {
+                } catch (TipoCambio.TipoCambioNoExiste | TipoCambio.TipoCambioNoSePuedeBajar e) {
                     //Tipo
                     rendicionsFaltaTipoCambio.put(curRendicionCabecera, e.getMessage());
                 }

@@ -147,6 +147,22 @@ public class GenUtil {
         }
     }
 
+    public static Date getEndOfMonth(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int lastDay = cal.getActualMaximum(Calendar.DATE);
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMM-ddHH:mm:ss");
+        try {
+            String d = format.format(date);
+            d = d.substring(0, 6);
+            d += "-" + getTxtCorrelativoLen(lastDay, 2) + "23:59:59";
+            return format.parse(d);
+        } catch (ParseException pe) {
+            pe.printStackTrace();
+            return date;
+        }
+    }
+
     public static Date getBeginningOfDay(Date date) {
         return getTimeOfDay(date, "00:00:00");
     }
@@ -193,6 +209,30 @@ public class GenUtil {
         return c1.getTime();
     }
 
+    public static List getDatesBetween(Date startDate, Date endDate) {
+        List datesInRange = new ArrayList<>();
+        Calendar calendar = getCalendarWithoutTime(startDate);
+        Calendar endCalendar = getCalendarWithoutTime(endDate);
+
+        while (calendar.before(endCalendar)) {
+            Date result = calendar.getTime();
+            datesInRange.add(result);
+            calendar.add(Calendar.DATE, 1);
+        }
+
+        return datesInRange;
+    }
+
+    private static Calendar getCalendarWithoutTime(Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar;
+    }
 
     public static boolean isInvertedZero(Object value) {
         return value == null || !"0.00".equals(value.toString()) && !"0,00".equals(value.toString()) && !"0".equals(value.toString());

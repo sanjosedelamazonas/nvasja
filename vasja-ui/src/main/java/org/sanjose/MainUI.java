@@ -30,11 +30,8 @@ import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.rendicion.RendicionSimpleManejoView;
 import org.sanjose.views.rendicion.RendicionSimpleOperView;
-import org.sanjose.views.sys.PersistanceService;
-import org.sanjose.views.sys.MainScreen;
-import org.sanjose.views.sys.PropiedadService;
-import org.sanjose.views.sys.PropiedadView;
-import org.sanjose.views.sys.ReportesView;
+import org.sanjose.views.sys.*;
+import org.sanjose.views.terceros.EnviarDiarioTercerosView;
 import org.sanjose.views.terceros.OperacionesListView;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -75,6 +72,8 @@ public class MainUI extends UI {
     private final RendicionSimpleOperView rendicionSimpleOperView;
     private final ReportesView reportesView;
     private final OperacionesListView operacionesListView;
+    private final TipoCambioManejoView tipoCambioManejoView;
+    private final EnviarDiarioTercerosView enviarDiarioTercerosView;
 
     private final MsgUsuarioRep msgUsuarioRep;
     private final VsjPasswordresettokenRep vsjPasswordresettokenRep;
@@ -113,6 +112,8 @@ public class MainUI extends UI {
         this.destinoListView = new DestinoListView(persistanceService);
         this.terceroListView = new TerceroListView(persistanceService);
         this.operacionesListView = new OperacionesListView(persistanceService);
+        this.tipoCambioManejoView = new TipoCambioManejoView(persistanceService);
+        this.enviarDiarioTercerosView = new EnviarDiarioTercerosView(persistanceService);
     }
 
     public static MainUI get() {
@@ -140,9 +141,10 @@ public class MainUI extends UI {
                 TipoCambio.checkTipoCambio(new Date(), this.getBancoOperacionesView().getService().getTipocambioRep());
             } catch (TipoCambio.TipoCambioNoExiste e) {
                 log.info(e.getMessage());
+            } catch (TipoCambio.TipoCambioNoSePuedeBajar e) {
+                log.info(e.getMessage());
             }
         }
-
     }
 
     protected void showMainView() {
@@ -150,7 +152,8 @@ public class MainUI extends UI {
         mainScreen = new MainScreen(MainUI.this, cajaManejoView, comprobanteView, transferenciaView, cajaOperacionesView,
                 cajaGridView, confView, configuracionCajaView, propiedadView, bancoOperView, bancoManejoView,
                 bancoConciliacionView, bancoOperacionesView, rendicionManejoView, rendicionOperView,
-                rendicionSimpleManejoView, rendicionSimpleOperView, reportesView, destinoListView, terceroListView, operacionesListView);
+                rendicionSimpleManejoView, rendicionSimpleOperView, reportesView, destinoListView, terceroListView,
+                operacionesListView, enviarDiarioTercerosView, tipoCambioManejoView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);

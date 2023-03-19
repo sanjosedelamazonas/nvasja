@@ -281,7 +281,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
                 tipocambios = view.getService().getTipocambioRep().findById_FecFechacambio(fecha);
                 if (tipocambios.isEmpty())
                     return;
-            } catch (TipoCambio.TipoCambioNoExiste te) {
+            } catch (TipoCambio.TipoCambioNoExiste | TipoCambio.TipoCambioNoSePuedeBajar te) {
                 log.debug(te.getLocalizedMessage());
                 return;
             }

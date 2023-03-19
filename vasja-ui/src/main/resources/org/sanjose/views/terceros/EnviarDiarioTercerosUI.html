@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta name="vaadin-version" content="7.7.7">
+ </head>
+ <body>
+  <vaadin-vertical-layout spacing>
+   <vaadin-form-layout size-auto margin :center>
+    <vaadin-horizontal-layout visible="false">
+     <vaadin-label width="88px" plain-text>
+       Reporte 
+     </vaadin-label>
+     <vaadin-combo-box width="306px" _id="selReporte">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+     </vaadin-combo-box>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout spacing>
+     <vaadin-label width="90px" plain-text>
+       Fecha inicial 
+     </vaadin-label>
+     <vaadin-date-field enabled="false" width="140px" _id="fechaInicial"></vaadin-date-field>
+     <vaadin-label width="30px" plain-text>
+       final 
+     </vaadin-label>
+     <vaadin-date-field enabled="false" width="136px" _id="fechaFinal"></vaadin-date-field>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout>
+     <vaadin-label width="88px" plain-text>
+       Todos 
+     </vaadin-label>
+     <vaadin-check-box _id="checkTodos" :middle :center></vaadin-check-box>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout>
+     <vaadin-label width="88px" plain-text>
+       Tercero 
+     </vaadin-label>
+     <vaadin-combo-box enabled="false" width="306px" _id="selTercero">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+     </vaadin-combo-box>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout>
+     <vaadin-label width="88px" plain-text>
+       Usuario 
+     </vaadin-label>
+     <vaadin-combo-box enabled="false" width="306px" _id="selUsuario">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+     </vaadin-combo-box>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout width="394px">
+     <vaadin-button enabled="false" plain-text _id="btnEnviar" :middle :center>
+       Enviar 
+     </vaadin-button>
+    </vaadin-horizontal-layout>
+   </vaadin-form-layout>
+   <vaadin-text-area null-representation="&quot;&quot;" size-full _id="txtLog" :center></vaadin-text-area>
+  </vaadin-vertical-layout>
+ </body>
+</html>

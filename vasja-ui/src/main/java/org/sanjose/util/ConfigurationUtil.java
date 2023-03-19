@@ -62,13 +62,13 @@ public class ConfigurationUtil {
 		// Terceros
 		defaultParamMap.put("REPORTS_TERCEROS_TYPE", "PDF");
 		// SENDING EMAILS
-		defaultParamMap.put("MAIL_FROM", "p.rubach@cent.uw.edu.pl");
-		defaultParamMap.put("MAIL_SMTP_SERVER", "smtp.gmail.com");
-		defaultParamMap.put("MAIL_SMTP_SERVER_PORT", "587");
+		defaultParamMap.put("MAIL_FROM", "");
+		defaultParamMap.put("MAIL_SMTP_SERVER", "");
+		defaultParamMap.put("MAIL_SMTP_SERVER_PORT", "465");
         // OAUTH2, SSL, TLS, NO
-		defaultParamMap.put("MAIL_SMTP_AUTH", "OAUTH2");
-		defaultParamMap.put("MAIL_SMTP_USER", "p.rubach@cent.uw.edu.pl");
-		defaultParamMap.put("MAIL_SMTP_PASS", "ya29.a0AVvZVsrX5egANSShswP95XTqjf_DAL5KR90a71fqhVRvMljdF1Gmz41T2lfz71avVoCKGG8mrHMl9Cizg21bxWHkyqVjYynIbkpUVIy4Z2t9TL2QkrQuYpxK3jfB08igiuFW_3CxiheJ7WWp8M4yA4MnCSVfaCgYKAQwSARASFQGbdwaIc5rsGulbysqS41kqxQwLNA0163");
+		defaultParamMap.put("MAIL_SMTP_AUTH", "SSL");
+		defaultParamMap.put("MAIL_SMTP_USER", "");
+		defaultParamMap.put("MAIL_SMTP_PASS", "");
 	}
 
 	public static Locale getLocale() {
@@ -90,6 +90,9 @@ public class ConfigurationUtil {
 	}
 
 	public static String getProperty(String name) {
+	    if (propRepo==null) {
+            return defaultParamMap.get(name);
+        }
 		VsjPropiedad prop = propRepo.findByNombre(name);
 		if (prop!=null) return prop.getValor();
         else return null;

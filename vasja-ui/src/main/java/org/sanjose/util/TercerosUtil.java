@@ -321,22 +321,23 @@ public class TercerosUtil {
         paramMap.put("FECHA_MAX", sdf.format(fechaHasta));
         paramMap.put("COD_TERCERO", codTercero);
         paramMap.put("TXT_NOMBRE", dest!=null ? dest.getTxtNombredestino() : "");
+        ReportHelper.generateReport("ReporteTerceroOperaciones", "REPORTS_TERCEROS_TYPE", paramMap, format);
 
         //paramMap.put("DataFile", "VsjTerceroreporte.java");
 //        log.debug("ParamMap: " + paramMap.toString());
-        List<VsjTerceroreporte> reportes = new ArrayList<>();
-        reportes.add(vsjTerceroreporte);
-        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(reportes);
-        JasperPrint jasperPrint = JasperFillManager.fillReport("../vasja-reports/reports/ReporteTerceroOperaciones.jasper",
-                paramMap, beanColDataSource );
+        //List<VsjTerceroreporte> reportes = new ArrayList<>();
+        //reportes.add(vsjTerceroreporte);
+        //JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(reportes);
+        //JasperPrint jasperPrint = JasperFillManager.fillReport("../vasja-reports/reports/ReporteTerceroOperaciones.jasper",
+        //        paramMap, beanColDataSource );
 
 
-        JRPdfExporter exporter = new JRPdfExporter();
-        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-
-
-        OutputStream output = new FileOutputStream(new File("/tmp/terceros_out.pdf"));
-        JasperExportManager.exportReportToPdfStream(jasperPrint, output);
+//        JRPdfExporter exporter = new JRPdfExporter();
+//        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+//
+//
+//        OutputStream output = new FileOutputStream(new File("/tmp/terceros_out.pdf"));
+//        JasperExportManager.exportReportToPdfStream(jasperPrint, output);
 //
 //
 //
@@ -345,7 +346,6 @@ public class TercerosUtil {
 //        response.setHeader("Content-Disposition", "attachment;filename=jasperfile.docx");
 //        response.setContentType("application/octet-stream");
 //        exporter.exportReport();
-//        //ReportHelper.generateReport("ReporteTerceroOperaciones", "REPORTS_TERCEROS_TYPE", paramMap, format);
 //
 //
 //        StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {

@@ -147,6 +147,15 @@ public class ViewUtil {
         if (grid.getColumn("numTcvdolar") != null)
             grid.getColumn("numTcvdolar").setRenderer(new EmptyZeroNumberRendrer(
                     "%02.4f", ConfigurationUtil.getLocale()));
+        if (grid.getColumn("numTccdolar") != null)
+            grid.getColumn("numTccdolar").setRenderer(new EmptyZeroNumberRendrer(
+                    "%02.4f", ConfigurationUtil.getLocale()));
+        if (grid.getColumn("numTcveuro") != null)
+            grid.getColumn("numTcveuro").setRenderer(new EmptyZeroNumberRendrer(
+                    "%02.4f", ConfigurationUtil.getLocale()));
+        if (grid.getColumn("numTcceuro") != null)
+            grid.getColumn("numTcceuro").setRenderer(new EmptyZeroNumberRendrer(
+                    "%02.4f", ConfigurationUtil.getLocale()));
         if (grid.getColumn("numTcmo") != null)
             grid.getColumn("numTcmo").setRenderer(new EmptyZeroNumberRendrer(
                     "%02.4f", ConfigurationUtil.getLocale()));
@@ -173,6 +182,9 @@ public class ViewUtil {
                     "numDebemo".equals(cellReference.getPropertyId()) ||
                     "numHabermo".equals(cellReference.getPropertyId()) ||
                     "numTcvdolar".equals(cellReference.getPropertyId()) ||
+                    "numTccdolar".equals(cellReference.getPropertyId()) ||
+                    "numTcveuro".equals(cellReference.getPropertyId()) ||
+                    "numTcceuro".equals(cellReference.getPropertyId()) ||
                     "numTcmo".equals(cellReference.getPropertyId()) ||
                     "numGastototal".equals(cellReference.getPropertyId()) ||
                     "numAnticipo".equals(cellReference.getPropertyId()) ||

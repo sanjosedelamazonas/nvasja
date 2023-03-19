@@ -53,7 +53,7 @@ public class MailerSender {
                 .from("Vicariato San Jose del Amazonas", ConfigurationUtil.get("MAIL_FROM"))
                 .withSubject("VASJA Reporte")
                 .withPlainText("Hola!\nSu reporte adjuntado.\nSaludos\nVASJA")
-                .withAttachment("mypdf.pdf", pdfByteArray, "application/pdf")
+                //.withAttachment("mypdf.pdf", pdfByteArray, "application/pdf")
                 .buildEmail();
 
         new MailerSender().sendEmail(email);

@@ -8,14 +8,20 @@
  <body>
   <vaadin-vertical-layout spacing size-full margin>
    <vaadin-horizontal-layout spacing _id="horizontalCabeza">
-    <vaadin-button plain-text _id="btnNuevaPropiedad" :middle :center>
-      Nueva Propiedad 
+    <vaadin-date-field caption="Año" resolution="year" _id="fechaAno"></vaadin-date-field>
+    <vaadin-date-field caption="Desde" _id="fecDesde"></vaadin-date-field>
+    <vaadin-date-field caption="Hasta" _id="fecHasta"></vaadin-date-field>
+    <vaadin-button width="120px" plain-text _id="btnBajar" :bottom :center>
+      Bajar 
     </vaadin-button>
-    <vaadin-button plain-text _id="btnEliminar" :middle :center>
+    <vaadin-button plain-text _id="btnNuevoTipoCambio" :bottom :center>
+      Nuevo Tipo Cambio 
+    </vaadin-button>
+    <vaadin-button plain-text _id="btnEliminar" :bottom :center>
       Eliminar 
     </vaadin-button>
    </vaadin-horizontal-layout>
-   <vaadin-grid caption="Configuracion del Sistema" editor-save-caption="Guardar" editor-cancel-caption="Anular" size-full editable _id="gridPropiedad" :expand></vaadin-grid>
+   <vaadin-grid caption="Tipos de Cambio" editor-save-caption="Guardar" editor-cancel-caption="Anular" width="700px" height-full editable _id="grid" :expand></vaadin-grid>
   </vaadin-vertical-layout>
  </body>
 </html>

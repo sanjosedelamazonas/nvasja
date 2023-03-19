@@ -1,5 +1,10 @@
 package org.sanjose.bean;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 public class VsjTerceroreporte {
@@ -58,6 +63,7 @@ public class VsjTerceroreporte {
 	public void setOperaciones(List<VsjOperaciontercero> operaciones) {
 		this.operaciones = operaciones;
 	}
-    
-    
+
+
+
 }

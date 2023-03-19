@@ -33,7 +33,7 @@ public class TipoCambio {
     private BigDecimal venta;
     private Date fecha;
 
-    public TipoCambio(Date fecha, Character moneda) throws TipoCambioNoExiste {
+    public TipoCambio(Date fecha, Character moneda) throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar {
         this.moneda = moneda;
         this.fecha = fecha;
         monedaNombres.put(USD, "lar de N.A.");
@@ -43,22 +43,23 @@ public class TipoCambio {
         get();
     }
 
-    public static Map<Character, TipoCambio> actualizaTipoCambioSBS(Date fecha) throws TipoCambioNoExiste {
+    public static Map<Character, TipoCambio> actualizaTipoCambioSBS(Date fecha) throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar {
         Map<Character, TipoCambio> tipos = new HashMap<>();
         tipos.put(USD, new TipoCambio(fecha, USD));
         tipos.put(EUR, new TipoCambio(fecha, EUR));
         return tipos;
     }
 
-    public static void checkTipoCambio(Date fecha, ScpTipocambioRep tipocambioRep) throws TipoCambioNoExiste {
+    public static ScpTipocambio checkTipoCambio(Date fecha, ScpTipocambioRep tipocambioRep) throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar {
         boolean existsUSD = ProcUtil.existeTipoDeCambio(fecha, USD, tipocambioRep);
         boolean existsEUR = ProcUtil.existeTipoDeCambio(fecha, EUR, tipocambioRep);
+        ScpTipocambio tipocambio = null;
         if (!existsEUR || !existsUSD) {
             Map<Character, TipoCambio> rates = actualizaTipoCambioSBS(fecha);
             List<ScpTipocambio> tipocambios = tipocambioRep.findById_FecFechacambio(
                     GenUtil.getBeginningOfDay(fecha));
             if (!tipocambios.isEmpty()) {
-                ScpTipocambio tipocambio = tipocambios.get(0);
+                tipocambio = tipocambios.get(0);
                 if (tipocambio.getNumTcvdolar().equals(new BigDecimal(0)))
                     tipocambio.setNumTcvdolar(rates.get(USD).getVenta());
                 if (tipocambio.getNumTccdolar().equals(new BigDecimal(0)))
@@ -69,7 +70,7 @@ public class TipoCambio {
                     tipocambio.setNumTcceuro(rates.get(EUR).getCompra());
                 tipocambioRep.save(tipocambio);
             } else {
-                ScpTipocambio tipocambio = new ScpTipocambio();
+                tipocambio = new ScpTipocambio();
                 tipocambio.prepareToSave();
                 ScpTipocambioPK tipocambioId = new ScpTipocambioPK();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
@@ -83,10 +84,11 @@ public class TipoCambio {
                 tipocambioRep.save(tipocambio);
             }
         }
+        return tipocambio;
     }
 
 
-    public void get() throws TipoCambioNoExiste {
+    public void get() throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
             String stUrl = EXCHANGE_RATE_URL_API.replace("{0}", sdf.format(fecha));
@@ -118,7 +120,7 @@ public class TipoCambio {
             if (compra == null || venta == null)
                 throw new TipoCambioNoExiste("Tipo de cambio no existe para esta fecha: " + sdf.format(fecha));
         } catch (IOException e) {
-            throw new TipoCambioNoExiste("No se podia connectar al : " + e.getMessage());
+            throw new TipoCambioNoSePuedeBajar("No se podia connectar al : " + e.getMessage());
         }
     }
 
@@ -170,8 +172,13 @@ public class TipoCambio {
         }
     }
 
+    public class TipoCambioNoSePuedeBajar extends Exception {
+        public TipoCambioNoSePuedeBajar(String message) {
+            super(message);
+        }
+    }
 
-    public static void main(String[] args) throws TipoCambioNoExiste, IOException, ParseException {
+    public static void main(String[] args) throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar, ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
         TipoCambio tc = new TipoCambio(sdf.parse("13/03/2023"), USD);
