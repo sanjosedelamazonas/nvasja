@@ -18,10 +18,9 @@ import org.sanjose.model.*;
 import org.sanjose.util.*;
 import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.validator.SaldoChecker;
-import org.sanjose.validator.TwoCombosValidator;
 import org.sanjose.validator.TwoNumberfieldsValidator;
 import org.sanjose.views.sys.ComprobanteWarnGuardar;
-import org.sanjose.views.sys.DestinoView;
+import org.sanjose.views.dict.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
 
 import java.io.Serializable;
@@ -33,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static org.sanjose.util.GenUtil.*;
 

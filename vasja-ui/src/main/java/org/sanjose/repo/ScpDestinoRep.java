@@ -3,6 +3,7 @@ package org.sanjose.repo;
 import org.sanjose.model.ScpDestino;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
@@ -16,6 +17,9 @@ public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
 	List<ScpDestino> findByIndTipodestinoOrderByTxtNombre(Character s);
 
 	List<ScpDestino> findByIndTipodestinoAndActivoOrderByTxtNombre(Character s, Boolean isActive);
+
+	// All to send report terceros
+	List<ScpDestino> findByIndTipodestinoAndActivoAndEnviarreporteAndTxtUsuarioNotOrderByTxtNombre(Character s, Boolean isActive, Boolean enviar, String ss);
 
 	List<ScpDestino> findByIndTipodestinoNotOrderByTxtNombre(Character s);
 
@@ -31,4 +35,7 @@ public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
 
 	List<ScpDestino> findByTxtUsuario(String cd);
 
+	List<ScpDestino> findByIndTipodestinoAndActivoAndTxtUsuarioLike(Character t, Boolean isActive, String usuario);
+
+	List<ScpDestino> findByIndTipodestinoAndActivoAndTxtUsuarioIn(Character t, Boolean isActive, Collection<String> usuarios);
 }

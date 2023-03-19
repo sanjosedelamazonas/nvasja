@@ -2,6 +2,8 @@ package org.sanjose.authentication;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.external.org.slf4j.Logger;
@@ -9,17 +11,9 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.sanjose.MainUI;
 import org.sanjose.helper.MailerSender;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.VsjPasswordresettoken;
@@ -156,23 +150,32 @@ public class LoginScreen extends CssLayout {
             String link = Page.getCurrent().getLocation().getScheme() + ":" +
                     Page.getCurrent().getLocation().getSchemeSpecificPart() +
                     "resetpass/?token=" + token.getToken();
-            Email message = EmailBuilder.startingBlank()
-                    .to(email.getValue())
-                    .from("Vicariato San Jose del Amazonas", ConfigurationUtil.get("MAIL_FROM"))
-                    .withSubject("Reset clave")
-                    .withHTMLText("<p>Hello,</p>"
-                            + "<p>You have requested to reset your password.</p>"
-                            + "<p>Click the link below to change your password:</p>"
-                            + "<p><a href=\"" + link + "\">Change my password</a></p>"
-                            + "<br>"
-                            + "<p>Ignore this email if you do remember your password, "
-                            + "or you have not made the request.</p>")
-                    .buildEmail();
 
-            log.info(message.toString());
-            //new MailerSender().sendEmail(message);
 
-            showNotification(new Notification("Reset link enviado a: " + email.getValue()));
+            CompletableFuture<Void> sendRes = ((MainUI) UI.getCurrent()).getMailerSender().sendPasswordResetLink(email.getValue(), link);
+            CompletableFuture<String> sendErrors =
+                    sendRes.handle((String, ex) -> {
+                        if (ex != null) {
+                            return "Problema al enviar mensaje a :"+ usuario.getTxtCorreo() + "\n" + ex.getMessage();
+                        } else {
+                            return null;
+                        }
+                    });
+            sendErrors.join();
+            try {
+                String error = sendErrors.get();
+                if (error!=null) {
+                    showNotification(new Notification("Huvo un problema al enviar el reset link a: " + email.getValue(),
+                            Notification.Type.WARNING_MESSAGE));
+                    Notification.show(error, Notification.Type.WARNING_MESSAGE);
+                    log.warn("Couldn't send password reset link to: " + email.getValue() + "\n" + error);
+                } else {
+                    showNotification(new Notification("Reset link ha sido enviado correctamente a: " + email.getValue()));
+                    log.info("Sent password reset link to: " + email.getValue());
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
             showLoginForm();
         }
     }

@@ -1,16 +1,13 @@
-package org.sanjose.views.sys;
+package org.sanjose.views.dict;
 
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
-import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.util.GenUtil;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**

@@ -1,4 +1,4 @@
-package org.sanjose.views.sys;
+package org.sanjose.views.dict;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
@@ -9,14 +9,10 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 import org.sanjose.converter.BigDecimalConverter;
 import org.sanjose.model.ScpTipocambio;
-import org.sanjose.repo.ScpCargocuartaRep;
 import org.sanjose.repo.ScpTipocambioRep;
-import org.sanjose.repo.ScpTipodocumentoRep;
-import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.validator.LocalizedBeanValidator;

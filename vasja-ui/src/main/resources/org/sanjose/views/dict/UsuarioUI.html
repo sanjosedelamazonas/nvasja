@@ -7,7 +7,7 @@
  </head>
  <body>
   <vaadin-vertical-layout spacing size-full margin>
-   <vaadin-horizontal-layout spacing _id="horizontalCabeza">
+   <vaadin-horizontal-layout spacing _id="horizontalCabeza" :middle :center>
     <vaadin-button plain-text _id="btnNuevoUsuario" :bottom :center>
       Nuevo Usuario 
     </vaadin-button>
@@ -15,7 +15,7 @@
       Eliminar/Desactivar 
     </vaadin-button>
    </vaadin-horizontal-layout>
-   <vaadin-grid caption="Usuarios" editor-save-caption="Guardar" editor-cancel-caption="Anular" width="700px" height-full editable _id="grid" :expand></vaadin-grid>
+   <vaadin-grid caption="Usuarios" editor-save-caption="Guardar" editor-cancel-caption="Anular" height-full editable _id="grid" :center :expand></vaadin-grid>
   </vaadin-vertical-layout>
  </body>
 </html>

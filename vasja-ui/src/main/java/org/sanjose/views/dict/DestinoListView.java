@@ -23,7 +23,6 @@ import org.sanjose.model.*;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 

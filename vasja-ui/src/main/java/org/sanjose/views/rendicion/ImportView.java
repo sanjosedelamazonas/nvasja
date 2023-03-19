@@ -11,12 +11,11 @@ import org.apache.poi.EmptyFileException;
 import org.sanjose.converter.DateToTimestampConverter;
 import org.sanjose.model.ScpRendiciondetalle;
 import org.sanjose.model.ScpRendiciondetallePK;
-import org.sanjose.render.DateNotNullRenderer;
 import org.sanjose.util.*;
 import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.validator.NotBoundComboBoxValidator;
 import org.sanjose.validator.NotNullNotBoundValidator;
-import org.sanjose.views.sys.DestinoView;
+import org.sanjose.views.dict.DestinoView;
 import org.sanjose.views.sys.SubWindowing;
 
 import java.io.File;

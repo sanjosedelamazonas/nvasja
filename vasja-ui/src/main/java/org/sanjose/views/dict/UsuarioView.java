@@ -1,7 +1,6 @@
 package org.sanjose.views.dict;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
@@ -15,22 +14,16 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import de.steinwedel.messagebox.MessageBox;
-import org.sanjose.MainUI;
-import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.ScpDestino;
-import org.sanjose.model.ScpTipocambio;
-import org.sanjose.model.ScpTipocambioPK;
 import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -123,10 +116,21 @@ public class UsuarioView extends UsuarioUI implements Viewing {
         usuarioWindow.setContent(usuarioCrearView);
 
         usuarioCrearView.getBtnGuardar().addClickListener(event -> {
-            MsgUsuario editedItem = usuarioCrearView.saveUsuario();
-            if (editedItem!=null) {
-                usuarioWindow.close();
-                refreshData();
+            CompletableFuture<String> sendRes = usuarioCrearView.saveUsuario();
+            usuarioWindow.close();
+            refreshData();
+            if (sendRes!=null){
+                sendRes.join();
+                try {
+                    String error = sendRes.get();
+                    if (error!=null) {
+                        Notification.show(error, Notification.Type.WARNING_MESSAGE);
+                    } else {
+                        Notification.show("La invitacion ha sido enviada", Notification.Type.HUMANIZED_MESSAGE);
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         });
         usuarioCrearView.getBtnAnular().addClickListener(event -> {

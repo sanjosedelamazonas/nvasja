@@ -16,6 +16,7 @@ import org.sanjose.authentication.LoginScreen;
 import org.sanjose.authentication.LoginScreen.LoginListener;
 import org.sanjose.authentication.MsgAccessControl;
 import org.sanjose.authentication.Role;
+import org.sanjose.helper.MailerSender;
 import org.sanjose.repo.MsgUsuarioRep;
 import org.sanjose.repo.VsjPasswordresettokenRep;
 import org.sanjose.util.ConfigurationUtil;
@@ -26,6 +27,7 @@ import org.sanjose.views.banco.*;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.dict.DestinoListView;
 import org.sanjose.views.dict.TerceroListView;
+import org.sanjose.views.dict.TipoCambioManejoView;
 import org.sanjose.views.dict.UsuarioView;
 import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
@@ -83,6 +85,8 @@ public class MainUI extends UI {
     private AccessControl accessControl;
     private MainScreen mainScreen;
 
+    private final MailerSender mailerSender;
+
     private static final Logger log = LoggerFactory.getLogger(MainUI.class);
 
     @Autowired
@@ -90,12 +94,14 @@ public class MainUI extends UI {
                    PersistanceService persistanceService,
                    MsgUsuarioRep msgUsuarioRep,
                    VsjPasswordresettokenRep vsjPasswordresettokenRep,
-                   ProcUtil procUtil) {
+                   ProcUtil procUtil,
+                   MailerSender mailerSender) {
         this.propiedadView = new PropiedadView(propiedadService);
         this.reportesView = new ReportesView(persistanceService);
         this.msgUsuarioRep = msgUsuarioRep;
         this.vsjPasswordresettokenRep = vsjPasswordresettokenRep;
         this.procUtil = procUtil;
+        this.mailerSender = mailerSender;
         this.confView = new ConfiguracionCtaCajaBancoView(persistanceService);
         this.cajaGridView = new CajaGridView(persistanceService);
         this.comprobanteView = new ComprobanteView(persistanceService);
@@ -223,5 +229,9 @@ public class MainUI extends UI {
 
     public DestinoListView getDestinoListView() {
         return destinoListView;
+    }
+
+    public MailerSender getMailerSender() {
+        return mailerSender;
     }
 }

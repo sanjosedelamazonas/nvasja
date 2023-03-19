@@ -2,6 +2,8 @@ package org.sanjose.util;
 
 import org.sanjose.model.VsjPropiedad;
 import org.sanjose.repo.VsjPropiedadRep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.text.ParseException;
@@ -17,7 +19,9 @@ public class ConfigurationUtil {
 	public final static String CSS_RED = "red";
 	private final static HashMap<String, String> defaultParamMap = new HashMap<>();
 	private static final HashMap<String, String> paramMap = new HashMap<>();
-	private static VsjPropiedadRep propRepo = null;
+
+	private static VsjPropiedadRep propRepo;
+
 	private static String OS = null;
 	private static Locale locale = null;
 
@@ -69,6 +73,13 @@ public class ConfigurationUtil {
 		defaultParamMap.put("MAIL_SMTP_AUTH", "SSL");
 		defaultParamMap.put("MAIL_SMTP_USER", "");
 		defaultParamMap.put("MAIL_SMTP_PASS", "");
+
+		///////////
+//		defaultParamMap.put("MAIL_FROM", "sistema@sanjosedelamazonas.org");
+//		defaultParamMap.put("MAIL_SMTP_SERVER", "mail.sanjosedelamazonas.org");
+//
+//		defaultParamMap.put("MAIL_SMTP_USER", "sistema@sanjosedelamazonas.org");
+//		defaultParamMap.put("MAIL_SMTP_PASS", "M@1l3rV@sj@789");
 	}
 
 	public static Locale getLocale() {

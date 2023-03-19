@@ -12,7 +12,6 @@ import org.sanjose.views.banco.BancoTipoCambiosLogic;
 import org.sanjose.views.caja.CajaTipoCambiosLogic;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.rendicion.RendicionTipoCambiosLogic;
-import org.sanjose.views.sys.TipoCambioLogic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

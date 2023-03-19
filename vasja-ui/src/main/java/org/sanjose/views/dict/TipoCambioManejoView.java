@@ -1,36 +1,31 @@
-package org.sanjose.views.sys;
+package org.sanjose.views.dict;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.sort.Sort;
-import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import de.steinwedel.messagebox.MessageBox;
-import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpTipocambio;
 import org.sanjose.model.ScpTipocambioPK;
-import org.sanjose.model.VsjConfiguractacajabanco;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.TipoCambio;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.dict.DestinoListLogic;
+import org.sanjose.views.sys.PersistanceService;
+import org.sanjose.views.sys.Viewing;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.Period;
 import java.util.*;
 
 /**

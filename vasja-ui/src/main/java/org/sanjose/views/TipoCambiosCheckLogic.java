@@ -2,8 +2,8 @@ package org.sanjose.views;
 
 import org.sanjose.util.ProcUtil;
 import org.sanjose.views.sys.PersistanceService;
-import org.sanjose.views.sys.TipoCambioLogic;
-import org.sanjose.views.sys.TipoCambioView;
+import org.sanjose.views.dict.TipoCambioLogic;
+import org.sanjose.views.dict.TipoCambioView;
 
 import java.util.Date;
 import java.util.HashMap;

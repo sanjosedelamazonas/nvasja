@@ -28,6 +28,7 @@ public class EnviarDiarioTercerosUI extends VerticalLayout {
     protected CheckBox checkTodos;
     protected ComboBox selTercero;
     protected ComboBox selUsuario;
+    protected TextArea txtUsuariosList;
     protected Button btnEnviar;
     protected TextArea txtLog;
 

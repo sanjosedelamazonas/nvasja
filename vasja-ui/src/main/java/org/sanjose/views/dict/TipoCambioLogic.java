@@ -1,11 +1,8 @@
-package org.sanjose.views.sys;
+package org.sanjose.views.dict;
 
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.external.org.slf4j.Logger;
-import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.window.WindowMode;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import de.steinwedel.messagebox.MessageBox;

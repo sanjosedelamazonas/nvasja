@@ -22,8 +22,7 @@ import org.sanjose.util.*;
 import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.validator.SaldoChecker;
 import org.sanjose.validator.TwoNumberfieldsValidator;
-import org.sanjose.views.sys.ComprobanteWarnGuardar;
-import org.sanjose.views.sys.DestinoView;
+import org.sanjose.views.dict.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.Viewing;
 

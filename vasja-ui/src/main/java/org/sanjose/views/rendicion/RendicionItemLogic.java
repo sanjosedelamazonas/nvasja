@@ -22,7 +22,7 @@ import org.sanjose.render.DateNotNullRenderer;
 import org.sanjose.util.*;
 import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.views.sys.ComprobanteWarnGuardar;
-import org.sanjose.views.sys.DestinoView;
+import org.sanjose.views.dict.DestinoView;
 import org.sanjose.views.sys.NavigatorViewing;
 import tm.kod.widgets.numberfield.NumberField;
 

@@ -6,7 +6,6 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import org.sanjose.helper.CustomReport;
-import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.util.DataFilterUtil;
@@ -14,11 +13,10 @@ import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.PersistanceService;
-import org.sanjose.views.sys.ReportesUI;
 import org.sanjose.views.sys.Viewing;
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**          A
  * A view for performing create-read-update-delete operations on products.
@@ -33,11 +31,11 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         return VIEW_NAME;
     }
     private static final Logger log = LoggerFactory.getLogger(EnviarDiarioTercerosView.class);
-    private PersistanceService comprobanteService;
+    private PersistanceService service;
     private Map<String,CustomReport> customReportMap = new TreeMap<>();
 
-    public EnviarDiarioTercerosView(PersistanceService comprobanteService) {
-        this.comprobanteService = comprobanteService;
+    public EnviarDiarioTercerosView(PersistanceService service) {
+        this.service = service;
         setSizeFull();
         addStyleName("crud-view");
     }
@@ -56,18 +54,18 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
 //        selReporte.addValueChangeListener(this::setReporteParameters);
 
 
-        List<ScpDestino> terceros = DataUtil.loadDestinos(comprobanteService, true);
+        List<ScpDestino> terceros = DataUtil.loadDestinos(service, true);
 
         Map<String, String> usuariosMap = new HashMap<>();
         terceros.forEach(trc -> {
             if (!GenUtil.strNullOrEmpty(trc.getTxtUsuario())) {
-                MsgUsuario usuario = comprobanteService.getMsgUsuarioRep().findByTxtUsuario(trc.getTxtUsuario());
+                MsgUsuario usuario = service.getMsgUsuarioRep().findByTxtUsuario(trc.getTxtUsuario());
                 if (usuario!=null)
                     usuariosMap.put(trc.getTxtUsuario(), trc.getTxtUsuario() + " (" + usuario.getTxtNombre() + ")");
             }
         });
         // Tercero
-        DataFilterUtil.bindComboBox(selTercero, "codDestino", DataUtil.loadDestinos(comprobanteService, true), "Sel Tercero",
+        DataFilterUtil.bindComboBox(selTercero, "codDestino", DataUtil.loadDestinos(service, true), "Sel Tercero",
                 "txtNombre");
         selTercero.addValueChangeListener(this::setTerceroLogic);
 
@@ -76,25 +74,47 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
 
         checkTodos.addValueChangeListener(this::setTodosLogic);
 
+        txtUsuariosList.addValueChangeListener(this::setUsuarioListLogic);
 
         fechaInicial.addValueChangeListener(val -> fechaFinal.setValue(GenUtil.getEndOfMonth(fechaInicial.getValue())));
 
-///        DataFilterUtil.bindComboBox(selUsuario, "txtUsuario", comprobanteService.getMsgUsuarioRep().findAll(), "Sel Cat Proyecto", "txtDescripcion");
+///        DataFilterUtil.bindComboBox(selUsuario, "txtUsuario", service.getMsgUsuarioRep().findAll(), "Sel Cat Proyecto", "txtDescripcion");
 
-        btnEnviar.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                CustomReport cr = customReportMap.get(selReporte.getValue());
-//                ReportHelper.generateCustomReport(
-//                        cr.getFileName(),
-//                        toStringIfNN(selTercero.getValue()),
-//                        toStringIfNN(selCategoria.getValue()),
-//                        fechaInicial.getValue(),
-//                        fechaFinal.getValue()
-//                        );
-            }
-        });
+        btnEnviar.addClickListener( e -> doEnviar(prepareListOfTerceros()));
     }
+
+    private void doEnviar(List<ScpDestino> tercerosList) {
+        StringBuilder sb = new StringBuilder();
+        tercerosList.forEach(trc -> sb.append(trc.getCodDestino()));
+        log.info("Got list of terceros to send: " + sb.toString());
+        
+    }
+
+    private List<ScpDestino> prepareListOfTerceros() {
+        if (checkTodos.getValue()) {
+            return service.getDestinoRepo().findByIndTipodestinoAndActivoAndEnviarreporteAndTxtUsuarioNotOrderByTxtNombre(
+                    '3', true, true, "");
+        }
+        if (selUsuario.getValue()!=null) {
+            return service.getDestinoRepo().findByIndTipodestinoAndActivoAndTxtUsuarioLike(
+                        '3', true, selUsuario.getValue().toString());
+        }
+        if (selTercero.getValue()!=null) {
+            List<ScpDestino> dests = new ArrayList<>();
+            dests.add(service.getDestinoRepo().findByCodDestino(selTercero.getValue().toString()));
+            return dests;
+        }
+        if (txtUsuariosList.getValue()!=null) {
+            String[] usuarios = txtUsuariosList.getValue().split(",");
+            Set<String> usuariosSet = new HashSet<>();
+            for (String u : usuarios)
+                usuariosSet.add(u.trim().toLowerCase());
+            return service.getDestinoRepo().findByIndTipodestinoAndActivoAndTxtUsuarioIn(
+                    '3', true, usuariosSet);
+        }
+        return new ArrayList<>();
+    }
+
 
     private void setTerceroLogic(Property.ValueChangeEvent event) {
         if (event.getProperty().getValue() != null) {
@@ -110,10 +130,24 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         }
     }
 
-    private void setTodosLogic(Property.ValueChangeEvent event) {
+    private void setUsuarioListLogic(Property.ValueChangeEvent event) {
         if (event.getProperty().getValue() != null) {
             selTercero.setValue(null);
             selUsuario.setValue(null);
+            checkTodos.setValue(false);
+        }
+    }
+
+
+    private void setTodosLogic(Property.ValueChangeEvent event) {
+        if ((Boolean)event.getProperty().getValue()) {
+            selTercero.setValue(null);
+            selUsuario.setValue(null);
+            txtUsuariosList.setEnabled(false);
+        } else {
+            selTercero.setValue(null);
+            selUsuario.setValue(null);
+            txtUsuariosList.setEnabled(false);
         }
     }
 
@@ -151,8 +185,6 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         //viewLogic.enter(event.getParameters());
     }
 
-
-
     public ComboBox getSelUsuario() {
         return selUsuario;
     }
@@ -183,5 +215,9 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
 
     public TextArea getTxtLog() {
         return txtLog;
+    }
+
+    public TextArea getTxtUsuariosList() {
+        return txtUsuariosList;
     }
 }

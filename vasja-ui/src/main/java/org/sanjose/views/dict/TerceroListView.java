@@ -18,14 +18,10 @@ import com.vaadin.ui.renderers.HtmlRenderer;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
 import org.sanjose.converter.BooleanTrafficLightConverter;
-import org.sanjose.converter.CargoCuartaConverter;
-import org.sanjose.converter.TipoDestinoConverter;
-import org.sanjose.converter.TipoDocumentoConverter;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.ViewUtil;
-import org.sanjose.views.sys.DestinoView;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 

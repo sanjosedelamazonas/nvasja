@@ -8,24 +8,21 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.*;
 import de.steinwedel.messagebox.MessageBox;
+import org.sanjose.MainUI;
 import org.sanjose.model.MsgUsuario;
-import org.sanjose.model.ScpDestino;
 import org.sanjose.repo.MsgRolRep;
 import org.sanjose.repo.MsgUsuarioRep;
 import org.sanjose.repo.ScpDestinoRep;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.Rot10;
-import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.validator.TwoPasswordfieldsValidator;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
-import org.sanjose.views.sys.DestinoUI;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -53,6 +50,8 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
     private boolean isEdit = false;
 
     private boolean isNuevo = false;
+
+    private CompletableFuture<String> sendRes = null;
 
     //@Autowired
     public UsuarioCrearView(MsgUsuarioRep usuarioRep, MsgRolRep msgRolRep, ScpDestinoRep destinoRep) {
@@ -85,46 +84,50 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
             }
         });
 
-        getTxtPass1().addValidator(new TwoPasswordfieldsValidator(getTxtPass2(), false, null));
-        getTxtPass2().addValidator(new TwoPasswordfieldsValidator(getTxtPass1(), false, null));
+        getTxtPass1().addValidator(new TwoPasswordfieldsValidator(getTxtPass2(), false, "Las contraseñas tienen no son iguales"));
+        getTxtPass2().addValidator(new TwoPasswordfieldsValidator(getTxtPass1(), false, "Las contraseñas tienen no son iguales"));
         getTxtCorreo().addValidator(new EmailValidator("El correo no esta correcto"));
 
         getTxtCorreo().addValidator(new Validator() {
             @Override
             public void validate(Object o) throws InvalidValueException {
-                if ((!GenUtil.objNullOrEmpty(o)) && (usuarioRep.findByTxtCorreoIgnoreCase((String)o))!=null){
-                    throw new InvalidValueException("Usuario con este correo ya existe!");
+                if (!GenUtil.objNullOrEmpty(o)) {
+                    MsgUsuario otroUs = usuarioRep.findByTxtCorreoIgnoreCase((String)o);
+                    if (otroUs!=null && (item==null || !item.getCodUsuario().equals(otroUs.getCodUsuario())))
+                        throw new InvalidValueException("Usuario con este correo ya existe!");
                 }
             }
         });
         getTxtUsuario().addValidator(new Validator() {
             @Override
             public void validate(Object o) throws InvalidValueException {
-                if ((!GenUtil.objNullOrEmpty(o)) && (usuarioRep.findByTxtUsuarioIgnoreCase((String)o))!=null){
-                    throw new InvalidValueException("Este usuario ya existe!");
+                if (!GenUtil.objNullOrEmpty(o)) {
+                    MsgUsuario otroUs = usuarioRep.findByTxtUsuarioIgnoreCase((String)o);
+                    if (otroUs!=null && (item==null || !item.getCodUsuario().equals(otroUs.getCodUsuario())))
+                        throw new InvalidValueException("Usuario con este correo ya existe!");
                 }
             }
         });
     }
 
 
-    public MsgUsuario saveUsuario() {
-        try {
-            if (GenUtil.strNullOrEmpty(codUsuario.getValue())) {
-                try {
-                } catch (NumberFormatException pe) {
-                    codUsuario.setEnabled(true);
-                    MessageBox
-                            .createWarning()
-                            .withCaption("Problema al guardar el destino")
-                            .withMessage("!No se puede generar nuevo cod destino - por favor entrega un codigo!")
-                            .withOkButton(
-                            )
-                            .open();
-                    return null;
-                }
+    public CompletableFuture<String> saveUsuario() {
+        if (chkEnviarInvitacion.getValue() && !isNuevo) {
+            MessageBox
+                    .createWarning()
+                    .withCaption("Reenviar")
+                    .withMessage("!Quieres reenviar la invitacion a " + beanItem.getBean().getTxtCorreo() + "?")
+                    .withYesButton( () -> saveUsuarioConfirmado(true))
+                    .withNoButton(()-> saveUsuarioConfirmado(false))
+                    .open();
+        } else
+            saveUsuarioConfirmado(chkEnviarInvitacion.getValue());
+        return this.sendRes;
+    }
 
-            }
+
+    public void saveUsuarioConfirmado(boolean isEnviarInvitacion) {
+        try {
             MsgUsuario usuario = getMsgUsuario();
             usuario.prepToSave();
             if (!GenUtil.strNullOrEmpty(getTxtPass1().getValue())) {
@@ -133,7 +136,19 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
             btnGuardar.setEnabled(false);
             btnAnular.setEnabled(false);
             log.info("Ready to save: " + usuario);
-            return usuarioRep.save(usuario);
+            MsgUsuario saved = usuarioRep.save(usuario);
+
+            if (isEnviarInvitacion) {
+                CompletableFuture<Void> sendRes = ((MainUI)UI.getCurrent()).getMailerSender().sendInvitation(usuario.getTxtCorreo());
+                this.sendRes =
+                    sendRes.handle((String, ex) -> {
+                    if (ex != null) {
+                        return "Problema al enviar mensaje a :"+ usuario.getTxtCorreo() + "\n" + ex.getMessage();
+                    } else {
+                        return null;
+                    }
+                });
+            }
         } catch (FieldGroup.CommitException ce) {
             String errMsg = GenUtil.genErrorMessage(ce.getInvalidFields());
             MessageBox
@@ -143,7 +158,6 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
                     .withOkButton(
                     )
                     .open();
-            return null;
         } catch (Exception ce) {
             MessageBox
                     .createError()
@@ -152,7 +166,6 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
                     .withOkButton(
                     )
                     .open();
-            return null;
         }
     }
 
@@ -183,6 +196,7 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
     public void editarUsuario(MsgUsuario vcb) {
         setNuevo(false);
         bindForm(vcb);
+        item = vcb;
         btnGuardar.setEnabled(true);
         btnAnular.setEnabled(true);
         btnEliminar.setEnabled(true);
@@ -192,6 +206,15 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
         isLoading = true;
 
         isEdit = !GenUtil.strNullOrEmpty(item.getCodUsuario());
+        beanItem = new BeanItem<>(item);
+        fieldGroup = new FieldGroup(beanItem);
+        fieldGroup.setItemDataSource(beanItem);
+        fieldGroup.bind(getCodRol(), "codRol");
+        fieldGroup.bind(txtAplicacion, "txtAplicacion");
+        fieldGroup.bind(txtCorreo, "txtCorreo");
+        fieldGroup.bind(txtNombre, "txtNombre");
+        fieldGroup.bind(txtUsuario, "txtUsuario");
+        fieldGroup.bind(codUsuario, "codUsuario");
         if (isNuevo){
             // Generate cod usuario if wasn't given
             List<MsgUsuario> msgUsuarios = usuarioRep.findByCodUsuarioLikeOrderByCodUsuarioDesc("%");
@@ -205,19 +228,11 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
             Long newId = Long.valueOf(lastCodUsuario) + 1;
             String cod = String.format("%03d", newId);
             codUsuario.setValue(cod);
+            codUsuario.setEnabled(false);
         }
-        beanItem = new BeanItem<>(item);
-        fieldGroup = new FieldGroup(beanItem);
-        fieldGroup.setItemDataSource(beanItem);
-        fieldGroup.bind(getCodRol(), "codRol");
-        fieldGroup.bind(txtAplicacion, "txtAplicacion");
-        fieldGroup.bind(txtCorreo, "txtCorreo");
-        fieldGroup.bind(txtNombre, "txtNombre");
-        fieldGroup.bind(txtUsuario, "txtUsuario");
-        fieldGroup.bind(codUsuario, "codUsuario");
         //fieldGroup.bind(txtPass1, "txtPassword");
-
         fieldGroup.getFields().stream().filter(f -> f instanceof TextField).forEach(f -> ((TextField) f).setNullRepresentation(""));
+
         isLoading = false;
         isEdit = false;
     }

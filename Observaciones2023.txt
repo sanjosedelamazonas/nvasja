@@ -86,3 +86,5 @@ DONE
   - rendiciones - lista de anticipos pendintes del sistema
   - tercero jezeli inactivo to nie wyswietla sie na liscie w caja ani w bancos
 DONE
+- Caja Diario - reorganizar columnas para pantalla mas chiquita
+- Reporte de Caja - nulls in Total Saldos

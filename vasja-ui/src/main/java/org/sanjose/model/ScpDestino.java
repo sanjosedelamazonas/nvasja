@@ -1,6 +1,5 @@
 package org.sanjose.model;
 
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.sanjose.authentication.CurrentUser;
 
@@ -100,7 +99,7 @@ public class ScpDestino implements Serializable {
 	private boolean activo;
 
 	@Column(name="flg_enviar_reporte")
-	private boolean isEnviarreporte;
+	private boolean enviarreporte;
 
 
 	public ScpDestino() {
@@ -328,16 +327,16 @@ public class ScpDestino implements Serializable {
 	}
 
 	public boolean isEnviarreporte() {
-		return isEnviarreporte;
+		return enviarreporte;
 	}
 
 
     public boolean getEnviarreporte() {
-        return isEnviarreporte;
+        return enviarreporte;
     }
 
     public void setEnviarreporte(boolean enviarreporte) {
-		isEnviarreporte = enviarreporte;
+		this.enviarreporte = enviarreporte;
 	}
 
 	@Override

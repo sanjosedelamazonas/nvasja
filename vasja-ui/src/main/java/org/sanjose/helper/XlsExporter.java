@@ -6,15 +6,12 @@ import org.apache.poi.ss.usermodel.*;
 
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.GenUtil;
-import org.sanjose.views.sys.DestinoView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class XlsExporter {
 

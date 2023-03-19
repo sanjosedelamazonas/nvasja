@@ -72,6 +72,12 @@
             <version>8.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.simplejavamail</groupId>
+            <artifactId>batch-module</artifactId>
+            <version>8.0.0</version>
+        </dependency>
+
         <!-- JASPER REPORTS -->
 
         <dependency>

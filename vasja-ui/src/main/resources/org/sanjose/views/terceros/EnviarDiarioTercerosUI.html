@@ -22,11 +22,11 @@
      <vaadin-label width="90px" plain-text>
        Fecha inicial 
      </vaadin-label>
-     <vaadin-date-field enabled="false" width="140px" _id="fechaInicial"></vaadin-date-field>
+     <vaadin-date-field width="140px" _id="fechaInicial"></vaadin-date-field>
      <vaadin-label width="30px" plain-text>
        final 
      </vaadin-label>
-     <vaadin-date-field enabled="false" width="136px" _id="fechaFinal"></vaadin-date-field>
+     <vaadin-date-field width="136px" _id="fechaFinal"></vaadin-date-field>
     </vaadin-horizontal-layout>
     <vaadin-horizontal-layout>
      <vaadin-label width="88px" plain-text>
@@ -38,7 +38,7 @@
      <vaadin-label width="88px" plain-text>
        Tercero 
      </vaadin-label>
-     <vaadin-combo-box enabled="false" width="306px" _id="selTercero">
+     <vaadin-combo-box width="306px" _id="selTercero">
       <option>Option 1</option>
       <option>Option 2</option>
       <option>Option 3</option>
@@ -48,11 +48,17 @@
      <vaadin-label width="88px" plain-text>
        Usuario 
      </vaadin-label>
-     <vaadin-combo-box enabled="false" width="306px" _id="selUsuario">
+     <vaadin-combo-box width="306px" _id="selUsuario">
       <option>Option 1</option>
       <option>Option 2</option>
       <option>Option 3</option>
      </vaadin-combo-box>
+    </vaadin-horizontal-layout>
+    <vaadin-horizontal-layout>
+     <vaadin-label width="88px" height="20px" plain-text>
+       Usuarios (,) 
+     </vaadin-label>
+     <vaadin-text-area rows="4" width="380px" _id="txtUsuariosList"></vaadin-text-area>
     </vaadin-horizontal-layout>
     <vaadin-horizontal-layout width="394px">
      <vaadin-button enabled="false" plain-text _id="btnEnviar" :middle :center>
@@ -60,7 +66,7 @@
      </vaadin-button>
     </vaadin-horizontal-layout>
    </vaadin-form-layout>
-   <vaadin-text-area null-representation="&quot;&quot;" size-full _id="txtLog" :center></vaadin-text-area>
+   <vaadin-text-area null-representation="&quot;&quot;" width-full height="132%" _id="txtLog" :center></vaadin-text-area>
   </vaadin-vertical-layout>
  </body>
 </html>
