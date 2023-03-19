@@ -374,7 +374,7 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
         BigDecimal totalEuros = new BigDecimal(0.00);
         for (Caja caja : DataUtil.getBancoCuentasList(view.getService().getPlanRepo(),
                 (isInicial ? GenUtil.getBeginningOfDay(view.getFechaDesde().getValue())
-                        : GenUtil.getEndOfDay(view.getFechaHasta().getValue())))) {
+                        : GenUtil.getEndOfDay(view.getFechaHasta().getValue())), isInicial)) {
             c.addItem(caja);
             totalSoles = totalSoles.add(caja.getSoles());
             totalUsd = totalUsd.add(caja.getDolares());
@@ -469,8 +469,8 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
             view.getNumSaldoInicialLibro().setValue("");
             view.getNumSaldoInicialSegBancos().setValue("");
         } else {
-            ProcUtil.SaldosBanco saldosIni = DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaDesde().getValue());
-            ProcUtil.SaldosBanco saldosFin = DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaHasta().getValue());
+            ProcUtil.SaldosBanco saldosIni = DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaDesde().getValue(), true);
+            ProcUtil.SaldosBanco saldosFin = DataUtil.getBancoCuentaSaldos(cuenta, view.getFechaHasta().getValue(), false);
             view.getNumSaldoInicialLibro().setValue(GenUtil.numFormat(saldosIni.getSegLibro()));
             view.getNumSaldoInicialSegBancos().setValue(GenUtil.numFormat(saldosIni.getSegBanco()));
             view.getNumSaldoFinalLibro().setValue(GenUtil.numFormat(saldosFin.getSegLibro()));

@@ -98,7 +98,7 @@ public class DataUtil {
         return cajas;
     }
 
-    public static List<Caja> getBancoCuentasList(ScpPlancontableRep planRepo, Date date) {
+    public static List<Caja> getBancoCuentasList(ScpPlancontableRep planRepo, Date date, boolean isInicial) {
         List<Caja> cajas = new ArrayList<>();
         for (ScpPlancontable caja : getBancoCuentas(date, planRepo, null)) {
             Character moneda = GenUtil.getNumMoneda(caja.getIndTipomoneda());
@@ -107,7 +107,7 @@ public class DataUtil {
                 System.out.println("ERROR: TipoMoneda not set for BancoCuenta: " + caja.getCodCta4() + " " + caja.getTxtDescctacontable());
             }
             BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(
-                    GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)),
+                    (isInicial ? GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)) : GenUtil.getEndOfDay(date)),
                     caja.getId().getCodCtacontable()
                     , moneda).getSegLibro();
             // If is closed and has a saldo of "0.00" we can omit it
@@ -123,14 +123,14 @@ public class DataUtil {
         return cajas;
     }
     
-    public static ProcUtil.SaldosBanco getBancoCuentaSaldos(ScpPlancontable cuenta, Date date) {
+    public static ProcUtil.SaldosBanco getBancoCuentaSaldos(ScpPlancontable cuenta, Date date, boolean isInicial) {
         Character moneda = GenUtil.getNumMoneda(cuenta.getIndTipomoneda());
         if (moneda.equals('9')) {
             // Problem - TipoMoneda not set
             System.out.println("ERROR: TipoMoneda not set for BancoCuenta: " + cuenta.getCodCta4() + " " + cuenta.getTxtDescctacontable());
         }
         ProcUtil.SaldosBanco saldos = MainUI.get().getProcUtil().getSaldoBanco(
-                GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)),
+                (isInicial ? GenUtil.getEndOfDay(GenUtil.dateAddDays(date,-1)) : GenUtil.getEndOfDay(date)),
                 cuenta.getId().getCodCtacontable()
                 , moneda);
         // If is closed and has a saldo of "0.00" we can omit it
