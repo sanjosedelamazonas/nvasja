@@ -22,6 +22,7 @@ import org.sanjose.views.banco.BancoOperacionesView;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.dict.DestinoListView;
 import org.sanjose.views.dict.TerceroListView;
+import org.sanjose.views.dict.UsuarioView;
 import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.rendicion.RendicionSimpleManejoView;
@@ -53,7 +54,7 @@ public class MainScreen extends HorizontalLayout {
                       RendicionSimpleManejoView rendicionSimpleManejoView, RendicionSimpleOperView rendicionSimpleOperView,
                       ReportesView reportesView, DestinoListView destinoListView, TerceroListView terceroListView,
                       OperacionesListView operacionesListView, EnviarDiarioTercerosView enviarDiarioTercerosView,
-                      TipoCambioManejoView tipoCambioManejoView) {
+                      TipoCambioManejoView tipoCambioManejoView, UsuarioView usuarioView) {
 
         setStyleName("main-screen");
         JavaScript.eval("setTimeout(function() { document.getElementById('my-custom-combobox').firstChild.select(); }, 0);");
@@ -90,15 +91,15 @@ public class MainScreen extends HorizontalLayout {
 //                    CajaGridView.VIEW_NAME, FontAwesome.EDIT);
 //                    }
 //
-//        if (Role.isBanco()) {
-//            bancoOperView.init();
-//            viewsToIgnoreWhenInit.add(bancoOperView);
-//            menu.addSeparator("Banco");
-//            menu.addView(bancoManejoView, BancoManejoView.VIEW_NAME,
-//                    BancoManejoView.VIEW_NAME, FontAwesome.EDIT);
-//            menu.addView(bancoConciliacionView, BancoConciliacionView.VIEW_NAME,
-//                    BancoConciliacionView.VIEW_NAME, FontAwesome.EDIT);
-//        }
+        if (Role.isBanco()) {
+            bancoOperView.init();
+            viewsToIgnoreWhenInit.add(bancoOperView);
+            menu.addSeparator("Banco");
+            menu.addView(bancoManejoView, BancoManejoView.VIEW_NAME,
+                    BancoManejoView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(bancoConciliacionView, BancoConciliacionView.VIEW_NAME,
+                    BancoConciliacionView.VIEW_NAME, FontAwesome.EDIT);
+        }
 //        if (Role.isPrivileged()) {
 //            menu.addView(bancoOperacionesView, BancoOperacionesView.VIEW_NAME,
 //                    BancoOperacionesView.VIEW_NAME, FontAwesome.EDIT);
@@ -129,6 +130,8 @@ public class MainScreen extends HorizontalLayout {
                     TipoCambioManejoView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(enviarDiarioTercerosView, EnviarDiarioTercerosView.VIEW_NAME,
                     EnviarDiarioTercerosView.VIEW_NAME, FontAwesome.EDIT);
+            menu.addView(usuarioView, UsuarioView.VIEW_NAME,
+                    UsuarioView.VIEW_NAME, FontAwesome.EDIT);
             menu.addSeparator("Configuracion");
             menu.addView(configuracionCajaView, ConfiguracionCajaView.VIEW_NAME,
                     ConfiguracionCajaView.VIEW_NAME, FontAwesome.EDIT);

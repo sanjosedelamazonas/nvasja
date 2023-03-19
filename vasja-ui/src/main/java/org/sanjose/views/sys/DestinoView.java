@@ -70,6 +70,12 @@ public class DestinoView extends DestinoUI implements View {
         selNombreCompleta.setInvalidAllowed(true);
         selNombreCompleta.setNewItemsAllowed(true);
 
+        selNombreCompleta.addBlurListener(e -> {
+            if (selNombreCompleta.getValue() != null) {
+                String oldNombre = selNombreCompleta.getValue().toString();
+                selNombreCompleta.setValue(GenUtil.capitalizeEachWord(oldNombre.trim()));
+            }
+        });
 
         // Clasificacion
         DataFilterUtil.bindTipoDestinoComboBox(clasificacion, "indTipodestino", "Sel Clasificacion");

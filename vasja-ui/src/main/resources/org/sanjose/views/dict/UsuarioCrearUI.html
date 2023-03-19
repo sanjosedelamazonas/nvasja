@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta name="vaadin-version" content="7.7.7">
+ </head>
+ <body>
+  <vaadin-horizontal-layout style-name="billing-formlayout" size-full>
+   <vaadin-vertical-layout spacing margin :expand>
+    <vaadin-form-layout size-auto>
+     <vaadin-text-field caption="Codigo" width="200px" _id="codUsuario"></vaadin-text-field>
+     <vaadin-text-field caption="Usuario" width="200px" _id="txtUsuario"></vaadin-text-field>
+     <vaadin-text-field caption="Nombre" width="200px" _id="txtNombre"></vaadin-text-field>
+     <vaadin-combo-box caption="Rol" item-caption-mode="id" width="200px" _id="codRol">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+     </vaadin-combo-box>
+     <vaadin-text-field caption="Aplicacion" width="200px" _id="txtAplicacion"></vaadin-text-field>
+     <vaadin-text-field caption="Correo" width="200px" _id="txtCorreo"></vaadin-text-field>
+     <vaadin-check-box caption="Enviar invitacion" _id="chkEnviarInvitacion"></vaadin-check-box>
+     <vaadin-password-field caption="Clave" _id="txtPass1"></vaadin-password-field>
+     <vaadin-password-field caption="Clave Confirma" _id="txtPass2"></vaadin-password-field>
+    </vaadin-form-layout>
+   </vaadin-vertical-layout>
+   <vaadin-form-layout width-auto height-full :middle :center>
+    <vaadin-vertical-layout size-auto>
+     <vaadin-vertical-layout size-auto>
+      <vaadin-button width="88px" plain-text _id="btnGuardar">
+        Guardar 
+      </vaadin-button>
+      <vaadin-button visible="false" width="88px" plain-text _id="btnEliminar">
+        Eliminar 
+      </vaadin-button>
+      <vaadin-button width="88px" plain-text _id="btnAnular">
+        Cerrar 
+      </vaadin-button>
+     </vaadin-vertical-layout>
+    </vaadin-vertical-layout>
+    <vaadin-vertical-layout size-auto>
+     <vaadin-button width="88px" height="22px" plain-text _id="btnNuevo">
+       Nuevo 
+     </vaadin-button>
+    </vaadin-vertical-layout>
+   </vaadin-form-layout>
+  </vaadin-horizontal-layout>
+ </body>
+</html>

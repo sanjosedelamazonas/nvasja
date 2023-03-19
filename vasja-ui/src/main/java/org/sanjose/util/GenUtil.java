@@ -234,6 +234,25 @@ public class GenUtil {
         return calendar;
     }
 
+    public static String capitalizeEachWord(String message) {
+        char[] charArray = message.toCharArray();
+        boolean foundSpace = true;
+
+        for(int i = 0; i < charArray.length; i++) {
+            if(Character.isLetter(charArray[i])) {
+                if(foundSpace) {
+                    charArray[i] = Character.toUpperCase(charArray[i]);
+                    foundSpace = false;
+                }
+            }
+            else {
+                foundSpace = true;
+            }
+        }
+        message = String.valueOf(charArray);
+        return message;
+    }
+
     public static boolean isInvertedZero(Object value) {
         return value == null || !"0.00".equals(value.toString()) && !"0,00".equals(value.toString()) && !"0".equals(value.toString());
     }

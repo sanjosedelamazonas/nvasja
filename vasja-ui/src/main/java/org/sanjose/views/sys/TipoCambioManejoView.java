@@ -1,6 +1,7 @@
 package org.sanjose.views.sys;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
@@ -18,6 +19,7 @@ import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpTipocambio;
 import org.sanjose.model.ScpTipocambioPK;
+import org.sanjose.model.VsjConfiguractacajabanco;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.TipoCambio;
@@ -95,6 +97,8 @@ public class TipoCambioManejoView extends TipoCambioManejoUI implements Viewing 
 
         btnEliminar.addClickListener(e -> eliminarTipoCambio());
 
+        btnBajar.addClickListener(e -> intentarBajarTC());
+
         FieldGroup.CommitHandler gridCommitHandler = new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
@@ -114,14 +118,46 @@ public class TipoCambioManejoView extends TipoCambioManejoUI implements Viewing 
         grid.getEditorFieldGroup().addCommitHandler(gridCommitHandler);
     }
 
-    private void bajarTipoCambio() throws TipoCambio.TipoCambioNoSePuedeBajar, TipoCambio.TipoCambioNoExiste {
+    private void intentarBajarTC() {
+        try {
+            bajarTipoCambio();
+        } catch (TipoCambio.TipoCambioNoSePuedeBajar te) {
+            MessageBox
+                    .createError()
+                    .withCaption("!Atencion!")
+                    .withMessage(te.getMessage())
+                    .open();
+        }
+    }
+
+
+    private void bajarTipoCambio() throws TipoCambio.TipoCambioNoSePuedeBajar {
         List<Date> dates = GenUtil.getDatesBetween(fecDesde.getValue(), fecHasta.getValue());
+        List<ScpTipocambio> tcToRefresh = new ArrayList<>();
         for (Date d : dates) {
-            ScpTipocambio tc = TipoCambio.checkTipoCambio(d, getService().getTipocambioRep());
+            int i=0;
+            boolean noExiste = false;
+            while (noExiste && i < 3) {
+                i++;
+                try {
+                    ScpTipocambio tc = TipoCambio.checkTipoCambio(GenUtil.dateAddDays(d,1-i), getService().getTipocambioRep());
+                    System.out.println("tc " + d.toString() + " " + tc);
+                    if (tc != null)
+                        tcToRefresh.add(tc);
+                } catch (TipoCambio.TipoCambioNoExiste te) {
+                    System.out.println("no existe " + d.toString());
+                    noExiste = true;
+                }
+            }
+        }
+        for (ScpTipocambio tc : tcToRefresh) {
+            grid.getContainerDataSource().removeItem(tc);
+            grid.getContainerDataSource().addItem(tc);
+            SortOrder[] sortOrders = grid.getSortOrder().toArray(new SortOrder[1]);
+            grid.setSortOrder(Arrays.asList(sortOrders));
         }
 
     }
-
 
     private void nuevoTipoCambio() {
         clearSelection();
@@ -132,7 +168,7 @@ public class TipoCambioManejoView extends TipoCambioManejoUI implements Viewing 
         tipocambioId.setTxtAnoproceso(sdf.format(getFechaAno().getValue()));
         tipocambioId.setFecFechacambio(GenUtil.getBeginningOfDay(new Date()));
         tipocambio.setId(tipocambioId);
-        grid.addRow(tipocambio);
+        grid.getContainerDataSource().addItemAt(0, tipocambio);
     }
 
     private void eliminarTipoCambio() {

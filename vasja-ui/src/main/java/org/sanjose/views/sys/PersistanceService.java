@@ -53,7 +53,7 @@ public class PersistanceService {
     private final ScpComprobantecabeceraRep scpComprobantecabeceraRep;
     private final ScpChequependienteRep scpChequependienteRep;
     private final VsjRendicionanticipoRep vsjRendicionanticipoRep;
-
+    private final MsgRolRep msgRolRep;
 
     @Autowired
     public PersistanceService(ScpRendicioncabeceraRep rendicioncabeceraRep, ScpRendiciondetalleRep rendiciondetalleRep, VsjConfiguractacajabancoRep configuractacajabancoRepo,
@@ -66,7 +66,8 @@ public class PersistanceService {
                                       tipocambioRep, MsgUsuarioRep msgUsuarioRep, ScpCajabancoRep cajabancoRep,
                               ScpBancocabeceraRep bancocabeceraRep, ScpBancodetalleRep bancodetalleRep, ScpComprobantedetalleRep scpComprobantedetalleRep,
                               ScpComprobantecabeceraRep scpComprobantecabeceraRep,
-                              ScpChequependienteRep scpChequependienteRep, VsjRendicionanticipoRep vsjRendicionanticipoRep, EntityManager em) {
+                              ScpChequependienteRep scpChequependienteRep, VsjRendicionanticipoRep vsjRendicionanticipoRep,
+                              MsgRolRep msgRolRep, EntityManager em) {
         this.rendicioncabeceraRep = rendicioncabeceraRep;
         this.rendiciondetalleRep = rendiciondetalleRep;
         this.configuractacajabancoRepo = configuractacajabancoRepo;
@@ -85,6 +86,7 @@ public class PersistanceService {
         this.tipodocumentoRepo = tipodocumentoRepo;
         this.tipocambioRep = tipocambioRep;
         this.msgUsuarioRep = msgUsuarioRep;
+        this.msgRolRep = msgRolRep;
         this.cajabancoRep = cajabancoRep;
         this.bancocabeceraRep = bancocabeceraRep;
         this.bancodetalleRep = bancodetalleRep;
@@ -619,6 +621,10 @@ public class PersistanceService {
 
     public VsjRendicionanticipoRep getVsjRendicionanticipoRep() {
         return vsjRendicionanticipoRep;
+    }
+
+    public MsgRolRep getMsgRolRep() {
+        return msgRolRep;
     }
 
     public EntityManager getEm() {

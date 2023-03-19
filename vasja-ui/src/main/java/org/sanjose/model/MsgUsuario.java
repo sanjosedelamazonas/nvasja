@@ -1,5 +1,7 @@
 package org.sanjose.model;
 
+import org.sanjose.authentication.CurrentUser;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -16,7 +18,7 @@ public class MsgUsuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	//@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="cod_usuario")
 	private String codUsuario;
 
@@ -65,7 +67,27 @@ public class MsgUsuario implements Serializable {
 	public MsgUsuario() {
 	}
 
-	public String getCodUsuario() {
+    public void prepToSave() {
+        if (getCodUregistro() == null) setCodUregistro(CurrentUser.get());
+        if (getFecFregistro() == null) setFecFregistro(new Timestamp(System.currentTimeMillis()));
+        setCodUactualiza(CurrentUser.get());
+        setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+
+        if (getTxtNombre() == null) setTxtNombre("");
+        if (getTxtAplicacion() == null) setTxtAplicacion("");
+        if (getFlgCambiapassword() == null) setFlgCambiapassword('1');
+        if (getFlgAutorizado() == null) setFlgAutorizado('0');
+        if (getFlgEstado() == null) setFlgEstado('1');
+        if (getCodFilial()== null) setCodFilial("");
+        if (getTxtPassword() == null) setTxtPassword("");
+        if (getTxtCorreo() == null) setTxtCorreo("");
+        if (getCodFilial() == null) setCodFilial("01");
+        if (getCodRol() == null) setCodRol("");
+        if (getTxtUsuario() == null) setTxtUsuario("");
+    }
+
+
+    public String getCodUsuario() {
 		return this.codUsuario;
 	}
 

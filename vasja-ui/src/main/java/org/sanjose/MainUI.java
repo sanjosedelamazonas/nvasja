@@ -26,6 +26,7 @@ import org.sanjose.views.banco.*;
 import org.sanjose.views.caja.*;
 import org.sanjose.views.dict.DestinoListView;
 import org.sanjose.views.dict.TerceroListView;
+import org.sanjose.views.dict.UsuarioView;
 import org.sanjose.views.rendicion.RendicionManejoView;
 import org.sanjose.views.rendicion.RendicionOperView;
 import org.sanjose.views.rendicion.RendicionSimpleManejoView;
@@ -74,6 +75,7 @@ public class MainUI extends UI {
     private final OperacionesListView operacionesListView;
     private final TipoCambioManejoView tipoCambioManejoView;
     private final EnviarDiarioTercerosView enviarDiarioTercerosView;
+    private final UsuarioView usuarioView;
 
     private final MsgUsuarioRep msgUsuarioRep;
     private final VsjPasswordresettokenRep vsjPasswordresettokenRep;
@@ -114,6 +116,7 @@ public class MainUI extends UI {
         this.operacionesListView = new OperacionesListView(persistanceService);
         this.tipoCambioManejoView = new TipoCambioManejoView(persistanceService);
         this.enviarDiarioTercerosView = new EnviarDiarioTercerosView(persistanceService);
+        this.usuarioView = new UsuarioView(persistanceService);
     }
 
     public static MainUI get() {
@@ -153,7 +156,7 @@ public class MainUI extends UI {
                 cajaGridView, confView, configuracionCajaView, propiedadView, bancoOperView, bancoManejoView,
                 bancoConciliacionView, bancoOperacionesView, rendicionManejoView, rendicionOperView,
                 rendicionSimpleManejoView, rendicionSimpleOperView, reportesView, destinoListView, terceroListView,
-                operacionesListView, enviarDiarioTercerosView, tipoCambioManejoView);
+                operacionesListView, enviarDiarioTercerosView, tipoCambioManejoView, usuarioView);
         setContent(mainScreen);
         if (GenUtil.strNullOrEmpty(getNavigator().getState()))
             getNavigator().navigateTo(CajaManejoView.VIEW_NAME);

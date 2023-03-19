@@ -68,7 +68,7 @@ public class TipoCambio {
                     tipocambio.setNumTcveuro(rates.get(EUR).getVenta());
                 if (tipocambio.getNumTcceuro().equals(new BigDecimal(0)))
                     tipocambio.setNumTcceuro(rates.get(EUR).getCompra());
-                tipocambioRep.save(tipocambio);
+                tipocambio = tipocambioRep.save(tipocambio);
             } else {
                 tipocambio = new ScpTipocambio();
                 tipocambio.prepareToSave();
@@ -81,7 +81,7 @@ public class TipoCambio {
                 tipocambio.setNumTccdolar(rates.get(USD).getCompra());
                 tipocambio.setNumTcveuro(rates.get(EUR).getVenta());
                 tipocambio.setNumTcceuro(rates.get(EUR).getCompra());
-                tipocambioRep.save(tipocambio);
+                tipocambio = tipocambioRep.save(tipocambio);
             }
         }
         return tipocambio;
@@ -89,8 +89,8 @@ public class TipoCambio {
 
 
     public void get() throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
             String stUrl = EXCHANGE_RATE_URL_API.replace("{0}", sdf.format(fecha));
             stUrl = stUrl.replace("{1}", monedaSimbolos.get(moneda));
             URL url = new URL(stUrl);
@@ -120,7 +120,7 @@ public class TipoCambio {
             if (compra == null || venta == null)
                 throw new TipoCambioNoExiste("Tipo de cambio no existe para esta fecha: " + sdf.format(fecha));
         } catch (IOException e) {
-            throw new TipoCambioNoSePuedeBajar("No se podia connectar al : " + e.getMessage());
+            throw new TipoCambioNoSePuedeBajar("No se podia bajar el tipo de cambio para la fecha: " + sdf.format(fecha) + "\n"  +e.getMessage(), fecha);
         }
     }
 
@@ -173,8 +173,24 @@ public class TipoCambio {
     }
 
     public class TipoCambioNoSePuedeBajar extends Exception {
+        private Date fecha;
+
         public TipoCambioNoSePuedeBajar(String message) {
             super(message);
+        }
+
+        public TipoCambioNoSePuedeBajar(String message, Date fecha) {
+            super(message);
+            this.fecha = fecha;
+        }
+
+        public Date getFecha() {
+            return fecha;
+        }
+
+        public String getFechaStr() {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.format(fecha);
         }
     }
 

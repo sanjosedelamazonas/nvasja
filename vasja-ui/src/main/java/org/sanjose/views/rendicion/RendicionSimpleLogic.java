@@ -411,7 +411,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
         anticipoWindow.setContent(anticipoView);
 
 //        anticipoView.getBtnGuardar().addClickListener(event -> {
-//            ScpDestino editedItem = destinoView.viewLogic.saveDestino();
+//            ScpDestino editedItem = destinoView.viewLogic.saveUsuario();
 //            if (editedItem != null) {
 //                anticipoWindow.close();
 //                refreshData();
