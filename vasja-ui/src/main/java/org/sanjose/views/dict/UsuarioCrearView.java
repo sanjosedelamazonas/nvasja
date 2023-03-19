@@ -66,7 +66,7 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
         codUsuario.setEnabled(false);
         // Codigo
         DataFilterUtil.bindComboBox(codRol, "codRol", msgRolRep.findByCodRolLikeOrderByCodRolDesc("%"),
-                "txt_descripcion");
+                "txtDescripcion");
 
         txtNombre.addBlurListener(e -> {
             if (txtNombre.getValue() != null) {
@@ -112,18 +112,6 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
         try {
             if (GenUtil.strNullOrEmpty(codUsuario.getValue())) {
                 try {
-                    // Generate cod usuario if wasn't given
-                    List<MsgUsuario> msgUsuarios = usuarioRep.findByCodUsuarioLikeOrderByCodUsuarioDesc("%");
-                    String lastCodUsuario = null;
-                    for (MsgUsuario msgUsuario : msgUsuarios) {
-                        if (msgUsuario.getCodUsuario().matches("\\d+")) {
-                            lastCodUsuario = msgUsuario.getCodUsuario();
-                            break;
-                        }
-                    }
-                    Long newId = Long.valueOf(lastCodUsuario) + 1;
-                    String cod = String.format("%03d", newId);
-                    codUsuario.setValue(cod);
                 } catch (NumberFormatException pe) {
                     codUsuario.setEnabled(true);
                     MessageBox
@@ -189,22 +177,35 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
         btnGuardar.setEnabled(true);
         btnAnular.setEnabled(true);
         btnEliminar.setEnabled(false);
-        isNuevo=true;
     }
 
 
     public void editarUsuario(MsgUsuario vcb) {
+        setNuevo(false);
         bindForm(vcb);
         btnGuardar.setEnabled(true);
         btnAnular.setEnabled(true);
         btnEliminar.setEnabled(true);
-        isNuevo=false;
     }
 
     public void bindForm(MsgUsuario item) {
         isLoading = true;
 
         isEdit = !GenUtil.strNullOrEmpty(item.getCodUsuario());
+        if (isNuevo){
+            // Generate cod usuario if wasn't given
+            List<MsgUsuario> msgUsuarios = usuarioRep.findByCodUsuarioLikeOrderByCodUsuarioDesc("%");
+            String lastCodUsuario = null;
+            for (MsgUsuario msgUsuario : msgUsuarios) {
+                if (msgUsuario.getCodUsuario().matches("\\d+")) {
+                    lastCodUsuario = msgUsuario.getCodUsuario();
+                    break;
+                }
+            }
+            Long newId = Long.valueOf(lastCodUsuario) + 1;
+            String cod = String.format("%03d", newId);
+            codUsuario.setValue(cod);
+        }
         beanItem = new BeanItem<>(item);
         fieldGroup = new FieldGroup(beanItem);
         fieldGroup.setItemDataSource(beanItem);
@@ -213,6 +214,7 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
         fieldGroup.bind(txtCorreo, "txtCorreo");
         fieldGroup.bind(txtNombre, "txtNombre");
         fieldGroup.bind(txtUsuario, "txtUsuario");
+        fieldGroup.bind(codUsuario, "codUsuario");
         //fieldGroup.bind(txtPass1, "txtPassword");
 
         fieldGroup.getFields().stream().filter(f -> f instanceof TextField).forEach(f -> ((TextField) f).setNullRepresentation(""));

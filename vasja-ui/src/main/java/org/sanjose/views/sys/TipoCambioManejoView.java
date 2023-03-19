@@ -1,6 +1,7 @@
 package org.sanjose.views.sys;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.sort.Sort;
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
@@ -8,6 +9,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.*;
@@ -132,29 +134,44 @@ public class TipoCambioManejoView extends TipoCambioManejoUI implements Viewing 
 
 
     private void bajarTipoCambio() throws TipoCambio.TipoCambioNoSePuedeBajar {
-        List<Date> dates = GenUtil.getDatesBetween(fecDesde.getValue(), fecHasta.getValue());
+        List<Date> dates = GenUtil.getDatesBetween(fecDesde.getValue(), GenUtil.dateAddDays(fecHasta.getValue(), 1));
         List<ScpTipocambio> tcToRefresh = new ArrayList<>();
         for (Date d : dates) {
             int i=0;
-            boolean noExiste = false;
+            boolean noExiste = true;
+            ScpTipocambio tc = null;
+            Date prevDay = d;
             while (noExiste && i < 3) {
                 i++;
                 try {
-                    ScpTipocambio tc = TipoCambio.checkTipoCambio(GenUtil.dateAddDays(d,1-i), getService().getTipocambioRep());
-                    System.out.println("tc " + d.toString() + " " + tc);
-                    if (tc != null)
+                    prevDay = GenUtil.dateAddDays(d,1-i);
+                    tc = TipoCambio.checkTipoCambio(prevDay, getService().getTipocambioRep());
+                    if (tc!=null)
                         tcToRefresh.add(tc);
+                    noExiste = false;
                 } catch (TipoCambio.TipoCambioNoExiste te) {
-                    System.out.println("no existe " + d.toString());
                     noExiste = true;
                 }
+            }
+            if (prevDay.before(d)) {
+                if (tc==null) {
+                    List<ScpTipocambio> tipocambios = getService().getTipocambioRep().findById_FecFechacambio(
+                            GenUtil.getBeginningOfDay(prevDay));
+                    if (!tipocambios.isEmpty()) {
+                        tc = tipocambios.get(0);
+                    }
+                }
+                tc.getId().setFecFechacambio(d);
+                ScpTipocambio tcc = getService().getTipocambioRep().save(tc);
+                tcToRefresh.add(tcc);
             }
         }
         for (ScpTipocambio tc : tcToRefresh) {
             grid.getContainerDataSource().removeItem(tc);
             grid.getContainerDataSource().addItem(tc);
-            SortOrder[] sortOrders = grid.getSortOrder().toArray(new SortOrder[1]);
-            grid.setSortOrder(Arrays.asList(sortOrders));
+            //SortOrder[] sortOrders = grid.getSortOrder().toArray(new SortOrder[1]);
+            //grid.setSortOrder(Arrays.asList(sortOrders));
+            grid.sort(Sort.by("id.fecFechacambio", SortDirection.DESCENDING));
         }
 
     }
