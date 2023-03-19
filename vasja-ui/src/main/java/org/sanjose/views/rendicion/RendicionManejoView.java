@@ -27,6 +27,7 @@ import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -64,7 +65,7 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{/*"txtCorrelativo"*/ /*"flgEnviado", "codOrigenenlace",
             "codComprobanteenlace"*/};
 
-    private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
+    private Date filterInitialDate = GenUtil.getBeginningOfMonth(new Date());
 
     private BeanItemContainer<ScpRendicioncabecera> container;
 
@@ -89,7 +90,8 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
 
         //noinspection unchecked
 
-        container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
+        //container = new BeanItemContainer(ScpRendicioncabecera.class, getService().getRendicioncabeceraRep().findByFecComprobanteBetween(filterInitialDate, new Date()));
+        container = new BeanItemContainer(ScpRendicioncabecera.class, new ArrayList());
 
         gpContainer = new GeneratedPropertyContainer(container);
         gpContainer.addGeneratedProperty("msgUsuario",
@@ -133,7 +135,7 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
         }
 
         // Fecha Desde Hasta
-        ViewUtil.setupDateFiltersRendicionesPreviousMonth(container, fechaDesde, fechaHasta, this);
+        ViewUtil.setupDateFiltersRendicionesThisMonth(container, fechaDesde, fechaHasta, this);
 
         //grid.getColumn("fecComprobantepago").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
         grid.getColumn("fecComprobante").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));

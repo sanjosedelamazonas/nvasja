@@ -29,9 +29,11 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.sanjose.util.GenUtil.*;
 
@@ -510,18 +512,34 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
             ProcUtil.Saldos res = null;
             if (isProyecto()) {
-                res = procUtil.getSaldos(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()), proyTerc.toString(), null);
+                res = getSaldosFor(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()), proyTerc.toString(), true);
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue(df.format(res.getSaldoEUR()));
             } else {
-                res = procUtil.getSaldos(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()), null, proyTerc.toString());
+                res = getSaldosFor(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()), proyTerc.toString(), false);
                 view.getSaldoProyPEN().setValue(df.format(res.getSaldoPEN()));
                 view.getSaldoProyUSD().setValue(df.format(res.getSaldoUSD()));
                 view.getSaldoProyEUR().setValue(df.format(res.getSaldoEUR()));
 
             }
             saldoChecker.check();
+        }
+    }
+
+    protected ProcUtil.Saldos getSaldosFor(Date fecha, String codigo, boolean isProyecto) {
+        ProcUtil.Saldos result = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String key = codigo + "_" + sdf.format(fecha) + Boolean.valueOf(isProyecto).toString().substring(0,1);
+        if (view.getViewLogic().getProyectosTercerosSaldos().containsKey(key))
+            return view.getViewLogic().getProyectosTercerosSaldos().get(key);
+        else {
+            if (isProyecto)
+                result = procUtil.getSaldos(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()), codigo, null);
+            else
+                result = procUtil.getSaldos(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()), null, codigo);
+            view.getViewLogic().getProyectosTercerosSaldos().put(key, result);
+            return result;
         }
     }
 

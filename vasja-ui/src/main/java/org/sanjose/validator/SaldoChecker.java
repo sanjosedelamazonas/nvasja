@@ -43,14 +43,14 @@ public class SaldoChecker {
         } catch (ParseException e) {
         }
         boolean isWarn = false;
-        if (newVal != null && (proyecto != null && newVal.compareTo(proyecto) > 0)) {
+        if (newVal != null && newVal.compareTo(new BigDecimal(0))>0 && proyecto != null && newVal.compareTo(proyecto) > 0) {
             //Notification.show("El monto de egreso esta mas grande que el saldo disponible", Notification.Type.WARNING_MESSAGE);
             proyectoField.addStyleName("yield");
             isWarn = true;
         } else {
             proyectoField.removeStyleName("yield");
         }
-        if (newVal != null && (caja != null && newVal.compareTo(caja) > 0)) {
+        if (newVal != null && newVal.compareTo(new BigDecimal(0))>0 && (caja != null && newVal.compareTo(caja) > 0)) {
             saldoField.addStyleName("yield");
             isWarn = true;
         } else {

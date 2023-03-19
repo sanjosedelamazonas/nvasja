@@ -131,11 +131,11 @@ public class MainScreen extends HorizontalLayout {
         navigator.addViewChangeListener(viewChangeListener);
 
         printHelper = new PrintHelper(this);
-        if (ConfigurationUtil.is("PRINTER_LIST_SHOW"))
+        /*if (ConfigurationUtil.is("PRINTER_LIST_SHOW"))
             menu.addView(printHelper, PrintHelper.VIEW_NAME, PrintHelper.VIEW_NAME, FontAwesome.PRINT);
         else
             printHelper.init();
-
+        */
         for (Viewing view : menu.getViews()) {
             if (!viewsToIgnoreWhenInit.contains(view))
                 view.init();

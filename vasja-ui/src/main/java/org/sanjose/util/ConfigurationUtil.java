@@ -19,13 +19,14 @@ public class ConfigurationUtil {
 	private static final HashMap<String, String> paramMap = new HashMap<>();
 	private static VsjPropiedadRep propRepo = null;
 	private static String OS = null;
+	private static Locale locale = null;
 
 	private static void init() {
 		defaultParamMap.put("LOCALE", "es_PE");
 		defaultParamMap.put("DECIMAL_FORMAT", "#,##0.00");
 		defaultParamMap.put("SHORT_DATE_FORMAT", "MM/dd");
 		defaultParamMap.put("DEFAULT_DATE_FORMAT", "yyyy/MM/dd");
-		defaultParamMap.put("DEFAULT_REPORTS_DATE_FORMAT", "yyyy-dd-MM HH:mm:ss");
+		defaultParamMap.put("DEFAULT_REPORTS_DATE_FORMAT", "yyyy-MM-dd HH:mm:ss");
 		defaultParamMap.put("DEFAULT_DATE_RENDERER_FORMAT","%1$td/%1$tm/%1$ty");
 		defaultParamMap.put("DEFAULT_FILTER_WIDTH", "5");
 		defaultParamMap.put("COMMON_FIELD_WIDTH", "12em");
@@ -60,9 +61,16 @@ public class ConfigurationUtil {
 	}
 
 	public static Locale getLocale() {
-	    String locStr = get("LOCALE");
-        return new Locale(locStr.substring(0,2), locStr.substring(3,5));
+        return getLocale(false);
     }
+
+    public static Locale getLocale(boolean refresh) {
+		if (locale==null || refresh) {
+			String locStr = get("LOCALE");
+			locale = new Locale(locStr.substring(0, 2), locStr.substring(3, 5));
+		}
+		return locale;
+	}
 
 	private static String getDefaultValue(String name) {
 		if (defaultParamMap.isEmpty())

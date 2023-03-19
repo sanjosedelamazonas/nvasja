@@ -15,6 +15,7 @@ import org.sanjose.converter.ZeroOneToBooleanConverter;
 import org.sanjose.model.ScpBancodetalle;
 import org.sanjose.model.ScpBancodetallePK;
 import org.sanjose.util.GenUtil;
+import org.sanjose.util.ProcUtil;
 import org.sanjose.util.ViewUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.PersistanceService;
@@ -26,6 +27,8 @@ import tm.kod.widgets.numberfield.NumberField;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.USD;
@@ -86,6 +89,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
     private GeneratedPropertyContainer gpContainer;
     private PersistanceService bancoService;
     private Window subWindow;
+
 
     public BancoOperView() {
     }

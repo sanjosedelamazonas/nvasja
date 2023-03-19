@@ -29,6 +29,7 @@ import org.sanjose.views.sys.PersistanceService;
 
 import javax.print.PrintException;
 import java.sql.Timestamp;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -112,11 +113,14 @@ public class ViewUtil {
     public static void setDefaultsForNumberField(tm.kod.widgets.numberfield.NumberField numberField) {
         numberField.setConverter(new BigDecimalConverter());
         numberField.setLocale(ConfigurationUtil.getLocale());
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols(ConfigurationUtil.getLocale());
         numberField.setDecimalLength(2);
         numberField.setUseGrouping(true);
-        numberField.setDecimalSeparator(',');               // e.g. 1,5
+        numberField.setDecimalSeparator(dfs.getDecimalSeparator());               // e.g. 1,5
+        //numberField.setDecimalSeparator(',');               // e.g. 1,5
         numberField.setNullRepresentation("");
-        numberField.setGroupingSeparator('.');              // use '.' as grouping separator
+        numberField.setGroupingSeparator(dfs.getGroupingSeparator());              // use '.' as grouping separator
+        //numberField.setGroupingSeparator('.');              // use '.' as grouping separator
         numberField.setSigned(false);
     }
 
