@@ -31,6 +31,7 @@ public class UsuarioCrearUI extends HorizontalLayout {
     protected CheckBox chkEnviarInvitacion;
     protected PasswordField txtPass1;
     protected PasswordField txtPass2;
+    protected CheckBox flgEstado;
     protected Button btnGuardar;
     protected Button btnEliminar;
     protected Button btnAnular;

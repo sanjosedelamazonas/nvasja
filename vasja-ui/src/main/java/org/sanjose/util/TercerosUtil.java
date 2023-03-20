@@ -16,6 +16,7 @@ import net.sf.jasperreports.engine.type.WhenNoDataTypeEnum;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.view.JasperViewer;
 import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.bean.Caja;
@@ -273,15 +274,18 @@ public class TercerosUtil {
 
         for (VsjOperaciontercero trc : terc) {
             if (trc.getCodTipomoneda()=='0') {
-                sumSaldosol = sumSaldosol.subtract(trc.getNumDebesol()).add(trc.getNumHabersol());
+                if (trc.getNumDebesol()!=null && trc.getNumHabersol()!=null)
+                    sumSaldosol = sumSaldosol.subtract(trc.getNumDebesol()).add(trc.getNumHabersol());
                 trc.setId(id_sol++);
             }
             else if (trc.getCodTipomoneda()=='1') {
-                sumSaldodolar = sumSaldodolar.subtract(trc.getNumDebedolar()).add(trc.getNumHaberdolar());
+                if (trc.getNumDebedolar()!=null && trc.getNumHaberdolar()!=null)
+                    sumSaldodolar = sumSaldodolar.subtract(trc.getNumDebedolar()).add(trc.getNumHaberdolar());
                 trc.setId(id_dol++);
             }
             else {
-                sumSaldomo = sumSaldomo.subtract(trc.getNumDebemo()).add(trc.getNumHabermo());
+                if (trc.getNumDebemo()!=null && trc.getNumHabermo()!=null)
+                    sumSaldomo = sumSaldomo.subtract(trc.getNumDebemo()).add(trc.getNumHabermo());
                 trc.setId(id_mo++);
             }
             trc.setNumSaldosol(sumSaldosol);
@@ -293,7 +297,7 @@ public class TercerosUtil {
 
 
     public static void generateTerceroOperacionesReport(final Date fechaDesde, final Date fechaHasta,
-                                      String format, String codTercero, PersistanceService service) throws JRException, FileNotFoundException {
+                                      String codTercero, PersistanceService service, boolean isShow) throws JRException, FileNotFoundException {
 
         ScpDestino dest = service.getDestinoRepo().findByCodDestino(codTercero);
         List<VsjOperaciontercero> operacionterceros =  TercerosUtil.getAll(
@@ -303,25 +307,40 @@ public class TercerosUtil {
                 codTercero,
                 service,
                 false);
+
+        JRBeanCollectionDataSource operCollection = new JRBeanCollectionDataSource(operacionterceros);
         log.debug("Generating Tercero Operaciones: ");
         HashMap paramMap = new HashMap();
         SimpleDateFormat sdf = new SimpleDateFormat(ConfigurationUtil.get("DEFAULT_DATE_FORMAT"));
         paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
-
-        VsjTerceroreporte vsjTerceroreporte = new VsjTerceroreporte(
-                codTercero,
-                dest!=null ? dest.getTxtNombredestino() : "",
-                sdf.format(fechaDesde),
-                sdf.format(fechaHasta),
-                operacionterceros
-        );
-
-        paramMap.put("OPERACIONES", operacionterceros);
+        paramMap.put("OPERACIONES", operCollection);
         paramMap.put("FECHA_MIN", sdf.format(fechaDesde));
         paramMap.put("FECHA_MAX", sdf.format(fechaHasta));
         paramMap.put("COD_TERCERO", codTercero);
         paramMap.put("TXT_NOMBRE", dest!=null ? dest.getTxtNombredestino() : "");
-        ReportHelper.generateReport("ReporteTerceroOperaciones", "REPORTS_TERCEROS_TYPE", paramMap, format);
+
+        InputStream input = ReportHelper.loadReport("ReporteTerceroOperaciones3");
+
+        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(input);
+        /*compiling jrxml with help of JasperReport class*/
+        //JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+
+        /* Using jasperReport object to generate PDF */
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String filename= "Diario_" + codTercero + "_"
+                        + df.format(new Date()) + ".pdf";
+        if (isShow) {
+            StreamResource.StreamSource source = (StreamResource.StreamSource) () ->
+                    generateJasperReport(jasperReport, paramMap);
+            ReportHelper.showReportInSubWindow(source, filename, null, "pdf");
+        } else {
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, new JREmptyDataSource());
+            OutputStream output = new FileOutputStream(new File(filename));
+            JasperExportManager.exportReportToPdfStream(jasperPrint, output);
+        }
+        /*call jasper engine to display report in jasperviewer window*/
+        //JasperViewer.viewReport(jasperPrint);
+        //ReportHelper.generateReport("ReporteTerceroOperaciones3", "REPORTS_TERCEROS_TYPE", paramMap, format);
 
         //paramMap.put("DataFile", "VsjTerceroreporte.java");
 //        log.debug("ParamMap: " + paramMap.toString());
@@ -336,8 +355,8 @@ public class TercerosUtil {
 //        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 //
 //
-//        OutputStream output = new FileOutputStream(new File("/tmp/terceros_out.pdf"));
-//        JasperExportManager.exportReportToPdfStream(jasperPrint, output);
+
+
 //
 //
 //
@@ -363,26 +382,24 @@ public class TercerosUtil {
 //            }
 //            return new ByteArrayInputStream(b != null ? b : new byte[0]);
 //        };
-//        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
-//        StreamResource resource = new StreamResource(source,  "oper_"
-//                + df.format(new Date()) + ".pdf");
-//        resource.setMIMEType("application/pdf");
-//
-//        Embedded emb = new Embedded();
-//        emb.setSizeFull();
-//        emb.setType(Embedded.TYPE_BROWSER);
-//        emb.setSource(resource);
-//
-//        Window repWindow = new Window();
-//        repWindow.setWindowMode(WindowMode.NORMAL);
-//        repWindow.setDraggable(true);
-//        repWindow.setWidth(800, Sizeable.Unit.PIXELS);
-//        repWindow.setHeight(600, Sizeable.Unit.PIXELS);
-//        repWindow.setPositionX(200);
-//        repWindow.setPositionY(50);
-//        repWindow.setModal(false);
-//        repWindow.setContent(emb);
-//        UI.getCurrent().addWindow(repWindow);
+    }
+
+    public static ByteArrayInputStream generateJasperReport(JasperReport report, HashMap paramMap) {
+        byte[] b = null;
+        try {
+            if (report != null) {
+                report.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
+                b = JasperRunManager.runReportToPdf(report,
+                        paramMap, new JREmptyDataSource());
+            } else {
+                Notification.show(
+                        "There is no report file: "  + report.getName());
+            }
+        } catch (JRException ex) {
+            log.error(ex.getMessage());
+            ex.printStackTrace();
+        }
+        return new ByteArrayInputStream(b != null ? b : new byte[0]);
     }
 
 }

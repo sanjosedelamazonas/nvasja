@@ -135,7 +135,7 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
         getBtnReporteImprimirCaja().addClickListener(clickEvent -> {
             try {
                 TercerosUtil.generateTerceroOperacionesReport(
-                        fechaDesde.getValue(), fechaHasta.getValue(), "PDF", curCodTercero, getService());
+                        fechaDesde.getValue(), fechaHasta.getValue(), curCodTercero, getService(), true);
             } catch (JRException jre) {
                 log.error("Problem: " + jre.toString());
             } catch (FileNotFoundException e) {

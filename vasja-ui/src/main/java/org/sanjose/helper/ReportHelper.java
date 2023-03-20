@@ -333,65 +333,74 @@ public class ReportHelper {
 			return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public static void generateReport(final String reportName, String typeParamName,
-									   final HashMap paramMap, final String inFormat) {
-		final String format;
-		if (inFormat==null) format = ConfigurationUtil.get(typeParamName);
-		else format = inFormat;
-		StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {
-            byte[] b = null;
-            try {
-                InputStream rep = loadReport(reportName);
-                if (rep != null) {
-                    JasperReport report = (JasperReport) JRLoader
-                            .loadObject(rep);
-                    report.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
-                    if (format.equalsIgnoreCase("pdf"))
-                        b = JasperRunManager.runReportToPdf(report,
-                                paramMap, get().getSqlConnection());
-                    else if (format.equalsIgnoreCase("html"))
-                        return exportToHtml(reportName, paramMap);
-                    else
-                        return exportToXls(reportName, paramMap);
-                } else {
-                    Notification.show(
-                            "There is no report file: "  + reportName);
-                }
-            } catch (JRException ex) {
-                logger.error(ex.getMessage());
-                ex.printStackTrace();
-            }
-            return new ByteArrayInputStream(b != null ? b : new byte[0]);
-        };
+
+	public static ByteArrayInputStream generateJasperReport(String reportName, String typeParamName, HashMap paramMap, final String format) {
+		byte[] b = null;
+		try {
+			InputStream rep = loadReport(reportName);
+			if (rep != null) {
+				JasperReport report = (JasperReport) JRLoader
+						.loadObject(rep);
+				report.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
+				if (format.equalsIgnoreCase("pdf"))
+					b = JasperRunManager.runReportToPdf(report,
+							paramMap, get().getSqlConnection());
+				else if (format.equalsIgnoreCase("html"))
+					return exportToHtml(reportName, paramMap);
+				else
+					return exportToXls(reportName, paramMap);
+			} else {
+				Notification.show(
+						"There is no report file: "  + reportName);
+			}
+		} catch (JRException ex) {
+			logger.error(ex.getMessage());
+			ex.printStackTrace();
+		}
+		return new ByteArrayInputStream(b != null ? b : new byte[0]);
+	}
+
+	public static void showReportInSubWindow(StreamResource.StreamSource source, String filename, final String reportName, String format) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		StreamResource resource = new StreamResource(source, reportName + "_"
-				+ df.format(new Date()) + "." + format.toLowerCase());
+		if (filename==null)
+			filename = reportName + "_"
+					+ df.format(new Date()) + "." + format.toLowerCase();
+		StreamResource resource = new StreamResource(source, filename);
 		if (format.equalsIgnoreCase("PDF"))
 			resource.setMIMEType("application/pdf");
 		else if (format.equalsIgnoreCase("XLS"))
 			resource.setMIMEType("application/xls");
 		else
 			resource.setMIMEType("text/html");
-
 		Embedded emb = new Embedded();
 		emb.setSizeFull();
 		emb.setType(Embedded.TYPE_BROWSER);
 		emb.setSource(resource);
 
 		Window repWindow = new Window();
-		repWindow.setWindowMode(WindowMode.NORMAL);
-        repWindow.setDraggable(true);
+		repWindow.setWindowMode(ConfigurationUtil.is("REPORTS_WINDOW_MAXIMIZE") ? WindowMode.MAXIMIZED : WindowMode.NORMAL);
+		repWindow.setDraggable(true);
 		repWindow.setWidth(800, Sizeable.Unit.PIXELS);
 		repWindow.setHeight(600, Sizeable.Unit.PIXELS);
 		repWindow.setPositionX(200);
 		repWindow.setPositionY(50);
 		repWindow.setModal(false);
-        repWindow.setContent(emb);
+		repWindow.setContent(emb);
 		UI.getCurrent().addWindow(repWindow);
 	}
 
-	private static InputStream loadReport(String reportName) {
+	@SuppressWarnings("unchecked")
+	public static void generateReport(final String reportName, String typeParamName,
+									   final HashMap paramMap, final String inFormat) {
+		final String format;
+		if (inFormat==null) format = ConfigurationUtil.get(typeParamName);
+		else format = inFormat;
+		StreamResource.StreamSource source = (StreamResource.StreamSource) () ->
+            generateJasperReport(reportName, typeParamName, paramMap, format);
+		showReportInSubWindow(source, null, reportName, format);
+	}
+
+	public static InputStream loadReport(String reportName) {
 		InputStream rep = null;
         logger.debug("Trying to load report " + reportName);
 		rep = (UI.getCurrent().getClass()).getResourceAsStream(ConfigurationUtil

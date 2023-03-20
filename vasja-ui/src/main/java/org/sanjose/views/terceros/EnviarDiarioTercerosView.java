@@ -5,16 +5,22 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
+import net.sf.jasperreports.engine.JRException;
+import org.sanjose.bean.VsjOperaciontercero;
+import org.sanjose.bean.VsjTercerofactory;
 import org.sanjose.helper.CustomReport;
+import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.util.DataFilterUtil;
 import org.sanjose.util.DataUtil;
 import org.sanjose.util.GenUtil;
+import org.sanjose.util.TercerosUtil;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -34,6 +40,8 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
     private PersistanceService service;
     private Map<String,CustomReport> customReportMap = new TreeMap<>();
 
+    private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
+
     public EnviarDiarioTercerosView(PersistanceService service) {
         this.service = service;
         setSizeFull();
@@ -52,8 +60,6 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
 //        }
 //        DataFilterUtil.bindFixedStringValComboBox(selReporte, "selReporte", "Sellecione Reporte", customReportNameMap);
 //        selReporte.addValueChangeListener(this::setReporteParameters);
-
-
         List<ScpDestino> terceros = DataUtil.loadDestinos(service, true);
 
         Map<String, String> usuariosMap = new HashMap<>();
@@ -77,18 +83,44 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         txtUsuariosList.addValueChangeListener(this::setUsuarioListLogic);
 
         fechaInicial.addValueChangeListener(val -> fechaFinal.setValue(GenUtil.getEndOfMonth(fechaInicial.getValue())));
+        fechaInicial.setValue(filterInitialDate);
 
 ///        DataFilterUtil.bindComboBox(selUsuario, "txtUsuario", service.getMsgUsuarioRep().findAll(), "Sel Cat Proyecto", "txtDescripcion");
 
         btnEnviar.addClickListener( e -> doEnviar(prepareListOfTerceros()));
+
+        btnImprimir.addClickListener( e -> doImprimir(prepareListOfTerceros()));
+
+        btnEnviar.setEnabled(true);
     }
 
     private void doEnviar(List<ScpDestino> tercerosList) {
         StringBuilder sb = new StringBuilder();
-        tercerosList.forEach(trc -> sb.append(trc.getCodDestino()));
+        List<String> codigosTerc = new ArrayList<>();
+        tercerosList.forEach(trc -> codigosTerc.add(trc.getCodDestino()));
+        tercerosList.forEach(trc -> sb.append(trc.getCodDestino()).append(", "));
         log.info("Got list of terceros to send: " + sb.toString());
-        
+        try {
+            TercerosUtil.generateTerceroOperacionesReport(fechaInicial.getValue(), fechaFinal.getValue(),
+                    codigosTerc.get(0), service, false);
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
+
+    private void doImprimir(List<ScpDestino> tercerosList) {
+        try {
+            TercerosUtil.generateTerceroOperacionesReport(fechaInicial.getValue(), fechaFinal.getValue(),
+                    tercerosList.get(0).getCodDestino(), service, true);
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private List<ScpDestino> prepareListOfTerceros() {
         if (checkTodos.getValue()) {
@@ -143,11 +175,11 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         if ((Boolean)event.getProperty().getValue()) {
             selTercero.setValue(null);
             selUsuario.setValue(null);
-            txtUsuariosList.setEnabled(false);
+            txtUsuariosList.setEnabled(true);
         } else {
             selTercero.setValue(null);
             selUsuario.setValue(null);
-            txtUsuariosList.setEnabled(false);
+            txtUsuariosList.setEnabled(true);
         }
     }
 

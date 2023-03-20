@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MsgUsuarioRep extends JpaRepository<MsgUsuario, Long> {
 
-	MsgUsuario findByTxtUsuarioAndTxtPassword(String s1, String s2);
+	MsgUsuario findByTxtUsuarioAndTxtPasswordAndFlgEstado(String s1, String s2, boolean est);
 
 	MsgUsuario findByTxtUsuario(String username);
 

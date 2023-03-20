@@ -5,6 +5,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.window.WindowMode;
@@ -13,7 +14,9 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import de.steinwedel.messagebox.MessageBox;
+import org.sanjose.converter.ZeroOneTrafficLightConverter;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.util.ConfigurationUtil;
@@ -41,14 +44,14 @@ public class UsuarioView extends UsuarioUI implements Viewing {
     }
     private static final Logger log = LoggerFactory.getLogger(UsuarioView.class);
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
-            "codUsuario", "txtUsuario", "txtNombre", "codRol", "txtCorreo", "txtAplicacion",
+            "codUsuario", "txtUsuario", "txtNombre", "codRol", "txtCorreo", "txtAplicacion", "flgEstado",
             "fecFregistro", "codUregistro", "fecFactualiza", "codUactualiza"
     };
     private final String[] HIDDEN_COLUMN_IDS = new String[] {
             "fecFregistro", "codUregistro", "fecFactualiza", "codUactualiza"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
-            "Codigo", "Usuario", "Nombre", "Rol", "Correo", "Aplicacion",
+            "Codigo", "Usuario", "Nombre", "Rol", "Correo", "Aplicacion", "Activo",
             "Fecha reg.", "Usuario reg.", "Fecha actual.", "Usuario actual."
     };
     private final int[] FILTER_WIDTH = new int[]{
@@ -71,7 +74,7 @@ public class UsuarioView extends UsuarioUI implements Viewing {
 
         Arrays.asList(HIDDEN_COLUMN_IDS).forEach(colName ->  grid.getColumn(colName).setHidden(true));
 
-        grid.setSelectionMode(SelectionMode.MULTI);
+        grid.setSelectionMode(SelectionMode.SINGLE);
         grid.setEditorEnabled(false);
 
         //grid.getColumn("id.fecFechacambio").setRenderer(new DateRenderer(ConfigurationUtil.get("DEFAULT_DATE_RENDERER_FORMAT")));
@@ -83,6 +86,23 @@ public class UsuarioView extends UsuarioUI implements Viewing {
         btnNuevoUsuario.addClickListener(e -> editUsuario(null));
 
         //btnEliminar.addClickListener(e -> eliminarTipoCambio());
+        grid.getColumn("flgEstado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
+
+        btnEliminar.addClickListener(clickEvent -> {
+            MsgUsuario item = (MsgUsuario)grid.getSelectedRow();
+            //String codUsuario = item.getCodUsuario();
+            MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
+            MessageBox
+                    .createQuestion()
+                    .withCaption("Eliminar: " + item.getTxtUsuario())
+                    .withMessage("?Esta seguro que lo quiere eliminar?")
+                    .withYesButton(() -> {
+                        eliminarUsuario((MsgUsuario)grid.getSelectedRow());
+                    })
+                    .withNoButton()
+                    .open();
+        });
+
     }
 
 
@@ -95,6 +115,7 @@ public class UsuarioView extends UsuarioUI implements Viewing {
 
 
     public void editUsuario(MsgUsuario usuario) {
+
         Window usuarioWindow = new Window();
 
         usuarioWindow.setWindowMode(WindowMode.NORMAL);
@@ -116,48 +137,41 @@ public class UsuarioView extends UsuarioUI implements Viewing {
         usuarioWindow.setContent(usuarioCrearView);
 
         usuarioCrearView.getBtnGuardar().addClickListener(event -> {
-            CompletableFuture<String> sendRes = usuarioCrearView.saveUsuario();
+            usuarioCrearView.saveUsuario(this);
             usuarioWindow.close();
             refreshData();
-            if (sendRes!=null){
-                sendRes.join();
-                try {
-                    String error = sendRes.get();
-                    if (error!=null) {
-                        Notification.show(error, Notification.Type.WARNING_MESSAGE);
-                    } else {
-                        Notification.show("La invitacion ha sido enviada", Notification.Type.HUMANIZED_MESSAGE);
-                    }
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
         });
         usuarioCrearView.getBtnAnular().addClickListener(event -> {
             usuarioWindow.close();
         });
-
-        usuarioCrearView.getBtnEliminar().addClickListener(clickEvent -> {
-            try {
-                MsgUsuario item = usuarioCrearView.getMsgUsuario();
-                String codUsuario = item.getCodUsuario();
-                MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
-                MessageBox
-                        .createQuestion()
-                        .withCaption("Eliminar: " + item.getTxtUsuario())
-                        .withMessage("Esta seguro que lo quiere eliminar?")
-                        .withYesButton(() -> {
-                            usuarioCrearView.eliminarUsuario(usuario);
-                            refreshData();
-                        })
-                        .withNoButton()
-                        .open();
-            } catch (FieldGroup.CommitException ce) {
-                Notification.show("Error al eliminar el usuario: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
-                log.info("Got Commit Exception: " + ce.getMessage());
-            }
-        });
         UI.getCurrent().addWindow(usuarioWindow);
+    }
+
+
+    public void eliminarUsuario(MsgUsuario usuario) {
+        if (service.getDestinoRepo().findByTxtUsuario(usuario.getTxtUsuario())!=null) {
+            usuario.setFlgEstado('0');
+            service.getMsgUsuarioRep().save(usuario);
+            refreshData();
+        } else {
+            service.getMsgUsuarioRep().delete(usuario);
+        }
+    }
+
+    public void notifySendingInvitation(CompletableFuture<String> sendRes){
+        if (sendRes!=null){
+            sendRes.join();
+            try {
+                String error = sendRes.get();
+                if (error!=null) {
+                    ViewUtil.showNotification(error, Notification.Type.ERROR_MESSAGE);
+                } else {
+                    ViewUtil.showNotification("La invitacion ha sido enviada correctamente", Notification.Type.TRAY_NOTIFICATION);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void refreshData() {

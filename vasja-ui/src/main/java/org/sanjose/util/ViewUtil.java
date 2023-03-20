@@ -8,6 +8,7 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.filter.Between;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.window.WindowMode;
@@ -600,4 +601,8 @@ public class ViewUtil {
         UI.getCurrent().addWindow(subWindow);
     }
 
+    public static void showNotification(String message, Notification.Type type) {
+        Notification notification = new Notification(message, type);
+        notification.show(Page.getCurrent());
+    }
 }

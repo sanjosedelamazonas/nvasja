@@ -73,13 +73,7 @@ public class ConfigurationUtil {
 		defaultParamMap.put("MAIL_SMTP_AUTH", "SSL");
 		defaultParamMap.put("MAIL_SMTP_USER", "");
 		defaultParamMap.put("MAIL_SMTP_PASS", "");
-
-		///////////
-//		defaultParamMap.put("MAIL_FROM", "sistema@sanjosedelamazonas.org");
-//		defaultParamMap.put("MAIL_SMTP_SERVER", "mail.sanjosedelamazonas.org");
-//
-//		defaultParamMap.put("MAIL_SMTP_USER", "sistema@sanjosedelamazonas.org");
-//		defaultParamMap.put("MAIL_SMTP_PASS", "M@1l3rV@sj@789");
+		defaultParamMap.put("REPORTS_WINDOW_MAXIMIZE", "TRUE");
 	}
 
 	public static Locale getLocale() {

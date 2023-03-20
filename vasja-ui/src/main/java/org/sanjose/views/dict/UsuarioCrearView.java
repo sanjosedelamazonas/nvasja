@@ -11,6 +11,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
+import org.sanjose.converter.ZeroOneToBooleanConverter;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.repo.MsgRolRep;
 import org.sanjose.repo.MsgUsuarioRep;
@@ -51,8 +52,6 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
 
     private boolean isNuevo = false;
 
-    private CompletableFuture<String> sendRes = null;
-
     //@Autowired
     public UsuarioCrearView(MsgUsuarioRep usuarioRep, MsgRolRep msgRolRep, ScpDestinoRep destinoRep) {
 
@@ -63,6 +62,7 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
         btnGuardar.setEnabled(false);
         btnAnular.setEnabled(false);
         codUsuario.setEnabled(false);
+        flgEstado.setConverter(new ZeroOneToBooleanConverter());
         // Codigo
         DataFilterUtil.bindComboBox(codRol, "codRol", msgRolRep.findByCodRolLikeOrderByCodRolDesc("%"),
                 "txtDescripcion");
@@ -111,24 +111,24 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
     }
 
 
-    public CompletableFuture<String> saveUsuario() {
+    public void saveUsuario(UsuarioView usuarioView) {
         if (chkEnviarInvitacion.getValue() && !isNuevo) {
             MessageBox
                     .createWarning()
                     .withCaption("Reenviar")
                     .withMessage("!Quieres reenviar la invitacion a " + beanItem.getBean().getTxtCorreo() + "?")
-                    .withYesButton( () -> saveUsuarioConfirmado(true))
-                    .withNoButton(()-> saveUsuarioConfirmado(false))
+                    .withYesButton( () -> saveUsuarioConfirmado(true, usuarioView))
+                    .withNoButton(()-> saveUsuarioConfirmado(false, usuarioView))
                     .open();
         } else
-            saveUsuarioConfirmado(chkEnviarInvitacion.getValue());
-        return this.sendRes;
+            saveUsuarioConfirmado(chkEnviarInvitacion.getValue(), usuarioView);
     }
 
 
-    public void saveUsuarioConfirmado(boolean isEnviarInvitacion) {
+    public void saveUsuarioConfirmado(boolean isEnviarInvitacion, UsuarioView usuarioView) {
         try {
             MsgUsuario usuario = getMsgUsuario();
+            usuario.setCodFilial("01");
             usuario.prepToSave();
             if (!GenUtil.strNullOrEmpty(getTxtPass1().getValue())) {
                 usuario.setTxtPassword(Rot10.rot10(getTxtPass1().getValue()));
@@ -140,7 +140,7 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
 
             if (isEnviarInvitacion) {
                 CompletableFuture<Void> sendRes = ((MainUI)UI.getCurrent()).getMailerSender().sendInvitation(usuario.getTxtCorreo());
-                this.sendRes =
+                CompletableFuture<String> sendErrors =
                     sendRes.handle((String, ex) -> {
                     if (ex != null) {
                         return "Problema al enviar mensaje a :"+ usuario.getTxtCorreo() + "\n" + ex.getMessage();
@@ -148,6 +148,7 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
                         return null;
                     }
                 });
+                usuarioView.notifySendingInvitation(sendErrors);
             }
         } catch (FieldGroup.CommitException ce) {
             String errMsg = GenUtil.genErrorMessage(ce.getInvalidFields());
@@ -169,15 +170,6 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
         }
     }
 
-
-    public void eliminarUsuario(MsgUsuario usuario) {
-        if (destinoRep.findByTxtUsuario(usuario.getTxtUsuario())!=null) {
-            usuario.setFlgEstado('0');
-            usuarioRep.save(usuario);
-        } else {
-            usuarioRep.delete(usuario);
-        }
-    }
 
     public void enter(String productId) {
     }
@@ -215,6 +207,7 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
         fieldGroup.bind(txtNombre, "txtNombre");
         fieldGroup.bind(txtUsuario, "txtUsuario");
         fieldGroup.bind(codUsuario, "codUsuario");
+        fieldGroup.bind(flgEstado, "flgEstado");
         if (isNuevo){
             // Generate cod usuario if wasn't given
             List<MsgUsuario> msgUsuarios = usuarioRep.findByCodUsuarioLikeOrderByCodUsuarioDesc("%");
@@ -227,6 +220,7 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
             }
             Long newId = Long.valueOf(lastCodUsuario) + 1;
             String cod = String.format("%03d", newId);
+            flgEstado.setValue(true);
             codUsuario.setValue(cod);
             codUsuario.setEnabled(false);
         }
@@ -243,9 +237,6 @@ public class UsuarioCrearView extends UsuarioCrearUI implements View {
 
     public MsgUsuario getMsgUsuario() throws FieldGroup.CommitException {
         fieldGroup.commit();
-//
-
-
         return beanItem.getBean();
     }
 
