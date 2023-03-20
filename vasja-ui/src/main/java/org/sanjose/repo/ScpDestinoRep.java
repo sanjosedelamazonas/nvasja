@@ -19,7 +19,7 @@ public interface ScpDestinoRep extends JpaRepository<ScpDestino, Long> {
 	List<ScpDestino> findByIndTipodestinoAndActivoOrderByTxtNombre(Character s, Boolean isActive);
 
 	// All to send report terceros
-	List<ScpDestino> findByIndTipodestinoAndActivoAndEnviarreporteAndTxtUsuarioNotOrderByTxtNombre(Character s, Boolean isActive, Boolean enviar, String ss);
+	List<ScpDestino> findByIndTipodestinoAndActivoAndEnviarreporteAndTxtUsuarioNotLikeOrderByTxtNombre(Character s, Boolean isActive, Boolean enviar, String ss);
 
 	List<ScpDestino> findByIndTipodestinoNotOrderByTxtNombre(Character s);
 

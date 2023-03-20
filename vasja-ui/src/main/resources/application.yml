@@ -48,6 +48,11 @@ logging:
       hibernate:
         engine:
           jdbc: INFO
+#        SQL: DEBUG
+#        type:
+#          descriptor:
+#            sql:
+#              BasicBinder: TRACE
       apache:
         tomcat:
           jdbc:

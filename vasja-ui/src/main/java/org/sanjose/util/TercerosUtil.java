@@ -2,30 +2,23 @@ package org.sanjose.util;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import com.vaadin.server.Sizeable;
 import com.vaadin.server.StreamResource;
-import com.vaadin.shared.ui.window.WindowMode;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.type.WhenNoDataTypeEnum;
 import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.view.JasperViewer;
 import org.sanjose.MainUI;
-import org.sanjose.authentication.CurrentUser;
-import org.sanjose.bean.Caja;
 import org.sanjose.bean.VsjOperaciontercero;
-import org.sanjose.bean.VsjTerceroreporte;
+import org.sanjose.helper.EmailAttachment;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.*;
+import org.sanjose.model.ScpBancodetalle;
+import org.sanjose.model.ScpCajabanco;
+import org.sanjose.model.ScpComprobantedetalle;
+import org.sanjose.model.ScpDestino;
 import org.sanjose.repo.ScpDestinoRep;
 import org.sanjose.views.sys.PersistanceService;
+import org.sanjose.views.terceros.EnviarDiarioTercerosView;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -296,7 +289,7 @@ public class TercerosUtil {
     }
 
 
-    public static void generateTerceroOperacionesReport(final Date fechaDesde, final Date fechaHasta,
+    public static EmailAttachment generateTerceroOperacionesReport(final Date fechaDesde, final Date fechaHasta,
                                       String codTercero, PersistanceService service, boolean isShow) throws JRException, FileNotFoundException {
 
         ScpDestino dest = service.getDestinoRepo().findByCodDestino(codTercero);
@@ -306,7 +299,7 @@ public class TercerosUtil {
                 Arrays.asList(new String[]{codTercero}),
                 codTercero,
                 service,
-                false);
+                true);
 
         JRBeanCollectionDataSource operCollection = new JRBeanCollectionDataSource(operacionterceros);
         log.debug("Generating Tercero Operaciones: ");
@@ -333,55 +326,23 @@ public class TercerosUtil {
             StreamResource.StreamSource source = (StreamResource.StreamSource) () ->
                     generateJasperReport(jasperReport, paramMap);
             ReportHelper.showReportInSubWindow(source, filename, null, "pdf");
+            return null;
         } else {
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, new JREmptyDataSource());
-            OutputStream output = new FileOutputStream(new File(filename));
-            JasperExportManager.exportReportToPdfStream(jasperPrint, output);
+             return new EmailAttachment(filename, JasperRunManager.runReportToPdf(jasperReport,
+                    paramMap, new JREmptyDataSource()));
+
+//            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, new JREmptyDataSource());
+//            OutputStream output = new FileOutputStream(new File(filename));
+//            JasperExportManager.exportReportToPdfStream(jasperPrint, output);
         }
-        /*call jasper engine to display report in jasperviewer window*/
-        //JasperViewer.viewReport(jasperPrint);
-        //ReportHelper.generateReport("ReporteTerceroOperaciones3", "REPORTS_TERCEROS_TYPE", paramMap, format);
-
-        //paramMap.put("DataFile", "VsjTerceroreporte.java");
-//        log.debug("ParamMap: " + paramMap.toString());
-        //List<VsjTerceroreporte> reportes = new ArrayList<>();
-        //reportes.add(vsjTerceroreporte);
-        //JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(reportes);
-        //JasperPrint jasperPrint = JasperFillManager.fillReport("../vasja-reports/reports/ReporteTerceroOperaciones.jasper",
-        //        paramMap, beanColDataSource );
-
-
 //        JRPdfExporter exporter = new JRPdfExporter();
 //        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-//
-//
 
-
-//
-//
-//
 //        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(
 //                response.getOutputStream()));
 //        response.setHeader("Content-Disposition", "attachment;filename=jasperfile.docx");
 //        response.setContentType("application/octet-stream");
 //        exporter.exportReport();
-//
-//
-//        StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {
-//            byte[] b = null;
-//            try {
-//
-//
-//                } else {
-//                    Notification.show(
-//                            "There is no report file: "  + reportName);
-//                }
-//            } catch (JRException ex) {
-//                logger.error(ex.getMessage());
-//                ex.printStackTrace();
-//            }
-//            return new ByteArrayInputStream(b != null ? b : new byte[0]);
-//        };
     }
 
     public static ByteArrayInputStream generateJasperReport(JasperReport report, HashMap paramMap) {

@@ -16,7 +16,7 @@ import org.sanjose.authentication.LoginScreen;
 import org.sanjose.authentication.LoginScreen.LoginListener;
 import org.sanjose.authentication.MsgAccessControl;
 import org.sanjose.authentication.Role;
-import org.sanjose.helper.MailerSender;
+import org.sanjose.mail.MailerSender;
 import org.sanjose.repo.MsgUsuarioRep;
 import org.sanjose.repo.VsjPasswordresettokenRep;
 import org.sanjose.util.ConfigurationUtil;

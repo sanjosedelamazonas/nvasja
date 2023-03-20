@@ -1,7 +1,6 @@
 package org.sanjose.authentication;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -14,15 +13,10 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.sanjose.MainUI;
-import org.sanjose.helper.MailerSender;
 import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.VsjPasswordresettoken;
 import org.sanjose.repo.MsgUsuarioRep;
 import org.sanjose.repo.VsjPasswordresettokenRep;
-import org.sanjose.util.ConfigurationUtil;
-import org.sanjose.views.sys.MainScreen;
-import org.simplejavamail.api.email.Email;
-import org.simplejavamail.email.EmailBuilder;
 
 /**
  * UI content when the user is not logged in yet.

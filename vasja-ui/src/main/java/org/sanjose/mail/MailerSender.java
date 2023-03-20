@@ -1,4 +1,4 @@
-package org.sanjose.helper;
+package org.sanjose.mail;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -53,9 +55,16 @@ public class MailerSender {
         log.info("Mailer Sender started and configured to send from " + ConfigurationUtil.get("MAIL_SMTP_SERVER"));
     }
 
-
     public CompletableFuture<Void> sendEmail(Email email) {
         return this.mailer.sendMail(email);
+    }
+
+    public List<EmailStatus> sendEmails(List<EmailDescription> emails) {
+        List<EmailStatus> emailStatuses = new ArrayList<>();
+        for (EmailDescription ed : emails) {
+            emailStatuses.add(new EmailStatus(ed.getTo(), ed.getUsuario(), this.mailer.sendMail(ed.getEmail())));
+        }
+        return emailStatuses;
     }
 
     public CompletableFuture<Void> sendInvitation(String to) {
