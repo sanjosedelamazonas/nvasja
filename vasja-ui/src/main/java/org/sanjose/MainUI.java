@@ -1,9 +1,6 @@
 package org.sanjose;
 
-import com.vaadin.annotations.PreserveOnRefresh;
-import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.Viewport;
-import com.vaadin.annotations.Widgetset;
+import com.vaadin.annotations.*;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.server.Responsive;
@@ -49,6 +46,7 @@ import java.util.Date;
  * layouts.
  */
 @SpringUI(path="/")
+@Push
 @Viewport("user-scalable=yes,initial-scale=1.0")
 @Theme("mytheme")
 @Widgetset("org.sanjose.MyAppWidgetset")

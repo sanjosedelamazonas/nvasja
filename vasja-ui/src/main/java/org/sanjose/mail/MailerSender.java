@@ -47,7 +47,7 @@ public class MailerSender {
                         ConfigurationUtil.get("MAIL_SMTP_USER"),
                         ConfigurationUtil.get("MAIL_SMTP_PASS"))
                 .withTransportStrategy(authTypes.get(ConfigurationUtil.get("MAIL_SMTP_AUTH")))
-                .withSessionTimeout(10 * 1000)
+                .withSessionTimeout(20 * 1000)
                 .clearEmailValidator()
                 .withDebugLogging(true)
                 .async()

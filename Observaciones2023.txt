@@ -36,15 +36,15 @@ DONE
 - no se debe poder modificar despues de haber enviado a contabilidad - jak będzie wyłączenie wysłąnia.
 - nie powinno byc mozliwosci wpisania jednoczescnie wartosci ingr jak i egreso - wpisywanie jednej powoduje wyzerowanie drugiej
 DONE
-- przy wysylaniu do contabilidad powinno sprawdzic czy:
+>>>>>- przy wysylaniu do contabilidad powinno sprawdzic czy:
 - suma(ingr por proyecto)=suma(egr por proyecto) - jak nie komunikat que esta descuadrado por proyecto y pregunta si de todos modos quieres enviar.
 - si existe tipo de cambio para tal dia y si de todos modos quieres enviar.
 - czy pola cta contable, proyecto sa wypelnione
 - (na pozniej bylo by super jezeli by sprawdzalo ze jezeli cuenta contable like 6% or 3% to musi miec rubro institucional, lugar de gasto a jezeli cta contable like '46%' to musi miec tylko rubro institucional)
 - okno registar anticipo powinno sie dac przesuwac
 NOT POSSIBLE
-- mozliwosc "marcar como no enviado"
-- ? jezeli suma(ingr por proyecto)=suma(egr por proyecto) to moglaby na liscie rendiciones pokazywac sie na czerwono? y tez jezeli nie zawiera na liscie cta_contable like '14%'?
+>>>>>- mozliwosc "marcar como no enviado"
+>>>>>- ? jezeli suma(ingr por proyecto)=suma(egr por proyecto) to moglaby na liscie rendiciones pokazywac sie na czerwono? y tez jezeli nie zawiera na liscie cta_contable like '14%'?
 - brakuje raportu na rendiciones (comprobante del sistema contable)
 DONE
 
@@ -55,11 +55,11 @@ DONE
 DONE
 - visibles rendiciones del mes actual
 DONE
-
 Destino (soñando):
 - sprawdza czy takie codigo, descripcion juz istnieje przy wprowadzaniu nowego
 DONE
 - dodaje nowego kazde slowo z wielkiej litery i trim
+DONE
 - eliminar destino: jezeli existen comprobantes que usan este destino pregunta a que numero cambiarlo y wstawia nowego z danymi tymi samymi, zastepuje i usuwa stary
   update [SCP].[dbo].[scp_comprobantedetalle] set cod_destino='Nowy_destino'  where cod_destino='stary_destino';
   update [SCP].[dbo].[scp_comprobantecabecera] set cod_destino='Nowy_destino' where cod_destino='stary_destino';
@@ -72,19 +72,21 @@ DONE
 - marcar tercero con color
 DONE
 - dla destino z categoria tercero mozna zdefiniowac email y guzikiem wyslac do wszystkich ktorzy maja zaznaczony check ze chca email reporte de sus movimientos del mes
-- integracja z api portalu sunat zeby pobrac nazwe po RUC cuando anade nuevo destino
+DONE
+>>>>>  - integracja z api portalu sunat zeby pobrac nazwe po RUC cuando anade nuevo destino
 
 - calcular saldos para bancos, cuentas proyectos, terceros, caja - calcula saldos antes de la operacion y no al final del dia. critico: modulo de bancos
-
+DONE
 - reporte diario terceros
 - guzik zeby zaciagnac tipo de cambio tam gdzie go nie ma aktualizowac w ksiegowosci
-  - rendiciones marcar no enviado
-  -  caja - cargo abono - cuando cambia fecha a una operacion se cambia en todas.
+DONE
+>>>>>  - rendiciones marcar no enviado
+>>>>>  - caja - cargo abono - cuando cambia fecha a una operacion se cambia en todas.
   - formato para registrar cambio de moneda - caja/banco
+DONE
   - acceso a reporte de cuenta por usuario tercero (habilitado/no habilitado)
-
-  - rendiciones - lista de anticipos pendintes del sistema
+DONE
+>>>>>  - rendiciones - lista de anticipos pendintes del sistema
   - tercero jezeli inactivo to nie wyswietla sie na liscie w caja ani w bancos
 DONE
 - Caja Diario - reorganizar columnas para pantalla mas chiquita
-- Reporte de Caja - nulls in Total Saldos
