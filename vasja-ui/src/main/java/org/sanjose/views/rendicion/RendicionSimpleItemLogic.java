@@ -62,6 +62,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
     private ComboBox selProyecto = new ComboBox();
     private ComboBox selCtacontable = new ComboBox();
     private ComboBox selCtaespecial = new ComboBox();
+    private ComboBox selAuxiliar = new ComboBox();
     private PopupDateField selFechaDoc = new PopupDateField();
     private TextField txtGlosaDetalle = new TextField();
     private TextField txtSerieDoc = new TextField();
@@ -195,7 +196,6 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
 
 
         // Auxiliar
-        ComboBox selAuxiliar = new ComboBox();
         DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", DataUtil.loadDestinos(view.getService()),
                 "txtNombre");
         view.grid.getColumn("codDestino").setEditorField(selAuxiliar);
@@ -249,7 +249,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         addValidators();
         // Editing Destino
         view.getBtnResponsable().addClickListener(event -> editDestino(view.getSelResponsable1()));
-        //view.getBtnAuxiliar().addClickListener(event -> editDestino(view.getSelCodAuxiliar()));
+        view.getBtnNuevoDestino().addClickListener(event -> editDestino(selAuxiliar));
 
         ViewUtil.setFieldsNullRepresentation(view.grid.getEditorFieldGroup());
     }
@@ -609,8 +609,8 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
     private void refreshDestino() {
         DataFilterUtil.refreshComboBox(view.getSelResponsable1(), "codDestino", DataUtil.loadDestinos(view.getService()),
                 "txtNombre");
-        //DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
-        //        "txtNombredestino");
+        DataFilterUtil.refreshComboBox(selAuxiliar, "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
+                "txtNombredestino");
     }
 
     private void refreshProyectoYcuentaPorFecha(Date newFecha) {

@@ -113,6 +113,19 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
                         return String.class;
                     }
                 });
+        gpContainer.addGeneratedProperty("isDescuadrado",
+                new PropertyValueGenerator<Boolean>() {
+                    @Override
+                    public Boolean getValue(Item item, Object itemId,
+                                            Object propertyId) {
+                        ScpRendicioncabecera rendCab = (ScpRendicioncabecera) ((BeanItem) item).getBean();
+                        return getService().checkIfRendicionDescuadrado(rendCab);
+                    }
+                    @Override
+                    public Class<Boolean> getType() {
+                        return Boolean.class;
+                    }
+                });
 
 
         grid.setContainerDataSource(gpContainer);
@@ -128,10 +141,12 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
 
         if (Role.isPrivileged()) {
             getBtnEnviar().setVisible(true);
+            getBtnNoEnviado().setVisible(true);
             grid.setSelectionMode(SelectionMode.MULTI);
         } else {
             grid.setSelectionMode(SelectionMode.SINGLE);
             getBtnEnviar().setVisible(false);
+            getBtnNoEnviado().setVisible(false);
         }
 
         // Fecha Desde Hasta

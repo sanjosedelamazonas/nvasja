@@ -471,6 +471,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
             case EDIT:
                 view.getBtnGuardar().setEnabled(true);
                 view.getBtnCerrar().setEnabled(true);
+                view.getBtnNuevoDestino().setEnabled(true);
                 //view.getBtnAnular().setEnabled(true);
                 if (view.getContainer().size() > 1) view.getBtnEliminar().setEnabled(true);
                 else view.getBtnEliminar().setEnabled(false);

@@ -13438,6 +13438,14 @@ div.v-layout.v-horizontal.v-widget {
 	color: #45a83c;
 }
 
+.mytheme .v-grid-row.descuadrado {
+	color: #780ba8;
+}
+
+.mytheme .v-grid-row.descuadrado-enviado {
+	color: #a80500;
+}
+
 .mytheme .v-grid-row.anulado {
 	color: #C2B4AA;
 }

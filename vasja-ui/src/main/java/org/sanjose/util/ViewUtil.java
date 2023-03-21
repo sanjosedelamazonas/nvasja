@@ -430,13 +430,39 @@ public class ViewUtil {
 
     public static void colorizeRowsRendiciones(Grid grid) {
         grid.setRowStyleGenerator(rowReference -> {
-            if (((ScpRendicioncabecera)rowReference.getItemId()).isEnviado()) {
+            boolean isEnviado = ((ScpRendicioncabecera)rowReference.getItemId()).isEnviado();
+            boolean isDescuadrado = (Boolean)rowReference.getItem().getItemProperty("isDescuadrado").getValue();
+            if (isDescuadrado && isEnviado) {
+                return "descuadrado-enviado";
+            }
+            if (isEnviado) {
                 return "enviado";
+            }
+            if (isDescuadrado) {
+                return "descuadrado";
             }
             return "";
         });
     }
 
+    public static void colorizeRowsTerceros(Grid grid) {
+        grid.setRowStyleGenerator(rowReference -> {
+            if (!((ScpDestino)rowReference.getItemId()).isActivo()) {
+                return "anulado";
+            }
+            return "";
+        });
+    }
+
+
+    public static void colorizeRowsUsuarios(Grid grid) {
+        grid.setRowStyleGenerator(rowReference -> {
+            if (((MsgUsuario)rowReference.getItemId()).getFlgEstado().equals('0')) {
+                return "anulado";
+            }
+            return "";
+        });
+    }
 
     public static void colorizeRows(Grid grid) {
         grid.setRowStyleGenerator(rowReference -> {

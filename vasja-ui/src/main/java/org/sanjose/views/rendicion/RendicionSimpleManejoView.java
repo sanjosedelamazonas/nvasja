@@ -19,6 +19,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
+import org.hibernate.Session;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.authentication.Role;
 import org.sanjose.converter.ZeroOneTrafficLightConverter;
@@ -30,9 +31,8 @@ import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -50,13 +50,14 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
 
     private final RendicionManejoLogic viewLogic = new RendicionManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{ "codComprobante", "fecComprobante", "destinoNombre", "txtGlosa",
-            "numGastototal", "tipoMoneda", "flgEnviado", "codComprobanteenlace"
+            "numGastototal", "tipoMoneda", "flgEnviado", "codComprobanteenlace",  "msgUsuario"
             //, "codTipomoneda"
     };
-    private final String[] HIDDEN_COLUMN_IDS = new String[] { "codTipomoneda"
+    private final String[] HIDDEN_COLUMN_IDS = new String[] {
+            /*"codTipomoneda", */  "msgUsuario"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Numero", "Fecha", "Responsable", "Glosa general", "Monto",
-            "Moneda", "Enviado a contab.", "Comprobante en contab."
+            "Moneda", "Env.Ctb.", "Cmp.en cntb."
     };
     private final int[] FILTER_WIDTH = new int[]{
             4, 4, 15, 15, 4, 2, 1, 5
@@ -151,25 +152,40 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
                     }
                 });
 
+        gpContainer.addGeneratedProperty("isDescuadrado",
+                new PropertyValueGenerator<Boolean>() {
+                    @Override
+                    public Boolean getValue(Item item, Object itemId,
+                                           Object propertyId) {
+                        ScpRendicioncabecera rendCab = (ScpRendicioncabecera) ((BeanItem) item).getBean();
+                        return getService().checkIfRendicionDescuadrado(rendCab);
+                    }
+                    @Override
+                    public Class<Boolean> getType() {
+                        return Boolean.class;
+                    }
+                });
+
 
         grid.setContainerDataSource(gpContainer);
-        log.info("Items " + gpContainer.getItemIds().size());
 
         grid.setEditorEnabled(false);
         grid.setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
 
         ViewUtil.setColumnNames(grid, VISIBLE_COLUMN_NAMES, VISIBLE_COLUMN_IDS, NONEDITABLE_COLUMN_IDS);
 
-        //Arrays.asList(HIDDEN_COLUMN_IDS).forEach( colName ->  grid.getColumn(colName).setHidden(true));
+        Arrays.asList(HIDDEN_COLUMN_IDS).forEach( colName ->  grid.getColumn(colName).setHidden(true));
 
         ViewUtil.alignMontosInGrid(grid);
 
         if (Role.isPrivileged()) {
             getBtnEnviar().setVisible(true);
+            getBtnNoEnviado().setVisible(true);
             grid.setSelectionMode(SelectionMode.MULTI);
         } else {
             grid.setSelectionMode(SelectionMode.SINGLE);
             getBtnEnviar().setVisible(false);
+            getBtnNoEnviado().setVisible(false);
         }
 
         // Fecha Desde Hasta
@@ -189,9 +205,11 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
                 container.removeContainerFilters("codTipomoneda");
                 container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
                 ViewUtil.filterColumnsByMoneda(grid, moneda);
+                grid.getColumn("codTipomoneda").setHidden(true);
             } else {
                 container.removeContainerFilters("codTipomoneda");
                 ViewUtil.filterColumnsByMoneda(grid, moneda);
+                grid.getColumn("codTipomoneda").setHidden(false);
             }
         });
         if (moneda!=null)

@@ -145,6 +145,7 @@ public class UsuarioView extends UsuarioUI implements Viewing {
             usuarioWindow.close();
         });
         UI.getCurrent().addWindow(usuarioWindow);
+        ViewUtil.colorizeRowsUsuarios(grid);
     }
 
 

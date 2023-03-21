@@ -1,6 +1,8 @@
 package org.sanjose.views.sys;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.BeanItem;
+import org.hibernate.Session;
 import org.sanjose.converter.MesCobradoToBooleanConverter;
 import org.sanjose.model.*;
 import org.sanjose.repo.*;
@@ -13,9 +15,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.sanjose.util.GenUtil.PEN;
 import static org.sanjose.util.GenUtil.USD;
@@ -511,6 +511,33 @@ public class PersistanceService {
         cabecera.setNumGastototal(gastoTotal);
         cabecera.setNumSaldopendiente(cabecera.getNumTotalanticipo().subtract(gastoTotal));
         rendicioncabeceraRep.save(cabecera);
+    }
+
+    @Transactional
+    public boolean checkIfRendicionDescuadrado(ScpRendicioncabecera rendCab) {
+        Map<String, BigDecimal> proySaldo = new HashMap<>();
+        ScpRendicioncabecera cabecera = rendicioncabeceraRep.findByCodRendicioncabecera(rendCab.getCodRendicioncabecera());
+        boolean isCtaContaLike14 = false;
+        for (ScpRendiciondetalle det : cabecera .getScpRendiciondetalles()) {
+            if (!proySaldo.containsKey(det.getCodProyecto()))
+                proySaldo.put(det.getCodProyecto(), new BigDecimal(0));
+            if (cabecera.getCodTipomoneda().equals(GenUtil.PEN)) {
+                proySaldo.merge(det.getCodProyecto(), det.getNumDebesol(), BigDecimal::subtract);
+                proySaldo.merge(det.getCodProyecto(), det.getNumHabersol(), BigDecimal::add);
+            } else if (cabecera.getCodTipomoneda().equals(GenUtil.USD)) {
+                proySaldo.merge(det.getCodProyecto(), det.getNumDebedolar(), BigDecimal::subtract);
+                proySaldo.merge(det.getCodProyecto(), det.getNumHaberdolar(), BigDecimal::add);
+            } else {
+                proySaldo.merge(det.getCodProyecto(), det.getNumDebemo(), BigDecimal::subtract);
+                proySaldo.merge(det.getCodProyecto(), det.getNumHabermo(), BigDecimal::add);
+            }
+            if (!isCtaContaLike14)
+                isCtaContaLike14 = det.getCodCtacontable().startsWith("14");
+        }
+        for (String proy : proySaldo.keySet()) {
+            if (proySaldo.get(proy).compareTo(new BigDecimal(0))!=0) return true;
+        }
+        return !isCtaContaLike14;
     }
 
     public boolean checkIfAlreadyEnviado(ScpCajabanco it) {

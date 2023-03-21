@@ -43,8 +43,10 @@ DONE
 - (na pozniej bylo by super jezeli by sprawdzalo ze jezeli cuenta contable like 6% or 3% to musi miec rubro institucional, lugar de gasto a jezeli cta contable like '46%' to musi miec tylko rubro institucional)
 - okno registar anticipo powinno sie dac przesuwac
 NOT POSSIBLE
->>>>>- mozliwosc "marcar como no enviado"
->>>>>- ? jezeli suma(ingr por proyecto)=suma(egr por proyecto) to moglaby na liscie rendiciones pokazywac sie na czerwono? y tez jezeli nie zawiera na liscie cta_contable like '14%'?
+- mozliwosc "marcar como no enviado"
+DONE
+- ? jezeli suma(ingr por proyecto)=suma(egr por proyecto) to moglaby na liscie rendiciones pokazywac sie na czerwono? y tez jezeli nie zawiera na liscie cta_contable like '14%'?
+DONE
 - brakuje raportu na rendiciones (comprobante del sistema contable)
 DONE
 
@@ -80,7 +82,8 @@ DONE
 - reporte diario terceros
 - guzik zeby zaciagnac tipo de cambio tam gdzie go nie ma aktualizowac w ksiegowosci
 DONE
->>>>>  - rendiciones marcar no enviado
+- rendiciones marcar no enviado
+DONE
 >>>>>  - caja - cargo abono - cuando cambia fecha a una operacion se cambia en todas.
   - formato para registrar cambio de moneda - caja/banco
 DONE
@@ -90,3 +93,27 @@ DONE
   - tercero jezeli inactivo to nie wyswietla sie na liscie w caja ani w bancos
 DONE
 - Caja Diario - reorganizar columnas para pantalla mas chiquita
+DONE
+
+VERIFICAR:
+
+1. Rendiciones Monto (en Manejo), p.e:
+
+txt_anoproceso=2022 and cod_mes=11 and cod_comprobante=000049  ($)
+txt_anoproceso=2022 and cod_mes=11 and cod_comprobante=000033  ($)
+txt_anoproceso=2022 and cod_mes=11 and cod_comprobante=000011  ($)
+
+2. Roles de Usuarios!
+3. Destinos - para todos?
+4. Czy na pewno txt_nombre z destino czy nie txt_nombredestino
+5. Rendiciones - export, import?
+6. Test reset pass etc.
+
+INSTALL:
+
+1. Create table VsjResetPassword
+2. Update getSaldoAlDia etc.
+3. Update rendiciones codrendicioncabecera
+4. Install properties SMTP, Maximize etc.
+5. Install reports
+6. Set rol in MsgUsuario

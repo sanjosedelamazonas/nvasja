@@ -38,7 +38,8 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
 
     private final CajaManejoLogic viewLogic = new CajaManejoLogic();
     private final String[] VISIBLE_COLUMN_IDS = new String[]{"fecFecha", "txtCorrelativo", "codProyecto", "codTercero",
-            "scpDestino.txtNombredestino", "txtGlosaitem", "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
+            "scpDestino.txtNombredestino", "txtGlosaitem",
+            "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "codCtacontable", "codContraparte", "codDestinoitem", "codContracta", "codCtaespecial", "codTipocomprobantepago",
             "txtSeriecomprobantepago", "txtComprobantepago", "fecComprobantepago", "codCtaproyecto", "codFinanciera",
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace"
@@ -49,13 +50,15 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
             "flgEnviado", "codOrigenenlace", "codComprobanteenlace", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{"Fecha", "Numero", "Proyecto", "Tercero",
-            "Responsable", "Glosa", "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
+            "Responsable", "Glosa",
+            "Ing S/.", "Egr S/.", "Ing $", "Egr $", "Ing €", "Egr €",
             "Cta Cont.", "Lug. Gasto", "Cod. Aux", "Cuenta", "Rubro Inst.", "TD",
             "Serie", "Num Doc", "Fecha Doc", "Rubro Proy", "Fuente",
             "Env", "Origen", "Comprobante"
     };
     private final int[] FILTER_WIDTH = new int[]{ 5, 6, 4, 4,
-            5, 15, 6, 6, 6, 6, 6, 6, //
+            5, 15,
+            4, 4, 4, 4, 4, 4, //
             6, 4, 6, 5, 5, 2, // Tipo Doc
             4, 5, 5, 5, 4, // Fuente
             2, 2, 5

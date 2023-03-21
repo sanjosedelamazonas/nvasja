@@ -114,8 +114,8 @@ public class TerceroListView extends TerceroListUI implements Viewing {
             }
         };
         grid.getEditorFieldGroup().addCommitHandler(gridCommitHandler);
+        ViewUtil.colorizeRowsTerceros(grid);
     }
-
 
     private void nuevoDestino() {
         clearSelection();
@@ -125,7 +125,6 @@ public class TerceroListView extends TerceroListUI implements Viewing {
         grid.addRow(newTercero);
         //view.grid.getContainerDataSource().addItemAt(0, new ScpDestino());
     }
-
 
     private void setItemLogic(ItemClickEvent event) {
         if (event.isDoubleClick()) {
