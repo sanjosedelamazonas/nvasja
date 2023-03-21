@@ -37,7 +37,7 @@ public class MsgAccessControl implements AccessControl {
         if (devMode)
             usuario = msgUsuarioRep.findByTxtUsuario(username);
         else
-            usuario = msgUsuarioRep.findByTxtUsuarioAndTxtPasswordAndFlgEstado(username, Rot10.rot10(password), true);
+            usuario = msgUsuarioRep.findByTxtUsuarioAndTxtPasswordAndFlgEstado(username, Rot10.rot10(password), '1');
         if (usuario==null) return false;
         roles.put(username, usuario.getCodRol());
         CurrentUser.set(username);
