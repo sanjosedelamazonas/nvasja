@@ -1,16 +1,14 @@
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]    Script Date: 09/12/2016 10:06:13 ******/
+
+/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]    Script Date: 18/03/2023 21:40:34 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-drop PROCEDURE if exists [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]
-go
 
-CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]
+ALTER PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_NoEnviadosBancos]
 (@Tipo int, -- 0 proyecto, 1 tercero
-@FechaInicial char(10),
- @FechaFinal char(19),
+ @FechaInicial char(10), -- @FechaInicial <=
+ @FechaFinal varchar(10), -- < @FechaFinal+1
  @Codigo varchar(6),
  @SaldoPEN_banco decimal(12,2) OUTPUT,
  @SaldoUSD_banco decimal(12,2) OUTPUT,
@@ -29,8 +27,8 @@ BEGIN
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
 	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
-	Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 111) And A.fec_fecha < dateadd(day,1,Convert(date, @FechaFinal, 111)))
+	And Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And
 --	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
 	A.cod_tipomoneda=0
@@ -41,8 +39,8 @@ BEGIN
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
 	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
-	Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 111) And A.fec_fecha < dateadd(day,1,Convert(date, @FechaFinal, 111)))
+	And Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And
 	--a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
 	A.cod_tipomoneda=1
@@ -53,8 +51,8 @@ BEGIN
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
 	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
-	Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 111) And A.fec_fecha <dateadd(day,1,Convert(date, @FechaFinal, 111)))
+	And Ltrim(Rtrim(b.cod_proyecto)) = @Codigo And
 	--a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
 	A.cod_tipomoneda=2
@@ -67,7 +65,7 @@ BEGIN
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
 	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 111) And A.fec_fecha <dateadd(day,1,Convert(date, @FechaFinal, 111))) And
 	Ltrim(Rtrim(b.cod_tercero)) = @Codigo And
 --	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
@@ -79,7 +77,7 @@ BEGIN
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
 	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 111) And A.fec_fecha <dateadd(day,1,Convert(date, @FechaFinal,111))) And
 	Ltrim(Rtrim(b.cod_tercero)) = @Codigo And
 --	a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
@@ -91,8 +89,8 @@ BEGIN
 	From scp_bancocabecera A
 	INNER JOIN scp_bancodetalle B ON A.txt_anoproceso = B.txt_anoproceso And
 	A.cod_mes+A.ind_tipocuenta+A.txt_correlativo=B.cod_mes+B.ind_tipocuenta+B.txt_correlativo
-	Where (a.fec_fecha >= Convert(date, @FechaInicial, 103) And A.fec_fecha <= Convert(date, @FechaFinal, 120)) And
-	Ltrim(Rtrim(b.cod_tercero)) = @Codigo And 
+	Where (a.fec_fecha >= Convert(date, @FechaInicial, 111) And A.fec_fecha <dateadd(day,1,Convert(date, @FechaFinal, 111))) And
+	Ltrim(Rtrim(b.cod_tercero)) = @Codigo And
 	--a.txt_anoproceso=SUBSTRING(@FechaFinal,7,4) and
 	A.flg_enviado=0 and
 	A.cod_tipomoneda=2
@@ -109,5 +107,3 @@ Exec usp_scp_vsj_getSaldoProyectoAlDia_NoEnviadosBancos 2,'01/01/2016','09/09/20
 
 */
 
-GO
-;

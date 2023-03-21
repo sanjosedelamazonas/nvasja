@@ -1,16 +1,14 @@
-/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]    Script Date: 09/12/2016 10:05:54 ******/
+
+/****** Object:  StoredProcedure [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]    Script Date: 18/03/2023 21:10:00 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-drop PROCEDURE if exists [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]
-GO
 
-CREATE PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]
+ALTER PROCEDURE [dbo].[usp_scp_vsj_getSaldoAlDia_contabilidad]
 (@Tipo int, -- 1 proyecto, 2 tercero
- @FechaInicial varchar(10),
- @FechaFinal varchar(19),
+ @FechaInicial char(10), -- @FechaInicial <=
+ @FechaFinal varchar(10), -- < @FechaFinal+1
  @Codigo varchar(6),
  @SaldoPEN_contabilidad decimal(12,2) OUTPUT,
  @SaldoUSD_contabilidad decimal(12,2) OUTPUT,
@@ -31,7 +29,7 @@ BEGIN
 			(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante, fec_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
 			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('00','13') and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
+			(fec_comprobante >= Convert(date, @FechaInicial, 111) And fec_comprobante < dateadd(day,1,(Convert(date, @FechaFinal, 111))))) b
 	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
 	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
@@ -47,7 +45,7 @@ BEGIN
 		(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
 			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('00','13')  and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
+			(fec_comprobante >= Convert(date, @FechaInicial, 111) And fec_comprobante <dateadd(day,1,Convert(date, @FechaFinal, 111)))) b
 	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
 	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
@@ -63,7 +61,7 @@ BEGIN
 	(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
 			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106') and cod_mes not in ('00','13')  and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
+			(fec_comprobante >= Convert(date, @FechaInicial, 111) And fec_comprobante <dateadd(day,1, Convert(date, @FechaFinal, 111)))) b
 	where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
 	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
@@ -81,7 +79,7 @@ BEGIN
 			(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
 			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106') and cod_mes not in ('00','13')  and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
+			(fec_comprobante >= Convert(date, @FechaInicial, 111) And fec_comprobante <dateadd(day,1,Convert(date, @FechaFinal, 111)))) b
 	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
 	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
@@ -97,7 +95,7 @@ BEGIN
 			(SELECT distinct [txt_anoproceso]+[cod_filial]+[cod_mes]+[cod_origen]+[cod_comprobante] codigo_comprobante
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
 			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and cod_mes not in ('00','13')  and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
+			(fec_comprobante >= Convert(date, @FechaInicial, 111) And fec_comprobante <dateadd(day,1, Convert(date, @FechaFinal, 111)))) b
 	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
 	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
@@ -114,7 +112,7 @@ BEGIN
 			FROM [SCP].[dbo].[scp_comprobantedetalle]
 			where Substring(Ltrim(cod_ctacontable),1,3) in ('101','104','106')and
 				cod_mes not in ('00','13')  and
-			(fec_comprobante >= Convert(date, @FechaInicial, 103) And fec_comprobante <= Convert(date, @FechaFinal, 120))) b
+			(fec_comprobante >= Convert(date, @FechaInicial, 111) And fec_comprobante <dateadd(day,1, Convert(date, @FechaFinal, 111)))) b
 	Where
 	a.[txt_anoproceso]+a.[cod_filial]+a.[cod_mes]+a.[cod_origen]+a.[cod_comprobante]=b.codigo_comprobante and
 	(Substring(Ltrim(a.cod_ctacontable),1,3)<>'101' And Substring(Ltrim(a.cod_ctacontable),1,3)<>'104'
@@ -134,5 +132,3 @@ END
 Exec usp_scp_vsj_getSaldoProyectoAlDia_contabilidad 1,'01/01/2016','09/09/2016','023017',0,0,0
 
 */
-GO
-;

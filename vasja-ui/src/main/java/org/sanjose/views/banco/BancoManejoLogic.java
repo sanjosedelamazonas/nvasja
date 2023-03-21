@@ -76,8 +76,8 @@ public class BancoManejoLogic extends BancoGridLogic implements Serializable, Sa
                 return;
             }
         });
-        mView.getBtnMarcarCobrado().addClickListener(clickEvent -> { setMesCobrado(true); });
-        mView.getBtnMarcarNoCobrado().addClickListener(clickEvent -> { setMesCobrado(false); });
+        mView.getBtnMarcarCobrado().addClickListener(clickEvent -> setMesCobrado(true));
+        mView.getBtnMarcarNoCobrado().addClickListener(clickEvent -> setMesCobrado(false));
 
         GridContextMenu gridContextMenu = new GridContextMenu(mView.getGridBanco());
         gridContextMenu.addGridBodyContextMenuListener(e -> {

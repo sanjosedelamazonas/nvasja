@@ -66,12 +66,12 @@
    </vaadin-horizontal-layout>
    <vaadin-vertical-layout height="25px" _id="espacio"></vaadin-vertical-layout>
    <vaadin-vertical-layout size-full :center :expand>
-    <vaadin-horizontal-layout spacing width-full height="40px" margin>
+    <vaadin-horizontal-layout spacing height="40px" margin>
      <vaadin-horizontal-layout spacing height="25px">
       <vaadin-label size-auto plain-text>
-        Cuenta bancaria: 
+        Cuenta:
       </vaadin-label>
-      <vaadin-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" responsive item-caption-mode="id" width="416px" _id="selFiltroCuenta">
+      <vaadin-combo-box invalid-allowed="false" input-prompt="Filtrar por cuenta" responsive item-caption-mode="id" width="390px" _id="selFiltroCuenta">
        <option>Option 1</option>
        <option>Option 2</option>
        <option>Option 3</option>
@@ -85,15 +85,15 @@
       <vaadin-button plain-text _id="btnMarcarNoCobrado">
         Marcar no cobrado 
       </vaadin-button>
+      <vaadin-button plain-text _id="btnNuevoCheque">
+        Nuevo cheque
+      </vaadin-button>
      </vaadin-horizontal-layout>
-     <vaadin-button plain-text _id="btnNuevoCheque">
-       Nuevo cheque 
-     </vaadin-button>
     </vaadin-horizontal-layout>
     <vaadin-horizontal-layout responsive size-full :expand>
      <vaadin-horizontal-layout size-full :expand>
       <vaadin-grid editor-cancel-caption="Anular" size-full _id="gridBanco" :expand></vaadin-grid>
-      <vaadin-vertical-layout spacing width="200px" height="120px" margin :middle>
+      <vaadin-vertical-layout spacing width-auto height="120px" margin :middle>
        <vaadin-button width="130px" height="22px" plain-text _id="btnImprimir">
          Imprimir Voucher 
        </vaadin-button>
