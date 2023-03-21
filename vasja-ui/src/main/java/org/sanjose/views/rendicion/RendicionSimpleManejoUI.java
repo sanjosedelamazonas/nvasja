@@ -36,6 +36,7 @@ public class RendicionSimpleManejoUI extends VerticalLayout {
     protected Button btnModificar;
     protected Button btnEliminar;
     protected Button btnEnviar;
+    protected Button btnNoEnviado;
 
     public RendicionSimpleManejoUI() {
         Design.read(this);

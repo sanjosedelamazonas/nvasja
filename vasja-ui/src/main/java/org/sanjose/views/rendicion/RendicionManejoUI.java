@@ -30,6 +30,7 @@ public class RendicionManejoUI extends VerticalLayout {
     protected HorizontalLayout horiz3;
     protected ComboBox filtroEnviadasCombo;
     protected Button btnEnviar;
+    protected Button btnNoEnviado;
     protected Button btnNueva;
     protected Grid grid;
     protected Button btnVerImprimir;

@@ -216,10 +216,10 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
             List<String> cabecerasIdsEnviados = new ArrayList<>();
             // Check if already sent and ask if only marcar...
             for (Object objVcb : cabecerasParaEnviar) {
-                ScpBancocabecera cajabanco = (ScpBancocabecera) objVcb;
-                if (!cajabanco.isEnviado() && view.getService().checkIfAlreadyEnviado(cajabanco)) {
-                    cabecerasEnviados.add(cajabanco);
-                    cabecerasIdsEnviados.add(cajabanco.getCodBancocabecera().toString());
+                ScpBancocabecera bancocabecera = (ScpBancocabecera) objVcb;
+                if (!bancocabecera.isEnviado() && view.getService().checkIfAlreadyEnviado(bancocabecera)) {
+                    cabecerasEnviados.add(bancocabecera);
+                    cabecerasIdsEnviados.add(bancocabecera.getCodBancocabecera().toString());
                 }
             }
             for (ScpBancocabecera cajabanco : cabecerasEnviados) {

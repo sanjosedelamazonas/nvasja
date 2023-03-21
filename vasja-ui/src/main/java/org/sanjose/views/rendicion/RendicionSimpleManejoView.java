@@ -359,6 +359,10 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
         return btnEnviar;
     }
 
+    public Button getBtnNoEnviado() {
+        return btnNoEnviado;
+    }
+
     public ComboBox getFiltroEnviadasCombo() {
         return filtroEnviadasCombo;
     }

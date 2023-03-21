@@ -523,6 +523,11 @@ public class PersistanceService {
         return !cabeceras.isEmpty();
     }
 
+    public boolean checkIfAlreadyEnviado(ScpRendicioncabecera it) {
+        List<ScpComprobantecabecera> cabeceras = scpComprobantecabeceraRep.findById_TxtAnoprocesoAndId_CodFilialAndId_CodMesAndId_CodOrigenAndId_CodComprobante(it.getTxtAnoproceso(), "01", it.getCodMes(), "08", GenUtil.getCodComprobante(it.getCodRendicioncabecera()));
+        return !cabeceras.isEmpty();
+    }
+
     public ScpRendicioncabeceraRep getRendicioncabeceraRep() {
         return rendicioncabeceraRep;
     }

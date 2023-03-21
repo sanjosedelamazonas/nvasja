@@ -312,5 +312,7 @@ public class RendicionManejoView extends RendicionManejoUI implements RendicionM
         return filtroEnviadasCombo;
     }
 
-
+    public Button getBtnNoEnviado() {
+        return btnNoEnviado;
+    }
 }

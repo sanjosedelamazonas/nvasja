@@ -46,6 +46,8 @@ public interface RendicionManejoViewing extends NavigatorViewing, Viewing, GridV
 
     Button getBtnEnviar();
 
+    Button getBtnNoEnviado();
+
     ComboBox getFiltroEnviadasCombo();
 
     void clearSelection();
