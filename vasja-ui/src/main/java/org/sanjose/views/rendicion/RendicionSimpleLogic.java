@@ -88,10 +88,13 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
             view.getBtnEnviarAcontab().setVisible(false);
         } else {
             view.getBtnEnviarAcontab().addClickListener(event -> {
-                Collection<Object> rendiciones = new ArrayList<>();
-                rendiciones.add(beanItem.getBean());
-                MainUI.get().getProcUtil().enviarContabilidadRendicion(rendiciones, manView.getService(), manView.getViewLogic());
-                view.getBtnEnviarAcontab().setEnabled(false);
+                MainUI.get().getProcUtil().checkDescuadradoAndEnviaContab(beanItem.getBean(), true, manView.getService(), null);
+                ScpRendicioncabecera refreshedCab = manView.getService().getRendicioncabeceraRep().findByCodRendicioncabecera(beanItem.getBean().getCodRendicioncabecera());
+                if (refreshedCab.isEnviado()) {
+                    bindForm(refreshedCab);
+                    view.getBtnEnviarAcontab().setEnabled(false);
+                    //view.getChkEnviado().setValue(true);
+                }
             });
         }
         view.getBtnImportar().addClickListener(clickEvent -> importDetalles());

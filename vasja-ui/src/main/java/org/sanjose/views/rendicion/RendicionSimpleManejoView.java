@@ -388,4 +388,5 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
     public RendicionManejoLogic getViewLogic() {
         return viewLogic;
     }
+
 }

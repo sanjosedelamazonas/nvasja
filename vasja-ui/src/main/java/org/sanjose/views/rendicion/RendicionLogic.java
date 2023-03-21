@@ -65,7 +65,6 @@ public class RendicionLogic extends RendicionItemLogic {
         view.getBtnToggleVista().addClickListener(event -> view.toggleVista());
         view.getBtnEliminarRend().addClickListener(clickEvent -> {
             eliminarRendicion(beanItem.getBean());
-
         });
         view.getBtnImportar().addClickListener(clickEvent -> importDetalles());
         switchMode(EMPTY);

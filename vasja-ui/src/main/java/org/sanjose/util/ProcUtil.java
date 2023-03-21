@@ -4,12 +4,14 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
+import org.sanjose.MainUI;
 import org.sanjose.authentication.CurrentUser;
 import org.sanjose.model.*;
 import org.sanjose.repo.ScpTipocambioRep;
 import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.banco.BancoTipoCambiosLogic;
 import org.sanjose.views.caja.CajaTipoCambiosLogic;
+import org.sanjose.views.rendicion.RendicionManejoViewing;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.rendicion.RendicionTipoCambiosLogic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.StoredProcedureQuery;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -363,12 +366,110 @@ public class ProcUtil {
         }
     }
 
+    public void checkDescuadradoAndEnviaContab(ScpRendicioncabecera rendicioncabecera, boolean isEnviar, PersistanceService service, RendicionManejoViewing manView) {
+        List<ScpRendicioncabecera> cabecerasParaEnviar = new ArrayList<>();
 
-    public void enviarContabilidadRendicion(Collection<Object> vcbs, PersistanceService service, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
+        if (manView!=null) {
+            Collection<Object> cabs = manView.getSelectedRows();
+            cabs.forEach(e -> cabecerasParaEnviar.add((ScpRendicioncabecera) e));
+        }
+        if (cabecerasParaEnviar.isEmpty() && rendicioncabecera!=null) {
+            cabecerasParaEnviar.add(rendicioncabecera);
+        }
+
+        List<String> desuadrados = new ArrayList<>();
+        for (Object objVcb : cabecerasParaEnviar) {
+            ScpRendicioncabecera rendcab = (ScpRendicioncabecera) objVcb;
+            if (service.checkIfRendicionDescuadrado(rendcab)) {
+                desuadrados.add(rendcab.getCodComprobante());
+            }
+        }
+
+        if (isEnviar && !desuadrados.isEmpty()) {
+            MessageBox
+                    .createQuestion()
+                    .withCaption("!Atencion!")
+                    .withMessage("?Estas rendiciones son descuadradas, quieres enviarlas de todas maneras?\n"+ Arrays.toString(desuadrados.toArray()) +"")
+                    .withYesButton(() -> enviarContabilidad(cabecerasParaEnviar, isEnviar, service, manView))
+                    .withNoButton()
+                    .open();
+        } else {
+            enviarContabilidad(cabecerasParaEnviar, isEnviar, service, manView);
+        }
+    }
+
+
+
+    public void enviarContabilidad(List<ScpRendicioncabecera> cabecerasParaEnviar, boolean isEnviar, PersistanceService service, RendicionManejoViewing manView) {
+        Collection<ScpRendicioncabecera> cabecerasParaRefresh = new ArrayList<>();
+        cabecerasParaEnviar.forEach(e -> cabecerasParaRefresh.add(e));
+        if (isEnviar) {
+            Set<ScpRendicioncabecera> cabecerasEnviados = new HashSet<>();
+            List<String> cabecerasIdsEnviados = new ArrayList<>();
+            // Check if already sent and ask if only marcar...
+            for (Object objVcb : cabecerasParaEnviar) {
+                ScpRendicioncabecera rendcab = (ScpRendicioncabecera) objVcb;
+                if (!rendcab.isEnviado() && service.checkIfAlreadyEnviado(rendcab)) {
+                    cabecerasEnviados.add(rendcab);
+                    cabecerasIdsEnviados.add(rendcab.getCodRendicioncabecera().toString());
+                }
+            }
+            for (ScpRendicioncabecera rendcab : cabecerasEnviados) {
+                cabecerasParaEnviar.remove(rendcab);
+            }
+            if (cabecerasEnviados.isEmpty()) {
+                MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, service, (manView!=null ? manView.getViewLogic() : null));
+            } else {
+                MessageBox
+                        .createQuestion()
+                        .withCaption("!Atencion!")
+                        .withMessage("?Estas operaciones ya fueron enviadas ("+ Arrays.toString(cabecerasIdsEnviados.toArray()) +"), quiere solo marcar los como enviadas?")
+                        .withYesButton(() -> doMarcarEnviados(cabecerasParaEnviar, cabecerasEnviados, service, manView))
+                        .withNoButton()
+                        .open();
+            }
+            //MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, manView.getService(), this);
+        } else {
+            for (Object objVcb : cabecerasParaEnviar) {
+                ScpRendicioncabecera scpRendicioncabecera = (ScpRendicioncabecera) objVcb;
+                if (!scpRendicioncabecera.isEnviado()) {
+                    Notification.show("!Atencion!", "!Omitiendo operacion " + scpRendicioncabecera.getCodRendicioncabecera() + " - no esta enviada!", Notification.Type.TRAY_NOTIFICATION);
+                    continue;
+                }
+                if (manView!=null)
+                    manView.getGrid().deselect(scpRendicioncabecera);
+                scpRendicioncabecera.setFlgEnviado('0');
+                scpRendicioncabecera.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+                scpRendicioncabecera.setCodUactualiza(CurrentUser.get());
+                service.getRendicioncabeceraRep().save(scpRendicioncabecera);
+            }
+            if (manView!=null)
+                manView.getViewLogic().refreshItems(cabecerasParaRefresh);
+        }
+    }
+
+    public void doMarcarEnviados(List<ScpRendicioncabecera> cabecerasParaEnviar , Set<ScpRendicioncabecera> cabecerasEnviados, PersistanceService service, RendicionManejoViewing manView) {
+        for (ScpRendicioncabecera cabecera : cabecerasEnviados) {
+            cabecera.setFlgEnviado('1');
+            cabecera.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
+            cabecera.setCodUactualiza(CurrentUser.get());
+            service.getRendicioncabeceraRep().save(cabecera);
+        }
+        if (manView!=null)
+            manView.getGrid().deselectAll();
+        //this.refreshItems(cabecerasEnviados);
+        if (!cabecerasParaEnviar.isEmpty())
+            MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, service, (manView!=null ? manView.getViewLogic() : null));
+        if (manView!=null)
+            manView.getViewLogic().refreshItems(cabecerasEnviados);
+    }
+
+
+    public void enviarContabilidadRendicion(List<ScpRendicioncabecera> vcbs, PersistanceService service, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
         Set<ScpRendicioncabecera> rendicionsAEnviar = new HashSet<>();
         Map<ScpRendicioncabecera, String> rendicionsFaltaTipoCambio = new HashMap<>();
-        for (Object objVcb : vcbs) {
-            curRendicionCabecera = (ScpRendicioncabecera) objVcb;
+        for (ScpRendicioncabecera objVcb : vcbs) {
+            curRendicionCabecera = objVcb;
             if (curRendicionCabecera.isEnviado()) {
                 Notification.show("!Attention!", "!Omitiendo rendicion " + curRendicionCabecera.getCodComprobante() + " - ya esta enviada!", Notification.Type.TRAY_NOTIFICATION);
                 continue;
@@ -411,7 +512,9 @@ public class ProcUtil {
 
     public void enviarContabilidadRendicionConTipoCambio(Set<ScpRendicioncabecera> rendicionsAEnviar, PersistanceService service, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
         try {
-            itemsRefreshing.refreshItems(enviarContabilidadRendicionInTransaction(rendicionsAEnviar, service));
+            Set<ScpRendicioncabecera> enviadas = enviarContabilidadRendicionInTransaction(rendicionsAEnviar, service);
+            if (itemsRefreshing!=null)
+                itemsRefreshing.refreshItems(enviadas);
         } catch (EnviarContabilidadException envexc) {
             MessageBox
                     .createError()

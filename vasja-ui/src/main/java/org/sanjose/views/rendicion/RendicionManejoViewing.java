@@ -6,6 +6,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import org.sanjose.model.ScpRendicioncabecera;
+import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.sys.GridViewing;
 import org.sanjose.views.sys.NavigatorViewing;
 import org.sanjose.views.sys.PersistanceService;
