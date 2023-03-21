@@ -194,9 +194,12 @@ public class TransferenciaLogic extends ComprobanteLogic {
             else {
                 ScpCajabanco vcbOld = null;
                 for (ScpCajabanco vcb : tView.getContainer().getItemIds()) {
+                    if (vcb.getFecFecha().compareTo(item.getFecFecha())!=0) {
+                        vcb.setFecFecha(item.getFecFecha());
+                    }
                     if (item.getFecFregistro().equals(vcb.getFecFregistro())) {
                         vcbOld = item;
-                        break;
+                        //break;
                     }
                 }
                 tView.getContainer().removeItem(vcbOld);

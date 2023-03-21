@@ -84,7 +84,8 @@ DONE
 DONE
 - rendiciones marcar no enviado
 DONE
->>>>>  - caja - cargo abono - cuando cambia fecha a una operacion se cambia en todas.
+  - caja - cargo abono - cuando cambia fecha a una operacion se cambia en todas.
+DONE
   - formato para registrar cambio de moneda - caja/banco
 DONE
   - acceso a reporte de cuenta por usuario tercero (habilitado/no habilitado)

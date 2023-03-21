@@ -205,11 +205,11 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
                 container.removeContainerFilters("codTipomoneda");
                 container.addContainerFilter(new Compare.Equal("codTipomoneda", moneda));
                 ViewUtil.filterColumnsByMoneda(grid, moneda);
-                grid.getColumn("codTipomoneda").setHidden(true);
+                grid.getColumn("tipoMoneda").setHidden(true);
             } else {
                 container.removeContainerFilters("codTipomoneda");
                 ViewUtil.filterColumnsByMoneda(grid, moneda);
-                grid.getColumn("codTipomoneda").setHidden(false);
+                grid.getColumn("tipoMoneda").setHidden(false);
             }
         });
         if (moneda!=null)
