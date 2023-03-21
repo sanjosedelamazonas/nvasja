@@ -51,6 +51,34 @@ public class TercerosUtil {
         );
     }
 
+
+    public static Map<Character, List<VsjOperaciontercero>> getAllForReport(Date fechaDesde,
+                                                   Date fechaHasta,
+                                                   List<String> codigosTerc,
+                                                   String curCodTercero,
+                                                   PersistanceService service) {
+
+        List<VsjOperaciontercero> all = TercerosUtil.getFrom(
+                service.getScpComprobantedetalleRep().
+                        findByFecComprobanteBetweenAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, codigosTerc, "4"),
+                service.getScpComprobantedetalleRep().
+                        findByFecComprobanteBetweenAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, codigosTerc, "1"),
+                service.getCajabancoRep().findByFecFechaBetweenAndCodTerceroIsInAndFlgEnviadoOrderByFecFechaAscCodCajabancoAsc(fechaDesde, fechaHasta, codigosTerc, '0'),
+                service.getBancodetalleRep().findByFecFechaBetweenAndCodTerceroIsInAndVsjBancocabecera_FlgEnviadoOrderByFecFechaAscId_CodBancocabeceraAsc(fechaDesde, fechaHasta, codigosTerc, '0'),
+                service.getDestinoRepo(),
+                TercerosUtil.getAllSaldoPorFecha(fechaDesde, curCodTercero),
+                fechaDesde,
+                true
+        );
+        Map<Character, List<VsjOperaciontercero>> allops = new HashMap<>();
+        allops.put(GenUtil.PEN, new ArrayList<>());
+        allops.put(GenUtil.USD, new ArrayList<>());
+        allops.put(GenUtil.EUR, new ArrayList<>());
+        all.forEach( op -> allops.get(op.getCodTipomoneda()).add(op));
+        return allops;
+    }
+
+
     public static ProcUtil.Saldos getAllSaldoPorFecha(Date fecha, String curCodTercero) {
         return MainUI.get().getProcUtil().getSaldos(fecha, null, curCodTercero);
     }
@@ -134,7 +162,7 @@ public class TercerosUtil {
                     "",
                     "",
                     "",
-                    '0',
+                    '2',
                     null,
                     null,
                     null,
@@ -293,20 +321,24 @@ public class TercerosUtil {
                                       String codTercero, PersistanceService service, boolean isShow) throws JRException, FileNotFoundException {
 
         ScpDestino dest = service.getDestinoRepo().findByCodDestino(codTercero);
-        List<VsjOperaciontercero> operacionterceros =  TercerosUtil.getAll(
+
+        Map<Character, List<VsjOperaciontercero>> allOpsTerc =  TercerosUtil.getAllForReport(
                 fechaDesde,
                 fechaHasta,
                 Arrays.asList(new String[]{codTercero}),
                 codTercero,
-                service,
-                true);
+                service);
 
-        JRBeanCollectionDataSource operCollection = new JRBeanCollectionDataSource(operacionterceros);
         log.debug("Generating Tercero Operaciones: ");
         HashMap paramMap = new HashMap();
         SimpleDateFormat sdf = new SimpleDateFormat(ConfigurationUtil.get("DEFAULT_DATE_FORMAT"));
+
+        for (Character moneda : GenUtil.getMonedasAsCharacter()) {
+            JRBeanCollectionDataSource operCollection = new JRBeanCollectionDataSource(allOpsTerc.get(moneda));
+            paramMap.put("OPERACIONES_" + GenUtil.getDescMoneda(moneda), !allOpsTerc.get(moneda).isEmpty() ? operCollection : null);
+        }
+
         paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
-        paramMap.put("OPERACIONES", operCollection);
         paramMap.put("FECHA_MIN", sdf.format(fechaDesde));
         paramMap.put("FECHA_MAX", sdf.format(fechaHasta));
         paramMap.put("COD_TERCERO", codTercero);

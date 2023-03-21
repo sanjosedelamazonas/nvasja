@@ -288,6 +288,10 @@ public class GenUtil {
         return monedaNumDesc.get(numMoneda);
     }
 
+    public static Set<Character> getMonedasAsCharacter() {
+        return monedaNumDesc.keySet();
+    }
+
     public static Character getNumMonedaFromDescContaining(String propertyName) {
         for (String key : monedaDescNum.keySet()) {
             if (propertyName.contains(key))
