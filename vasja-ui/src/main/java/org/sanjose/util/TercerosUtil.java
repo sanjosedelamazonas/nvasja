@@ -74,7 +74,20 @@ public class TercerosUtil {
         allops.put(GenUtil.PEN, new ArrayList<>());
         allops.put(GenUtil.USD, new ArrayList<>());
         allops.put(GenUtil.EUR, new ArrayList<>());
-        all.forEach( op -> allops.get(op.getCodTipomoneda()).add(op));
+        all.forEach( op -> {
+            allops.get(op.getCodTipomoneda()).add(op);
+        });
+        for (Character moneda : GenUtil.getMonedasAsCharacter()) {
+            List<VsjOperaciontercero> opers = (allops.get(moneda));
+//            switch (moneda) {
+//                case '0':
+//                    opers.get(0).getNumSaldosol()
+//
+//            }
+            if (opers.size()==1) {
+                allops.put(moneda, new ArrayList<>());
+            }
+        }
         return allops;
     }
 

@@ -458,7 +458,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
-								<text><![CDATA[Debe]]></text>
+								<text><![CDATA[Haber]]></text>
 							</staticText>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
@@ -470,7 +470,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{V_SUM_DEBE}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{V_SUM_DEBE}!=null ? $V{V_SUM_DEBE} : ""]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">
@@ -486,7 +486,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{numDebesol}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{numHabersol}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -498,7 +498,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
-								<text><![CDATA[Haber]]></text>
+								<text><![CDATA[Debe]]></text>
 							</staticText>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
@@ -510,7 +510,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{V_SUM_HABER}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{V_SUM_HABER}!=null ? $V{V_SUM_HABER} : ""]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">
@@ -526,7 +526,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{numHabersol}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{numDebesol}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -822,7 +822,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
-								<text><![CDATA[Debe]]></text>
+								<text><![CDATA[Haber]]></text>
 							</staticText>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
@@ -834,7 +834,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{V_SUM_DEBE}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{V_SUM_DEBE}!=null ? $V{V_SUM_DEBE} : ""]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">
@@ -850,7 +850,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{numDebesol}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{numHaberdolar}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -862,7 +862,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
-								<text><![CDATA[Haber]]></text>
+								<text><![CDATA[Debe]]></text>
 							</staticText>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
@@ -874,7 +874,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{V_SUM_HABER}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{V_SUM_HABER}!=null ? $V{V_SUM_HABER} : ""]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">
@@ -890,7 +890,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{numHabersol}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{numDebedolar}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -919,7 +919,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{numSaldosol}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{numSaldodolar}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -1186,7 +1186,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
-								<text><![CDATA[Debe]]></text>
+								<text><![CDATA[Haber]]></text>
 							</staticText>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
@@ -1198,7 +1198,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{V_SUM_DEBE}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{V_SUM_DEBE}!=null ? $V{V_SUM_DEBE} : ""]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">
@@ -1214,7 +1214,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{numDebesol}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{numHabermo}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -1226,7 +1226,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
-								<text><![CDATA[Haber]]></text>
+								<text><![CDATA[Debe]]></text>
 							</staticText>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
@@ -1238,7 +1238,8 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{V_SUM_HABER}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{V_SUM_HABER}!=null ? $V{V_SUM_HABER} : ""
+]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">
@@ -1254,7 +1255,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{numHabersol}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{numDebemo}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -1283,7 +1284,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{numSaldosol}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{numSaldomo}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

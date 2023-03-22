@@ -24,6 +24,7 @@ import org.sanjose.model.ScpRendiciondetallePK;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.util.GenUtil;
 import org.sanjose.util.ViewUtil;
+import org.sanjose.views.ItemsRefreshing;
 import org.sanjose.views.sys.Viewing;
 
 import java.io.ByteArrayInputStream;
@@ -42,7 +43,7 @@ import static org.sanjose.views.sys.Viewing.Mode.*;
  * User: prubach
  * Date: 20.09.16
  */
-public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
+public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements ItemsRefreshing<ScpRendicioncabecera> {
 
     private static final Logger log = LoggerFactory.getLogger(RendicionSimpleLogic.class);
 
@@ -88,7 +89,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
             view.getBtnEnviarAcontab().setVisible(false);
         } else {
             view.getBtnEnviarAcontab().addClickListener(event -> {
-                MainUI.get().getProcUtil().checkDescuadradoAndEnviaContab(beanItem.getBean(), true, manView.getService(), null);
+                MainUI.get().getProcUtil().checkDescuadradoAndEnviaContab(beanItem.getBean(), true, manView.getService(), null, this);
                 ScpRendicioncabecera refreshedCab = manView.getService().getRendicioncabeceraRep().findByCodRendicioncabecera(beanItem.getBean().getCodRendicioncabecera());
                 if (refreshedCab.isEnviado()) {
                     bindForm(refreshedCab);
@@ -513,5 +514,14 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic {
 
     public void setGastoTotal(BigDecimal gastoTotal) {
         this.gastoTotal = gastoTotal;
+    }
+
+    @Override
+    public void refreshItems(Collection<ScpRendicioncabecera> items) {
+        ScpRendicioncabecera refreshedCab = items.toArray(new ScpRendicioncabecera[] {})[0];
+        if (refreshedCab.isEnviado()) {
+            bindForm(refreshedCab);
+            view.getBtnEnviarAcontab().setEnabled(false);
+        }
     }
 }

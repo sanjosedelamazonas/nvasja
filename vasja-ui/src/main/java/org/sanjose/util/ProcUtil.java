@@ -366,7 +366,7 @@ public class ProcUtil {
         }
     }
 
-    public void checkDescuadradoAndEnviaContab(ScpRendicioncabecera rendicioncabecera, boolean isEnviar, PersistanceService service, RendicionManejoViewing manView) {
+    public void checkDescuadradoAndEnviaContab(ScpRendicioncabecera rendicioncabecera, boolean isEnviar, PersistanceService service, RendicionManejoViewing manView, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
         List<ScpRendicioncabecera> cabecerasParaEnviar = new ArrayList<>();
 
         if (manView!=null) {
@@ -390,17 +390,17 @@ public class ProcUtil {
                     .createQuestion()
                     .withCaption("!Atencion!")
                     .withMessage("?Estas rendiciones son descuadradas, quieres enviarlas de todas maneras?\n"+ Arrays.toString(desuadrados.toArray()) +"")
-                    .withYesButton(() -> enviarContabilidad(cabecerasParaEnviar, isEnviar, service, manView))
+                    .withYesButton(() -> enviarContabilidad(cabecerasParaEnviar, isEnviar, service, manView, itemsRefreshing))
                     .withNoButton()
                     .open();
         } else {
-            enviarContabilidad(cabecerasParaEnviar, isEnviar, service, manView);
+            enviarContabilidad(cabecerasParaEnviar, isEnviar, service, manView, itemsRefreshing);
         }
     }
 
 
 
-    public void enviarContabilidad(List<ScpRendicioncabecera> cabecerasParaEnviar, boolean isEnviar, PersistanceService service, RendicionManejoViewing manView) {
+    public void enviarContabilidad(List<ScpRendicioncabecera> cabecerasParaEnviar, boolean isEnviar, PersistanceService service, RendicionManejoViewing manView, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
         Collection<ScpRendicioncabecera> cabecerasParaRefresh = new ArrayList<>();
         cabecerasParaEnviar.forEach(e -> cabecerasParaRefresh.add(e));
         if (isEnviar) {
@@ -418,13 +418,13 @@ public class ProcUtil {
                 cabecerasParaEnviar.remove(rendcab);
             }
             if (cabecerasEnviados.isEmpty()) {
-                MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, service, (manView!=null ? manView.getViewLogic() : null));
+                MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, service, (manView!=null ? manView.getViewLogic() : itemsRefreshing));
             } else {
                 MessageBox
                         .createQuestion()
                         .withCaption("!Atencion!")
                         .withMessage("?Estas operaciones ya fueron enviadas ("+ Arrays.toString(cabecerasIdsEnviados.toArray()) +"), quiere solo marcar los como enviadas?")
-                        .withYesButton(() -> doMarcarEnviados(cabecerasParaEnviar, cabecerasEnviados, service, manView))
+                        .withYesButton(() -> doMarcarEnviados(cabecerasParaEnviar, cabecerasEnviados, service, manView, itemsRefreshing))
                         .withNoButton()
                         .open();
             }
@@ -448,7 +448,7 @@ public class ProcUtil {
         }
     }
 
-    public void doMarcarEnviados(List<ScpRendicioncabecera> cabecerasParaEnviar , Set<ScpRendicioncabecera> cabecerasEnviados, PersistanceService service, RendicionManejoViewing manView) {
+    public void doMarcarEnviados(List<ScpRendicioncabecera> cabecerasParaEnviar , Set<ScpRendicioncabecera> cabecerasEnviados, PersistanceService service, RendicionManejoViewing manView, ItemsRefreshing<ScpRendicioncabecera> itemsRefreshing) {
         for (ScpRendicioncabecera cabecera : cabecerasEnviados) {
             cabecera.setFlgEnviado('1');
             cabecera.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
@@ -459,9 +459,11 @@ public class ProcUtil {
             manView.getGrid().deselectAll();
         //this.refreshItems(cabecerasEnviados);
         if (!cabecerasParaEnviar.isEmpty())
-            MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, service, (manView!=null ? manView.getViewLogic() : null));
+            MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, service, (manView!=null ? manView.getViewLogic() : itemsRefreshing));
         if (manView!=null)
             manView.getViewLogic().refreshItems(cabecerasEnviados);
+        else
+            itemsRefreshing.refreshItems(cabecerasEnviados);
     }
 
 

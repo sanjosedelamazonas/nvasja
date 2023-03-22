@@ -5,6 +5,7 @@ import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.spring.access.ViewInstanceAccessControl;
 import com.vaadin.ui.Notification;
 import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.MainUI;
@@ -40,11 +41,11 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
         manView.getBtnModificar().addClickListener(e -> editarRendicion(manView.getSelectedRow()));
         manView.getBtnEnviar().addClickListener(e -> {
             ScpRendicioncabecera sel = manView.getSelectedRow();
-            MainUI.get().getProcUtil().checkDescuadradoAndEnviaContab(manView.getSelectedRow(), true, manView.getService(), manView);
+            MainUI.get().getProcUtil().checkDescuadradoAndEnviaContab(manView.getSelectedRow(), true, manView.getService(), manView, null);
         });
         manView.getBtnNoEnviado().addClickListener(e -> {
             ScpRendicioncabecera sel = manView.getSelectedRow();
-            MainUI.get().getProcUtil().checkDescuadradoAndEnviaContab(manView.getSelectedRow(), false, manView.getService(), manView);
+            MainUI.get().getProcUtil().checkDescuadradoAndEnviaContab(manView.getSelectedRow(), false, manView.getService(), manView, null);
         });
         manView.getBtnVerImprimir().addClickListener(e -> ReportHelper.generateComprobante(manView.getSelectedRow()));
         manView.getBtnEliminar().addClickListener(e -> eliminarRendicion(manView.getSelectedRow()));
@@ -211,5 +212,6 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
         SortOrder[] sortOrders = manView.getGrid().getSortOrder().toArray(new SortOrder[1]);
         manView.getGrid().setSortOrder(Arrays.asList(sortOrders));
         manView.refreshData();
+        ViewUtil.colorizeRowsRendiciones(manView.getGrid());
     }
 }
