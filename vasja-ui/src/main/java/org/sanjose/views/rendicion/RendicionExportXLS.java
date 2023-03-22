@@ -12,6 +12,11 @@ import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.sanjose.helper.XlsExporter;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpRendicioncabecera;
@@ -57,6 +62,29 @@ public class RendicionExportXLS extends XlsExporter {
                 Arrays.asList(new String[]{"id.numNroitem", "txtGlosaitem", "numHaber" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda()), "numDebe" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda())}),
                 detalles,
                 6);
+        int last = detalles.size() + 7;
+        String strFormula= "SUM(C7:C"+ last + ")";
+
+        Row row = getSheet().createRow(6+ detalles.size());
+        CellStyle style = getDataRowStyle();
+        int cellCount = 0;
+        for (int i=0;i<2;i++) {
+            createCell(row, cellCount, "", style);
+            cellCount++;
+        }
+//        XSSFCell formulaCell = row.createCell(2);
+//        //XSSFCell formulaCell = sheet.getRow(0).createCell(lastCellNum + 1);
+//        formulaCell.setCellFormula("SUM(C7:C"+ last + ")");
+//        //cell.setCellType(XCELL_TYPE_FORMULA);
+////        cell.setCellFormula(strFormula);
+//        writeDataLine(Arrays.asList(new String[] {"", "", "SUM(C7:C"+ last + ")", "SUM(D7:D"+ last + ")" }), );
+//
+//        XSSFFormulaEvaluator formulaEvaluator =
+//                excel.getCreationHelper().createFormulaEvaluator();
+//        formulaEvaluator.evaluateFormulaCell(formulaCell);
+
+//        cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);
+//        cell.setCellFormula(strFormula);
         //writeDataLines(ScpRendiciondetalle.class,
 
 

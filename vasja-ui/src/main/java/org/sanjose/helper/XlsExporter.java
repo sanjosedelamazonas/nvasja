@@ -73,7 +73,7 @@ public class XlsExporter {
         return rowCount;
     }
 
-    private void createCell(Row row, int columnCount, Object value, CellStyle style) {
+    protected void createCell(Row row, int columnCount, Object value, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
         if (value instanceof Integer) {
