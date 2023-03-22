@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.sanjose.helper.XlsExporter;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.model.ScpRendicioncabecera;
@@ -62,16 +63,20 @@ public class RendicionExportXLS extends XlsExporter {
                 Arrays.asList(new String[]{"id.numNroitem", "txtGlosaitem", "numHaber" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda()), "numDebe" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda())}),
                 detalles,
                 6);
-        int last = detalles.size() + 7;
-        String strFormula= "SUM(C7:C"+ last + ")";
-
-        Row row = getSheet().createRow(6+ detalles.size());
-        CellStyle style = getDataRowStyle();
-        int cellCount = 0;
-        for (int i=0;i<2;i++) {
-            createCell(row, cellCount, "", style);
-            cellCount++;
-        }
+        createSumRow(2, detalles.size()+6);
+//
+//        int last = detalles.size() + 7;
+//        String strFormula= "SUM(C7:C"+ last + ")";
+//
+//
+//
+//        Row row = getSheet().createRow(6+ detalles.size());
+//        CellStyle style = getDataRowStyle();
+//        int cellCount = 0;
+//        for (int i=0;i<2;i++) {
+//            createCell(row, cellCount, "", style);
+//            cellCount++;
+//        }
 //        XSSFCell formulaCell = row.createCell(2);
 //        //XSSFCell formulaCell = sheet.getRow(0).createCell(lastCellNum + 1);
 //        formulaCell.setCellFormula("SUM(C7:C"+ last + ")");
@@ -89,6 +94,26 @@ public class RendicionExportXLS extends XlsExporter {
 
 
                 //openExported();
+    }
+
+    private void createSumRow(int col, int r) {
+        Row row = getSheet().createRow(r);
+        CellStyle style = getDataRowStyle();
+        int cellCount = 0;
+        for (int i=0;i<col;i++) {
+            createCell(row, cellCount, "", style);
+            cellCount++;
+        }
+        Cell formulaCell = row.createCell(2);
+        //XSSFCell formulaCell = sheet.getRow(0).createCell(lastCellNum + 1);
+        formulaCell.setCellFormula("SUM(C7:C"+ row + 1 + ")");
+        formulaCell = row.createCell(3);
+        //XSSFCell formulaCell = sheet.getRow(0).createCell(lastCellNum + 1);
+        formulaCell.setCellFormula("SUM(D7:D"+ row + 1 + ")");
+        //XSSFFormulaEvaluator formulaEvaluator =
+        //        excel.getCreationHelper().createFormulaEvaluator();
+        //formulaEvaluator.evaluateFormulaCell(formulaCell);
+
     }
 
     public ByteArrayOutputStream getExported() {

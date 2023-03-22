@@ -114,7 +114,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         Executors.newFixedThreadPool(4).submit(() -> {
             List<EmailStatus> sendResults;
             List<String> usuariosErrorList = new ArrayList<>();
-            Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTercerosTest();
+            Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros();
             ui.access(() -> {
                 txtLog.setValue(logRes.toString());
                 showProgress.setValue(0.1f);
@@ -208,82 +208,82 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         }
     }
 
-    protected String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 10) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
+//    protected String getSaltString() {
+//        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+//        StringBuilder salt = new StringBuilder();
+//        Random rnd = new Random();
+//        while (salt.length() < 10) { // length of the random string.
+//            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+//            salt.append(SALTCHARS.charAt(index));
+//        }
+//        String saltStr = salt.toString();
+//        return saltStr;
+//
+//    }
 
-    }
-
-    private Map<MsgUsuario, List<ScpDestino>> prepareListOfTercerosTest() {
-        showProgress.setVisible(true);
-        showProgress.setValue(0.1f);
-        Map<MsgUsuario, List<ScpDestino>> trcMap = new HashMap<>();
-        if (checkTodos.getValue()) {
-            List<ScpDestino> dsts = service.getDestinoRepo().findByIndTipodestinoAndActivoAndEnviarreporteAndTxtUsuarioNotLikeOrderByTxtNombre(
-                    '3', true, true, "");
-            Map<String, List<ScpDestino>> trcUsuarioMap = new HashMap<>();
-            // TEST
-
-
-            //
-            for (ScpDestino dst : dsts) {
-
-//                if (trcUsuarioMap.containsKey(dst.getTxtUsuario())) {
-//                    trcUsuarioMap.get(dst.getTxtUsuario()).add(dst);
-//                } else {
-//                    List<ScpDestino> locDsts = new ArrayList<>();
-//                    locDsts.add(dst);
-//                    trcUsuarioMap.put(dst.getTxtUsuario(), locDsts);
-//                }
-                List<ScpDestino> locDsts = new ArrayList<>();
-                locDsts.add(dst);
-                MsgUsuario ustest = new MsgUsuario();
-                String randomUser = getSaltString();
-                ustest.setTxtUsuario(getSaltString());
-                ustest.setTxtCorreo(randomUser+"@test.com");
-                trcMap.put(ustest, locDsts);
-            }
-//            trcUsuarioMap.forEach((k, v) -> {
-//                MsgUsuario us = service.getMsgUsuarioRep().findByTxtUsuario(k);
-//                trcMap.put(us, v);
-//            });
-        } else if (selUsuario.getValue()!=null) {
-            MsgUsuario us = service.getMsgUsuarioRep().findByTxtUsuario(selUsuario.getValue().toString());
-            trcMap.put(us, service.getDestinoRepo().findByIndTipodestinoAndActivoAndTxtUsuarioLike(
-                    '3', true, selUsuario.getValue().toString()));
-        } else if (selTercero.getValue()!=null) {
-            List<ScpDestino> dests = new ArrayList<>();
-            ScpDestino dst = service.getDestinoRepo().findByCodDestino(selTercero.getValue().toString());
-            MsgUsuario us = service.getMsgUsuarioRep().findByTxtUsuario(dst.getTxtUsuario());
-            List<ScpDestino> dsts = new ArrayList<>();
-            dsts.add(dst);
-            trcMap.put(us, dsts);
-        } else if (txtUsuariosList.getValue()!=null) {
-            String[] usuarios = txtUsuariosList.getValue().split(",");
-            Set<String> usuariosSet = new HashSet<>();
-            for (String u : usuarios) {
-                MsgUsuario us = service.getMsgUsuarioRep().findByTxtUsuario(selUsuario.getValue().toString());
-                trcMap.put(us, service.getDestinoRepo().findByIndTipodestinoAndActivoAndTxtUsuarioLike(
-                        '3', true, u.trim().toLowerCase()));
-            }
-        }
-        showProgress.setValue(0.2f);
-
-        List<String> usuarios = new ArrayList<>();
-        trcMap.forEach((k, v) -> usuarios.add(k.getTxtUsuario()));
-        logRes.append("Estoy generando reportes para siguientes usuarios: ");
-        logRes.append(String.join(", ", usuarios) + "\n");
-        txtLog.setValue(logRes.toString());
-        return trcMap;
-    }
-
+//    private Map<MsgUsuario, List<ScpDestino>> prepareListOfTercerosTest() {
+//        showProgress.setVisible(true);
+//        showProgress.setValue(0.1f);
+//        Map<MsgUsuario, List<ScpDestino>> trcMap = new HashMap<>();
+//        if (checkTodos.getValue()) {
+//            List<ScpDestino> dsts = service.getDestinoRepo().findByIndTipodestinoAndActivoAndEnviarreporteAndTxtUsuarioNotLikeOrderByTxtNombre(
+//                    '3', true, true, "");
+//            Map<String, List<ScpDestino>> trcUsuarioMap = new HashMap<>();
+//            // TEST
+//
+//
+//            //
+//            for (ScpDestino dst : dsts) {
+//
+////                if (trcUsuarioMap.containsKey(dst.getTxtUsuario())) {
+////                    trcUsuarioMap.get(dst.getTxtUsuario()).add(dst);
+////                } else {
+////                    List<ScpDestino> locDsts = new ArrayList<>();
+////                    locDsts.add(dst);
+////                    trcUsuarioMap.put(dst.getTxtUsuario(), locDsts);
+////                }
+//                List<ScpDestino> locDsts = new ArrayList<>();
+//                locDsts.add(dst);
+//                MsgUsuario ustest = new MsgUsuario();
+//                String randomUser = getSaltString();
+//                ustest.setTxtUsuario(getSaltString());
+//                ustest.setTxtCorreo(randomUser+"@test.com");
+//                trcMap.put(ustest, locDsts);
+//            }
+////            trcUsuarioMap.forEach((k, v) -> {
+////                MsgUsuario us = service.getMsgUsuarioRep().findByTxtUsuario(k);
+////                trcMap.put(us, v);
+////            });
+//        } else if (selUsuario.getValue()!=null) {
+//            MsgUsuario us = service.getMsgUsuarioRep().findByTxtUsuario(selUsuario.getValue().toString());
+//            trcMap.put(us, service.getDestinoRepo().findByIndTipodestinoAndActivoAndTxtUsuarioLike(
+//                    '3', true, selUsuario.getValue().toString()));
+//        } else if (selTercero.getValue()!=null) {
+//            List<ScpDestino> dests = new ArrayList<>();
+//            ScpDestino dst = service.getDestinoRepo().findByCodDestino(selTercero.getValue().toString());
+//            MsgUsuario us = service.getMsgUsuarioRep().findByTxtUsuario(dst.getTxtUsuario());
+//            List<ScpDestino> dsts = new ArrayList<>();
+//            dsts.add(dst);
+//            trcMap.put(us, dsts);
+//        } else if (txtUsuariosList.getValue()!=null) {
+//            String[] usuarios = txtUsuariosList.getValue().split(",");
+//            Set<String> usuariosSet = new HashSet<>();
+//            for (String u : usuarios) {
+//                MsgUsuario us = service.getMsgUsuarioRep().findByTxtUsuario(selUsuario.getValue().toString());
+//                trcMap.put(us, service.getDestinoRepo().findByIndTipodestinoAndActivoAndTxtUsuarioLike(
+//                        '3', true, u.trim().toLowerCase()));
+//            }
+//        }
+//        showProgress.setValue(0.2f);
+//
+//        List<String> usuarios = new ArrayList<>();
+//        trcMap.forEach((k, v) -> usuarios.add(k.getTxtUsuario()));
+//        logRes.append("Estoy generando reportes para siguientes usuarios: ");
+//        logRes.append(String.join(", ", usuarios) + "\n");
+//        txtLog.setValue(logRes.toString());
+//        return trcMap;
+//    }
+//
 
     private Map<MsgUsuario, List<ScpDestino>> prepareListOfTerceros() {
         showProgress.setValue(0.1f);

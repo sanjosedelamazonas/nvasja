@@ -59,6 +59,7 @@ public class TerceroListView extends TerceroListUI implements Viewing {
             6, 10, 15, 3, 3, 3,
             3, 7, 7, 4, 8
     };
+    private ComboBox usuario = new ComboBox();
 
     private PersistanceService service;
 
@@ -80,7 +81,6 @@ public class TerceroListView extends TerceroListUI implements Viewing {
         grid.setEditorEnabled(true);
 
         // Usuario
-        ComboBox usuario = new ComboBox();
         DataFilterUtil.bindComboBox(usuario, "txtUsuario", service.getMsgUsuarioRep().findAll(), "", null);
         grid.getColumn("txtUsuario").setEditorField(usuario);
 
@@ -211,6 +211,7 @@ public class TerceroListView extends TerceroListUI implements Viewing {
     @Override
     public void enter(ViewChangeEvent event) {
         refreshData();
+        DataFilterUtil.refreshComboBox(usuario, service.getMsgUsuarioRep().findAll(), "txtUsuario", null,null);
     }
 
     public void clearSelection() {

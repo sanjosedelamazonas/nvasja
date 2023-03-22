@@ -88,6 +88,8 @@ public class UsuarioView extends UsuarioUI implements Viewing {
         //btnEliminar.addClickListener(e -> eliminarTipoCambio());
         grid.getColumn("flgEstado").setConverter(new ZeroOneTrafficLightConverter()).setRenderer(new HtmlRenderer());
 
+        ViewUtil.colorizeRowsUsuarios(grid);
+
         btnEliminar.addClickListener(clickEvent -> {
             MsgUsuario item = (MsgUsuario)grid.getSelectedRow();
             //String codUsuario = item.getCodUsuario();
@@ -145,7 +147,6 @@ public class UsuarioView extends UsuarioUI implements Viewing {
             usuarioWindow.close();
         });
         UI.getCurrent().addWindow(usuarioWindow);
-        ViewUtil.colorizeRowsUsuarios(grid);
     }
 
 
