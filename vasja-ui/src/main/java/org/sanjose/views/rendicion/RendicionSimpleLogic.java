@@ -147,6 +147,9 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
         updateExportResource();
         if (rendicioncabecera.getCodRendicioncabecera()!=null)
             switchMode(EDIT);
+        if (rendicioncabecera.isEnviado()) {
+            switchMode(VIEW);
+        }
         addCommitHandlerToGrid();
     }
 
@@ -190,10 +193,12 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
 
     public void viewComprobante() {
         if (!view.grid.getSelectedRows().isEmpty()) {
-            bindForm((ScpRendiciondetalle)view.grid.getSelectedRows().toArray()[0]);
+            bindForm((ScpRendiciondetalle) view.grid.getSelectedRows().toArray()[0]);
             addCommitHandlerToGrid();
         }
-        switchMode(EDIT);
+        if (!beanItem.getBean().isEnviado()) {
+            switchMode(EDIT);
+        }
     }
 
     public void setupExport() {
@@ -525,6 +530,11 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
                 view.getBtnGuardarExcel().setEnabled(true);
                 view.setEnableCabezeraFields(false);
                 view.setEnableDetalleFields(false);
+                view.getBtnEliminar().setEnabled(false);
+                view.getBtnRegAnticipo().setEnabled(false);
+                view.getGrid().setEditorEnabled(false);
+                view.getBtnNewItem().setEnabled(false);
+                view.getBtnEliminarRend().setEnabled(false);
                 break;
         }
     }

@@ -34,6 +34,7 @@ public class EnviarDiarioTercerosUI extends VerticalLayout {
     protected Button btnImprimir;
     protected Button btnEnviar;
     protected Button btnClear;
+    protected Button btnGenerarNoEnviados;
     protected HorizontalLayout horizLayProgress;
     protected ProgressBar showProgress;
     protected TextArea txtLog;

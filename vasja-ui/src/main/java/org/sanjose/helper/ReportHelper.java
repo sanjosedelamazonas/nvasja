@@ -181,8 +181,8 @@ public class ReportHelper {
 		emb.setSource(resource);
 
 		Window repWindow = new Window();
-		repWindow.setWindowMode(WindowMode.NORMAL);
-        repWindow.setDraggable(true);
+		repWindow.setWindowMode(ConfigurationUtil.is("REPORTS_WINDOW_MAXIMIZE") ? WindowMode.MAXIMIZED : WindowMode.NORMAL);
+		repWindow.setDraggable(true);
 		repWindow.setWidth(800, Sizeable.Unit.PIXELS);
 		repWindow.setHeight(600, Sizeable.Unit.PIXELS);
 		repWindow.setPositionX(150);

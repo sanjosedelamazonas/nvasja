@@ -19,11 +19,14 @@ public class XlsExporter {
 
     private Workbook workbook = null;
 
+    private FormulaEvaluator formulaEvaluator = null;
+
     protected static final com.vaadin.external.org.slf4j.Logger log = LoggerFactory.getLogger(XlsExporter.class);
 
     public XlsExporter(String sheetName) {
         workbook = new XSSFWorkbook();
         sheet = workbook.createSheet(sheetName);
+        formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
         //sheet.setColumnWidth(0, 6000);
         //sheet.setColumnWidth(1, 4000);
     }
@@ -83,11 +86,13 @@ public class XlsExporter {
         } else if (value instanceof BigDecimal) {
             cell.setCellValue((Double) ((BigDecimal) value).doubleValue());
             style = getCurrencyCellStyle();
+            style = getFontArial12(style);
         } else if (value instanceof Long) {
             cell.setCellValue((Long) value);
             style = getCenterAlignedCellStyle(style);
         } else {
             cell.setCellValue((String) value);
+            style = getLeftAlignedCellStyle(style);
         }
         cell.setCellStyle(style);
     }
@@ -139,33 +144,36 @@ public class XlsExporter {
         return style;
     }
 
+    protected CellStyle getBorderedThinStyle(CellStyle style) {
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        return style;
+    }
+
     protected CellStyle getCenterAlignedCellStyle(CellStyle cellStyle) {
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
         cellStyle.setVerticalAlignment(VerticalAlignment.BOTTOM);
-        cellStyle.setBorderTop(BorderStyle.NONE);
-        cellStyle.setBorderBottom(BorderStyle.NONE);
-        cellStyle.setBorderLeft(BorderStyle.NONE);
-        cellStyle.setBorderRight(BorderStyle.NONE);
+        return cellStyle;
+    }
+
+    protected CellStyle getFontArial12(CellStyle cellStyle) {
+        XSSFFont font = ((XSSFWorkbook) workbook).createFont();
+        font.setFontHeight(12);
+        cellStyle.setFont(font);
         return cellStyle;
     }
 
     protected CellStyle getLeftAlignedCellStyle(CellStyle cellStyle) {
         cellStyle.setAlignment(HorizontalAlignment.LEFT);
         cellStyle.setVerticalAlignment(VerticalAlignment.BOTTOM);
-        cellStyle.setBorderTop(BorderStyle.NONE);
-        cellStyle.setBorderBottom(BorderStyle.NONE);
-        cellStyle.setBorderLeft(BorderStyle.NONE);
-        cellStyle.setBorderRight(BorderStyle.NONE);
         return cellStyle;
     }
 
     protected CellStyle getRightAlignedCellStyle(CellStyle cellStyle) {
         cellStyle.setAlignment(HorizontalAlignment.RIGHT);
         cellStyle.setVerticalAlignment(VerticalAlignment.BOTTOM);
-        cellStyle.setBorderTop(BorderStyle.NONE);
-        cellStyle.setBorderBottom(BorderStyle.NONE);
-        cellStyle.setBorderLeft(BorderStyle.NONE);
-        cellStyle.setBorderRight(BorderStyle.NONE);
         return cellStyle;
     }
 
@@ -244,5 +252,9 @@ public class XlsExporter {
 
     public Workbook getWorkbook() {
         return workbook;
+    }
+
+    public FormulaEvaluator getFormulaEvaluator() {
+        return formulaEvaluator;
     }
 }

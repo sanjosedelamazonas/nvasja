@@ -127,3 +127,5 @@ INSTALL:
 4. Maile - przestawic na produkcje
 5. Kolory descuadrado zamienic
 6. Ekran edyjmni rend n a 100%
+7. Eksport raportów terceros dla niewysłanych
+8. Marcar enviar reporte/No enviar - guziki

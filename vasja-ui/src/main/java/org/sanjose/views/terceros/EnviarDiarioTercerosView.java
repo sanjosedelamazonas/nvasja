@@ -114,7 +114,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         Executors.newFixedThreadPool(4).submit(() -> {
             List<EmailStatus> sendResults;
             List<String> usuariosErrorList = new ArrayList<>();
-            Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros();
+            Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros(true);
             ui.access(() -> {
                 txtLog.setValue(logRes.toString());
                 showProgress.setValue(0.1f);
@@ -285,12 +285,13 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
 //    }
 //
 
-    private Map<MsgUsuario, List<ScpDestino>> prepareListOfTerceros() {
+    private Map<MsgUsuario, List<ScpDestino>> prepareListOfTerceros(boolean isReporteEnviar) {
         showProgress.setValue(0.1f);
         Map<MsgUsuario, List<ScpDestino>> trcMap = new HashMap<>();
         if (checkTodos.getValue()) {
-            List<ScpDestino> dsts = service.getDestinoRepo().findByIndTipodestinoAndActivoAndEnviarreporteAndTxtUsuarioNotLikeOrderByTxtNombre(
-                    '3', true, true, "");
+            List<ScpDestino> dsts = null;
+            dsts = service.getDestinoRepo().findByIndTipodestinoAndActivoAndEnviarreporteAndTxtUsuarioNotLikeOrderByTxtNombre(
+                        '3', true, isReporteEnviar, "");
             Map<String, List<ScpDestino>> trcUsuarioMap = new HashMap<>();
             for (ScpDestino dst : dsts) {
 
