@@ -36,11 +36,12 @@ DONE
 - no se debe poder modificar despues de haber enviado a contabilidad - jak będzie wyłączenie wysłąnia.
 - nie powinno byc mozliwosci wpisania jednoczescnie wartosci ingr jak i egreso - wpisywanie jednej powoduje wyzerowanie drugiej
 DONE
->>>>>- przy wysylaniu do contabilidad powinno sprawdzic czy:
+- przy wysylaniu do contabilidad powinno sprawdzic czy:
 - suma(ingr por proyecto)=suma(egr por proyecto) - jak nie komunikat que esta descuadrado por proyecto y pregunta si de todos modos quieres enviar.
 - si existe tipo de cambio para tal dia y si de todos modos quieres enviar.
 - czy pola cta contable, proyecto sa wypelnione
 - (na pozniej bylo by super jezeli by sprawdzalo ze jezeli cuenta contable like 6% or 3% to musi miec rubro institucional, lugar de gasto a jezeli cta contable like '46%' to musi miec tylko rubro institucional)
+DONE - do testowania rendiciones z 17.02 Cesar Luis, Yanashi i Aucayo
 - okno registar anticipo powinno sie dac przesuwac
 NOT POSSIBLE
 - mozliwosc "marcar como no enviado"

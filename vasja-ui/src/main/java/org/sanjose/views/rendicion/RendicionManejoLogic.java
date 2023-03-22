@@ -40,11 +40,9 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
         manView.getBtnNueva().addClickListener(e -> nuevaRendicion());
         manView.getBtnModificar().addClickListener(e -> editarRendicion(manView.getSelectedRow()));
         manView.getBtnEnviar().addClickListener(e -> {
-            ScpRendicioncabecera sel = manView.getSelectedRow();
             MainUI.get().getProcUtil().checkDescuadradoAndEnviaContab(manView.getSelectedRow(), true, manView.getService(), manView, null);
         });
         manView.getBtnNoEnviado().addClickListener(e -> {
-            ScpRendicioncabecera sel = manView.getSelectedRow();
             MainUI.get().getProcUtil().checkDescuadradoAndEnviaContab(manView.getSelectedRow(), false, manView.getService(), manView, null);
         });
         manView.getBtnVerImprimir().addClickListener(e -> ReportHelper.generateComprobante(manView.getSelectedRow()));
@@ -202,16 +200,15 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
 
     @Override
     public void refreshItems(Collection<ScpRendicioncabecera> rendicioncabeceras) {
+        SortOrder[] sortOrders = manView.getGrid().getSortOrder().toArray(new SortOrder[1]);
         manView.getGrid().deselectAll();
         manView.clearSelection();
         rendicioncabeceras.forEach(scb -> {
             manView.getGrid().getContainerDataSource().removeItem(scb);
-            ScpRendicioncabecera newScb = manView.getService().getRendicioncabeceraRep().findByCodRendicioncabecera(scb.getCodRendicioncabecera());
-            manView.getGrid().getContainerDataSource().addItem(newScb);
+            //ScpRendicioncabecera newScb = manView.getService().getRendicioncabeceraRep().findByCodRendicioncabecera(scb.getCodRendicioncabecera());
+            manView.getGrid().getContainerDataSource().addItem(scb);
         });
-        SortOrder[] sortOrders = manView.getGrid().getSortOrder().toArray(new SortOrder[1]);
         manView.getGrid().setSortOrder(Arrays.asList(sortOrders));
         manView.refreshData();
-        ViewUtil.colorizeRowsRendiciones(manView.getGrid());
     }
 }

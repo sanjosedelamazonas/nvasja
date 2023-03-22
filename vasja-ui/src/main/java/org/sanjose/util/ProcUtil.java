@@ -419,6 +419,11 @@ public class ProcUtil {
             }
             if (cabecerasEnviados.isEmpty()) {
                 MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, service, (manView!=null ? manView.getViewLogic() : itemsRefreshing));
+                if (manView!=null) {
+                    manView.getGrid().deselectAll();
+                    manView.clearSelection();
+                }
+
             } else {
                 MessageBox
                         .createQuestion()
@@ -460,8 +465,11 @@ public class ProcUtil {
         //this.refreshItems(cabecerasEnviados);
         if (!cabecerasParaEnviar.isEmpty())
             MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, service, (manView!=null ? manView.getViewLogic() : itemsRefreshing));
-        if (manView!=null)
+        if (manView!=null) {
+            manView.getGrid().deselectAll();
+            manView.clearSelection();
             manView.getViewLogic().refreshItems(cabecerasEnviados);
+        }
         else
             itemsRefreshing.refreshItems(cabecerasEnviados);
     }
@@ -487,6 +495,28 @@ public class ProcUtil {
                             .createError()
                             .withCaption("Problema al Enviar a contabilidad")
                             .withMessage("!Omitiendo rendicion " + curRendicionCabecera.getCodComprobante() + " - falta glosa, proyecto o cuenta contable en item numero: " + det.getId().getNumNroitem() + " !")
+                            .withOkButton()
+                            .open();
+                    isValidated = false;
+                    break;
+                }
+                if ((det.getCodCtacontable().startsWith("6") || det.getCodCtacontable().startsWith("3"))
+                    && (GenUtil.strNullOrEmpty(det.getCodCtaespecial()) || GenUtil.strNullOrEmpty(det.getCodContraparte()))) {
+                    MessageBox
+                            .createError()
+                            .withCaption("Problema al Enviar a contabilidad")
+                            .withMessage("!Omitiendo rendicion " + curRendicionCabecera.getCodComprobante() + " - falta rubro institucional o lugar de gasto en item numero: " + det.getId().getNumNroitem() + " !")
+                            .withOkButton()
+                            .open();
+                    isValidated = false;
+                    break;
+                }
+                if ((det.getCodCtacontable().startsWith("46"))
+                        && (GenUtil.strNullOrEmpty(det.getCodCtaespecial()) || !GenUtil.strNullOrEmpty(det.getCodContraparte()))) {
+                    MessageBox
+                            .createError()
+                            .withCaption("Problema al Enviar a contabilidad")
+                            .withMessage("!Omitiendo rendicion " + curRendicionCabecera.getCodComprobante() + " - falta rubro institucional o lugar de gasto esta rellenado pero no deberia estar en item numero: " + det.getId().getNumNroitem() + " !")
                             .withOkButton()
                             .open();
                     isValidated = false;

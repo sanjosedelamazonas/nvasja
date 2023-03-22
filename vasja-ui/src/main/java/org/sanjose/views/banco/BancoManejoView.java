@@ -131,8 +131,7 @@ public class BancoManejoView extends BancoManejoUI implements Viewing, BancoView
     public void refreshData() {
         SortOrder[] sortOrders = gridBanco.getSortOrder().toArray(new SortOrder[1]);
         filter(fechaDesde.getValue(), fechaHasta.getValue());
-        if (gridBanco!=null)
-            gridBanco.setSortOrder(Arrays.asList(sortOrders));
+        gridBanco.setSortOrder(Arrays.asList(sortOrders));
     }
 
     @Override
