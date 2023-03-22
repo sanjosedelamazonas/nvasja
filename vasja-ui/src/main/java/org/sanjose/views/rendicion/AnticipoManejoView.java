@@ -84,8 +84,6 @@ public class AnticipoManejoView extends AnticipoManejoUI {
         grid.setContainerDataSource(container);
         grid.setColumnOrder(VISIBLE_COLUMN_IDS);
         
-//        grid.getDefaultHeaderRow().getCell("codConfiguracion").setText("Codigo");
-//        grid.getColumn("txtConfiguracion").setWidth(200);
         grid.getColumn("id").setEditable(false);
         grid.setSelectionMode(SelectionMode.MULTI);
 
@@ -196,7 +194,6 @@ public class AnticipoManejoView extends AnticipoManejoUI {
         getTxtTotal().setValue(GenUtil.numFormat(total));
         rendicioncabecera.setNumTotalanticipo(total);
         getService().getRendicioncabeceraRep().save(rendicioncabecera);
-        //Collection<VsjRendicionAnticipo> items = grid.getContainerDataSource().getItemIds();
     }
 
     public void enter(ViewChangeEvent event) {

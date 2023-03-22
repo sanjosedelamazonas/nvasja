@@ -47,12 +47,20 @@ public class RendicionExportXLS extends XlsExporter {
         writeHeaderLine(Arrays.asList(new String[]{ "Nro", "Descripcion", "Ingreso", "Egreso"}), 5);
 
         List<ScpRendiciondetalle> detalles = service.getRendiciondetalleRep().findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera());
+        detalles.sort(new Comparator<ScpRendiciondetalle>() {
+            @Override
+            public int compare(ScpRendiciondetalle o1, ScpRendiciondetalle o2) {
+                return o1.getId().getNumNroitem().compareTo(o2.getId().getNumNroitem());
+            }
+        });
         writeDataLines(ScpRendiciondetalle.class,
-                Arrays.asList(new String[]{"id.numNroitem", "txtGlosaitem", "numHabersol", "numDebesol"}),
+                Arrays.asList(new String[]{"id.numNroitem", "txtGlosaitem", "numHaber" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda()), "numDebe" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda())}),
                 detalles,
                 6);
+        //writeDataLines(ScpRendiciondetalle.class,
 
-        //openExported();
+
+                //openExported();
     }
 
     public ByteArrayOutputStream getExported() {
@@ -85,35 +93,7 @@ public class RendicionExportXLS extends XlsExporter {
                         + cabecera.getCodComprobante() + "_"
                         + df.format(new Date(System.currentTimeMillis()))
                         + ".xlsx");
-        //resource.setMIMEType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");
-        //resource.setMIMEType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         resource.setMIMEType("application/xls");
         return resource;
-//
-//        log.info("Resource: " + resource.getFilename() + " "
-//                + resource.getMIMEType());
-//
-//
-//        FileDownloader fileDownloader = new FileDownloader(resource);
-//        //UI.getCurrent().
-//
-//        //)fileDownloader.
-//        Embedded emb = new Embedded();
-//        emb.setSizeFull();
-//        emb.setType(Embedded.TYPE_BROWSER);
-//        emb.setSource(resource);
-//
-//        Window repWindow = new Window();
-//        repWindow.setWindowMode(WindowMode.NORMAL);
-//        repWindow.setWidth(700, Sizeable.Unit.PIXELS);
-//        repWindow.setHeight(600, Sizeable.Unit.PIXELS);
-//        repWindow.setPositionX(200);
-//        repWindow.setPositionY(50);
-//        repWindow.setModal(false);
-//        repWindow.setContent(emb);
-//        repWindow.setDraggable(true);
-//        UI.getCurrent().addWindow(repWindow);
-//        //UI.getCurrent().addWindow(fileDownloader);
-//        //JavaScript.getCurrent().execute("window.onload = function() { window.print(); } ");
     }
 }

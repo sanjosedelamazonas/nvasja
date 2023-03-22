@@ -84,6 +84,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
         view.getBtnCerrar().addClickListener(event -> anular());
         view.getBtnVerVoucher().addClickListener(event -> ReportHelper.generateComprobante(beanItem.getBean()));
         view.getBtnEliminarRend().addClickListener(clickEvent -> eliminarRendicion(beanItem.getBean()));
+        setupExport();
 
         if (!Role.isPrivileged()) {
             view.getBtnEnviarAcontab().setVisible(false);
@@ -143,7 +144,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
             switchMode(EDIT);
         });
         view.getBtnEnviarAcontab().setEnabled(!rendicioncabecera.isEnviado());
-        setupExport();
+        updateExportResource();
         if (rendicioncabecera.getCodRendicioncabecera()!=null)
             switchMode(EDIT);
         addCommitHandlerToGrid();
@@ -198,11 +199,10 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
     public void setupExport() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         exportFileName = "RendicionExport_"
-                + beanItem.getBean().getCodComprobante() + "_"
                 + sdf.format(new Date(System.currentTimeMillis()))
                 + ".xlsx";
-        if (xlsDownloader!=null && xlsDownloader.isAttached())
-            xlsDownloader.detach();
+        //if (xlsDownloader!=null && xlsDownloader.isAttached())
+        //    xlsDownloader.detach();
         StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
             @Override
             public InputStream getStream() {
@@ -216,13 +216,39 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
             }
         }, exportFileName);
         xlsDownloader = new FileDownloader(resource);
+        //xlsDownloader.setFileDownloadResource(resource);
         xlsDownloader.extend(view.getBtnGuardarExcel());
     }
 
+    public void updateExportResource() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        exportFileName = "RendicionExport_"
+                + beanItem.getBean().getCodComprobante() + "_"
+                + sdf.format(new Date(System.currentTimeMillis()))
+                + ".xlsx";
+        //if (xlsDownloader!=null && xlsDownloader.isAttached())
+        //    xlsDownloader.detach();
+        StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
+            @Override
+            public InputStream getStream() {
+                try {
+                    return new ByteArrayInputStream(new RendicionExportXLS(beanItem.getBean(),
+                            view.getService()).getExported().toByteArray());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }, exportFileName);
+        xlsDownloader.setFileDownloadResource(resource);
+    }
+
+
+
     @Override
     public void cerrarAlManejo() {
-        if (xlsDownloader!=null && xlsDownloader.isAttached())
-            xlsDownloader.detach();
+        //if (xlsDownloader!=null && xlsDownloader.isAttached())
+        //    xlsDownloader.detach();
         view.getGrid().deselectAll();
         item = null;
         beanItem = null;

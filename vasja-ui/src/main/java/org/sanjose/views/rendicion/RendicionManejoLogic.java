@@ -32,7 +32,6 @@ import java.sql.Timestamp;
  */
 public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsRefreshing<ScpRendicioncabecera>, Serializable {
 
-    //protected RendicionManejoView manView;
     private CajaSaldoView saldosView = new CajaSaldoView();
 
     public void init(RendicionManejoViewing rendicionManejoView) {
@@ -62,12 +61,10 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
             MainUI.get().getRendicionOperView().getViewLogic().setNavigatorView(manView);
             ViewUtil.openViewInNewWindow(MainUI.get().getRendicionOperView());
         }
-        //MainUI.get().getNavigator().navigateTo(ComprobanteView.VIEW_NAME);
     }
 
     protected void editarRendicion(ScpRendicioncabecera vcb) {
         if (vcb==null) return;
-        //MainUI.get().getRendicionOperView().setNavigatorView(manView);
         if (manView instanceof RendicionSimpleManejoView) {
             MainUI.get().getRendicionSimpleOperView().getViewLogic().editarRendicion(vcb);
             ViewUtil.openViewInNewWindow(MainUI.get().getRendicionSimpleOperView());
@@ -92,7 +89,6 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
         manView.getContainer().addAll(manView.getService().getRendicioncabeceraRep().findByFecComprobanteBetween(fechaDesde, fechaHasta));
 
         manView.getGrid().setSortOrder(Sort.by("fecComprobante", SortDirection.DESCENDING).then("codComprobante", SortDirection.DESCENDING).build());
-        //calcFooterSums();
     }
 
     // Realize logic from View
@@ -100,103 +96,8 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
         SortOrder[] sortOrders = manView.getGrid().getSortOrder().toArray(new SortOrder[1]);
         filter(manView.getFechaDesde().getValue(), manView.getFechaHasta().getValue());
         manView.getGrid().setSortOrder(Arrays.asList(sortOrders));
-        //calcFooterSums();
-        //setSaldosFinal();
     }
-//
-//
-//    public void checkDescuadradoAndEnviaContab(ScpRendicioncabecera rendicioncabecera, boolean isEnviar) {
-//        Collection<Object> cabs= manView.getSelectedRows();
-//        List<ScpRendicioncabecera> cabecerasParaEnviar = new ArrayList<>();
-//        cabs.forEach(e -> cabecerasParaEnviar.add((ScpRendicioncabecera) e));
-//
-//        if (cabecerasParaEnviar.isEmpty() && rendicioncabecera!=null) {
-//            cabecerasParaEnviar.add(rendicioncabecera);
-//        }
-//
-//        List<String> desuadrados = new ArrayList<>();
-//        for (Object objVcb : cabecerasParaEnviar) {
-//            ScpRendicioncabecera rendcab = (ScpRendicioncabecera) objVcb;
-//            if (manView.getService().checkIfRendicionDescuadrado(rendcab)) {
-//                desuadrados.add(rendcab.getCodComprobante());
-//            }
-//        }
-//
-//        if (isEnviar && !desuadrados.isEmpty()) {
-//            MessageBox
-//                    .createQuestion()
-//                    .withCaption("!Atencion!")
-//                    .withMessage("?Estas rendiciones son descuadradas, quieres enviarlas de todas maneras?\n"+ Arrays.toString(desuadrados.toArray()) +"")
-//                    .withYesButton(() -> enviarContabilidad(cabecerasParaEnviar, isEnviar))
-//                    .withNoButton()
-//                    .open();
-//        } else {
-//            enviarContabilidad(cabecerasParaEnviar, isEnviar);
-//        }
-//    }
-//
-//
-//
-//    public void enviarContabilidad(List<ScpRendicioncabecera> cabecerasParaEnviar, boolean isEnviar) {
-//        Collection<ScpRendicioncabecera> cabecerasParaRefresh = new ArrayList<>();
-//        cabecerasParaEnviar.forEach(e -> cabecerasParaRefresh.add(e));
-//        if (isEnviar) {
-//            Set<ScpRendicioncabecera> cabecerasEnviados = new HashSet<>();
-//            List<String> cabecerasIdsEnviados = new ArrayList<>();
-//            // Check if already sent and ask if only marcar...
-//            for (Object objVcb : cabecerasParaEnviar) {
-//                ScpRendicioncabecera rendcab = (ScpRendicioncabecera) objVcb;
-//                if (!rendcab.isEnviado() && manView.getService().checkIfAlreadyEnviado(rendcab)) {
-//                    cabecerasEnviados.add(rendcab);
-//                    cabecerasIdsEnviados.add(rendcab.getCodRendicioncabecera().toString());
-//                }
-//            }
-//            for (ScpRendicioncabecera rendcab : cabecerasEnviados) {
-//                cabecerasParaEnviar.remove(rendcab);
-//            }
-//            if (cabecerasEnviados.isEmpty()) {
-//                MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, manView.getService(), this);
-//            } else {
-//                MessageBox
-//                        .createQuestion()
-//                        .withCaption("!Atencion!")
-//                        .withMessage("?Estas operaciones ya fueron enviadas ("+ Arrays.toString(cabecerasIdsEnviados.toArray()) +"), quiere solo marcar los como enviadas?")
-//                        .withYesButton(() -> doMarcarEnviados(cabecerasParaEnviar, cabecerasEnviados))
-//                        .withNoButton()
-//                        .open();
-//            }
-//            //MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, manView.getService(), this);
-//        } else {
-//            for (Object objVcb : cabecerasParaEnviar) {
-//                ScpRendicioncabecera scpRendicioncabecera = (ScpRendicioncabecera) objVcb;
-//                if (!scpRendicioncabecera.isEnviado()) {
-//                    Notification.show("!Atencion!", "!Omitiendo operacion " + scpRendicioncabecera.getCodRendicioncabecera() + " - no esta enviada!", Notification.Type.TRAY_NOTIFICATION);
-//                    continue;
-//                }
-//                manView.getGrid().deselect(scpRendicioncabecera);
-//                scpRendicioncabecera.setFlgEnviado('0');
-//                scpRendicioncabecera.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
-//                scpRendicioncabecera.setCodUactualiza(CurrentUser.get());
-//                manView.getService().getRendicioncabeceraRep().save(scpRendicioncabecera);
-//            }
-//            refreshItems(cabecerasParaRefresh);
-//        }
-//    }
-//
-//    public void doMarcarEnviados(List<ScpRendicioncabecera> cabecerasParaEnviar , Set<ScpRendicioncabecera> cabecerasEnviados) {
-//        for (ScpRendicioncabecera cabecera : cabecerasEnviados) {
-//            manView.getGrid().deselect(cabecera);
-//            cabecera.setFlgEnviado('1');
-//            cabecera.setFecFactualiza(new Timestamp(System.currentTimeMillis()));
-//            cabecera.setCodUactualiza(CurrentUser.get());
-//            manView.getService().getRendicioncabeceraRep().save(cabecera);
-//        }
-//        manView.getGrid().deselectAll();
-//        //this.refreshItems(cabecerasEnviados);
-//        if (!cabecerasParaEnviar.isEmpty())
-//            MainUI.get().getProcUtil().enviarContabilidadRendicion(cabecerasParaEnviar, manView.getService(), this);
-//        refreshItems(cabecerasEnviados);
-//    }
+
 
     @Override
     public void refreshItems(Collection<ScpRendicioncabecera> rendicioncabeceras) {

@@ -75,7 +75,6 @@ public class RendicionSimpleOperView extends RendicionSimpleOperUI implements Vi
 
     private RendicionSimpleLogic viewLogic = null;
     private BeanItemContainer<ScpRendiciondetalle> container;
-    //private GeneratedPropertyContainer gpContainer;
     private org.sanjose.views.sys.PersistanceService PersistanceService;
 
     public boolean isVistaFull = false;
