@@ -72,7 +72,13 @@ public class MailerSender {
                 .to(to)
                 .from("Vicariato San Jose del Amazonas", ConfigurationUtil.get("MAIL_FROM"))
                 .withSubject("Invitacion a los servicios del Sistema de Gestion de Caja y bancos")
-                .withPlainText("Hola!\nSu reporte adjuntado.\nSaludos\nVASJA")
+                .withHTMLText("<p>Hola!</p>"
+                        + "<p>Le invitamos a usar el sistema de Gestion de Caja y bancos del Vicariato San Jose del Amazonas.</p>"
+                        + "<p>Para crear su clave cuando este en Punchana connecta se al WIFI por favor y usa el siguiente link y "
+                        + "elige la opcion \"Clave Olvidada\": </p>"
+                        + "<p><a href=http://leon.local/>http://leon.local</a></p>"
+                        + "<br><p>Saludos!</p><br><p>VASJA</p>")
+                //.withPlainText("Hola!\nSu reporte adjuntado.\nSaludos\nVASJA")
                 //.withAttachment("mypdf.pdf", pdfByteArray, "application/pdf")
                 .buildEmail();
         return this.mailer.sendMail(email);
