@@ -73,6 +73,7 @@ public class ConfigurationUtil {
 		defaultParamMap.put("MAIL_SMTP_AUTH", "SSL");
 		defaultParamMap.put("MAIL_SMTP_USER", "");
 		defaultParamMap.put("MAIL_SMTP_PASS", "");
+		defaultParamMap.put("MAIL_DEBUG", "FALSE");
 		defaultParamMap.put("REPORTS_WINDOW_MAXIMIZE", "TRUE");
 	}
 

@@ -136,3 +136,5 @@ DONE
 7. Eksport raportów terceros dla niewysłanych
 DONE
 8. Marcar enviar reporte/No enviar - guziki
+
+9. Texts in code (reset pass etc.)

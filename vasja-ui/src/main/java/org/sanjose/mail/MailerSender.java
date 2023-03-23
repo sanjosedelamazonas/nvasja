@@ -49,7 +49,7 @@ public class MailerSender {
                 .withTransportStrategy(authTypes.get(ConfigurationUtil.get("MAIL_SMTP_AUTH")))
                 .withSessionTimeout(20 * 1000)
                 .clearEmailValidator()
-                .withDebugLogging(true)
+                .withDebugLogging(ConfigurationUtil.is("MAIL_DEBUG"))
                 .async()
                 .buildMailer();
         log.info("Mailer Sender started and configured to send from " + ConfigurationUtil.get("MAIL_SMTP_SERVER"));
