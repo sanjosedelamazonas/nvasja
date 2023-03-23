@@ -37,7 +37,7 @@ public class SaldoChecker {
         } catch (ParseException e) {
         }
         try {
-            NumberFormat nf = NumberFormat.getInstance(Locale.US);
+            NumberFormat nf = NumberFormat.getInstance(ConfigurationUtil.getLocale());
             caja = new BigDecimal(nf.parse(saldoField.getValue()).toString());
             proyecto = new BigDecimal(nf.parse(proyectoField.getValue()).toString());
         } catch (ParseException e) {

@@ -138,3 +138,5 @@ DONE
 8. Marcar enviar reporte/No enviar - guziki
 
 9. Texts in code (reset pass etc.)
+
+10. Czy generować diario jeśli brak operacji?

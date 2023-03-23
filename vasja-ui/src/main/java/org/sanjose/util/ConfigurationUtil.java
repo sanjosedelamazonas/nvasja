@@ -26,7 +26,8 @@ public class ConfigurationUtil {
 	private static Locale locale = null;
 
 	private static void init() {
-		defaultParamMap.put("LOCALE", "es_PE");
+		//defaultParamMap.put("LOCALE", "es_PE");
+		defaultParamMap.put("LOCALE", "en_CA");
 		defaultParamMap.put("DECIMAL_FORMAT", "#,##0.00");
 		defaultParamMap.put("SHORT_DATE_FORMAT", "MM/dd");
 		defaultParamMap.put("DEFAULT_DATE_FORMAT", "yyyy/MM/dd");
@@ -50,6 +51,8 @@ public class ConfigurationUtil {
 		defaultParamMap.put("REPORTS_SOURCE_FOLDER_WIN", "C:\\vasja_caja2\\vasja-reports\\reports\\");
 		defaultParamMap.put("REPORTS_IMAGE_SERVLET",
 				"../../servlets/image?image=");
+		defaultParamMap.put("REPORTS_WINDOW_MAXIMIZE", "TRUE");
+
 		defaultParamMap.put("REPORTS_DIARIO_CAJA_TYPE", "PDF");
 		defaultParamMap.put("REPORTS_DIARIO_BANCARIA_TYPE", "PDF");
 		//defaultParamMap.put("REPORTS_cuenta_TYPE", "PDF");
@@ -74,7 +77,7 @@ public class ConfigurationUtil {
 		defaultParamMap.put("MAIL_SMTP_USER", "");
 		defaultParamMap.put("MAIL_SMTP_PASS", "");
 		defaultParamMap.put("MAIL_DEBUG", "FALSE");
-		defaultParamMap.put("REPORTS_WINDOW_MAXIMIZE", "TRUE");
+
 	}
 
 	public static Locale getLocale() {

@@ -55,7 +55,7 @@ public class BancoLogic extends BancoItemLogic {
                           MessageBox
                                   .createQuestion()
                                   .withCaption("Atencion!")
-                                  .withMessage("La caja o proyecto/tercero no tiene suficiente recursos.\nEsta seguro que lo quiere guardar?")
+                                  .withMessage("La caja o proyecto/tercero no tiene suficiente recursos o el monton por proyecto/tercero no esta equalizado.\nEsta seguro que lo quiere guardar?")
                                   .withYesButton(() -> saveCabecera())
                                   .withNoButton()
                                   .open();

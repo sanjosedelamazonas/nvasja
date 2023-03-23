@@ -10,9 +10,12 @@ import org.simplejavamail.api.mailer.config.TransportStrategy;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,9 +30,12 @@ import java.util.concurrent.CompletableFuture;
 public class MailerSender {
 
     private Map<String, TransportStrategy> authTypes = new HashMap<>();
-
+    private Map<String, String> emailTemplates = new HashMap<>();
+    private Map<String, String> emailTemplatesLoaded = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(MailerSender.class);
+
     private Mailer mailer;
+
 
     @Autowired
     private PropiedadService propiedadService;
@@ -40,6 +46,9 @@ public class MailerSender {
         this.authTypes.put("SSL", TransportStrategy.SMTPS);
         this.authTypes.put("NO", TransportStrategy.SMTP);
         this.authTypes.put("TLS", TransportStrategy.SMTP_TLS);
+        this.emailTemplates.put("INVITACION", "email_invitacion.html");
+        this.emailTemplates.put("RESET_PASS", "email_reset_pass.html");
+        this.emailTemplates.put("REPORTE_TERCERO", "email_reporte_tercero.html");
         ConfigurationUtil.setPropiedadRepo(propiedadService.getPropiedadRep());
         this.mailer = MailerBuilder
                 .withSMTPServer(ConfigurationUtil.get("MAIL_SMTP_SERVER"),
@@ -52,6 +61,17 @@ public class MailerSender {
                 .withDebugLogging(ConfigurationUtil.is("MAIL_DEBUG"))
                 .async()
                 .buildMailer();
+        try {
+            for (String et : emailTemplates.keySet()) {
+                Resource resource = new ClassPathResource(emailTemplates.get(et));
+                File file = null;
+                file = resource.getFile();
+                emailTemplatesLoaded.put(et, new String(Files.readAllBytes(file.toPath())));
+            }
+        } catch (IOException e) {
+            log.error("Could not load email templates from html files");
+            e.printStackTrace();
+        }
         log.info("Mailer Sender started and configured to send from " + ConfigurationUtil.get("MAIL_SMTP_SERVER"));
     }
 
@@ -72,12 +92,7 @@ public class MailerSender {
                 .to(to)
                 .from("Vicariato San Jose del Amazonas", ConfigurationUtil.get("MAIL_FROM"))
                 .withSubject("Invitacion a los servicios del Sistema de Gestion de Caja y bancos")
-                .withHTMLText("<p>Hola!</p>"
-                        + "<p>Le invitamos a usar el sistema de Gestion de Caja y bancos del Vicariato San Jose del Amazonas.</p>"
-                        + "<p>Para crear su clave cuando este en Punchana connecta se al WIFI por favor y usa el siguiente link y "
-                        + "elige la opcion \"Clave Olvidada\": </p>"
-                        + "<p><a href=http://leon.local/>http://leon.local</a></p>"
-                        + "<br><p>Saludos!</p><br><p>VASJA</p>")
+                .withHTMLText(emailTemplatesLoaded.get("INVITACION"))
                 //.withPlainText("Hola!\nSu reporte adjuntado.\nSaludos\nVASJA")
                 //.withAttachment("mypdf.pdf", pdfByteArray, "application/pdf")
                 .buildEmail();
@@ -85,85 +100,32 @@ public class MailerSender {
     }
 
     public CompletableFuture<Void> sendPasswordResetLink(String to, String link) {
+        Map<String, String> toReplace = new HashMap<>();
+        toReplace.put("<?LINK?>", link);
+
         Email email = EmailBuilder.startingBlank()
                 .to(to)
                 .from("Vicariato San Jose del Amazonas", ConfigurationUtil.get("MAIL_FROM"))
                 .withSubject("Reset clave")
-                .withHTMLText("<p>Hello,</p>"
-                        + "<p>You have requested to reset your password.</p>"
-                        + "<p>Click the link below to change your password:</p>"
-                        + "<p><a href=\"" + link + "\">Change my password</a></p>"
-                        + "<br>"
-                        + "<p>Ignore this email if you do remember your password, "
-                        + "or you have not made the request.</p>")
+                .withHTMLText(genFromTemplate("RESET_PASS", toReplace))
                 .buildEmail();
         return this.mailer.sendMail(email);
     }
 
 
+    public String genFromTemplate(String templName, Map<String, String> replaceMap) {
+        String emailContent = emailTemplatesLoaded.get(templName);
+        for (String k : replaceMap.keySet()) {
+            while (emailContent.contains(k)) {
+                emailContent= emailContent.replace(k, replaceMap.get(k));
+            }
+        }
+        return emailContent;
+    }
+
     @PreDestroy
     public void close() {
         log.info("Closing Mailer Sender");
         mailer.shutdownConnectionPool();
-    }
-
-    public static void main(String[] args) throws IOException {
-        Path pdfPath = Paths.get("/pol/ReporteCajaDiario_20230316_192243.pdf");
-        byte[] pdfByteArray = Files.readAllBytes(pdfPath);
-
-        Email email = EmailBuilder.startingBlank()
-                .to("Pol", "pawel.rubach@gmail.com")
-                .from("Vicariato San Jose del Amazonas", ConfigurationUtil.get("MAIL_FROM"))
-                .withSubject("VASJA Reporte")
-                .withPlainText("Hola!\nSu reporte adjuntado.\nSaludos\nVASJA")
-                //.withAttachment("mypdf.pdf", pdfByteArray, "application/pdf")
-                .buildEmail();
-
-//        //MailerSender mailerSender = new MailerSender();
-//
-//        CompletableFuture<Void> result = mailerSender.sendEmail(email);
-//        try {
-//
-//        } catch (MailException me) {
-//            System.out.println("Something went wrong");
-//            System.out.println(me.getLocalizedMessage());
-//        } catch (RuntimeException e) {
-//            System.out.println("Got error");
-//            System.out.println(e);
-//        }
-//
-//        CompletableFuture<String> cf1 =
-//                result.handle((Void, ex) -> {
-//                    if (ex != null) {
-//                        return "Recovered from \"" + ex.getMessage() + "\"";
-//                    } else {
-//                        return "OK";
-//                    }
-//                });
-//
-//        try {
-//            cf1.join();
-//            mailerSender.mailer.shutdownConnectionPool();
-//            System.out.println(cf1.get());
-//        } catch (CompletionException e) {
-//            System.out.println("Error: " + e.getMessage());
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//
-
-        //mailerSender.mailer.
-//        mailerSender.mailer.
-//        try {
-//            //mailerSender.mailer.shutdownConnectionPool();
-//        } catch (MailException me) {
-//            System.out.println("Something went wrong when closing");
-//            System.out.println(me.getLocalizedMessage());
-//        } catch (RuntimeException e) {
-//            System.out.println("Got error closing");
-//            System.out.println(e);
-//        }
     }
 }
