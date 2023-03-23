@@ -4,6 +4,8 @@ import com.vaadin.data.Property;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
 import com.vaadin.ui.*;
 import jakarta.activation.DataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -16,6 +18,7 @@ import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
+import org.sanjose.views.rendicion.RendicionExportXLS;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 import org.simplejavamail.api.email.AttachmentResource;
@@ -23,15 +26,15 @@ import org.simplejavamail.api.email.Email;
 import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.email.EmailBuilder;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**          A
  * A view for performing create-read-update-delete operations on products.
@@ -48,6 +51,8 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
     private static final Logger log = LoggerFactory.getLogger(EnviarDiarioTercerosView.class);
     private PersistanceService service;
     private StringBuilder logRes;
+
+    private FileDownloader zipDownloader;
 
     private Date filterInitialDate = GenUtil.getBeginningOfMonth(GenUtil.dateAddDays(new Date(), -32));
 
@@ -103,7 +108,10 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             btnEnviar.setEnabled(true);
         });
         btnEnviar.setEnabled(true);
+        btnGenerarNoEnviados.setEnabled(true);
         logRes = new StringBuilder();
+        setupBtnGenerarNoEnviados();
+        //btnGenerarNoEnviados.addClickListener();
     }
 
     public CompletableFuture<String> doEnviarAsync() {
@@ -178,7 +186,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         return completableFuture;
     }
 
-    private static List<EmailDescription> generateEmails(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service) throws JRException, FileNotFoundException{
+    private static List<EmailDescription> generateEmails(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service) throws JRException {
         List<EmailDescription> emails = new ArrayList<>();
         for (MsgUsuario usuario : trcMap.keySet()) {
             List<AttachmentResource> atres = new ArrayList<>();
@@ -198,11 +206,74 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         return emails;
     }
 
+    public void setupBtnGenerarNoEnviados() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
+            @Override
+            public InputStream getStream() {
+                return null;
+            }
+        }, "no");
+        zipDownloader = new FileDownloader(resource);
+        //xlsDownloader.setFileDownloadResource(resource);
+        zipDownloader.extend(btnGenerarNoEnviados);
+    }
+
+    public void updateBtnGenerarNoEnviadosResource() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String exportFileName = "TercerosDiarios_"
+                + sdf.format(new Date(System.currentTimeMillis()))
+                + ".zip";
+        StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
+            @Override
+            public InputStream getStream() {
+                try {
+                    Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros(false);
+                    return generateReportesZip(terceros, fechaInicial.getValue(), fechaFinal.getValue(), service);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }, exportFileName);
+        resource.setMIMEType("application/zip");
+        zipDownloader.setFileDownloadResource(resource);
+    }
+
+
+    private static ByteArrayInputStream generateReportesZip(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service) throws JRException, IOException {
+        byte[] zipOut;
+        Map<String, byte[]> mapReporte = new HashMap<>();
+        for (MsgUsuario usuario : trcMap.keySet()) {
+            for (ScpDestino dst : trcMap.get(usuario)) {
+                EmailAttachment ea = TercerosUtil.generateTerceroOperacionesReport(fechaDesde, fechaHasta,
+                        dst.getCodDestino(), service, false);
+                mapReporte.put(ea.getFilename(), ea.getData());
+            }
+        }
+        return listBytesToZip(mapReporte);
+    }
+
+    protected static ByteArrayInputStream listBytesToZip(Map<String, byte[]> mapReporte) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ZipOutputStream zos = new ZipOutputStream(baos);
+        for (Map.Entry<String, byte[]> reporte : mapReporte.entrySet()) {
+            ZipEntry entry = new ZipEntry(reporte.getKey());
+            entry.setSize(reporte.getValue().length);
+            zos.putNextEntry(entry);
+            zos.write(reporte.getValue());
+        }
+        zos.closeEntry();
+        zos.close();
+        return new ByteArrayInputStream(baos.toByteArray());
+    }
+
+
     private void doImprimir(String codDestino) {
         try {
             TercerosUtil.generateTerceroOperacionesReport(fechaInicial.getValue(), fechaFinal.getValue(),
                     codDestino, service, true);
-        } catch (JRException | FileNotFoundException e) {
+        } catch (JRException e) {
             Notification.show("Problema al generar reportes a enviar \n" + e.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             e.printStackTrace();
         }
@@ -369,5 +440,6 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
     @Override
     public void enter(ViewChangeEvent event) {
         //viewLogic.enter(event.getParameters());
+        updateBtnGenerarNoEnviadosResource();
     }
 }

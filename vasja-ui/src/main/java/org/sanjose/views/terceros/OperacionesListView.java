@@ -138,8 +138,8 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
                         fechaDesde.getValue(), fechaHasta.getValue(), curCodTercero, getService(), true);
             } catch (JRException jre) {
                 log.error("Problem: " + jre.toString());
-            } catch (FileNotFoundException e) {
-                log.error("Problem: " + e.toString());
+//            } catch (FileNotFoundException e) {
+//                log.error("Problem: " + e.toString());
             }
         });
     }

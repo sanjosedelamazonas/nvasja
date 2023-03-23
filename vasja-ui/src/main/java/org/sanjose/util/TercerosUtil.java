@@ -331,7 +331,7 @@ public class TercerosUtil {
 
 
     public static EmailAttachment generateTerceroOperacionesReport(final Date fechaDesde, final Date fechaHasta,
-                                      String codTercero, PersistanceService service, boolean isShow) throws JRException, FileNotFoundException {
+                                      String codTercero, PersistanceService service, boolean isShow) throws JRException {
 
         ScpDestino dest = service.getDestinoRepo().findByCodDestino(codTercero);
 
