@@ -119,7 +119,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
 
         // Responsable
         DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
 
         // Tipo Moneda
         DataFilterUtil.bindTipoMonedaOptionGroup(view.getSelMoneda(), "codTipomoneda");
@@ -197,7 +197,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
 
         // Auxiliar
         DataFilterUtil.bindComboBox(selAuxiliar, "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
         view.grid.getColumn("codDestino").setEditorField(selAuxiliar);
 
 
@@ -608,7 +608,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
 
     private void refreshDestino() {
         DataFilterUtil.refreshComboBox(view.getSelResponsable1(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
         DataFilterUtil.refreshComboBox(selAuxiliar, "codDestino", view.getService().getDestinoRepo().findByIndTipodestinoNot('3'),
                 "txtNombredestino");
     }

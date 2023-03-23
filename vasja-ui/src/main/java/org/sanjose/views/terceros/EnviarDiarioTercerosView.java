@@ -124,13 +124,13 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             List<String> usuariosErrorList = new ArrayList<>();
             Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros(true);
             ui.access(() -> {
-                logRes.append("Generado lista de terceros para enviar... " + terceros.keySet().size() + " usuarios");
+                logRes.append("Generado lista de terceros para enviar... " + terceros.keySet().size() + " usuarios"+"\n");
                 txtLog.setValue(logRes.toString());
                 showProgress.setValue(0.1f);
             });
             List<EmailDescription> emailDescs = generateEmails(terceros, fechaInicial.getValue(), fechaFinal.getValue(), service, ui);
             ui.access(() -> {
-                logRes.append("Generado " + emailDescs.size() + " mensajes.");
+                logRes.append("Generado " + emailDescs.size() + " mensajes."+"\n");
                 txtLog.setValue(logRes.toString());
                 showProgress.setValue(0.5f);
             });
@@ -154,7 +154,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                 sendErrorsList.add(sendErrors);
             }
             ui.access(() -> {
-                logRes.append("Enviando" + emailDescs.size() + " mensajes.");
+                logRes.append("Enviando" + emailDescs.size() + " mensajes."+"\n");
                 txtLog.setValue(logRes.toString());
                 showProgress.setValue(0.5f);
             });
@@ -196,14 +196,14 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         List<EmailDescription> emails = new ArrayList<>();
         for (MsgUsuario usuario : trcMap.keySet()) {
             ui.access(() -> {
-                logRes.append("Generando para usuario: " + usuario.getTxtUsuario());
+                logRes.append("Generando para usuario: " + usuario.getTxtUsuario()+"\n");
                 txtLog.setValue(logRes.toString());
             });
             log.info("Generating report for user: " + usuario.getTxtUsuario() + " " + fechaDesde + " " + fechaHasta);
             List<AttachmentResource> atres = new ArrayList<>();
             for (ScpDestino dst : trcMap.get(usuario)) {
                 ui.access(() -> {
-                    logRes.append("Tercero: " + dst.getCodDestino());
+                    logRes.append("Tercero: " + dst.getCodDestino()+"\n");
                     txtLog.setValue(logRes.toString());
                 });
                 EmailAttachment ea = TercerosUtil.generateTerceroOperacionesReport(fechaDesde, fechaHasta,
@@ -220,7 +220,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                     .withHTMLText(((MainUI) UI.getCurrent()).getMailerSender().genFromTemplate("REPORTE_TERCERO", toReplace))
                     .withAttachments(atres)
                     .buildEmail()));
-            log.info("Finished for user: " + usuario.getTxtUsuario());
+            log.info("Finished for user: " + usuario.getTxtUsuario()+"\n");
         }
         return emails;
     }

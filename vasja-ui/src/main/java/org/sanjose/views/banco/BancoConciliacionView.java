@@ -52,7 +52,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
 
     private final String[] VISIBLE_COLUMN_IDS = new String[]{
             "id", "txtCorrelativo", "fecFecha", "txtCheque", "codProyecto", "codCtacontable",
-            "txtNombre", "txtGlosaitem", "flgCobrado",
+            "txtNombredestino", "txtGlosaitem", "flgCobrado",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo",
             "flgEnviado", "flg_Anula"
     };
@@ -72,7 +72,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
     };
     private final String[] NONEDITABLE_COLUMN_IDS = new String[]{"id", "txtCorrelativo", "fecFecha", "txtCheque",
             "codProyecto", "codCtacontable",
-            "txtNombre", "txtGlosaitem",
+            "txtNombredestino", "txtGlosaitem",
             "numDebesol", "numHabersol", "numDebedolar", "numHaberdolar", "numDebemo", "numHabermo", "flgEnviado", "flg_Anula", "flgCobrado"};
     Grid gridBanco;
 
@@ -202,7 +202,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         indContainer.addContainerProperty("txtCheque", String.class, "");
         indContainer.addContainerProperty("codProyecto", String.class, "");
         indContainer.addContainerProperty("codCtacontable", String.class, "");
-        indContainer.addContainerProperty("txtNombre", String.class, "");
+        indContainer.addContainerProperty("txtNombredestino", String.class, "");
         indContainer.addContainerProperty("txtGlosaitem", String.class, "");
         indContainer.addContainerProperty("numDebesol", BigDecimal.class, "");
         indContainer.addContainerProperty("numHabersol", BigDecimal.class, "");
@@ -261,7 +261,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
         item.getItemProperty("codProyecto").setValue(vbd.getCodProyecto());
         item.getItemProperty("codCtacontable").setValue(vbd.getCodContracta());
         ScpDestino destino = getService().getDestinoRepo().findByCodDestino(vbd.getScpBancocabecera().getCodDestino());
-        item.getItemProperty("txtNombre").setValue(destino != null ? destino.getTxtNombre() : "");
+        item.getItemProperty("txtNombredestino").setValue(destino != null ? destino.getTxtNombredestino() : "");
         item.getItemProperty("txtGlosaitem").setValue(vbd.getTxtGlosaitem());
         item.getItemProperty("numDebesol").setValue(vbd.getNumDebesol());
         item.getItemProperty("numHabersol").setValue(vbd.getNumHabersol());

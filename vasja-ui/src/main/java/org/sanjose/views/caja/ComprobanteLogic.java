@@ -308,7 +308,7 @@ class ComprobanteLogic implements Serializable {
         List<ScpDestino> destinoList = DataUtil.loadDestinos(view.getService());
         // Responsable
         DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", destinoList,
-                "Responsable", "txtNombre");
+                "Responsable", "txtNombredestino");
 
         view.getSelResponsable().addValueChangeListener(valueChangeEvent ->  {
             if (valueChangeEvent.getProperty().getValue()!=null)
@@ -321,7 +321,7 @@ class ComprobanteLogic implements Serializable {
 
         // Cod. Auxiliar
         DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", destinoList,
-                "Auxiliar", "txtNombre");
+                "Auxiliar", "txtNombredestino");
 
         // Tipo doc
         DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getService().getComprobantepagoRepo().findAll(),
@@ -483,9 +483,9 @@ class ComprobanteLogic implements Serializable {
 
     private void refreshDestino() {
         DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
         DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
     }
 
     private void refreshProyectoYcuentaPorFecha(Date newFecha) {
@@ -673,7 +673,7 @@ class ComprobanteLogic implements Serializable {
                 }
             };
             DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", DataUtil.loadDestinos(view.getService(), true), "Sel Tercero",
-                     "txtNombre");
+                     "txtNombredestino");
         }
         view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroChangeListener);
     }

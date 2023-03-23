@@ -57,7 +57,7 @@ public class ReportesView extends ReportesUI implements Viewing {
 
         // Tercero
         DataFilterUtil.bindComboBox(selTercero, "codDestino", DataUtil.loadDestinos(comprobanteService, true), "Sel Tercero",
-                "txtNombre");
+                "txtNombredestino");
         selTercero.addValueChangeListener(this::setTerceroLogic);
 
         DataFilterUtil.bindComboBox(selCategoria, "codCategoriaproyecto", comprobanteService.getScpCategoriaproyectoRep().findAll(), "Sel Cat Proyecto", "txtDescripcion");

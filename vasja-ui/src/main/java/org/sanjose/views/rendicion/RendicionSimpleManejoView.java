@@ -128,7 +128,7 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
                         if (((BeanItem)item).getBean()!=null && ((ScpRendicioncabecera)((BeanItem)item).getBean()).getCodUregistro()!=null) {
                             ScpDestino destino = getService().getDestinoRepo().findByCodDestino((((ScpRendicioncabecera) ((BeanItem) item).getBean())).getCodDestino());
                             if (destino != null)
-                                return destino.getTxtNombre();
+                                return destino.getTxtNombredestino();
                         }
                         return "";
                     }
@@ -217,7 +217,7 @@ public class RendicionSimpleManejoView extends RendicionSimpleManejoUI implement
 
         // Responsable
         DataFilterUtil.bindComboBox(filtroResponsable, "codDestino", DataUtil.loadDestinos(getService()),
-                "txtNombre", false);
+                "txtNombredestino", false);
 
         filtroResponsable.addValueChangeListener(e -> {
             if (e.getProperty().getValue() != null) {

@@ -573,9 +573,9 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
 
     private void refreshDestino() {
         DataFilterUtil.refreshComboBox(view.getSelResponsable1(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
         DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
     }
 
     private void refreshProyectoYcuentaPorFecha(Date newFecha) {
