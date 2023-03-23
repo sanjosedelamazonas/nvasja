@@ -122,10 +122,17 @@ INSTALL:
 
 
 1. Terceros - rola
+
 2. odswiezyc usuario w terceros
+DONE
 3. Operaciones de la cuenta - nazwa tercero
+DONE
 4. Maile - przestawic na produkcje
+DONE
 5. Kolory descuadrado zamienic
+DONE
 6. Ekran edyjmni rend n a 100%
+DONE
 7. Eksport raportów terceros dla niewysłanych
+DONE
 8. Marcar enviar reporte/No enviar - guziki

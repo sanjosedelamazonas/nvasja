@@ -18,7 +18,6 @@ import org.sanjose.model.ScpComprobantedetalle;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.repo.ScpDestinoRep;
 import org.sanjose.views.sys.PersistanceService;
-import org.sanjose.views.terceros.EnviarDiarioTercerosView;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -357,7 +356,7 @@ public class TercerosUtil {
         paramMap.put("COD_TERCERO", codTercero);
         paramMap.put("TXT_NOMBRE", dest!=null ? dest.getTxtNombredestino() : "");
 
-        InputStream input = ReportHelper.loadReport("ReporteTerceroOperaciones3");
+        InputStream input = ReportHelper.loadReport("ReporteTerceroOperaciones");
 
         JasperReport jasperReport = (JasperReport) JRLoader.loadObject(input);
         /*compiling jrxml with help of JasperReport class*/
