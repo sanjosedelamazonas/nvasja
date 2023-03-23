@@ -261,7 +261,6 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
 
 
     private static ByteArrayInputStream generateReportesZip(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service) throws JRException, IOException {
-        byte[] zipOut;
         Map<String, byte[]> mapReporte = new HashMap<>();
         for (MsgUsuario usuario : trcMap.keySet()) {
             for (ScpDestino dst : trcMap.get(usuario)) {

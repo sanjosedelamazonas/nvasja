@@ -14,6 +14,7 @@ public class VsjOperaciontercero implements Serializable, Comparable<VsjOperacio
 
     private Long id;
     private String codTercero;
+    private String txtTerceronombre;
     private Timestamp fecComprobante;
     private String codVoucher;
     private String codComprobante;
@@ -37,9 +38,10 @@ public class VsjOperaciontercero implements Serializable, Comparable<VsjOperacio
     private String codContraparte;
     private Boolean enviado;
 
-    public VsjOperaciontercero(Long id, String codTercero, Timestamp fecComprobante, String codVoucher, String codComprobante, String txtGlosaitem, String codDestino, String txtDestinonombre, String codCtacontable, Character codTipomoneda, BigDecimal numDebedolar, BigDecimal numDebemc, BigDecimal numDebemo, BigDecimal numDebesol, BigDecimal numHaberdolar, BigDecimal numHabermc, BigDecimal numHabermo, BigDecimal numHabersol, BigDecimal numSaldosol, BigDecimal numSaldodolar, BigDecimal numSaldomo, String codContraparte, Boolean enviado) {
+    public VsjOperaciontercero(Long id, String codTercero, String txtTerceronombre, Timestamp fecComprobante, String codVoucher, String codComprobante, String txtGlosaitem, String codDestino, String txtDestinonombre, String codCtacontable, Character codTipomoneda, BigDecimal numDebedolar, BigDecimal numDebemc, BigDecimal numDebemo, BigDecimal numDebesol, BigDecimal numHaberdolar, BigDecimal numHabermc, BigDecimal numHabermo, BigDecimal numHabersol, BigDecimal numSaldosol, BigDecimal numSaldodolar, BigDecimal numSaldomo, String codContraparte, Boolean enviado) {
         this.id = id;
         this.codTercero = codTercero;
+        this.txtTerceronombre = txtTerceronombre;
         this.fecComprobante = fecComprobante;
         this.codVoucher = codVoucher;
         this.codComprobante = codComprobante;
@@ -63,9 +65,10 @@ public class VsjOperaciontercero implements Serializable, Comparable<VsjOperacio
         this.enviado = enviado;
     }
 
-    public VsjOperaciontercero(Long id, String codTercero, Timestamp fecComprobante, String codVoucher, String codComprobante, String txtGlosaitem, String codDestino, String txtDestinonombre, String codCtacontable, Character codTipomoneda, BigDecimal numDebedolar, BigDecimal numDebemc, BigDecimal numDebemo, BigDecimal numDebesol, BigDecimal numHaberdolar, BigDecimal numHabermc, BigDecimal numHabermo, BigDecimal numHabersol, String codContraparte, Boolean enviado) {
+    public VsjOperaciontercero(Long id, String codTercero, String txtTerceronombre, Timestamp fecComprobante, String codVoucher, String codComprobante, String txtGlosaitem, String codDestino, String txtDestinonombre, String codCtacontable, Character codTipomoneda, BigDecimal numDebedolar, BigDecimal numDebemc, BigDecimal numDebemo, BigDecimal numDebesol, BigDecimal numHaberdolar, BigDecimal numHabermc, BigDecimal numHabermo, BigDecimal numHabersol, String codContraparte, Boolean enviado) {
         this.id = id;
         this.codTercero = codTercero;
+        this.txtTerceronombre = txtTerceronombre;
         this.fecComprobante = fecComprobante;
         this.codVoucher = codVoucher;
         this.codComprobante = codComprobante;
@@ -277,6 +280,7 @@ public class VsjOperaciontercero implements Serializable, Comparable<VsjOperacio
         VsjOperaciontercero that = (VsjOperaciontercero) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(codTercero, that.codTercero) &&
+                Objects.equals(txtTerceronombre, that.txtTerceronombre) &&
                 Objects.equals(fecComprobante, that.fecComprobante) &&
                 Objects.equals(codVoucher, that.codVoucher) &&
                 Objects.equals(codComprobante, that.codComprobante) &&
@@ -302,7 +306,15 @@ public class VsjOperaciontercero implements Serializable, Comparable<VsjOperacio
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, codTercero, fecComprobante, codVoucher, codComprobante, txtGlosaitem, codDestino, txtDestinonombre, codCtacontable, codTipomoneda, numDebedolar, numDebemc, numDebemo, numDebesol, numHaberdolar, numHabermc, numHabermo, numHabersol, numSaldosol, numSaldodolar, numSaldomo, codContraparte, enviado);
+        return Objects.hash(id, codTercero, txtTerceronombre, fecComprobante, codVoucher, codComprobante, txtGlosaitem, codDestino, txtDestinonombre, codCtacontable, codTipomoneda, numDebedolar, numDebemc, numDebemo, numDebesol, numHaberdolar, numHabermc, numHabermo, numHabersol, numSaldosol, numSaldodolar, numSaldomo, codContraparte, enviado);
+    }
+
+    public String getTxtTerceronombre() {
+        return txtTerceronombre;
+    }
+
+    public void setTxtTerceronombre(String txtTerceronombre) {
+        this.txtTerceronombre = txtTerceronombre;
     }
 
     @Override

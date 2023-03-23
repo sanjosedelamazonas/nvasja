@@ -46,6 +46,7 @@ public class TercerosUtil {
                 service.getDestinoRepo(),
                 TercerosUtil.getAllSaldoPorFecha(fechaDesde, curCodTercero),
                 fechaDesde,
+                curCodTercero,
                 isReporte
         );
     }
@@ -67,6 +68,7 @@ public class TercerosUtil {
                 service.getDestinoRepo(),
                 TercerosUtil.getAllSaldoPorFecha(fechaDesde, curCodTercero),
                 fechaDesde,
+                curCodTercero,
                 true
         );
         Map<Character, List<VsjOperaciontercero>> allops = new HashMap<>();
@@ -90,11 +92,9 @@ public class TercerosUtil {
         return allops;
     }
 
-
     public static ProcUtil.Saldos getAllSaldoPorFecha(Date fecha, String curCodTercero) {
         return MainUI.get().getProcUtil().getSaldos(fecha, null, curCodTercero);
     }
-
 
     public static List<VsjOperaciontercero> getFrom(
             List<ScpComprobantedetalle> comprobantedetalleList4,
@@ -104,6 +104,7 @@ public class TercerosUtil {
             ScpDestinoRep destinoRep,
             ProcUtil.Saldos saldosIniciales,
             Date fechaDesde,
+            String codTercero,
             boolean isReporte) {
 
         List<VsjOperaciontercero> terc = new ArrayList<>();
@@ -111,10 +112,14 @@ public class TercerosUtil {
         BigDecimal sumSaldodolar = saldosIniciales.getSaldoUSD();
         BigDecimal sumSaldomo = saldosIniciales.getSaldoEUR();
 
+        ScpDestino destTerc = destinoRep.findByCodDestino(codTercero);
+        String txtNombretercero = destTerc.getTxtNombredestino();
+
         if (isReporte) {
             terc.add(new VsjOperaciontercero(
                     null,
-                    "",
+                    codTercero,
+                    txtNombretercero,
                     new Timestamp(fechaDesde.getTime()),
                                 "",
                     "",
@@ -140,7 +145,8 @@ public class TercerosUtil {
 
             terc.add(new VsjOperaciontercero(
                     null,
-                    "",
+                    codTercero,
+                    txtNombretercero,
                     new Timestamp(fechaDesde.getTime()),
                     "",
                     "000000",
@@ -166,7 +172,8 @@ public class TercerosUtil {
 
             terc.add(new VsjOperaciontercero(
                     null,
-                    "",
+                    codTercero,
+                    txtNombretercero,
                     new Timestamp(fechaDesde.getTime()),
                     "",
                     "000000",
@@ -209,6 +216,7 @@ public class TercerosUtil {
             terc.add(new VsjOperaciontercero(
                     id++,
                     det.getCodTercero(),
+                    txtNombretercero,
                     det.getFecComprobante(),
                     det.getId().getCodOrigen() + " " + det.getId().getCodComprobante(),
                     det.getId().getCodComprobante(),
@@ -243,6 +251,7 @@ public class TercerosUtil {
             terc.add(new VsjOperaciontercero(
                     id++,
                     det.getCodTercero(),
+                    txtNombretercero,
                     det.getFecFecha(),
                     "01 " + det.getTxtCorrelativo(),
                     det.getTxtCorrelativo(),
@@ -278,6 +287,7 @@ public class TercerosUtil {
             terc.add(new VsjOperaciontercero(
                     id++,
                     det.getCodTercero(),
+                    txtNombretercero,
                     det.getFecFecha(),
                     "02 " + det.getTxtCorrelativo(),
                     det.getTxtCorrelativo(),
