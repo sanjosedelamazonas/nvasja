@@ -34,7 +34,7 @@
 		<vaadin.version>7.7.17</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 		<jasper.version>6.20.0</jasper.version>
-		<jetty.plugin.version>9.4.21.v20190926</jetty.plugin.version>
+		<jetty.plugin.version>9.4.51.v20230217</jetty.plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
