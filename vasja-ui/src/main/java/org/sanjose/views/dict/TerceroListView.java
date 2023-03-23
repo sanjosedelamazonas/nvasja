@@ -48,7 +48,7 @@ public class TerceroListView extends TerceroListUI implements Viewing {
             "fecFregistro", "codUregistro", "fecFactualiza", "codUactualiza"
     };
     private final String[] HIDDEN_COLUMN_IDS = new String[] {
-            "fecFregistro", "codUregistro", "fecFactualiza", "codUactualiza"
+            "txtNombre", "indSexo", "txtEmail", "fecFregistro", "codUregistro", "fecFactualiza", "codUactualiza"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
             "Activo", "Codigo", "Nombre", "Descripcion", "Genero",
