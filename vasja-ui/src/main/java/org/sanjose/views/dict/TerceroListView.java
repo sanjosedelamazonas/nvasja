@@ -57,7 +57,7 @@ public class TerceroListView extends TerceroListUI implements Viewing {
     };
     private final int[] FILTER_WIDTH = new int[]{
             6, 10, 15, 3, 3, 3,
-            3, 7, 7, 4, 8
+            3, 7, 7, 4, 8, 5
     };
     private ComboBox usuario = new ComboBox();
 
@@ -122,86 +122,9 @@ public class TerceroListView extends TerceroListUI implements Viewing {
         ScpDestino newTercero = new ScpDestino();
         newTercero.setIndTipodestino('3');
         newTercero.setActivo(true);
-        grid.addRow(newTercero);
-        //view.grid.getContainerDataSource().addItemAt(0, new ScpDestino());
+        newTercero.setEnviarreporte(true);
+        grid.getContainerDataSource().addItem(newTercero);
     }
-
-    private void setItemLogic(ItemClickEvent event) {
-        if (event.isDoubleClick()) {
-            Object id = event.getItem().getItemProperty("codDestino").getValue();
-            //ScpRendicioncabecera vcb = getService().getCajabancoRep().findByCodCajabanco((Integer) id);
-            //viewLogic.modificarRendicion(vcb);
-            //Object id = event.getItem().getItemProperty("codDestino").getValue();
-            editDestino(getService().getDestinoRepo().findByCodDestino(id.toString()));
-        }
-    }
-
-
-    public void editDestino(ScpDestino destino) {
-        Window destinoWindow = new Window();
-
-        destinoWindow.setWindowMode(WindowMode.NORMAL);
-        destinoWindow.setDraggable(true);
-        destinoWindow.setWidth(700, Unit.PIXELS);
-        destinoWindow.setHeight(550, Unit.PIXELS);
-        destinoWindow.setPositionX(200);
-        destinoWindow.setPositionY(50);
-        destinoWindow.setModal(true);
-        destinoWindow.setClosable(false);
-
-        DestinoView destinoView = new DestinoView(getService().getDestinoRepo(), getService().getCargocuartaRepo(), getService().getTipodocumentoRepo());
-        if (destino==null)
-            destinoView.viewLogic.nuevoDestino();
-        else {
-            destinoView.viewLogic.editarDestino(destino);
-        }
-        destinoWindow.setContent(destinoView);
-
-        destinoView.getBtnGuardar().addClickListener(event -> {
-            ScpDestino editedItem = destinoView.viewLogic.saveDestino();
-            if (editedItem!=null) {
-                destinoWindow.close();
-                refreshData();
-            }
-        });
-        destinoView.getBtnAnular().addClickListener(event -> {
-            destinoView.viewLogic.anularDestino();
-            destinoWindow.close();
-        });
-
-        destinoView.getBtnEliminar().addClickListener(clickEvent -> {
-            try {
-                ScpDestino item = destinoView.getScpDestino();
-                String codDestino = item.getCodDestino();
-                MessageBox.setDialogDefaultLanguage(ConfigurationUtil.getLocale());
-                MessageBox
-                        .createQuestion()
-                        .withCaption("Eliminar: " + item.getTxtNombredestino())
-                        .withMessage("Esta seguro que lo quiere eliminar?")
-                        .withYesButton(() -> {
-                            String msg = MainUI.get().getProcUtil().checkIfcanBeDeleted(codDestino, getService());
-                            if (msg.isEmpty()) {
-                                destinoView.destinoRepo.delete(item);
-                                refreshData();
-                                destinoWindow.close();
-                            } else {
-                                MessageBox
-                                        .createWarning()
-                                        .withCaption("No se puede eliminar destino: " + item.getTxtNombredestino())
-                                        .withMessage("Los sigientes comprobantes usan este destino como Responsable o como Codigo Auxiliar: " + msg)
-                                        .open();
-                            }
-                        })
-                        .withNoButton()
-                        .open();
-            } catch (FieldGroup.CommitException ce) {
-                Notification.show("Error al eliminar el destino: " + ce.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
-                log.info("Got Commit Exception: " + ce.getMessage());
-            }
-        });
-        UI.getCurrent().addWindow(destinoWindow);
-    }
-
 
     public void refreshData() {
         grid.getContainerDataSource().removeAllItems();
