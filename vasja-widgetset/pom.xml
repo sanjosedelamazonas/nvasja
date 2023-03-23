@@ -26,11 +26,11 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.sanjosedelamazonas</groupId>
-            <artifactId>printapplet-addon</artifactId>
-            <version>0.0.5</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.sanjosedelamazonas</groupId>-->
+            <!--<artifactId>printapplet-addon</artifactId>-->
+            <!--<version>0.0.5</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.vaadin.addon</groupId>
