@@ -84,7 +84,7 @@ public class ConfigurationUtil {
     public static Locale getLocale(boolean refresh) {
 		if (locale==null || refresh) {
 			String locStr = get("LOCALE");
-			locale = new Locale(locStr);
+			locale = new Locale(locStr.substring(0, 2), locStr.substring(3, 5));
 		}
 		return locale;
 	}
