@@ -89,7 +89,7 @@ public class MainScreen extends HorizontalLayout {
                     CajaOperacionesView.VIEW_NAME, FontAwesome.EDIT);
             menu.addView(cajaGridView, CajaGridView.VIEW_NAME,
                     CajaGridView.VIEW_NAME, FontAwesome.EDIT);
-                    }
+        }
 
         if (Role.isBanco()) {
             bancoOperView.init();
@@ -100,17 +100,20 @@ public class MainScreen extends HorizontalLayout {
             menu.addView(bancoConciliacionView, BancoConciliacionView.VIEW_NAME,
                     BancoConciliacionView.VIEW_NAME, FontAwesome.EDIT);
         }
+
         if (Role.isPrivileged()) {
             menu.addView(bancoOperacionesView, BancoOperacionesView.VIEW_NAME,
                     BancoOperacionesView.VIEW_NAME, FontAwesome.EDIT);
         }
-        if (Role.isDigitador()) {
+
+        if (Role.isDigitador() || Role.isTercero()) {
             rendicionSimpleOperView.init();
             viewsToIgnoreWhenInit.add(rendicionSimpleOperView);
             menu.addSeparator("Rendiciones");
             menu.addView(rendicionSimpleManejoView, RendicionSimpleManejoView.VIEW_NAME,
                     RendicionSimpleManejoView.VIEW_NAME, FontAwesome.EDIT);
         }
+
         if (Role.isAdmin()) {
             rendicionOperView.init();
             viewsToIgnoreWhenInit.add(rendicionOperView);
