@@ -36,8 +36,9 @@
 		<jasper.version>6.20.0</jasper.version>
 		<jetty.plugin.version>9.4.51.v20230217</jetty.plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<vaadin.gwt.version>2.9.0</vaadin.gwt.version>
 	</properties>
 
 	<build>
