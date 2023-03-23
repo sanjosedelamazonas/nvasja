@@ -128,7 +128,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                 txtLog.setValue(logRes.toString());
                 showProgress.setValue(0.1f);
             });
-            List<EmailDescription> emailDescs = generateEmails(terceros, fechaInicial.getValue(), fechaFinal.getValue(), service);
+            List<EmailDescription> emailDescs = generateEmails(terceros, fechaInicial.getValue(), fechaFinal.getValue(), service, ui);
             ui.access(() -> {
                 logRes.append("Generado " + emailDescs.size() + " mensajes.");
                 txtLog.setValue(logRes.toString());
@@ -192,17 +192,27 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         return completableFuture;
     }
 
-    private static List<EmailDescription> generateEmails(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service) throws JRException {
+    private List<EmailDescription> generateEmails(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service, UI ui) throws JRException {
         List<EmailDescription> emails = new ArrayList<>();
         for (MsgUsuario usuario : trcMap.keySet()) {
+            ui.access(() -> {
+                logRes.append("Generando para usuario: " + usuario.getTxtUsuario());
+                txtLog.setValue(logRes.toString());
+            });
+            log.info("Generating report for user: " + usuario.getTxtUsuario() + " " + fechaDesde + " " + fechaHasta);
             List<AttachmentResource> atres = new ArrayList<>();
             for (ScpDestino dst : trcMap.get(usuario)) {
+                ui.access(() -> {
+                    logRes.append("Tercero: " + dst.getCodDestino());
+                    txtLog.setValue(logRes.toString());
+                });
                 EmailAttachment ea = TercerosUtil.generateTerceroOperacionesReport(fechaDesde, fechaHasta,
                         dst.getCodDestino(), service, false);
                 atres.add(ea.asAttachmentResource());
             }
             Map<String, String> toReplace = new HashMap<>();
-            toReplace.put("<?USUARIO?>", usuario.getTxtNombre());
+            toReplace.put("[USUARIO]", usuario.getTxtNombre());
+            //log.info("Generating report for: " + dst.getCodDestino() + " " + fechaDesde + " " + fechaHasta);
             emails.add(new EmailDescription(usuario.getTxtCorreo(), usuario.getTxtUsuario(), EmailBuilder.startingBlank()
                     .to(usuario.getTxtCorreo())
                     .from("Vicariato San Jose del Amazonas", ConfigurationUtil.get("MAIL_FROM"))
@@ -210,6 +220,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                     .withHTMLText(((MainUI) UI.getCurrent()).getMailerSender().genFromTemplate("REPORTE_TERCERO", toReplace))
                     .withAttachments(atres)
                     .buildEmail()));
+            log.info("Finished for user: " + usuario.getTxtUsuario());
         }
         return emails;
     }
