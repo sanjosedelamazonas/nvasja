@@ -78,17 +78,6 @@ public class TercerosUtil {
         all.forEach( op -> {
             allops.get(op.getCodTipomoneda()).add(op);
         });
-        for (Character moneda : GenUtil.getMonedasAsCharacter()) {
-            List<VsjOperaciontercero> opers = (allops.get(moneda));
-//            switch (moneda) {
-//                case '0':
-//                    opers.get(0).getNumSaldosol()
-//
-//            }
-            if (opers.size()==1) {
-                allops.put(moneda, new ArrayList<>());
-            }
-        }
         return allops;
     }
 
@@ -387,19 +376,7 @@ public class TercerosUtil {
         } else {
              return new EmailAttachment(filename, JasperRunManager.runReportToPdf(jasperReport,
                     paramMap, new JREmptyDataSource()));
-
-//            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, new JREmptyDataSource());
-//            OutputStream output = new FileOutputStream(new File(filename));
-//            JasperExportManager.exportReportToPdfStream(jasperPrint, output);
         }
-//        JRPdfExporter exporter = new JRPdfExporter();
-//        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-
-//        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(
-//                response.getOutputStream()));
-//        response.setHeader("Content-Disposition", "attachment;filename=jasperfile.docx");
-//        response.setContentType("application/octet-stream");
-//        exporter.exportReport();
     }
 
     public static ByteArrayInputStream generateJasperReport(JasperReport report, HashMap paramMap) {

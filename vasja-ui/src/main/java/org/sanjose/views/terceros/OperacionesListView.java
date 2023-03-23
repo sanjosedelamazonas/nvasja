@@ -193,10 +193,13 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
     @Override
     public void refreshData() {
         if (codigosTerc.isEmpty()) {
-            List<ScpDestino> destinosTerc = getService().getDestinoRepo().findByTxtUsuario(CurrentUser.get());
-            destinosTerc.forEach(destino -> codigosTerc.add(destino.getCodDestino() + " " + destino.getTxtNombre()));
             Map<String, String> codigosTercMap = new HashMap<>();
-            codigosTerc.forEach(codigo -> codigosTercMap.put(codigo, codigo));
+            List<ScpDestino> destinosTerc = getService().getDestinoRepo().findByTxtUsuario(CurrentUser.get());
+            destinosTerc.forEach(destino -> {
+                codigosTercMap.put(destino.getCodDestino(), destino.getCodDestino() + " " + destino.getTxtNombre());
+                codigosTerc.add(destino.getCodDestino());
+            });
+
             DataFilterUtil.bindFixedStringValComboBox(selCuenta, "codTercero",
                     "Cuenta", codigosTercMap);
             selCuenta.setNullSelectionAllowed(false);
