@@ -211,7 +211,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                 atres.add(ea.asAttachmentResource());
             }
             Map<String, String> toReplace = new HashMap<>();
-            toReplace.put("[USUARIO]", usuario.getTxtNombre());
+            toReplace.put("USUARIO", usuario.getTxtNombre());
             //log.info("Generating report for: " + dst.getCodDestino() + " " + fechaDesde + " " + fechaHasta);
             emails.add(new EmailDescription(usuario.getTxtCorreo(), usuario.getTxtUsuario(), EmailBuilder.startingBlank()
                     .to(usuario.getTxtCorreo())

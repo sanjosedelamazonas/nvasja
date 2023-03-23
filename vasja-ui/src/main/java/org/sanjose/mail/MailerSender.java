@@ -2,7 +2,7 @@ package org.sanjose.mail;
 
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.views.sys.PropiedadService;
 import org.simplejavamail.api.email.Email;
@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,7 +100,7 @@ public class MailerSender {
 
     public CompletableFuture<Void> sendPasswordResetLink(String to, String link) {
         Map<String, String> toReplace = new HashMap<>();
-        toReplace.put("[LINK]", link);
+        toReplace.put("LINK", link);
 
         Email email = EmailBuilder.startingBlank()
                 .to(to)
@@ -116,7 +114,7 @@ public class MailerSender {
 
     public String genFromTemplate(String templName, Map<String, String> replaceMap) {
         String emailContent = emailTemplatesLoaded.get(templName);
-        StrSubstitutor sub = new StrSubstitutor(replaceMap);
+        StringSubstitutor sub = new StringSubstitutor(replaceMap);
         return sub.replace(emailContent);
     }
 
