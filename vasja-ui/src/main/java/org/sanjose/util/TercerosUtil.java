@@ -76,17 +76,17 @@ public class TercerosUtil {
         all.forEach( op -> {
             allops.get(op.getCodTipomoneda()).add(op);
         });
-        for (Character moneda : GenUtil.getMonedasAsCharacter()) {
-            List<VsjOperaciontercero> opers = (allops.get(moneda));
-//            switch (moneda) {
-//                case '0':
-//                    opers.get(0).getNumSaldosol()
-//
+//        for (Character moneda : GenUtil.getMonedasAsCharacter()) {
+//            List<VsjOperaciontercero> opers = (allops.get(moneda));
+////            switch (moneda) {
+////                case '0':
+////                    opers.get(0).getNumSaldosol()
+////
+////            }
+//            if (opers.size()==1) {
+//                allops.put(moneda, new ArrayList<>());
 //            }
-            if (opers.size()==1) {
-                allops.put(moneda, new ArrayList<>());
-            }
-        }
+//        }
         return allops;
     }
 
