@@ -51,7 +51,8 @@ public class DestinoListView extends DestinoListUI implements Viewing {
             "fecFregistro", "codUregistro", "fecFactualiza", "codUactualiza"
     };
     private final String[] HIDDEN_COLUMN_IDS = new String[] {
-            "txtApellidomaterno", "txtApellidopaterno", "txtTelefono1", "txtTelefono2",
+            "indTipopersona",  "txtNombredestino","txtApellidomaterno", "txtApellidopaterno", "txtTelefono1", "txtTelefono2",
+            "codCargo", "txtDireccion",
             "fecFregistro", "codUregistro", "fecFactualiza", "codUactualiza"
     };
     private final String[] VISIBLE_COLUMN_NAMES = new String[]{
