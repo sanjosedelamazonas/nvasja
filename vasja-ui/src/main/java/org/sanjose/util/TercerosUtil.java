@@ -112,8 +112,11 @@ public class TercerosUtil {
         BigDecimal sumSaldodolar = saldosIniciales.getSaldoUSD();
         BigDecimal sumSaldomo = saldosIniciales.getSaldoEUR();
 
-        ScpDestino destTerc = destinoRep.findByCodDestino(codTercero);
-        String txtNombretercero = destTerc.getTxtNombredestino();
+        String txtNombretercero = "";
+        if (codTercero!=null) {
+            ScpDestino destTerc = destinoRep.findByCodDestino(codTercero);
+            txtNombretercero = destTerc.getTxtNombredestino();
+        }
 
         if (isReporte) {
             terc.add(new VsjOperaciontercero(
