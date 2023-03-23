@@ -64,7 +64,7 @@ public class DestinoView extends DestinoUI implements View {
         selCodigo.setNewItemsAllowed(true);
 
         // Nombre
-        DataFilterUtil.bindComboBox(selNombreCompleta, "txtNombre", destinoRepo.findAll(), null);
+        DataFilterUtil.bindComboBox(selNombreCompleta, "txtNombredestino", destinoRepo.findAll(), null);
         selNombreCompleta.setTextInputAllowed(true);
         selNombreCompleta.setInvalidAllowed(true);
         selNombreCompleta.setNewItemsAllowed(true);
@@ -118,7 +118,7 @@ public class DestinoView extends DestinoUI implements View {
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.bind(selCodigo, "codDestino");
         fieldGroup.bind(clasificacion, "indTipodestino");
-        fieldGroup.bind(selNombreCompleta, "txtNombre");
+        fieldGroup.bind(selNombreCompleta, "txtNombredestino");
         fieldGroup.bind(apellidoPaterno, "txtApellidopaterno");
         fieldGroup.bind(apellidoMaterno, "txtApellidomaterno");
         fieldGroup.bind(genero, "indSexo");

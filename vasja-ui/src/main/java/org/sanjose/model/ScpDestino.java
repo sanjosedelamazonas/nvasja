@@ -111,8 +111,8 @@ public class ScpDestino implements Serializable {
         setCodUactualiza(CurrentUser.get());
         setFecFactualiza(new Timestamp(System.currentTimeMillis()));
 
-        if (getTxtNombre() == null) setTxtNombre("");
-        if (getTxtNombredestino() == null) setTxtNombredestino(getTxtNombre());
+        if (getTxtNombre() == null) setTxtNombre(getTxtNombredestino());
+        if (getTxtNombredestino() == null) setTxtNombredestino("");
         if (getCodCargo() == null) setCodCargo("");
         if (getCodFilial()== null) setCodFilial("");
         if (getTxtApellidomaterno() == null) setTxtApellidomaterno("");

@@ -109,7 +109,7 @@ public class ImportView extends ImportUI implements SubWindowing {
 
         // Auxiliar
         DataFilterUtil.bindComboBox(row.getSelDestino(), "codDestino", DataUtil.loadDestinos(rendicionItemLogic.view.getService()), item.getCodDestino(),
-                "txtNombre");
+                "txtNombredestino");
         row.getSelDestino().setInvalidAllowed(true);
         row.getSelDestino().setNewItemsAllowed(true);
         fieldGroup.bind(row.getSelDestino(), "codDestino");

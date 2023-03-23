@@ -126,7 +126,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
 
         // Cod. Auxiliar
         DataFilterUtil.bindComboBox(view.getSelCodAuxCabeza(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
 
         view.getSelCodAuxCabeza().addValueChangeListener(valueChangeEvent -> {
             if (valueChangeEvent.getProperty().getValue() != null)
@@ -193,7 +193,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
 
         // Responsable
         DataFilterUtil.bindComboBox(view.getSelResponsable(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
 
         view.getSelResponsable().addValueChangeListener(valueChangeEvent -> {
             if (valueChangeEvent.getProperty().getValue() != null)
@@ -206,7 +206,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
 
         // Cod. Auxiliar
         DataFilterUtil.bindComboBox(view.getSelCodAuxiliar(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
 
         // Tipo doc
         DataFilterUtil.bindComboBox(view.getSelTipoDoc(), "codTipocomprobantepago", view.getService().getComprobantepagoRepo().findAll(),
@@ -368,11 +368,11 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
 
     private void refreshDestino() {
         DataFilterUtil.refreshComboBox(view.getSelResponsable(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
         DataFilterUtil.refreshComboBox(view.getSelCodAuxiliar(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
         DataFilterUtil.refreshComboBox(view.getSelCodAuxCabeza(), "codDestino", DataUtil.loadDestinos(view.getService()),
-                "txtNombre");
+                "txtNombredestino");
     }
 
     private void refreshProyectoYcuentaPorFecha(Date newFecha) {
@@ -424,7 +424,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             view.getSelFuente().setValue(null);
             view.getSelProyectoTercero().addValueChangeListener(selProyectoTerceroValueChangeListener);
             DataFilterUtil.bindComboBox(view.getSelProyectoTercero(), "codDestino", DataUtil.loadDestinos(view.getService(), true), "Sel Tercero",
-                    "txtNombre");
+                    "txtNombredestino");
         }
     }
 
