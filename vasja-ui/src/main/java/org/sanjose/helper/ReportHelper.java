@@ -133,6 +133,8 @@ public class ReportHelper {
 				.equalsIgnoreCase("PDF") || op instanceof ScpBancocabecera;
 		final boolean isTxt = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
 				.equalsIgnoreCase("TXT") && !(op instanceof ScpBancocabecera);
+		final boolean isXls = ConfigurationUtil.get("REPORTS_COMPROBANTE_TYPE")
+				.equalsIgnoreCase("XLS") && (op instanceof ScpRendicioncabecera);
 		final String REPORT = getReportFromItem(op);
 		StreamResource.StreamSource source = (StreamResource.StreamSource) () -> {
             byte[] b = null;
@@ -146,12 +148,14 @@ public class ReportHelper {
                     HashMap paramMap = new HashMap();
                     paramMap.put("REPORT_LOCALE", ConfigurationUtil.LOCALE);
 					paramMap.put("OP_ID", getIdFromItem(op));
-					if (isPdf)
-                        b = JasperRunManager.runReportToPdf(report,
-                                paramMap, get().getSqlConnection());
-                    else if (isTxt) {
+					if (isPdf) {
+						b = JasperRunManager.runReportToPdf(report,
+								paramMap, get().getSqlConnection());
+					} else if (isTxt) {
                         return exportToTxt(REPORT, paramMap);
-                    } else {
+                    } else if (isXls) {
+						return exportToXls(REPORT, paramMap);
+					} else {
                         return exportToHtml(REPORT, paramMap);
                     }
                 } else {
@@ -169,8 +173,8 @@ public class ReportHelper {
 						(GenUtil.isIngreso(op) ? "Ingreso_" : "Egreso_"))
 						+ op.getTxtAnoproceso() + "_" + op.getCodMes() + "_" + getIdFromItem(op) + "_"
 						+ df.format(new Date(System.currentTimeMillis()))
-						+ (isPdf ? ".pdf" : (isTxt ? ".txt" : ".html")));
-		resource.setMIMEType((isPdf ? "application/pdf" : (isTxt ? "text/plain" : "text/html")));
+						+ (isPdf ? ".pdf" : (isTxt ? ".txt" : (isXls ? ".xlsx" : ".html"))));
+		resource.setMIMEType((isPdf ? "application/pdf" : (isTxt ? "text/plain" : (isXls ? "application/xls" : "text/html"))));
 
 		logger.debug("Resource: " + resource.getFilename() + " "
 				+ resource.getMIMEType());

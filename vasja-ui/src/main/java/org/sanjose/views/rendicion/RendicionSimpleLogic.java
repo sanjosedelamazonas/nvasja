@@ -248,8 +248,6 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
         xlsDownloader.setFileDownloadResource(resource);
     }
 
-
-
     @Override
     public void cerrarAlManejo() {
         //if (xlsDownloader!=null && xlsDownloader.isAttached())
