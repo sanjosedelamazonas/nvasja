@@ -59,7 +59,7 @@ public class RendicionExportXLS extends XlsExporter {
                 Arrays.asList(new Object[]{"id.numNroitem", "fecComprobantepago", Arrays.asList(new String[] {"txtSeriecomprobantepago", "txtComprobantepago"}),
                         "txtGlosaitem", "numHaber" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda()), "numDebe" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda())}),
                 detalles,
-                6, null);
+                6, "-");
         createSumRow(2, detalles.size()+7);
     }
 
@@ -68,13 +68,15 @@ public class RendicionExportXLS extends XlsExporter {
         CellStyle style = getDataRowStyle();
         int cellCount = 0;
         createCell(row, 0, "",  style);
-        createCell(row, 1, "TOTAL:", style);
-        Cell formulaCell = row.createCell(2);
-        formulaCell.setCellFormula("SUM(C7:C"+ (r + 1) + ")");
+        createCell(row, 1, "",  style);
+        createCell(row, 2, "",  style);
+        createCell(row, 3, "TOTAL:", style);
+        Cell formulaCell = row.createCell(4);
+        formulaCell.setCellFormula("SUM(E7:E"+ (r) + ")");
         formulaCell.setCellStyle(getBorderedThinStyle(getFontArial12(getCurrencyCellStyle())));
-        formulaCell = row.createCell(3);
+        formulaCell = row.createCell(5);
         formulaCell.setCellStyle(getBorderedThinStyle(getFontArial12(getCurrencyCellStyle())));
-        formulaCell.setCellFormula("SUM(D7:D"+ (r + 1) + ")");
+        formulaCell.setCellFormula("SUM(F7:F"+ (r) + ")");
     }
 
     public ByteArrayOutputStream getExported() {

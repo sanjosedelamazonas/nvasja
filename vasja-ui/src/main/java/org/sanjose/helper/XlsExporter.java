@@ -11,10 +11,12 @@ import org.sanjose.util.GenUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class XlsExporter {
 
@@ -73,7 +75,7 @@ public class XlsExporter {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
             for (Object col : columns) {
-                if (col instanceof Collections) {
+                if (col instanceof Collection) {
                     createCell(row, columnCount++, getValueFromPojo(clazz, (Collection)col, pojo, delimiter), style);
                 } else {
                     createCell(row, columnCount++, getValueFromPojo(clazz, col.toString(), pojo), style);
@@ -96,6 +98,10 @@ public class XlsExporter {
             style = getFontArial12(style);
         } else if (value instanceof Long) {
             cell.setCellValue((Long) value);
+            style = getCenterAlignedCellStyle(style);
+        } else if (value instanceof Timestamp) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            cell.setCellValue(sdf.format((Timestamp)value));
             style = getCenterAlignedCellStyle(style);
         } else {
             cell.setCellValue((String) value);
@@ -186,8 +192,21 @@ public class XlsExporter {
 
     private Object getValueFromPojo(Class<?> clazz, Collection fieldName, Object pojo, String delimiter) {
         List<String> values = new ArrayList<>();
-        fieldName.forEach( s -> values.add(getValueFromPojo(clazz, s.toString(), pojo).toString()));
-        return String.join(delimiter, values);
+        boolean isAllNull = true;
+        for (Object col : fieldName) {
+            Object res = getValueFromPojo(clazz, col.toString(), pojo);
+            if (res!=null) {
+                isAllNull=false;
+                values.add(res.toString());
+            } else {
+                values.add("");
+            }
+
+        }
+        if (isAllNull) return "";
+        else  {
+            return String.join(delimiter, values);
+        }
     }
 
     private Object getValueFromPojo(Class<?> clazz, String fieldName, Object pojo) {
