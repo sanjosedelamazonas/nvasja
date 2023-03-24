@@ -110,8 +110,9 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         btnEnviar.setEnabled(true);
         btnGenerarNoEnviados.setEnabled(true);
         logRes = new StringBuilder();
-        setupBtnGenerarNoEnviados();
-        //btnGenerarNoEnviados.addClickListener();
+        //setupBtnGenerarNoEnviados();
+
+        btnGenerarNoEnviados.addClickListener( o -> generateNoEnviadosAsOneReport());
     }
 
     public CompletableFuture<String> doEnviarAsync() {
@@ -225,6 +226,17 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         return emails;
     }
 
+    public void generateNoEnviadosAsOneReport() {
+        try {
+            Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros(false);
+            TercerosUtil.generateTerceroOperacionesAllInOneReport(fechaInicial.getValue(), fechaFinal.getValue(), terceros, service, true);
+        } catch (JRException e) {
+            Notification.show("Problema al generar reportes a enviar \n" + e.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+
     public void setupBtnGenerarNoEnviados() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
@@ -237,6 +249,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         //xlsDownloader.setFileDownloadResource(resource);
         zipDownloader.extend(btnGenerarNoEnviados);
     }
+
 
     public void updateBtnGenerarNoEnviadosResource() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -381,6 +394,6 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
     @Override
     public void enter(ViewChangeEvent event) {
         //viewLogic.enter(event.getParameters());
-        updateBtnGenerarNoEnviadosResource();
+        //updateBtnGenerarNoEnviadosResource();
     }
 }

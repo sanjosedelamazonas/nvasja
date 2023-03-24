@@ -12,10 +12,7 @@ import org.sanjose.MainUI;
 import org.sanjose.bean.VsjOperaciontercero;
 import org.sanjose.helper.EmailAttachment;
 import org.sanjose.helper.ReportHelper;
-import org.sanjose.model.ScpBancodetalle;
-import org.sanjose.model.ScpCajabanco;
-import org.sanjose.model.ScpComprobantedetalle;
-import org.sanjose.model.ScpDestino;
+import org.sanjose.model.*;
 import org.sanjose.repo.ScpDestinoRep;
 import org.sanjose.views.sys.PersistanceService;
 
@@ -80,11 +77,6 @@ public class TercerosUtil {
         });
         for (Character moneda : GenUtil.getMonedasAsCharacter()) {
             List<VsjOperaciontercero> opers = (allops.get(moneda));
-//            switch (moneda) {
-//                case '0':
-//                    opers.get(0).getNumSaldosol()
-//
-//            }
             if (opers.size()==1) {
                 allops.put(moneda, new ArrayList<>());
             }
@@ -339,6 +331,60 @@ public class TercerosUtil {
             trc.setNumSaldomo(sumSaldomo);
         }
         return terc;
+    }
+
+    public static EmailAttachment generateTerceroOperacionesAllInOneReport(final Date fechaDesde, final Date fechaHasta,
+                                                                           Map<MsgUsuario, List<ScpDestino>> mapTrc,
+                                                                           PersistanceService service, boolean isShow) throws JRException {
+
+        List<VsjOperaciontercero> allOperaciones = new ArrayList<>();
+        for (MsgUsuario usuario : mapTrc.keySet()) {
+            List<String> cdTrc = new ArrayList<>();
+            mapTrc.get(usuario).forEach( dst -> cdTrc.add(dst.getCodDestino()));
+            allOperaciones.addAll(TercerosUtil.getAll(
+                    fechaDesde,
+                    fechaHasta,
+                    cdTrc,
+                    cdTrc.get(0),
+                    service, true));
+        }
+
+        log.debug("Generating Tercero Operaciones in One: ");
+        HashMap paramMap = new HashMap();
+        SimpleDateFormat sdf = new SimpleDateFormat(ConfigurationUtil.get("DEFAULT_DATE_FORMAT"));
+
+        JRBeanCollectionDataSource operCollection = new JRBeanCollectionDataSource(allOperaciones);
+        paramMap.put("ALLOPER", operCollection);
+        paramMap.put("REPORT_LOCALE", ConfigurationUtil.getLocale());
+        paramMap.put("FECHA_MIN", sdf.format(fechaDesde));
+        paramMap.put("FECHA_MAX", sdf.format(fechaHasta));
+
+        InputStream input = ReportHelper.loadReport("ReporteTerceroOperacionesAll");
+
+        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(input);
+        /*compiling jrxml with help of JasperReport class*/
+        //JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+
+        /* Using jasperReport object to generate PDF */
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String filename= "Diario_todos_"
+                + df.format(new Date()) + ".pdf";
+        if (isShow) {
+            StreamResource.StreamSource source = (StreamResource.StreamSource) () ->
+                    generateJasperReport(jasperReport, paramMap);
+            ReportHelper.showReportInSubWindow(source, filename, null, "pdf");
+            return null;
+        } else {
+            return new EmailAttachment(filename, JasperRunManager.runReportToPdf(jasperReport,
+                    paramMap, new JREmptyDataSource()));
+
+//            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, new JREmptyDataSource());
+//            OutputStream output = new FileOutputStream(new File(filename));
+//            JasperExportManager.exportReportToPdfStream(jasperPrint, output);
+        }
+
+
+
     }
 
 
