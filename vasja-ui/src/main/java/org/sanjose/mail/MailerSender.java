@@ -16,9 +16,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,9 +63,13 @@ public class MailerSender {
         try {
             for (String et : emailTemplates.keySet()) {
                 Resource resource = new ClassPathResource(emailTemplates.get(et));
-                File file = null;
-                file = resource.getFile();
-                emailTemplatesLoaded.put(et, new String(Files.readAllBytes(file.toPath())));
+                InputStream is = resource.getInputStream();
+                ByteArrayOutputStream result = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                for (int length; (length = is.read(buffer)) != -1; ) {
+                    result.write(buffer, 0, length);
+                }
+                emailTemplatesLoaded.put(et, result.toString("UTF-8"));
             }
         } catch (IOException e) {
             log.error("Could not load email templates from html files");
