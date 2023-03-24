@@ -152,3 +152,5 @@ DONE
                            -> filtro na cuenta contable - muestra cuentas contables desde las 1410101 hasta final 79 (las de 10% no muestra)
                            -> fuente y partida p. tez powinna sie copiowac przy nowej linii
 -> terceros - nie powienien wysylac maila z cuenta terceros inactiva
+-> tipo de cambio - > przeliczenie operacji en dolares y euros po zaciagnieciu
+                   -> generowanie asientos de ajustes de tipo de cambio

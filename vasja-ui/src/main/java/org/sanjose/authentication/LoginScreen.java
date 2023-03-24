@@ -119,7 +119,7 @@ public class LoginScreen extends CssLayout {
         loginForm.addComponent(recoverPassword = new Button("Recupera su clave"));
         recoverPassword.addStyleName(ValoTheme.BUTTON_FRIENDLY);
         recoverPassword.addClickListener(clickEvent -> remindPassword());
-        loginForm.addComponent(returnToLogin = new Button("Regresa a al entrada"));
+        loginForm.addComponent(returnToLogin = new Button("Regresa a la pàgina principal"));
         returnToLogin.addStyleName(ValoTheme.BUTTON_FRIENDLY);
         returnToLogin.addClickListener(clickEvent -> showLoginForm());
     }
@@ -137,7 +137,7 @@ public class LoginScreen extends CssLayout {
     private void remindPassword() {
         MsgUsuario usuario = msgUsuarioRep.findByTxtCorreoIgnoreCase(email.getValue());
         if (usuario==null) {
-            showNotification(new Notification("No se podia encontrar un usuario con este correo: " + email.getValue()));
+            showNotification(new Notification("Usuario con el correo: " + email.getValue()+" no ha sido encontrado."));
         } else {
             VsjPasswordresettoken token = new VsjPasswordresettoken(usuario);
             vsjPasswordresettokenRep.save(token);
@@ -159,7 +159,7 @@ public class LoginScreen extends CssLayout {
             try {
                 String error = sendErrors.get();
                 if (error!=null) {
-                    showNotification(new Notification("Huvo un problema al enviar el reset link a: " + email.getValue(),
+                    showNotification(new Notification("Ocurrio un problema al enviar el reset link a: " + email.getValue(),
                             Notification.Type.WARNING_MESSAGE));
                     Notification.show(error, Notification.Type.WARNING_MESSAGE);
                     log.warn("Couldn't send password reset link to: " + email.getValue() + "\n" + error);
@@ -190,7 +190,7 @@ public class LoginScreen extends CssLayout {
         if (accessControl.signIn(username.getValue(), password.getValue())) {
             loginListener.loginSuccessful();
         } else {
-            showNotification(new Notification("No se podia entrar",
+            showNotification(new Notification("Acceso denegado",
                     "Por favor verifica el usuario y clave.",
                     Notification.Type.HUMANIZED_MESSAGE));
             username.focus();

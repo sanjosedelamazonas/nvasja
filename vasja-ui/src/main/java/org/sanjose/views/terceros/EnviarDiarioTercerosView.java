@@ -176,7 +176,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             }
             logRes.append("Todos reportes han sido procesados!\n\n");
             if (!usuariosErrorList.isEmpty()) {
-                logRes.append("No se podia enviar reportes a los siguientes usuarios:\n");
+                logRes.append("Error al enviar reportes a los siguientes usuarios:\n");
                 logRes.append(String.join(",", usuariosErrorList) + "\n\n");
             }
             ui.access(() -> {
