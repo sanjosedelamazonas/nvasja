@@ -46,7 +46,7 @@ public class RendicionExportXLS extends XlsExporter {
         writeDataLine(Arrays.asList(new String[]{ "Destino", destino.getCodDestino() + " " + destino.getTxtNombredestino(), "", ""}), 2);
         writeDataLine(Arrays.asList(new String[]{ "Moneda", GenUtil.getSymMoneda(GenUtil.getLitMoneda(cabecera.getCodTipomoneda())), "", ""}), 3);
 
-        writeHeaderLine(Arrays.asList(new String[]{ "Nro", "Descripcion", "Ingreso", "Egreso"}), 5);
+        writeHeaderLine(Arrays.asList(new String[]{ "Nro", "Fech Doc.", "Nro Doc", "Descripcion", "Ingreso", "Egreso"}), 5);
 
         List<ScpRendiciondetalle> detalles = service.getRendiciondetalleRep().findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera());
         detalles.sort(new Comparator<ScpRendiciondetalle>() {
@@ -56,9 +56,10 @@ public class RendicionExportXLS extends XlsExporter {
             }
         });
         writeDataLines(ScpRendiciondetalle.class,
-                Arrays.asList(new String[]{"id.numNroitem", "txtGlosaitem", "numHaber" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda()), "numDebe" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda())}),
+                Arrays.asList(new Object[]{"id.numNroitem", "fecComprobantepago", Arrays.asList(new String[] {"txtSeriecomprobantepago", "txtComprobantepago"}),
+                        "txtGlosaitem", "numHaber" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda()), "numDebe" + GenUtil.getDescMoneda(cabecera.getCodTipomoneda())}),
                 detalles,
-                6);
+                6, null);
         createSumRow(2, detalles.size()+7);
     }
 
