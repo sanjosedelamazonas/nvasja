@@ -371,7 +371,7 @@ public class TercerosUtil {
                 + df.format(new Date()) + ".pdf";
         if (isShow) {
             StreamResource.StreamSource source = (StreamResource.StreamSource) () ->
-                    generateJasperReport(jasperReport, paramMap);
+                    generateJasperReport(jasperReport, paramMap, operCollection);
             ReportHelper.showReportInSubWindow(source, filename, null, "pdf");
             return null;
         } else {
@@ -449,12 +449,17 @@ public class TercerosUtil {
     }
 
     public static ByteArrayInputStream generateJasperReport(JasperReport report, HashMap paramMap) {
+        return generateJasperReport(report, paramMap, new JREmptyDataSource());
+    }
+
+
+    public static ByteArrayInputStream generateJasperReport(JasperReport report, HashMap paramMap, JRDataSource jrDataSource) {
         byte[] b = null;
         try {
             if (report != null) {
                 report.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
                 b = JasperRunManager.runReportToPdf(report,
-                        paramMap, new JREmptyDataSource());
+                        paramMap, jrDataSource);
             } else {
                 Notification.show(
                         "There is no report file: "  + report.getName());
