@@ -250,13 +250,13 @@
 					<datasetRun subDataset="DatasetTable" uuid="3d2c994e-5eed-4093-9de2-31d4d8c08066">
 						<dataSourceExpression><![CDATA[$P{OPERACIONES_sol}]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="39" uuid="25bf2483-6856-4172-b372-360b6344dab1">
+					<jr:column width="30" uuid="25bf2483-6856-4172-b372-360b6344dab1">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 							<staticText>
-								<reportElement stretchType="ContainerHeight" x="0" y="0" width="39" height="25" uuid="9a11cc66-ac50-41f9-b24e-ed34ebe1e0b0">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="30" height="25" uuid="9a11cc66-ac50-41f9-b24e-ed34ebe1e0b0">
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 								</reportElement>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -275,7 +275,7 @@
 						<jr:detailCell style="Table_TD" height="45">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<textField>
-								<reportElement x="0" y="0" width="39" height="45" uuid="2856b825-b980-4569-bd3a-083e7f46fcd4">
+								<reportElement x="0" y="0" width="30" height="45" uuid="2856b825-b980-4569-bd3a-083e7f46fcd4">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<box>
@@ -292,11 +292,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="47" uuid="c3307c2d-7d03-4a64-9ca8-685c888a51cf">
+					<jr:column width="60" uuid="c3307c2d-7d03-4a64-9ca8-685c888a51cf">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="47" height="25" uuid="2e437eee-f7aa-4018-b7ed-b394f2724a22"/>
+								<reportElement x="0" y="0" width="60" height="25" uuid="2e437eee-f7aa-4018-b7ed-b394f2724a22"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -306,7 +306,7 @@
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="45">
 							<textField pattern="dd/MM/yy" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="47" height="45" uuid="a30d7399-4978-4263-a18c-4b15ff42fdb0"/>
+								<reportElement x="0" y="0" width="60" height="45" uuid="a30d7399-4978-4263-a18c-4b15ff42fdb0"/>
 								<box>
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -321,11 +321,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="47" uuid="02569495-d55c-4a45-9854-38d268ba6b60">
+					<jr:column width="53" uuid="02569495-d55c-4a45-9854-38d268ba6b60">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="47" height="25" uuid="e3de857c-3e95-4d64-aa87-701d0920ab85"/>
+								<reportElement x="0" y="0" width="53" height="25" uuid="e3de857c-3e95-4d64-aa87-701d0920ab85"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -339,7 +339,7 @@
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="47" height="45" uuid="96b51c0b-5c55-4ef0-8df6-0a9ac481f74d"/>
+								<reportElement x="0" y="0" width="53" height="45" uuid="96b51c0b-5c55-4ef0-8df6-0a9ac481f74d"/>
 								<box>
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -354,11 +354,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="92" uuid="7ca135ef-d175-4e5f-8337-f24b2438da19">
+					<jr:column width="85" uuid="7ca135ef-d175-4e5f-8337-f24b2438da19">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="92" height="25" uuid="6360f56e-172a-4a80-b19d-ad2bc47a0b8d"/>
+								<reportElement x="0" y="0" width="85" height="25" uuid="6360f56e-172a-4a80-b19d-ad2bc47a0b8d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -368,7 +368,7 @@
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="45">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="92" height="45" uuid="4297016f-0b0f-42b7-ac35-398bbbf6bc16"/>
+								<reportElement x="0" y="0" width="85" height="45" uuid="4297016f-0b0f-42b7-ac35-398bbbf6bc16"/>
 								<box>
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -383,11 +383,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="72" uuid="5182a92a-8514-4bc4-986b-a665cd254a09">
+					<jr:column width="57" uuid="5182a92a-8514-4bc4-986b-a665cd254a09">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="72" height="25" uuid="f9beb7ea-fdaa-4e7d-b095-36a86a14cc20"/>
+								<reportElement x="0" y="0" width="57" height="25" uuid="f9beb7ea-fdaa-4e7d-b095-36a86a14cc20"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -400,13 +400,13 @@
 								<pen lineWidth="0.5"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="72" height="15" uuid="b84198fa-e3eb-4304-bbbb-b4a35d904aa8"/>
+								<reportElement x="0" y="0" width="57" height="15" uuid="b84198fa-e3eb-4304-bbbb-b4a35d904aa8"/>
 								<text><![CDATA[Total:]]></text>
 							</staticText>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">
 							<textField>
-								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="72" height="45" uuid="881c86c4-3678-480a-812f-a3fc74a63e8b"/>
+								<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="57" height="45" uuid="881c86c4-3678-480a-812f-a3fc74a63e8b"/>
 								<box>
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -421,11 +421,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="50" uuid="b8dbd332-f5db-4e1e-8550-0aba596b5b0e">
+					<jr:column width="51" uuid="b8dbd332-f5db-4e1e-8550-0aba596b5b0e">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="50" height="25" uuid="79f3a45e-15a5-4e02-b3a7-e3db6688b2cc"/>
+								<reportElement x="0" y="0" width="51" height="25" uuid="79f3a45e-15a5-4e02-b3a7-e3db6688b2cc"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -435,7 +435,7 @@
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="45">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="50" height="45" uuid="f0f66761-fbf2-4cfd-bb01-8df7426432af"/>
+								<reportElement x="0" y="0" width="51" height="45" uuid="f0f66761-fbf2-4cfd-bb01-8df7426432af"/>
 								<box>
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -446,15 +446,15 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{codContraparte}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{codCtacontable}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="49" uuid="51ad0939-9c3a-4e53-a414-70a69edb1379">
+					<jr:column width="51" uuid="51ad0939-9c3a-4e53-a414-70a69edb1379">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="49" height="25" uuid="3f0293b0-4867-4883-8906-0cf8a2b394d6"/>
+								<reportElement x="0" y="0" width="51" height="25" uuid="3f0293b0-4867-4883-8906-0cf8a2b394d6"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -463,7 +463,7 @@
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="49" height="15" uuid="b0126ff5-fa67-4b58-8c77-647feb1d8a7a"/>
+								<reportElement x="0" y="0" width="51" height="15" uuid="b0126ff5-fa67-4b58-8c77-647feb1d8a7a"/>
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
@@ -475,7 +475,7 @@
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="49" height="45" uuid="1f789e70-cd59-4d3f-91df-3254d27af9af"/>
+								<reportElement x="0" y="0" width="51" height="45" uuid="1f789e70-cd59-4d3f-91df-3254d27af9af"/>
 								<box>
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -490,11 +490,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="48" uuid="13f7fd67-c200-492b-b14e-4a623bb160dc">
+					<jr:column width="51" uuid="13f7fd67-c200-492b-b14e-4a623bb160dc">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="48" height="25" uuid="8bd06813-06ba-47fb-9618-38e8712a0ae3"/>
+								<reportElement x="0" y="0" width="51" height="25" uuid="8bd06813-06ba-47fb-9618-38e8712a0ae3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -503,7 +503,7 @@
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="48" height="15" uuid="75a328d0-805a-4c80-9eee-c9f5447f786e"/>
+								<reportElement x="0" y="0" width="51" height="15" uuid="75a328d0-805a-4c80-9eee-c9f5447f786e"/>
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
@@ -515,7 +515,7 @@
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="48" height="45" uuid="4b451fd5-1cd6-4c75-acd5-04a6d89f50b9"/>
+								<reportElement x="0" y="0" width="51" height="45" uuid="4b451fd5-1cd6-4c75-acd5-04a6d89f50b9"/>
 								<box>
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -530,11 +530,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="48" uuid="2fc949e7-2fa7-427c-8be8-3bebdff46596">
+					<jr:column width="51" uuid="2fc949e7-2fa7-427c-8be8-3bebdff46596">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="48" height="25" uuid="1bed6626-1e25-437a-9c0e-effa18e94ed4"/>
+								<reportElement x="0" y="0" width="51" height="25" uuid="1bed6626-1e25-437a-9c0e-effa18e94ed4"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -544,7 +544,7 @@
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="45">
 							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="48" height="45" uuid="0bfa8328-1dca-441a-b82d-05bce07c21c2"/>
+								<reportElement x="0" y="0" width="51" height="45" uuid="0bfa8328-1dca-441a-b82d-05bce07c21c2"/>
 								<box>
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -559,11 +559,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="48" uuid="43ef3c2f-6ece-4262-9dc7-38ee5a1bda21">
+					<jr:column width="51" uuid="43ef3c2f-6ece-4262-9dc7-38ee5a1bda21">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="48" height="25" uuid="247ecba2-6103-4924-9e34-ac23e9235583"/>
+								<reportElement x="0" y="0" width="51" height="25" uuid="247ecba2-6103-4924-9e34-ac23e9235583"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -573,7 +573,7 @@
 						<jr:tableFooter style="Table_TH" height="15" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="45">
 							<textField>
-								<reportElement x="0" y="0" width="48" height="45" uuid="91c9e016-a347-4716-b0a8-07c8bab80cc2"/>
+								<reportElement x="0" y="0" width="51" height="45" uuid="91c9e016-a347-4716-b0a8-07c8bab80cc2"/>
 								<box>
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -584,7 +584,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{codCtacontable}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{codContraparte}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -1238,8 +1238,7 @@
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="9"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{V_SUM_HABER}!=null ? $V{V_SUM_HABER} : ""
-]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{V_SUM_HABER}!=null ? $V{V_SUM_HABER} : ""]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell style="Table_TD" height="45">

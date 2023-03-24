@@ -140,3 +140,15 @@ DONE
 9. Texts in code (reset pass etc.)
 
 10. Czy generować diario jeśli brak operacji?
+- tak, z saldo inicial al inicio del periodo y saldo final al final del periodo
+
+
+----------------------- 23-03-2023 --------------------
+-> Dictionario - Terceros : -> kolumna usuario - pokazac nazwe uzytkownika, nie tylko login
+                            -> guzik - nuevo tercero - okienko destinos y opja tercero wybrana domyslnie
+-> usuarios - nie powinno byc mozliwosci usuniecia usuario
+-> rendiciones - edicion : -> Responsalbe filtro que muestra solo empleados (ind_tipodestino='1')
+                           -> jezeli tylko jedna fuente to automatycznie wybiera (na przyklad cuenta 8018 funete MSGPAZ - comprobante 014695)
+                           -> filtro na cuenta contable - muestra cuentas contables desde las 1410101 hasta final 79 (las de 10% no muestra)
+                           -> fuente y partida p. tez powinna sie copiowac przy nowej linii
+-> terceros - nie powienien wysylac maila z cuenta terceros inactiva
