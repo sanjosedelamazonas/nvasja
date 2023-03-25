@@ -98,7 +98,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                 format = (String)valueChangeEvent.getProperty().getValue();
-
+                updateBtnGenerarNoEnviadosResource();
             }
         });
 
@@ -267,7 +267,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
 
 
     public void updateBtnGenerarNoEnviadosResource() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String exportFileName = "TercerosDiarios_"
                 + sdf.format(new Date(System.currentTimeMillis()))
                 + (format.endsWith("ZIP") ? ".zip " : ".pdf");
@@ -402,6 +402,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             checkTodos.setValue(false);
             btnImprimir.setEnabled(true);
         }
+        updateBtnGenerarNoEnviadosResource();
     }
 
     private void setUsuarioLogic(Property.ValueChangeEvent event) {
@@ -410,6 +411,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             checkTodos.setValue(false);
             btnImprimir.setEnabled(false);
         }
+        updateBtnGenerarNoEnviadosResource();
     }
 
     private void setUsuarioListLogic(Property.ValueChangeEvent event) {
@@ -419,6 +421,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             checkTodos.setValue(false);
             btnImprimir.setEnabled(false);
         }
+        updateBtnGenerarNoEnviadosResource();
     }
 
     private void setTodosLogic(Property.ValueChangeEvent event) {
@@ -428,6 +431,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             txtUsuariosList.setEnabled(true);
             btnImprimir.setEnabled(false);
         }
+        updateBtnGenerarNoEnviadosResource();
     }
 
     @Override
