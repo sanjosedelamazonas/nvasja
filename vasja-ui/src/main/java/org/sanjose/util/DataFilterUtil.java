@@ -412,7 +412,9 @@ public class DataFilterUtil {
 			List<ScpFinanciera> financieraList = financieraRepo.findAll();
 			List<ScpFinanciera> financieraEfectList = new ArrayList<>();
 			if (proyectoPorFinancieraList!=null && !proyectoPorFinancieraList.isEmpty()) {
-				List<String> codFinancieraList = proyectoPorFinancieraList.stream().map(proyectoPorFinanciera -> proyectoPorFinanciera.getId().getCodFinanciera()).collect(Collectors.toList());
+				List<String> codFinancieraList = proyectoPorFinancieraList.stream()
+						.map(proyectoPorFinanciera -> proyectoPorFinanciera.getId()
+								.getCodFinanciera()).collect(Collectors.toList());
 
 				for (ScpFinanciera financiera : financieraList) {
 					if (financiera.getCodFinanciera()!=null &&
@@ -425,6 +427,10 @@ public class DataFilterUtil {
 			}
 			DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", financieraEfectList,
 					"Sel Fuente", "txtDescfinanciera");
+			if (financieraEfectList.size()==1) {
+				selFinanciera.setValue(financieraEfectList.get(0));
+				selFinanciera.setValue(financieraEfectList.get(0).getCodFinanciera());
+			}
 		} else {
 			DataFilterUtil.bindComboBox(selFinanciera, "codFinanciera", new ArrayList<ScpFinanciera>(),
 					"-------", null);

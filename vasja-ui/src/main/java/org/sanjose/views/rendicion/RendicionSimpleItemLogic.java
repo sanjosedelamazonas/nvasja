@@ -118,7 +118,8 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
         //manView.getNumVoucher().setEnabled(false);
 
         // Responsable
-        DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino", DataUtil.loadDestinos(view.getService()),
+        DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino",
+                view.getService().getDestinoRepo().findByIndTipodestinoOrderByTxtNombre('1'),
                 "txtNombredestino");
 
         // Tipo Moneda
@@ -202,7 +203,10 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
 
 
         // Cta Contable
-        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable",view.getService().getPlanRepo().findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getCurYear(), ""), "Sel cta contable", "txtDescctacontable");
+        DataFilterUtil.bindComboBox(selCtacontable, "id.codCtacontable",view.getService().getPlanRepo()
+                .findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
+                        '0', 'N', GenUtil.getYear(view.getDataFechaComprobante().getValue()), "101%", "102%", "104%", "106%"),
+                "Sel cta contable", "txtDescctacontable");
         view.grid.getColumn("codCtacontable").setEditorField(selCtacontable);
 
         // Rubro inst
@@ -620,8 +624,11 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
                             findByFecFinalGreaterThanEqualAndFecInicioLessThanEqualOrFecFinalLessThanEqual(newFecha, newFecha, GenUtil.getBegin20thCent()),
                     "txtDescproyecto");
         // Cta Contable
-        DataFilterUtil.refreshComboBox(selCtacontable, "id.codCtacontable", view.getService().getPlanRepo().
-                findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableStartingWith('0', 'N', GenUtil.getYear(newFecha), ""), "txtDescctacontable");
+        DataFilterUtil.refreshComboBox(selCtacontable, "id.codCtacontable",
+                view.getService().getPlanRepo()
+                        .findByFlgEstadocuentaAndFlgMovimientoAndId_TxtAnoprocesoAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLikeAndId_CodCtacontableNotLike(
+                                '0', 'N', GenUtil.getYear(view.getDataFechaComprobante().getValue()), "101%", "102%", "104%", "10%"),
+                 "txtDescctacontable");
 
         // Rubro inst
         DataFilterUtil.refreshComboBox(selCtaespecial, "id.codCtaespecial",
