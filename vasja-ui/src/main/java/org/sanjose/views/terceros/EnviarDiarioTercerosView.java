@@ -7,13 +7,11 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.*;
-import jakarta.activation.DataSource;
 import net.sf.jasperreports.engine.JRException;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.poi.util.TempFile;
 import org.sanjose.MainUI;
-import org.sanjose.helper.CustomReport;
 import org.sanjose.helper.EmailAttachment;
 import org.sanjose.mail.EmailDescription;
 import org.sanjose.mail.EmailStatus;
@@ -21,12 +19,9 @@ import org.sanjose.model.MsgUsuario;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.util.*;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
-import org.sanjose.views.rendicion.RendicionExportXLS;
 import org.sanjose.views.sys.PersistanceService;
 import org.sanjose.views.sys.Viewing;
 import org.simplejavamail.api.email.AttachmentResource;
-import org.simplejavamail.api.email.Email;
-import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.email.EmailBuilder;
 
 import java.io.*;
@@ -35,7 +30,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -55,7 +49,8 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
     private PersistanceService service;
     private StringBuilder logRes;
 
-    private FileDownloader zipDownloader;
+    private FileDownloader allDownloader;
+    private FileDownloader noenvDownloader;
 
     private String format = "Un PDF";
 
@@ -98,7 +93,8 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                 format = (String)valueChangeEvent.getProperty().getValue();
-                updateBtnGenerarNoEnviadosResource();
+                updateBtnGenerarSetResource(true);
+                updateBtnGenerarSetResource(false);
             }
         });
 
@@ -116,16 +112,18 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                         }
                     });
         });
-        btnImprimir.addClickListener( e -> doImprimir(selTercero.getValue().toString()));
+        //btnImprimir.addClickListener( e -> doImprimir(selTercero.getValue().toString()));
         btnClear.addClickListener( e -> {
             logRes = new StringBuilder();
             txtLog.setValue("");
             btnEnviar.setEnabled(true);
         });
         btnEnviar.setEnabled(true);
-        btnGenerarNoEnviados.setEnabled(true);
+        btnGenerarNoEnviados.setEnabled(false);
+        btnImprimir.setEnabled(true);
         logRes = new StringBuilder();
         setupBtnGenerarNoEnviados();
+        setupBtnGenerarSeleccionados();
 
         //btnGenerarNoEnviados.addClickListener( o -> generateNoEnviadosAsOneReport());
     }
@@ -253,20 +251,29 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
 //
 
     public void setupBtnGenerarNoEnviados() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
             @Override
             public InputStream getStream() {
                 return null;
             }
         }, "no");
-        zipDownloader = new FileDownloader(resource);
-        //xlsDownloader.setFileDownloadResource(resource);
-        zipDownloader.extend(btnGenerarNoEnviados);
+        noenvDownloader = new FileDownloader(resource);
+        noenvDownloader.extend(btnGenerarNoEnviados);
+    }
+
+    public void setupBtnGenerarSeleccionados() {
+        StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
+            @Override
+            public InputStream getStream() {
+                return null;
+            }
+        }, "no");
+        allDownloader = new FileDownloader(resource);
+        allDownloader.extend(btnImprimir);
     }
 
 
-    public void updateBtnGenerarNoEnviadosResource() {
+    public void updateBtnGenerarSetResource(boolean isNoEnviados) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String exportFileName = "TercerosDiarios_"
                 + sdf.format(new Date(System.currentTimeMillis()))
@@ -275,7 +282,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             @Override
             public InputStream getStream() {
                 try {
-                    Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros(false);
+                    Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros(!isNoEnviados);
                     if (format.endsWith("ZIP"))
                         return generateReportesZip(terceros, fechaInicial.getValue(), fechaFinal.getValue(), service);
                     else
@@ -287,7 +294,10 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             }
         }, exportFileName);
         resource.setMIMEType(format.endsWith("ZIP") ? "application/zip" : "application/pdf");
-        zipDownloader.setFileDownloadResource(resource);
+        if (isNoEnviados)
+            noenvDownloader.setFileDownloadResource(resource);
+        else
+            allDownloader.setFileDownloadResource(resource);
     }
 
 
@@ -400,18 +410,20 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         if (event.getProperty().getValue() != null) {
             selUsuario.setValue(null);
             checkTodos.setValue(false);
-            btnImprimir.setEnabled(true);
+            btnGenerarNoEnviados.setEnabled(true);
         }
-        updateBtnGenerarNoEnviadosResource();
+        updateBtnGenerarSetResource(true);
+        updateBtnGenerarSetResource(false);
     }
 
     private void setUsuarioLogic(Property.ValueChangeEvent event) {
         if (event.getProperty().getValue() != null) {
             selTercero.setValue(null);
             checkTodos.setValue(false);
-            btnImprimir.setEnabled(false);
+            btnGenerarNoEnviados.setEnabled(false);
         }
-        updateBtnGenerarNoEnviadosResource();
+        updateBtnGenerarSetResource(true);
+        updateBtnGenerarSetResource(false);
     }
 
     private void setUsuarioListLogic(Property.ValueChangeEvent event) {
@@ -419,9 +431,10 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             selTercero.setValue(null);
             selUsuario.setValue(null);
             checkTodos.setValue(false);
-            btnImprimir.setEnabled(false);
+            btnGenerarNoEnviados.setEnabled(false);
         }
-        updateBtnGenerarNoEnviadosResource();
+        updateBtnGenerarSetResource(true);
+        updateBtnGenerarSetResource(false);
     }
 
     private void setTodosLogic(Property.ValueChangeEvent event) {
@@ -429,15 +442,17 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             selTercero.setValue(null);
             selUsuario.setValue(null);
             txtUsuariosList.setEnabled(true);
-            btnImprimir.setEnabled(false);
+            btnGenerarNoEnviados.setEnabled(true);
         }
-        updateBtnGenerarNoEnviadosResource();
+        updateBtnGenerarSetResource(true);
+        updateBtnGenerarSetResource(false);
     }
 
     @Override
     public void enter(ViewChangeEvent event) {
         //viewLogic.enter(event.getParameters());
         //TODO update list of usuarios
-        updateBtnGenerarNoEnviadosResource();
+        updateBtnGenerarSetResource(true);
+        updateBtnGenerarSetResource(false);
     }
 }

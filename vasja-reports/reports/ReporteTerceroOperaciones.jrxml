@@ -1328,7 +1328,7 @@
 		</band>
 	</detail>
 	<lastPageFooter>
-		<band height="180">
+		<band>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 		</band>
 	</lastPageFooter>
