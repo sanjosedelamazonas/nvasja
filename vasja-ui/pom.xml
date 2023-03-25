@@ -98,9 +98,17 @@
             </exclusions>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.27</version>
+        </dependency>
+
         <!--VAADIN Add-Ons-->
 
         <dependency>
+
             <groupId>org.sanjosedelamazonas</groupId>
             <artifactId>printapplet-addon</artifactId>
             <version>0.0.5</version>

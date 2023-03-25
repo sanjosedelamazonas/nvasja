@@ -31,9 +31,10 @@ public class EnviarDiarioTercerosUI extends VerticalLayout {
     protected ComboBox selTercero;
     protected ComboBox selUsuario;
     protected TextArea txtUsuariosList;
-    protected Button btnImprimir;
+    protected ComboBox selFormato;
     protected Button btnEnviar;
     protected Button btnClear;
+    protected Button btnImprimir;
     protected Button btnGenerarNoEnviados;
     protected HorizontalLayout horizLayProgress;
     protected ProgressBar showProgress;

@@ -61,18 +61,28 @@
       </vaadin-label>
       <vaadin-text-area rows="4" width="344px" height="82px" _id="txtUsuariosList"></vaadin-text-area>
      </vaadin-horizontal-layout>
-     <vaadin-horizontal-layout width="430px">
-      <vaadin-button plain-text _id="btnImprimir" :middle :right>
-        Imprimir 
-      </vaadin-button>
+     <vaadin-horizontal-layout>
+      <vaadin-label width="88px" plain-text>
+        Formato 
+      </vaadin-label>
+      <vaadin-combo-box width="120px" _id="selFormato">
+       <option>Un PDF</option>
+       <option>ZIP</option>
+      </vaadin-combo-box>
+     </vaadin-horizontal-layout>
+     <vaadin-horizontal-layout spacing>
       <vaadin-button enabled="false" plain-text _id="btnEnviar" :middle :center>
         Enviar 
       </vaadin-button>
-      <vaadin-button plain-text _id="btnClear">
+      <vaadin-button plain-text _id="btnClear" :middle :center>
         Borrar el log 
       </vaadin-button>
-      <vaadin-button enabled="false" plain-text _id="btnGenerarNoEnviados">
-        Generar Para Imprimir 
+      <vaadin-label width="40px" plain-text></vaadin-label>
+      <vaadin-button plain-text _id="btnImprimir" :middle :center>
+        Imprimir Seleccionados 
+      </vaadin-button>
+      <vaadin-button enabled="false" plain-text _id="btnGenerarNoEnviados" :middle :center>
+        Imprimir No Enviados 
       </vaadin-button>
      </vaadin-horizontal-layout>
      <vaadin-horizontal-layout width="430px" height="10px" _id="horizLayProgress">
