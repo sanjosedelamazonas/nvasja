@@ -75,12 +75,6 @@ public class TercerosUtil {
         all.forEach( op -> {
             allops.get(op.getCodTipomoneda()).add(op);
         });
-        for (Character moneda : GenUtil.getMonedasAsCharacter()) {
-            List<VsjOperaciontercero> opers = (allops.get(moneda));
-            if (opers.size()==1) {
-                allops.put(moneda, new ArrayList<>());
-            }
-        }
         return allops;
     }
 

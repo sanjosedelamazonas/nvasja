@@ -301,7 +301,14 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
     }
 
 
-    private static InputStream generateReportesOnePdf(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service) throws JRException, IOException {
+    private InputStream generateReportesOnePdf(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service) throws JRException, IOException {
+        UI ui = UI.getCurrent();
+        ui.access(() ->{
+            showProgress.setVisible(true);
+            showProgress.setValue(0.1f);
+            btnGenerarNoEnviados.setEnabled(false);
+            btnImprimir.setEnabled(false);
+        });
         Map<String, byte[]> mapReporte = new HashMap<>();
         for (MsgUsuario usuario : trcMap.keySet()) {
             for (ScpDestino dst : trcMap.get(usuario)) {
@@ -318,6 +325,13 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(mapReporte.get(pdfName));
             ut.addSource(byteArrayInputStream);
         }
+        ui.access(() -> {
+
+                    showProgress.setValue(0.9f);
+                    showProgress.setVisible(false);
+                    btnGenerarNoEnviados.setEnabled(true);
+                    btnImprimir.setEnabled(true);
+                });
         ut.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
         return new FileInputStream(outFile);
     }
@@ -360,12 +374,18 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
     }
 
     private Map<MsgUsuario, List<ScpDestino>> prepareListOfTerceros(boolean isReporteEnviar) {
+        showProgress.setVisible(true);
         showProgress.setValue(0.1f);
         Map<MsgUsuario, List<ScpDestino>> trcMap = new HashMap<>();
         if (checkTodos.getValue()) {
             List<ScpDestino> dsts = null;
-            dsts = service.getDestinoRepo().findByIndTipodestinoAndActivoAndEnviarreporteAndTxtUsuarioNotLikeOrderByTxtNombre(
+            if (isReporteEnviar) {
+                dsts = service.getDestinoRepo().findByIndTipodestinoAndActivoAndEnviarreporteAndTxtUsuarioNotLikeOrderByTxtNombre(
                         '3', true, isReporteEnviar, "");
+            } else {
+                dsts = service.getDestinoRepo().findByIndTipodestinoAndActivoAndEnviarreporteOrderByTxtNombre(
+                        '3', true, false);
+            }
             Map<String, List<ScpDestino>> trcUsuarioMap = new HashMap<>();
             for (ScpDestino dst : dsts) {
 
