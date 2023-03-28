@@ -10,6 +10,7 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.TextField;
+import de.steinwedel.messagebox.MessageBox;
 import org.sanjose.model.ScpDestino;
 import org.sanjose.repo.ScpCargocuartaRep;
 import org.sanjose.repo.ScpDestinoRep;
@@ -19,6 +20,11 @@ import org.sanjose.util.GenUtil;
 import org.sanjose.validator.LocalizedBeanValidator;
 import org.sanjose.views.caja.ConfiguracionCtaCajaBancoLogic;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -57,28 +63,78 @@ public class DestinoView extends DestinoUI implements View {
         btnAnular.setEnabled(false);
 
 
+        // Nombre
+//        DataFilterUtil.bindComboBox(selNombreCompleta, "txtNombredestino", destinoRepo.findByIndTipodestinoNot('3'), null);
+//        selNombreCompleta.setTextInputAllowed(true);
+//        selNombreCompleta.setInvalidAllowed(true);
+//        selNombreCompleta.setNewItemsAllowed(true);
+
+        txtNombreCompleta.addBlurListener(e -> {
+            if (txtNombreCompleta.getValue() != null) {
+                //log.info("Got from nombre " +selNombreCompleta.getValue());
+                String oldNombre = txtNombreCompleta.getValue().toString();
+                txtNombreCompleta.setValue(GenUtil.capitalizeEachWord(oldNombre.trim()));
+                //selNombreCompleta.select(GenUtil.capitalizeEachWord(oldNombre.trim()));
+            }
+        });
+
         // Codigo
-        DataFilterUtil.bindComboBox(selCodigo, "codDestino", destinoRepo.findAll(), null);
+        DataFilterUtil.bindComboBox(selCodigo, "codDestino", destinoRepo.findByIndTipodestinoNot('3'), null);
         selCodigo.setTextInputAllowed(true);
         selCodigo.setInvalidAllowed(true);
         selCodigo.setNewItemsAllowed(true);
 
-        // Nombre
-        DataFilterUtil.bindComboBox(selNombreCompleta, "txtNombredestino", destinoRepo.findAll(), null);
-        selNombreCompleta.setTextInputAllowed(true);
-        selNombreCompleta.setInvalidAllowed(true);
-        selNombreCompleta.setNewItemsAllowed(true);
-
-        selNombreCompleta.addBlurListener(e -> {
-            if (selNombreCompleta.getValue() != null) {
-                String oldNombre = selNombreCompleta.getValue().toString();
-                selNombreCompleta.setValue(GenUtil.capitalizeEachWord(oldNombre.trim()));
+        selCodigo.addBlurListener(e -> {
+            if (selCodigo.getValue() != null) {
+                String tipo = ConsultaRucDni.RUC;
+                try {
+                    tipo = (tipoDePersona.getValue()!=null && tipoDePersona.getValue().toString().equals("N")) || selCodigo.getValue().toString().trim().length()==8 ? ConsultaRucDni.DNI : ConsultaRucDni.RUC;
+                    Map<String, String> consulta = ConsultaRucDni.getInstance().get(tipo, selCodigo.getValue().toString().trim());
+                    if (consulta.containsKey("nombre")) {
+                        txtNombreCompleta.setValue(GenUtil.capitalizeEachWord(consulta.get("nombre").toLowerCase()));
+                    }
+                    if (consulta.containsKey("nombres")) {
+                        ScpDestino dest = new ScpDestino();
+                        txtNombreCompleta.setValue(GenUtil.capitalizeEachWord(consulta.get("nombres").toLowerCase()));
+                    }
+                    direccion.setValue(assembleDireccion(new String[] {"direccion", "distrito", "departamento", "provincia"}, consulta));
+                    if (consulta.containsKey("tipoDocumento")) {
+                        tipoDocumento.select("0" + consulta.get("tipoDocumento"));
+                    }
+                    if (consulta.containsKey("apellidoPaterno")) {
+                        apellidoPaterno.setValue(GenUtil.capitalizeEachWord(consulta.get("apellidoPaterno").toLowerCase()));
+                    }
+                    if (consulta.containsKey("apellidoMaterno")) {
+                        apellidoMaterno.setValue(GenUtil.capitalizeEachWord(consulta.get("apellidoMaterno").toLowerCase()));
+                    }
+                    if (consulta.containsKey("numeroDocumento")) {
+                        ruc.setValue(consulta.get("numeroDocumento"));
+                    }
+                    if (tipo.equals(ConsultaRucDni.RUC) && consulta.containsKey("estado") && !consulta.get("estado").equals("ACTIVO")) {
+                        MessageBox
+                                .createQuestion()
+                                .withCaption("Atencion!")
+                                .withMessage("!El RUC: " + selCodigo.getValue() + " en la base de SUNAT esta deactivado!")
+                                .withOkButton()
+                                .open();
+                    }
+                } catch (ConsultaRucDniException he) {
+                    if (tipo.equals(ConsultaRucDni.RUC)) {
+                        String msg = "!No se podia encontra el RUC: " + selCodigo.getValue() + " en la base de SUNAT!";
+                        if (he.getCause()!=null) {
+                            msg = he.getMessage();
+                        }
+                        MessageBox
+                                .createQuestion()
+                                .withCaption("Atencion!")
+                                .withMessage(msg)
+                                .withOkButton()
+                                .open();
+                    }
+                    log.debug("Could not find..." + tipo + " " + selCodigo.getValue());
+                }
             }
         });
-
-        // Clasificacion
-        DataFilterUtil.bindTipoDestinoComboBox(clasificacion, "indTipodestino", "Sel Clasificacion");
-
 
         // Clasificacion
         DataFilterUtil.bindTipoDestinoComboBox(clasificacion, "indTipodestino", "Sel Clasificacion");
@@ -101,9 +157,9 @@ public class DestinoView extends DestinoUI implements View {
         selCodigo.addValidator(new LocalizedBeanValidator(ScpDestino.class, "codDestino"));
         clasificacion.addValidator(new LocalizedBeanValidator(ScpDestino.class, "indTipodestino"));
 
-        selNombreCompleta.setDescription("Nombre");
+        //selNombreCompleta.setDescription("Nombre");
 
-        selNombreCompleta.addValidator(new LocalizedBeanValidator(ScpDestino.class, "txtNombre"));
+        selNombreCompleta.addValidator(new LocalizedBeanValidator(ScpDestino.class, "txtNombredestino"));
         tipoDePersona.addValidator(new LocalizedBeanValidator(ScpDestino.class, "indTipopersona"));
         viewLogic.init();
     }
@@ -139,6 +195,19 @@ public class DestinoView extends DestinoUI implements View {
         } else
             selCodigo.setEnabled(true);
         isEdit = false;
+    }
+
+    public String assembleDireccion(String[] fields, Map<String, String> consulta) {
+        List<String> parts = new ArrayList<>();
+        for (String f : fields) {
+            if (consulta.containsKey(f)) {
+                String res = GenUtil.capitalizeEachWord(consulta.get(f).toLowerCase());
+                if (!res.equals("") && !res.equals(" ") && !res.equals("-")) {
+                    parts.add(res);
+                }
+            }
+        }
+        return String.join(", ", parts);
     }
 
     public void anularDestino() {
@@ -178,8 +247,6 @@ public class DestinoView extends DestinoUI implements View {
     public void setNuevo(boolean nuevo) {
         isNuevo = nuevo;
     }
-
-
 
     public FieldGroup getFieldGroup() {
         return fieldGroup;
