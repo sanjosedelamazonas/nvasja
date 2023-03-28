@@ -23,6 +23,8 @@ public class TerceroListUI extends VerticalLayout {
     protected HorizontalLayout horizontalCabeza;
     protected Button btnNuevo;
     protected Button btnEliminar;
+    protected Button btnMarcarEnviarRep;
+    protected Button btnMarcarNoEnviarRep;
     protected Grid grid;
 
     public TerceroListUI() {
