@@ -120,7 +120,7 @@ public class DestinoView extends DestinoUI implements View {
                     }
                 } catch (ConsultaRucDniException he) {
                     if (tipo.equals(ConsultaRucDni.RUC)) {
-                        String msg = "!No se podia encontra el RUC: " + selCodigo.getValue() + " en la base de SUNAT!";
+                        String msg = "!No se podia encontrar el RUC: " + selCodigo.getValue() + " en la base de SUNAT!";
                         if (he.getCause()!=null) {
                             msg = he.getMessage();
                         }
@@ -131,7 +131,7 @@ public class DestinoView extends DestinoUI implements View {
                                 .withOkButton()
                                 .open();
                     }
-                    log.debug("Could not find..." + tipo + " " + selCodigo.getValue());
+                    log.debug("Could not find in SUNAT..." + tipo + " " + selCodigo.getValue());
                 }
             }
         });
