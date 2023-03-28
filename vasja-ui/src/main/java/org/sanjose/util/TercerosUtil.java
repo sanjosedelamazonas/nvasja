@@ -376,9 +376,6 @@ public class TercerosUtil {
 //            OutputStream output = new FileOutputStream(new File(filename));
 //            JasperExportManager.exportReportToPdfStream(jasperPrint, output);
         }
-
-
-
     }
 
 

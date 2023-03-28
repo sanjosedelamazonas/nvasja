@@ -124,7 +124,6 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         logRes = new StringBuilder();
         setupBtnGenerarNoEnviados();
         setupBtnGenerarSeleccionados();
-
         //btnGenerarNoEnviados.addClickListener( o -> generateNoEnviadosAsOneReport());
     }
 
@@ -272,21 +271,25 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         allDownloader.extend(btnImprimir);
     }
 
-
     public void updateBtnGenerarSetResource(boolean isNoEnviados) {
+        updateBtnGenerarSetResource(isNoEnviados, "TercerosDiarios_");
+    }
+
+    public void updateBtnGenerarSetResource(boolean isNoEnviados, String filePrefix) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String exportFileName = "TercerosDiarios_"
+        String exportFileName = (filePrefix!=null ? "Diario_" + filePrefix + "_" : "Diarios_Terceros_")
                 + sdf.format(new Date(System.currentTimeMillis()))
                 + (format.endsWith("ZIP") ? ".zip " : ".pdf");
+        final UI ui = UI.getCurrent();
         StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
             @Override
             public InputStream getStream() {
                 try {
                     Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros(!isNoEnviados);
                     if (format.endsWith("ZIP"))
-                        return generateReportesZip(terceros, fechaInicial.getValue(), fechaFinal.getValue(), service);
+                        return generateReportesZip(terceros, fechaInicial.getValue(), fechaFinal.getValue(), service, ui);
                     else
-                        return generateReportesOnePdf(terceros, fechaInicial.getValue(), fechaFinal.getValue(), service);
+                        return generateReportesOnePdf(terceros, fechaInicial.getValue(), fechaFinal.getValue(), service, ui);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -301,8 +304,39 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
     }
 
 
-    private InputStream generateReportesOnePdf(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service) throws JRException, IOException {
-        UI ui = UI.getCurrent();
+    private InputStream generateReportesOnePdf(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service, UI ui) throws JRException, IOException {
+        showProgress.setVisible(true);
+        showProgress.setValue(0.1f);
+        btnGenerarNoEnviados.setEnabled(false);
+        btnImprimir.setEnabled(false);
+        Map<String, byte[]> mapReporte = new HashMap<>();
+        for (MsgUsuario usuario : trcMap.keySet()) {
+            for (ScpDestino dst : trcMap.get(usuario)) {
+                logRes.append("Generando reporte para usuario: " + dst.getTxtUsuario() + ""+"\n");
+                txtLog.setValue(logRes.toString());
+                //showProgress.setValue(0.1f);
+                EmailAttachment ea = TercerosUtil.generateTerceroOperacionesReport(fechaDesde, fechaHasta,
+                        dst.getCodDestino(), service, false);
+                mapReporte.put(ea.getFilename(), ea.getData());
+            }
+        }
+        PDFMergerUtility ut = new PDFMergerUtility();
+        File outFile = TempFile.createTempFile("diario_cuenta", "pdf");
+        ut.setDestinationFileName(outFile.getAbsolutePath());
+                //TempFile.createTempFile("")"");
+        for (String pdfName : mapReporte.keySet()) {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(mapReporte.get(pdfName));
+            ut.addSource(byteArrayInputStream);
+        }
+        showProgress.setValue(0.9f);
+        showProgress.setVisible(false);
+        btnGenerarNoEnviados.setEnabled(true);
+        btnImprimir.setEnabled(true);
+        ut.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
+        return new FileInputStream(outFile);
+    }
+
+    private InputStream generateReportesZip(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service, UI ui) throws JRException, IOException {
         ui.access(() ->{
             showProgress.setVisible(true);
             showProgress.setValue(0.1f);
@@ -317,34 +351,12 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                 mapReporte.put(ea.getFilename(), ea.getData());
             }
         }
-        PDFMergerUtility ut = new PDFMergerUtility();
-        File outFile = TempFile.createTempFile("diario_cuenta", "pdf");
-        ut.setDestinationFileName(outFile.getAbsolutePath());
-                //TempFile.createTempFile("")"");
-        for (String pdfName : mapReporte.keySet()) {
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(mapReporte.get(pdfName));
-            ut.addSource(byteArrayInputStream);
-        }
         ui.access(() -> {
-
-                    showProgress.setValue(0.9f);
-                    showProgress.setVisible(false);
-                    btnGenerarNoEnviados.setEnabled(true);
-                    btnImprimir.setEnabled(true);
-                });
-        ut.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
-        return new FileInputStream(outFile);
-    }
-
-    private static InputStream generateReportesZip(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service) throws JRException, IOException {
-        Map<String, byte[]> mapReporte = new HashMap<>();
-        for (MsgUsuario usuario : trcMap.keySet()) {
-            for (ScpDestino dst : trcMap.get(usuario)) {
-                EmailAttachment ea = TercerosUtil.generateTerceroOperacionesReport(fechaDesde, fechaHasta,
-                        dst.getCodDestino(), service, false);
-                mapReporte.put(ea.getFilename(), ea.getData());
-            }
-        }
+            showProgress.setValue(0.9f);
+            showProgress.setVisible(false);
+            btnGenerarNoEnviados.setEnabled(true);
+            btnImprimir.setEnabled(true);
+        });
         return listBytesToZip(mapReporte);
     }
 
@@ -431,9 +443,12 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             selUsuario.setValue(null);
             checkTodos.setValue(false);
             btnGenerarNoEnviados.setEnabled(true);
+            updateBtnGenerarSetResource(true, event.getProperty().getValue().toString());
+            updateBtnGenerarSetResource(false, event.getProperty().getValue().toString());
+        } else {
+            updateBtnGenerarSetResource(true);
+            updateBtnGenerarSetResource(false);
         }
-        updateBtnGenerarSetResource(true);
-        updateBtnGenerarSetResource(false);
     }
 
     private void setUsuarioLogic(Property.ValueChangeEvent event) {
@@ -441,9 +456,12 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             selTercero.setValue(null);
             checkTodos.setValue(false);
             btnGenerarNoEnviados.setEnabled(false);
+            updateBtnGenerarSetResource(true, event.getProperty().getValue().toString());
+            updateBtnGenerarSetResource(false, event.getProperty().getValue().toString());
+        } else {
+            updateBtnGenerarSetResource(true);
+            updateBtnGenerarSetResource(false);
         }
-        updateBtnGenerarSetResource(true);
-        updateBtnGenerarSetResource(false);
     }
 
     private void setUsuarioListLogic(Property.ValueChangeEvent event) {
@@ -471,6 +489,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
     @Override
     public void enter(ViewChangeEvent event) {
         //viewLogic.enter(event.getParameters());
+        btnGenerarNoEnviados.setEnabled(false);
         //TODO update list of usuarios
         updateBtnGenerarSetResource(true);
         updateBtnGenerarSetResource(false);

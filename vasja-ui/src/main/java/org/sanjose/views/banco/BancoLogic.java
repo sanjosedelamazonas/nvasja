@@ -79,55 +79,56 @@ public class BancoLogic extends BancoItemLogic {
     }
 
     private boolean checkSobregirado() {
-        boolean checkSingleOper = new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN()).check();
-        if (checkSingleOper) return true;
+        return new SaldoChecker(view.getNumEgreso(), view.getSaldoCuenta(), view.getSaldoProyPEN()).check();
+        //boolean checkSingleOper =
+        // if (checkSingleOper) return true;
 
-        boolean checkAllItems = false;
+//        boolean checkAllItems = false;
 
-        Map<String, BigDecimal> proyectoSaldo = new HashMap<>();
-        Map<String, BigDecimal> terceroSaldo = new HashMap<>();
-
-        for (Object detObj : view.gridBanco.getContainerDataSource().getItemIds()) {
-            ScpBancodetalle det = (ScpBancodetalle)detObj;
-
-            ScpBancocabecera cab = beanItem.getBean();
-            Character mon = cab.getCodTipomoneda();
-            BigDecimal elSaldo = new BigDecimal(0);
-            switch (mon) {
-                case '0':
-                    elSaldo = elSaldo.add(det.getNumHabersol()).subtract(det.getNumDebesol());
-                    break;
-                case '1':
-                    elSaldo = elSaldo.add(det.getNumHaberdolar()).subtract(det.getNumDebedolar());
-                    break;
-                case '2':
-                    elSaldo = elSaldo.add(det.getNumHaberdolar()).subtract(det.getNumDebedolar());
-            }
-            String codDes = det.getCodProyecto();
-            String codTerc = det.getCodTercero();
-            if (!GenUtil.strNullOrEmpty(codDes)) {
-                if (proyectoSaldo.containsKey(codDes))
-                    proyectoSaldo.put(codDes, proyectoSaldo.get(codDes).add(elSaldo));
-                else
-                    proyectoSaldo.put(codDes, elSaldo);
-
-            } else if (!GenUtil.strNullOrEmpty(codTerc)) {
-                if (terceroSaldo.containsKey(codTerc))
-                    terceroSaldo.put(codTerc, terceroSaldo.get(codTerc).add(elSaldo));
-                else
-                    terceroSaldo.put(codTerc, elSaldo);
-            }
-        }
-        for (String codProy : proyectoSaldo.keySet()) {
-            if (proyectoSaldo.get(codProy).compareTo(getSaldosForMoneda(codProy, true, moneda)) > 0)
-                return true;
-        }
-
-        for (String codTerc : terceroSaldo.keySet()) {
-            if (terceroSaldo.get(codTerc).compareTo(getSaldosForMoneda(codTerc, false, moneda)) > 0)
-                return true;
-        }
-        return false;
+//        Map<String, BigDecimal> proyectoSaldo = new HashMap<>();
+//        Map<String, BigDecimal> terceroSaldo = new HashMap<>();
+//
+//        for (Object detObj : view.gridBanco.getContainerDataSource().getItemIds()) {
+//            ScpBancodetalle det = (ScpBancodetalle)detObj;
+//
+//            ScpBancocabecera cab = beanItem.getBean();
+//            Character mon = cab.getCodTipomoneda();
+//            BigDecimal elSaldo = new BigDecimal(0);
+//            switch (mon) {
+//                case '0':
+//                    elSaldo = elSaldo.add(det.getNumHabersol()).subtract(det.getNumDebesol());
+//                    break;
+//                case '1':
+//                    elSaldo = elSaldo.add(det.getNumHaberdolar()).subtract(det.getNumDebedolar());
+//                    break;
+//                case '2':
+//                    elSaldo = elSaldo.add(det.getNumHaberdolar()).subtract(det.getNumDebedolar());
+//            }
+//            String codDes = det.getCodProyecto();
+//            String codTerc = det.getCodTercero();
+//            if (!GenUtil.strNullOrEmpty(codDes)) {
+//                if (proyectoSaldo.containsKey(codDes))
+//                    proyectoSaldo.put(codDes, proyectoSaldo.get(codDes).add(elSaldo));
+//                else
+//                    proyectoSaldo.put(codDes, elSaldo);
+//
+//            } else if (!GenUtil.strNullOrEmpty(codTerc)) {
+//                if (terceroSaldo.containsKey(codTerc))
+//                    terceroSaldo.put(codTerc, terceroSaldo.get(codTerc).add(elSaldo));
+//                else
+//                    terceroSaldo.put(codTerc, elSaldo);
+//            }
+//        }
+//        for (String codProy : proyectoSaldo.keySet()) {
+//            if (proyectoSaldo.get(codProy).compareTo(getSaldosForMoneda(codProy, true, moneda)) > 0)
+//                return true;
+//        }
+//
+//        for (String codTerc : terceroSaldo.keySet()) {
+//            if (terceroSaldo.get(codTerc).compareTo(getSaldosForMoneda(codTerc, false, moneda)) > 0)
+//                return true;
+//        }
+//        return false;
     }
 
     private BigDecimal getSaldosForMoneda(String codProy, boolean isProyecto, Character moneda) {

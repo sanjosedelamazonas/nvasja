@@ -48,6 +48,7 @@ logging:
       hibernate:
         engine:
           jdbc: INFO
+      atmosphere: WARN
 #        SQL: DEBUG
 #        type:
 #          descriptor:
@@ -86,6 +87,7 @@ logging:
         web: INFO
         beans: INFO
       hibernate: INFO
+      atmosphere: WARN
 vaadin:
   servlet:
     productionMode: true
