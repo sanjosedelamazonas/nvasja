@@ -25,6 +25,7 @@ public class DestinoUI extends HorizontalLayout {
     protected ComboBox clasificacion;
     protected TextField ruc;
     protected ComboBox selNombreCompleta;
+    protected TextField txtNombreCompleta;
     protected TextField telefono1;
     protected TextField telefono2;
     protected ComboBox dependencia;
