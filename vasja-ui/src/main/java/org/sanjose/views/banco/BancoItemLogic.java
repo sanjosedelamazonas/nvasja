@@ -435,7 +435,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
                     GenUtil.getYear(view.getDataFechaComprobante().getValue()), view.getSelCuenta().getValue().toString());
             BigDecimal saldo = procUtil.getSaldoBanco(GenUtil.getEndOfDay(GenUtil.dateAddDays(view.getDataFechaComprobante().getValue(),-1)),
                     view.getSelCuenta().getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda())).getSegLibro();
-            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
             view.getMonedaSaldoCuentaLabel().setValue(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()));
             log.debug("In setCuentaLogic: " + df.format(saldo));
             view.getSaldoCuenta().setValue(df.format(saldo));
@@ -507,7 +507,7 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
     private void setSaldos() {
         Object proyTerc = view.getSelProyectoTercero().getValue();
         if (view.getDataFechaComprobante().getValue() != null && !GenUtil.objNullOrEmpty(proyTerc)) {
-            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
             ProcUtil.Saldos res = null;
             if (isProyecto()) {
                 res = getSaldosFor(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()), proyTerc.toString(), true);

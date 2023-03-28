@@ -160,34 +160,31 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
         });
 
         grid.setFooterVisible(true);
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
         if (isInicial) {
             if (saldosFooterInicial==null) saldosFooterInicial = grid.addFooterRowAt(0);
-            DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
-                    null, ConfigurationUtil.get("DECIMAL_FORMAT"));
             saldosFooterInicial.getCell("codigo").setText("TOTAL:");
-            saldosFooterInicial.getCell("soles").setText(dpf.format(totalSoles.doubleValue()));
+            saldosFooterInicial.getCell("soles").setText(df.format(totalSoles.doubleValue()));
             saldosFooterInicial.getCell("soles").setStyleName("v-align-right");
-            saldosFooterInicial.getCell("dolares").setText(dpf.format(totalUsd.doubleValue()));
+            saldosFooterInicial.getCell("dolares").setText(df.format(totalUsd.doubleValue()));
             saldosFooterInicial.getCell("dolares").setStyleName("v-align-right");
-            saldosFooterInicial.getCell("euros").setText(dpf.format(totalEur.doubleValue()));
+            saldosFooterInicial.getCell("euros").setText(df.format(totalEur.doubleValue()));
             saldosFooterInicial.getCell("euros").setStyleName("v-align-right");
         } else {
             if (saldosFooterFinal==null) saldosFooterFinal = grid.addFooterRowAt(0);
-            DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
-                    null, ConfigurationUtil.get("DECIMAL_FORMAT"));
             saldosFooterFinal.getCell("codigo").setText("TOTAL:");
             saldosFooterFinal.getCell("soles").setStyleName("v-align-right");
-            saldosFooterFinal.getCell("soles").setText(dpf.format(totalSoles.doubleValue()));
+            saldosFooterFinal.getCell("soles").setText(df.format(totalSoles.doubleValue()));
             saldosFooterFinal.getCell("dolares").setStyleName("v-align-right");
-            saldosFooterFinal.getCell("dolares").setText(dpf.format(totalUsd.doubleValue()));
-            saldosFooterFinal.getCell("euros").setText(dpf.format(totalEur.doubleValue()));
+            saldosFooterFinal.getCell("dolares").setText(df.format(totalUsd.doubleValue()));
+            saldosFooterFinal.getCell("euros").setText(df.format(totalEur.doubleValue()));
             saldosFooterFinal.getCell("euros").setStyleName("v-align-right");
             // set Saldo in CajaManejo
             Map<Character, BigDecimal> totals = new HashMap<>();
             totals.put(GenUtil.PEN, totalSoles);
             totals.put(GenUtil.USD, totalUsd);
             totals.put(GenUtil.EUR, totalEur);
-            view.getSaldoCaja().setValue(dpf.format(totals.get(view.getMoneda()).doubleValue()));
+            view.getSaldoCaja().setValue(df.format(totals.get(view.getMoneda()).doubleValue()));
         }
     }
 
@@ -213,28 +210,26 @@ public class CajaManejoLogic extends CajaLogic implements ItemsRefreshing<ScpCaj
             totalEurDiaEgr = totalEurDiaEgr.add(cajabanco.getNumHabermo());
             totalEurDiaIng = totalEurDiaIng.add(cajabanco.getNumDebemo());
         }
-        DoubleDecimalFormatter dpf = new DoubleDecimalFormatter(
-                null, ConfigurationUtil.get("DECIMAL_FORMAT"));
-
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
         // PEN
-        saldosView.getValSolEgr().setValue(dpf.format(totalSolesDiaEgr.doubleValue()));
-        saldosView.getValSolIng().setValue(dpf.format(totalSolesDiaIng.doubleValue()));
-        saldosView.getValSolSaldo().setValue(dpf.format(totalSolesDiaIng.subtract(totalSolesDiaEgr).doubleValue()));
+        saldosView.getValSolEgr().setValue(df.format(totalSolesDiaEgr.doubleValue()));
+        saldosView.getValSolIng().setValue(df.format(totalSolesDiaIng.doubleValue()));
+        saldosView.getValSolSaldo().setValue(df.format(totalSolesDiaIng.subtract(totalSolesDiaEgr).doubleValue()));
         // USD
-        saldosView.getValDolEgr().setValue(dpf.format(totalUsdDiaEgr.doubleValue()));
-        saldosView.getValDolIng().setValue(dpf.format(totalUsdDiaIng.doubleValue()));
-        saldosView.getValDolSaldo().setValue(dpf.format(totalUsdDiaIng.subtract(totalUsdDiaEgr).doubleValue()));
+        saldosView.getValDolEgr().setValue(df.format(totalUsdDiaEgr.doubleValue()));
+        saldosView.getValDolIng().setValue(df.format(totalUsdDiaIng.doubleValue()));
+        saldosView.getValDolSaldo().setValue(df.format(totalUsdDiaIng.subtract(totalUsdDiaEgr).doubleValue()));
         // EUR
-        saldosView.getValEurEgr().setValue(dpf.format(totalEurDiaEgr.doubleValue()));
-        saldosView.getValEurIng().setValue(dpf.format(totalEurDiaIng.doubleValue()));
-        saldosView.getValEurSaldo().setValue(dpf.format(totalEurDiaIng.subtract(totalEurDiaEgr).doubleValue()));
+        saldosView.getValEurEgr().setValue(df.format(totalEurDiaEgr.doubleValue()));
+        saldosView.getValEurIng().setValue(df.format(totalEurDiaIng.doubleValue()));
+        saldosView.getValEurSaldo().setValue(df.format(totalEurDiaIng.subtract(totalEurDiaEgr).doubleValue()));
 
         saldosView.gridSaldoDelDia.setColumnExpandRatio(0, 0);
     }
 
     @Override
     public void calcFooterSums() {
-        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
         BigDecimal sumDebesol = new BigDecimal(0.00);
         BigDecimal sumHabersol = new BigDecimal(0.00);
         BigDecimal sumDebedolar = new BigDecimal(0.00);

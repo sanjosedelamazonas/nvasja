@@ -579,7 +579,7 @@ class ComprobanteLogic implements Serializable {
 
     private void setSaldos() {
         if (view.getDataFechaComprobante().getValue()!=null) {
-            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
             Date fechaCajas = view.getDataFechaComprobante().getValue()!=null ? view.getDataFechaComprobante().getValue() : new Date();
             fechaCajas = GenUtil.getEndOfDay(fechaCajas);
             ProcUtil.Saldos res = null;
@@ -603,7 +603,7 @@ class ComprobanteLogic implements Serializable {
         if (view.getDataFechaComprobante().getValue()!=null && view.getSelCaja().getValue()!=null && view.getSelMoneda().getValue()!=null) {
             BigDecimal saldo = procUtil.getSaldoCaja(GenUtil.getEndOfDay(view.getDataFechaComprobante().getValue()),
                     view.getSelCaja().getValue().toString(), view.getSelMoneda().getValue().toString().charAt(0));
-            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
 
             view.getSaldoCaja().setValue(df.format(saldo));
             saldoChecker.setSaldoField(view.getSaldoCaja());

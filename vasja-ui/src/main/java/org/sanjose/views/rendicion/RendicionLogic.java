@@ -179,7 +179,7 @@ public class RendicionLogic extends RendicionItemLogic {
         fieldGroupCabezera.bind(view.getDataFechaRegistro(), "fecFregistro");
         fieldGroupCabezera.bind(view.getNumTotalAnticipo(), "numTotalanticipo");
 
-        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
         view.getTxtGastoTotal().setValue(df.format(item.getNumGastototal()));
         view.getTxtSaldoPendiente().setValue(df.format(item.getNumSaldopendiente()));
         fieldGroupCabezera.bind(view.getTxtOrigen(), "codOrigen");

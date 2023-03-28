@@ -334,7 +334,7 @@ public class GenUtil {
     }
 
     public static String numFormat(BigDecimal bd) {
-        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
         return df.format(bd);
     }
 

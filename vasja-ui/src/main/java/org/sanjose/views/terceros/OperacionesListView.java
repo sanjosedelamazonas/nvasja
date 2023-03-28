@@ -152,7 +152,7 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
 
     private String getSaldoPorFecha(Date fecha) {
         if (fecha==null || curCodTercero==null) return "";
-        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
         ProcUtil.Saldos res = getAllSaldoPorFecha(fecha, curCodTercero);
         Map<Character, BigDecimal> saldos = new HashMap<>();
         saldos.put('0', res.getSaldoPEN());
@@ -163,7 +163,7 @@ public class OperacionesListView extends OperacionesListUI implements NavigatorV
 
     
     public void calcFooterSums() {
-        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
         BigDecimal sumDebesol = new BigDecimal(0.00);
         BigDecimal sumHabersol = new BigDecimal(0.00);
         BigDecimal sumDebedolar = new BigDecimal(0.00);

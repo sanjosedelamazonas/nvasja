@@ -181,7 +181,7 @@ public class BancoConciliacionView extends BancoConciliacionUI implements Viewin
                     GenUtil.getYear(fechaDesde.getValue()), selFiltroCuenta.getValue().toString());
             BigDecimal saldo = MainUI.get().getProcUtil().getSaldoBanco(GenUtil.getEndOfDay(GenUtil.dateAddDays(fechaDesde.getValue(),-1)),
                     selFiltroCuenta.getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda())).getSegLibro();
-            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
             txtSaldoInicial.setValue(GenUtil.getSymMoneda(cuenta.getIndTipomoneda()) + " " + df.format(saldo));
             saldo = MainUI.get().getProcUtil().getSaldoBanco(fechaHasta.getValue(),
                     selFiltroCuenta.getValue().toString(), GenUtil.getNumMoneda(cuenta.getIndTipomoneda())).getSegLibro();

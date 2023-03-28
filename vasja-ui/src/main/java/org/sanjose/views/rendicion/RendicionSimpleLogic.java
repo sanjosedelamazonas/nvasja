@@ -277,7 +277,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
         //fieldGroupCabezera.bind(view.getDataFechaRegistro(), "fecFregistro");
         //fieldGroupCabezera.bind(view.getNumTotalAnticipo(), "numTotalanticipo");
 
-        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
         view.getTxtGastoTotal().setValue(df.format(item.getNumGastototal()));
         gastoTotal = item.getNumGastototal();
 
@@ -451,7 +451,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
 //            }
 //        });
         anticipoView.getBtnCerrar().addClickListener(event -> {
-            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+            DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
             view.getNumTotalAnticipo().setValue(df.format(anticipoView.getTotal()));
             view.getTxtSaldoPendiente().setValue(GenUtil.numFormat(anticipoView.getTotal().subtract(view.calcTotal(moneda))));
             anticipoWindow.close();

@@ -333,7 +333,7 @@ public class BancoGridLogic implements ItemsRefreshing<ScpBancocabecera>, SaldoD
     }
     
     public void calcFooterSums() {
-        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance());
+        DecimalFormat df = new DecimalFormat(ConfigurationUtil.get("DECIMAL_FORMAT"), DecimalFormatSymbols.getInstance(ConfigurationUtil.getLocale()));
         BigDecimal sumDebesol = new BigDecimal(0.00);
         BigDecimal sumHabersol = new BigDecimal(0.00);
         BigDecimal sumDebedolar = new BigDecimal(0.00);
