@@ -79,10 +79,11 @@ public class DestinoLogic implements Serializable {
             }
             item.prepToSave();
 
+            log.info("Ready to save: " + item);
+            ScpDestino saved = view.destinoRepo.save(item);
             view.btnGuardar.setEnabled(false);
             view.btnAnular.setEnabled(false);
-            log.info("Ready to save: " + item);
-            return view.destinoRepo.save(item);
+            return saved;
         } catch (CommitException ce) {
             String errMsg = GenUtil.genErrorMessage(ce.getInvalidFields());
             MessageBox

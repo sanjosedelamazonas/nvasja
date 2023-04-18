@@ -119,7 +119,7 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
 
         // Responsable
         DataFilterUtil.bindComboBox(view.getSelResponsable1(), "codDestino",
-                view.getService().getDestinoRepo().findByIndTipodestinoOrderByTxtNombre('1'),
+                view.getService().getDestinoRepo().findByIndTipodestinoNotOrderByTxtNombre('3'),
                 "txtNombredestino");
 
         // Tipo Moneda
@@ -694,7 +694,9 @@ class RendicionSimpleItemLogic extends RendicionSharedLogic implements Serializa
     protected void nuevoItem() {
 
         item = new ScpRendiciondetalle();
-        item.setCodTipomoneda(rendicioncabecera.getCodTipomoneda());
+
+
+        item.setCodTipomoneda(rendicioncabecera.getCodTipomoneda()!=null ? rendicioncabecera.getCodTipomoneda() : '0');
         ScpRendiciondetallePK id = new ScpRendiciondetallePK();
         id = id.prepareToSave(item);
         id.setCodRendicioncabecera(rendicioncabecera.getCodRendicioncabecera());

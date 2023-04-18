@@ -159,7 +159,7 @@ public class DestinoView extends DestinoUI implements View {
 
         //selNombreCompleta.setDescription("Nombre");
 
-        selNombreCompleta.addValidator(new LocalizedBeanValidator(ScpDestino.class, "txtNombredestino"));
+        txtNombreCompleta.addValidator(new LocalizedBeanValidator(ScpDestino.class, "txtNombre"));
         tipoDePersona.addValidator(new LocalizedBeanValidator(ScpDestino.class, "indTipopersona"));
         viewLogic.init();
     }
@@ -174,7 +174,7 @@ public class DestinoView extends DestinoUI implements View {
         fieldGroup.setItemDataSource(beanItem);
         fieldGroup.bind(selCodigo, "codDestino");
         fieldGroup.bind(clasificacion, "indTipodestino");
-        fieldGroup.bind(selNombreCompleta, "txtNombredestino");
+        fieldGroup.bind(txtNombreCompleta, "txtNombredestino");
         fieldGroup.bind(apellidoPaterno, "txtApellidopaterno");
         fieldGroup.bind(apellidoMaterno, "txtApellidomaterno");
         fieldGroup.bind(genero, "indSexo");
@@ -254,9 +254,5 @@ public class DestinoView extends DestinoUI implements View {
 
     public ComboBox getSelCodigo() {
         return selCodigo;
-    }
-
-    public ComboBox getSelNombreCompleta() {
-        return selNombreCompleta;
     }
 }
