@@ -279,7 +279,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String exportFileName = (filePrefix!=null ? "Diario_" + filePrefix + "_" : "Diarios_Terceros_")
                 + sdf.format(new Date(System.currentTimeMillis()))
-                + (format.endsWith("ZIP") ? ".zip " : ".pdf");
+                + (format.endsWith("ZIP") ? ".zip" : ".pdf");
         final UI ui = UI.getCurrent();
         StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
             @Override

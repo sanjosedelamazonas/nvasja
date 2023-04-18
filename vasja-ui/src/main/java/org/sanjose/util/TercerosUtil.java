@@ -35,9 +35,9 @@ public class TercerosUtil {
 
         return TercerosUtil.getFrom(
                 service.getScpComprobantedetalleRep().
-                        findByFecComprobanteBetweenAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, codigosTerc, "4"),
+                        findByFecComprobanteBetweenAndId_CodOrigenNotAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, "10", codigosTerc, "4"),
                 service.getScpComprobantedetalleRep().
-                        findByFecComprobanteBetweenAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, codigosTerc, "1"),
+                        findByFecComprobanteBetweenAndId_CodOrigenNotAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, "10", codigosTerc, "1"),
                 service.getCajabancoRep().findByFecFechaBetweenAndCodTerceroIsInAndFlgEnviadoOrderByFecFechaAscCodCajabancoAsc(fechaDesde, fechaHasta, codigosTerc, '0'),
                 service.getBancodetalleRep().findByFecFechaBetweenAndCodTerceroIsInAndVsjBancocabecera_FlgEnviadoOrderByFecFechaAscId_CodBancocabeceraAsc(fechaDesde, fechaHasta, codigosTerc, '0'),
                 service.getDestinoRepo(),
@@ -57,9 +57,9 @@ public class TercerosUtil {
 
         List<VsjOperaciontercero> all = TercerosUtil.getFrom(
                 service.getScpComprobantedetalleRep().
-                        findByFecComprobanteBetweenAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, codigosTerc, "4"),
+                        findByFecComprobanteBetweenAndId_CodOrigenNotAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, "10", codigosTerc, "4"),
                 service.getScpComprobantedetalleRep().
-                        findByFecComprobanteBetweenAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, codigosTerc, "1"),
+                        findByFecComprobanteBetweenAndId_CodOrigenNotAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(fechaDesde, fechaHasta, "10", codigosTerc, "1"),
                 service.getCajabancoRep().findByFecFechaBetweenAndCodTerceroIsInAndFlgEnviadoOrderByFecFechaAscCodCajabancoAsc(fechaDesde, fechaHasta, codigosTerc, '0'),
                 service.getBancodetalleRep().findByFecFechaBetweenAndCodTerceroIsInAndVsjBancocabecera_FlgEnviadoOrderByFecFechaAscId_CodBancocabeceraAsc(fechaDesde, fechaHasta, codigosTerc, '0'),
                 service.getDestinoRepo(),

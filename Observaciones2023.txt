@@ -164,4 +164,6 @@ DONE
 ----------------------- 07-04-2023 --------------------
 -> reporte terceros:
  - no debe considerar operaciones con origen '10' - son asientos de apertura y cierre contable, no operaciones. mira ejemplo para inicio del ano cualquier reporte desede 01-01-2023 va aparecer saldo inicial y a la vez abono por la misma catidad con texto "cierre del activo y pasivo - soles" . lo debo corregir en el reporte o es lo que viene con dataset?
+DONE
  - archivo .zip se genera con nombre .zip_ , no debe llevar _ en el nombre
+DONE

@@ -23,4 +23,6 @@ public interface ScpComprobantedetalleRep extends JpaRepository<ScpComprobantede
     List<ScpComprobantedetalle> findByFecComprobanteBetweenAndCodTerceroIsIn(Date from, Date to, List<String> s);
 
     List<ScpComprobantedetalle> findByFecComprobanteBetweenAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(Date from, Date to, List<String> s, String s2);
+
+    List<ScpComprobantedetalle> findByFecComprobanteBetweenAndId_CodOrigenNotAndCodTerceroIsInAndCodCtacontableStartingWithOrderByFecComprobanteAscId_CodComprobanteAsc(Date from, Date to, String notOrig, List<String> s, String s2);
 }
