@@ -633,53 +633,84 @@ public class ProcUtil {
     }
 
 
-    @Transactional(readOnly = false)
+    //@Transactional(readOnly = false)
+    //@Transactional
     public int replaceDestino(String codDestinoToReplace, String codDestinoNew, PersistanceService service) {
 
         List<ScpCajabanco> comprobantes = service.getCajabancoRep().findByCodDestinoOrCodDestinoitem(codDestinoToReplace, codDestinoToReplace);
         List<ScpBancocabecera> bancoscabeceras = service.getBancocabeceraRep().findByCodDestino(codDestinoToReplace);
-        List<ScpBancodetalle> bancositems = service.getBancodetalleRep().findByCodDestinoOrCodDestinoitem(codDestinoToReplace, codDestinoToReplace);
         List<ScpRendicioncabecera> rendicionescab = service.getRendicioncabeceraRep().findByCodDestino(codDestinoToReplace);
         List<ScpRendiciondetalle> rendicionitems = service.getRendiciondetalleRep().findByCodDestino(codDestinoToReplace);
 
         int cambios = 0;
 
         for (ScpCajabanco vcb : comprobantes) {
-            if (vcb.getCodDestino().equals(codDestinoToReplace)) {
+            boolean cambiado = false;
+            if (vcb.getCodDestino().equalsIgnoreCase(codDestinoToReplace)) {
                 vcb.setCodDestino(codDestinoNew);
-                service.getCajabancoRep().save(vcb);
+                cambiado = true;
                 cambios++;
             }
-            if (vcb.getCodDestinoitem().equals(codDestinoToReplace)) {
+            if (vcb.getCodDestinoitem().equalsIgnoreCase(codDestinoToReplace)) {
                 vcb.setCodDestinoitem(codDestinoNew);
-                service.getCajabancoRep().save(vcb);
+                cambiado = true;
                 cambios++;
             }
+            if (cambiado)
+                service.getCajabancoRep().save(vcb);
         }
-
+        
         for (ScpBancocabecera vcb : bancoscabeceras) {
-            if (vcb.getCodDestino().equals(codDestinoToReplace)) {
+            boolean cambiadoCab = false;
+            if (vcb.getCodDestino().equalsIgnoreCase(codDestinoToReplace)) {
                 vcb.setCodDestino(codDestinoNew);
-                service.getBancocabeceraRep().save(vcb);
+                cambiadoCab = true;
                 cambios++;
             }
+            for (ScpBancodetalle det : vcb.getScpBancodetalles()) {
+                boolean cambiado = false;
+                if (det.getCodDestino().equalsIgnoreCase(codDestinoToReplace)) {
+                    det.setCodDestino(codDestinoNew);
+                    cambiado = true;
+                    //cambiadoCab = true;
+                    cambios++;
+                }
+                if (det.getCodDestinoitem().equalsIgnoreCase(codDestinoToReplace)) {
+                    det.setCodDestinoitem(codDestinoNew);
+                    cambiado = true;
+                    //cambiadoCab = true;
+                    cambios++;
+                }
+                if (cambiado)
+                    service.getBancodetalleRep().save(det);
+            }
+            if (cambiadoCab)
+                service.getBancocabeceraRep().save(vcb);
         }
 
-        for (ScpBancodetalle vcb : bancositems) {
-            if (vcb.getCodDestino().equals(codDestinoToReplace)) {
-                vcb.setCodDestino(codDestinoNew);
-                service.getBancodetalleRep().save(vcb);
+
+        List<ScpBancodetalle> bancositems = service.getBancodetalleRep().findByCodDestinoOrCodDestinoitem(codDestinoToReplace, codDestinoToReplace);
+        for (ScpBancodetalle det : bancositems) {
+            boolean cambiado = false;
+            if (det.getCodDestino().equalsIgnoreCase(codDestinoToReplace)) {
+                det.setCodDestino(codDestinoNew);
+                cambiado = true;
+                //cambiadoCab = true;
                 cambios++;
             }
-            if (vcb.getCodDestinoitem().equals(codDestinoToReplace)) {
-                vcb.setCodDestinoitem(codDestinoNew);
-                service.getBancodetalleRep().save(vcb);
+            if (det.getCodDestinoitem().equalsIgnoreCase(codDestinoToReplace)) {
+                det.setCodDestinoitem(codDestinoNew);
+                cambiado = true;
+                //cambiadoCab = true;
                 cambios++;
             }
+            if (cambiado)
+                service.getBancodetalleRep().save(det);
         }
+
 
         for (ScpRendicioncabecera vcb : rendicionescab) {
-            if (vcb.getCodDestino().equals(codDestinoToReplace)) {
+            if (vcb.getCodDestino().equalsIgnoreCase(codDestinoToReplace)) {
                 vcb.setCodDestino(codDestinoNew);
                 service.getRendicioncabeceraRep().save(vcb);
                 cambios++;
@@ -687,7 +718,7 @@ public class ProcUtil {
         }
 
         for (ScpRendiciondetalle vcb : rendicionitems) {
-            if (vcb.getCodDestino().equals(codDestinoToReplace)) {
+            if (vcb.getCodDestino().equalsIgnoreCase(codDestinoToReplace)) {
                 vcb.setCodDestino(codDestinoNew);
                 service.getRendiciondetalleRep().save(vcb);
                 cambios++;
