@@ -113,10 +113,16 @@ public class ScpDestino implements Serializable {
 
         if (getTxtNombre() == null) setTxtNombre(getTxtNombredestino());
         if (getTxtNombredestino() == null) setTxtNombredestino("");
+		if (getTxtNombredestino().length() > 100) {
+			setTxtNombredestino(getTxtNombredestino().substring(0, 100));
+		}
         if (getCodCargo() == null) setCodCargo("");
         if (getCodFilial()== null) setCodFilial("");
         if (getTxtApellidomaterno() == null) setTxtApellidomaterno("");
         if (getTxtDireccion() == null) setTxtDireccion("");
+		if (getTxtDireccion().length() > 150) {
+			setTxtDireccion(getTxtDireccion().substring(0, 150));
+		}
         if (getTxtApellidopaterno() == null) setTxtApellidopaterno("");
         if (getTxtNumerodctoidentidad() == null) setTxtNumerodctoidentidad("");
         if (getTxtRuc() == null) setTxtRuc("");
