@@ -820,9 +820,9 @@ class RendicionItemLogic extends RendicionSharedLogic implements Serializable, C
         int i = view.getContainer().size()+1;
         List<ScpRendiciondetalle> rendsToAdd = new ArrayList<>();
         for (ScpRendiciondetalle det : importedDets) {
-            ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+            ScpRendiciondetallePK id = new ScpRendiciondetallePK(rendicioncabecera);
             id = id.prepareToSave(det);
-            id.setCodRendicioncabecera(this.rendicioncabecera.getCodRendicioncabecera());
+            det.setCodRendicioncabecera(this.rendicioncabecera.getCodRendicioncabecera());
             id.setNumNroitem(i);
             id.setCodFilial(this.rendicioncabecera.getCodFilial());
             id.setCodOrigen(this.rendicioncabecera.getCodOrigen());

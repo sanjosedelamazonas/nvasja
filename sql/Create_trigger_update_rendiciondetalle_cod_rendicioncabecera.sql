@@ -33,7 +33,7 @@ BEGIN
   IF (@cod_cabecera_in_detalle IS NULL) OR (@cod_cabecera_in_detalle=0)
   BEGIN
 
-    SELECT @cod_rendicioncabecera=cod_rendicioncabecera
+    SELECT @cod_rendicioncabecera=cod_rendicioncabecera
     FROM
          scp_rendicioncabecera
     WHERE
@@ -44,10 +44,10 @@ BEGIN
     UPDATE scp_rendiciondetalle
     SET cod_rendicioncabecera=@cod_rendicioncabecera
     WHERE
-        cod_mes=@cod_mes AND
+        cod_mes=@cod_mes AND
         cod_origen=@cod_origen AND
         cod_comprobante=@cod_comprobante AND
-        txt_anoproceso=@txt_anoproceso AND
+        txt_anoproceso=@txt_anoproceso AND
         num_nroitem=@num_nroitem
   END
 END

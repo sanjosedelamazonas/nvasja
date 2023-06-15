@@ -25,6 +25,10 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     @EmbeddedId
     private ScpRendiciondetallePK id;
 
+
+    @Column(name="cod_rendicioncabecera", insertable=false, updatable=false)
+    private int codRendicioncabecera;
+
     @Column(name="cod_uactualiza")
     private String codUactualiza;
 
@@ -859,6 +863,13 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
         this.codTipomoneda = codTipomoneda;
     }
 
+    public int getCodRendicioncabecera() {
+        return codRendicioncabecera;
+    }
+
+    public void setCodRendicioncabecera(int codRendicioncabecera) {
+        this.codRendicioncabecera = codRendicioncabecera;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -871,11 +882,19 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     public int hashCode() {
         return getId() != null ? getId().hashCode() : 0;
     }
+
     @Override
     public String toString() {
         return "ScpRendiciondetalle{" +
                 "id=" + id +
+                ", codRendicioncabecera=" + codRendicioncabecera +
+                ", codUactualiza='" + codUactualiza + '\'' +
+                ", codUregistro='" + codUregistro + '\'' +
+                ", fecFactualiza=" + fecFactualiza +
+                ", fecFregistro=" + fecFregistro +
+                ", codTipomoneda=" + codTipomoneda +
                 ", fecComprobante=" + fecComprobante +
+                ", codTipomov=" + codTipomov +
                 ", txtGlosaitem='" + txtGlosaitem + '\'' +
                 ", codDestino='" + codDestino + '\'' +
                 ", txtCheque='" + txtCheque + '\'' +
@@ -888,7 +907,7 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
                 ", txtComprobantepago='" + txtComprobantepago + '\'' +
                 ", fecComprobantepago=" + fecComprobantepago +
                 ", codEvento='" + codEvento + '\'' +
-                ", numRefnroitem='" + numRefnroitem + '\'' +
+                ", numRefnroitem=" + numRefnroitem +
                 ", fecRefcomprobante=" + fecRefcomprobante +
                 ", codProyecto='" + codProyecto + '\'' +
                 ", codRefcomprobante='" + codRefcomprobante + '\'' +
@@ -922,7 +941,7 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
                 ", flgRecuperaigv='" + flgRecuperaigv + '\'' +
                 ", porIgv=" + porIgv +
                 ", porIes=" + porIes +
-                ", numNroitem2='" + numNroitem2 + '\'' +
+                ", numNroitem2=" + numNroitem2 +
                 ", codContraparte='" + codContraparte + '\'' +
                 ", txtNroretencion='" + txtNroretencion + '\'' +
                 ", fecRetencion=" + fecRetencion +
@@ -943,6 +962,7 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
                 ", fecRendicion=" + fecRendicion +
                 ", numSaldo=" + numSaldo +
                 ", flgIm=" + flgIm +
+                ", scpRendicioncabecera=" + scpRendicioncabecera +
                 '}';
     }
 

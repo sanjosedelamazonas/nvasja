@@ -156,7 +156,10 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
     private Optional loadDetallesToGrid(ScpRendicioncabecera rendCab) {
         if (rendCab.getCodRendicioncabecera()==null) return Optional.ofNullable(null);
         List<ScpRendiciondetalle> bancodetalleList = view.getService().getRendiciondetalleRep()
-                .findById_CodRendicioncabecera(rendCab.getCodRendicioncabecera());
+                .findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilial(
+                        rendCab.getCodComprobante(), rendCab.getCodOrigen(), rendCab.getCodMes(),
+                        rendCab.getTxtAnoproceso(), rendCab.getCodFilial());
+                //.findById_CodRendicioncabecera(rendCab.getCodRendicioncabecera());
 //        List<ScpRendiciondetalle> bancodetalleListOld = view.getService().getRendiciondetalleRep()
 //                .findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilial(
 //                        rendCab.getCodComprobante(), rendCab.getCodOrigen(), rendCab.getCodMes(), rendCab.getTxtAnoproceso(), "01");
@@ -336,7 +339,12 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
 
 
             List<ScpRendiciondetalle> bancodetalleList = view.getService().getRendiciondetalleRep()
-                    .findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera());
+                    .findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilial(
+                            cabecera.getCodComprobante(), cabecera.getCodOrigen(), cabecera.getCodMes(),
+                            cabecera.getTxtAnoproceso(), cabecera.getCodFilial());
+                    //.findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera());
+
+
             for (ScpRendiciondetalle det : bancodetalleList) {
                 det.setFecComprobante(cabecera.getFecComprobante());
                 det.setFecComprobantepago(cabecera.getFecComprobante());

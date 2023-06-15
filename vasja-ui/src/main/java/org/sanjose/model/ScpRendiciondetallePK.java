@@ -14,9 +14,6 @@ public class ScpRendiciondetallePK implements Serializable, Cloneable {
     //default serial version id, required for serializable classes.
     private static final long serialVersionUID = 14357658632554L;
 
-    @Column(name="cod_rendicioncabecera", insertable=false, updatable=false)
-    private int codRendicioncabecera;
-
     @Column(name = "num_nroitem")
     private Long numNroitem;
 
@@ -36,6 +33,16 @@ public class ScpRendiciondetallePK implements Serializable, Cloneable {
     public ScpRendiciondetallePK() {
     }
 
+    public ScpRendiciondetallePK(ScpRendicioncabecera cabecera) {
+        if (cabecera!=null) {
+            setTxtAnoproceso(cabecera.getTxtAnoproceso());
+            setCodFilial(cabecera.getCodFilial());
+            setCodMes(cabecera.getCodMes());
+            setCodComprobante(cabecera.getCodComprobante());
+            setCodOrigen(cabecera.getCodOrigen());
+        }
+    }
+
     public ScpRendiciondetallePK prepareToSave(ScpRendiciondetalle det) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM");
         setCodMes(sdf.format(det.getFecComprobante()));
@@ -50,14 +57,6 @@ public class ScpRendiciondetallePK implements Serializable, Cloneable {
 
     public void setNumNroitem(long numNroitem) {
         this.numNroitem = numNroitem;
-    }
-
-    public int getCodRendicioncabecera() {
-        return codRendicioncabecera;
-    }
-
-    public void setCodRendicioncabecera(int codRendicioncabecera) {
-        this.codRendicioncabecera = codRendicioncabecera;
     }
 
     public String getCodFilial() {
@@ -110,31 +109,28 @@ public class ScpRendiciondetallePK implements Serializable, Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ScpRendiciondetallePK that = (ScpRendiciondetallePK) o;
-        return codRendicioncabecera == that.codRendicioncabecera &&
-                numNroitem.equals(that.numNroitem);
-    }
-
-    public int hashCode() {
-        final int prime = 31;
-        long hash = 17;
-        hash = hash * prime + this.numNroitem;
-        hash = hash * prime + this.codRendicioncabecera;
-        return Long.valueOf(hash).intValue();
+        return Objects.equals(numNroitem, that.numNroitem) && Objects.equals(codFilial, that.codFilial) && Objects.equals(codOrigen, that.codOrigen) && Objects.equals(codComprobante, that.codComprobante) && Objects.equals(codMes, that.codMes) && Objects.equals(txtAnoproceso, that.txtAnoproceso);
     }
 
     @Override
-    public String toString() {
-        return "ScpRendiciondetallePK{" +
-                "codRendicioncabecera=" + codRendicioncabecera +
-                ", numNroitem=" + numNroitem +
-                ", codFilial='" + codFilial + '\'' +
-                ", codOrigen='" + codOrigen + '\'' +
-                ", codComprobante='" + codComprobante + '\'' +
-                '}';
+    public int hashCode() {
+        return Objects.hash(numNroitem, codFilial, codOrigen, codComprobante, codMes, txtAnoproceso);
     }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return "ScpRendiciondetallePK{" +
+                "numNroitem=" + numNroitem +
+                ", codFilial='" + codFilial + '\'' +
+                ", codOrigen='" + codOrigen + '\'' +
+                ", codComprobante='" + codComprobante + '\'' +
+                ", codMes='" + codMes + '\'' +
+                ", txtAnoproceso='" + txtAnoproceso + '\'' +
+                '}';
     }
 }

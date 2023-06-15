@@ -9,9 +9,12 @@ public interface ScpRendiciondetalleRep extends JpaRepository<ScpRendiciondetall
 
     List<ScpRendiciondetalle> findByCodDestino(String s);
 
-    List<ScpRendiciondetalle> findById_CodRendicioncabecera(Integer id);
+    List<ScpRendiciondetalle> findByCodRendicioncabecera(Integer id);
 
-    List<ScpRendiciondetalle> findById_CodRendicioncabeceraAndId_NumNroitemGreaterThan(Integer id, Long numItem);
+    List<ScpRendiciondetalle> findByCodRendicioncabeceraAndId_NumNroitemGreaterThan(Integer id, Long numItem);
 
     List<ScpRendiciondetalle> findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilial(String codComprob, String codOrigen, String codMes, String txtAno, String codFilial);
+
+    List<ScpRendiciondetalle> findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilialAndId_NumNroitemGreaterThan(String codComprob, String codOrigen, String codMes, String txtAno, String codFilial, Long numItem);
+
 }

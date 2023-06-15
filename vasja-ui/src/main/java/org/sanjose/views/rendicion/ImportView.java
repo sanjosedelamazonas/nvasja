@@ -66,8 +66,8 @@ public class ImportView extends ImportUI implements SubWindowing {
             int i = rendicionItemLogic.view.getContainer().size()+1;
             int j = 1;
             for (ScpRendiciondetalle det : importedDets) {
-                ScpRendiciondetallePK id = new ScpRendiciondetallePK();
-                id.setCodRendicioncabecera(this.rendicionItemLogic.rendicioncabecera!=null ? this.rendicionItemLogic.rendicioncabecera.getCodRendicioncabecera() : -1);
+                ScpRendiciondetallePK id = new ScpRendiciondetallePK(this.rendicionItemLogic.rendicioncabecera);
+                det.setCodRendicioncabecera(this.rendicionItemLogic.rendicioncabecera!=null ? this.rendicionItemLogic.rendicioncabecera.getCodRendicioncabecera() : -1);
                 id.setNumNroitem(i);
                 det.setId(id);
                 ImportedDetalleLineView row = new ImportedDetalleLineView();

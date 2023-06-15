@@ -48,7 +48,11 @@ public class RendicionExportXLS extends XlsExporter {
 
         writeHeaderLine(Arrays.asList(new String[]{ "Nro", "Fech Doc.", "Nro Doc", "Descripcion", "Ingreso", "Egreso"}), 5);
 
-        List<ScpRendiciondetalle> detalles = service.getRendiciondetalleRep().findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera());
+        List<ScpRendiciondetalle> detalles = service.getRendiciondetalleRep()
+                .findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilial(
+                cabecera.getCodComprobante(), cabecera.getCodOrigen(), cabecera.getCodMes(),
+                cabecera.getTxtAnoproceso(), cabecera.getCodFilial());
+                //findByCodRendicioncabecera(cabecera.getCodRendicioncabecera());
         detalles.sort(new Comparator<ScpRendiciondetalle>() {
             @Override
             public int compare(ScpRendiciondetalle o1, ScpRendiciondetalle o2) {

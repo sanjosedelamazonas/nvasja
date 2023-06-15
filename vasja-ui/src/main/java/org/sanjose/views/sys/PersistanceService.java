@@ -406,11 +406,15 @@ public class PersistanceService {
             rendicionItem.setFecComprobante(cabecera.getFecComprobante());
             rendicionItem.setScpRendicioncabecera(cabecera);
             if (rendicionItem.getId() == null) {
-                ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+                ScpRendiciondetallePK id = new ScpRendiciondetallePK(cabecera);
                 id.setCodComprobante(cabecera.getCodComprobante());
                 id = id.prepareToSave(rendicionItem);
-                id.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
-                id.setNumNroitem(rendiciondetalleRep.findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera()).size() + 1);
+                rendicionItem.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
+                id.setNumNroitem(
+                        rendiciondetalleRep.findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilial(
+                        cabecera.getCodComprobante(), cabecera.getCodOrigen(), cabecera.getCodMes(),
+                        cabecera.getTxtAnoproceso(), cabecera.getCodFilial()).size() + 1);
+                        //rendiciondetalleRep.findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera()).size() + 1);
                 id.setCodFilial(cabecera.getCodFilial());
                 id.setCodOrigen(cabecera.getCodOrigen());
                 rendicionItem.setId(id);
@@ -425,9 +429,9 @@ public class PersistanceService {
         } else {
             rendicionItem = new ScpRendiciondetalle();
             rendicionItem.setCodTipomoneda(cabecera.getCodTipomoneda());
-            ScpRendiciondetallePK id = new ScpRendiciondetallePK();
+            ScpRendiciondetallePK id = new ScpRendiciondetallePK(cabecera);
             id = id.prepareToSave(rendicionItem);
-            id.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
+            rendicionItem.setCodRendicioncabecera(cabecera.getCodRendicioncabecera());
             rendicionItem.setId(id);
             rendicionItem.getId().setCodComprobante(cabecera.getCodComprobante());
         }
@@ -463,8 +467,11 @@ public class PersistanceService {
     public void deleteRendicionOperacion(ScpRendicioncabecera cabecera, ScpRendiciondetalle rendicionItem) {
         long delNumItem = rendicionItem.getId().getNumNroitem();
         rendiciondetalleRep.delete(rendicionItem);
-        for (ScpRendiciondetalle it : rendiciondetalleRep
-                .findById_CodRendicioncabeceraAndId_NumNroitemGreaterThan(cabecera.getCodRendicioncabecera(), delNumItem)) {
+        for (ScpRendiciondetalle it : rendiciondetalleRep.
+                findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilialAndId_NumNroitemGreaterThan(
+                        cabecera.getCodComprobante(), cabecera.getCodOrigen(), cabecera.getCodMes(), cabecera.getTxtAnoproceso(),
+                        cabecera.getCodFilial(), delNumItem)) {
+                //.findById_CodRendicioncabeceraAndId_NumNroitemGreaterThan(cabecera.getCodRendicioncabecera(), delNumItem)) {
             try {
                 ScpRendiciondetalle newRendicionDetalle = (ScpRendiciondetalle) it.clone();
                 ScpRendiciondetallePK id = (ScpRendiciondetallePK) it.getId().clone();
@@ -483,7 +490,10 @@ public class PersistanceService {
         BigDecimal saldoDebedolar = new BigDecimal(0);
         BigDecimal saldoDebemo = new BigDecimal(0);
         for (ScpRendiciondetalle it : rendiciondetalleRep
-                .findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera())) {
+                .findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilial(
+                        cabecera.getCodComprobante(), cabecera.getCodOrigen(), cabecera.getCodMes(),
+                        cabecera.getTxtAnoproceso(), cabecera.getCodFilial())) {
+                //.findById_CodRendicioncabecera(cabecera.getCodRendicioncabecera())) {
             saldoDebedolar = saldoDebedolar.add(it.getNumDebedolar());
             saldoDebemo = saldoDebemo.add(it.getNumDebemo());
             saldoDebesol = saldoDebesol.add(it.getNumDebesol());

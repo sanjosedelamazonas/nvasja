@@ -489,7 +489,7 @@ public class ProcUtil {
                 continue;
             }
             boolean isValidated = true;
-            for (ScpRendiciondetalle det : service.getRendiciondetalleRep().findById_CodRendicioncabecera(curRendicionCabecera.getCodRendicioncabecera())) {
+            for (ScpRendiciondetalle det : service.getRendiciondetalleRep().findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilial(curRendicionCabecera.getCodComprobante(), curRendicionCabecera.getCodOrigen(), curRendicionCabecera.getCodMes(), curRendicionCabecera.getTxtAnoproceso(), curRendicionCabecera.getCodFilial())) {
                 if (GenUtil.strNullOrEmpty(det.getCodCtacontable()) || GenUtil.strNullOrEmpty(det.getCodProyecto()) || GenUtil.strNullOrEmpty(det.getTxtGlosaitem())) {
                     MessageBox
                             .createError()

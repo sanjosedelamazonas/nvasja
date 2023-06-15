@@ -118,7 +118,10 @@ public class RendicionLogic extends RendicionItemLogic {
     private Optional loadDetallesToGrid(ScpRendicioncabecera rendicioncabecera) {
         if (rendicioncabecera.getCodRendicioncabecera()==null) return Optional.ofNullable(null);
         List<ScpRendiciondetalle> bancodetalleList = view.getService().getRendiciondetalleRep()
-                .findById_CodRendicioncabecera(rendicioncabecera.getCodRendicioncabecera());
+                .findById_CodComprobanteAndId_CodOrigenAndId_CodMesAndId_TxtAnoprocesoAndId_CodFilial(rendicioncabecera.getCodComprobante(),
+                        rendicioncabecera.getCodOrigen(), rendicioncabecera.getCodMes(), rendicioncabecera.getTxtAnoproceso(),
+                        rendicioncabecera.getCodFilial());
+        //findById_CodRendicioncabecera(rendicioncabecera.getCodRendicioncabecera());
         view.initGrid();
         if (!bancodetalleList.isEmpty()) {
             view.getContainer().addAll(bancodetalleList);
