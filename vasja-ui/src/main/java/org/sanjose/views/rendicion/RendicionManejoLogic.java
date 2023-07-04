@@ -64,6 +64,7 @@ public class RendicionManejoLogic extends RendicionSharedLogic implements ItemsR
     }
 
     protected void editarRendicion(ScpRendicioncabecera vcb) {
+        MainUI.get().getProcUtil().fixZeroCodRendicionCabeceraForCod(vcb.getCodRendicioncabecera());
         if (vcb==null) return;
         if (manView instanceof RendicionSimpleManejoView) {
             MainUI.get().getRendicionSimpleOperView().getViewLogic().editarRendicion(vcb);

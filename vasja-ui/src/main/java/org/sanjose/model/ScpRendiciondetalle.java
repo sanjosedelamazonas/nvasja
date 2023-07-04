@@ -144,10 +144,10 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     private String codDepartamento;
     @Column(name = "flg_recuperaigv")
     private String flgRecuperaigv;
-    @Column(name = "por_igv")
-    private double porIgv;
-    @Column(name = "por_ies")
-    private double porIes;
+//    @Column(name = "por_igv")
+//    private double porIgv;
+//    @Column(name = "por_ies")
+//    private double porIes;
     @Column(name = "num_nroitem2")
     private Long numNroitem2;
     @Column(name = "cod_contraparte")
@@ -623,21 +623,21 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
         this.flgRecuperaigv = flgRecuperaigv;
     }
 
-    public double getPorIgv() {
-        return porIgv;
-    }
-
-    public void setPorIgv(double porIgv) {
-        this.porIgv = porIgv;
-    }
-
-    public double getPorIes() {
-        return porIes;
-    }
-
-    public void setPorIes(double porIes) {
-        this.porIes = porIes;
-    }
+//    public double getPorIgv() {
+//        return porIgv;
+//    }
+//
+//    public void setPorIgv(double porIgv) {
+//        this.porIgv = porIgv;
+//    }
+//
+//    public double getPorIes() {
+//        return porIes;
+//    }
+//
+//    public void setPorIes(double porIes) {
+//        this.porIes = porIes;
+//    }
 
     public Long getNumNroitem2() {
         return numNroitem2;
@@ -939,8 +939,8 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
                 ", codPais='" + codPais + '\'' +
                 ", codDepartamento='" + codDepartamento + '\'' +
                 ", flgRecuperaigv='" + flgRecuperaigv + '\'' +
-                ", porIgv=" + porIgv +
-                ", porIes=" + porIes +
+//                ", porIgv=" + porIgv +
+//                ", porIes=" + porIes +
                 ", numNroitem2=" + numNroitem2 +
                 ", codContraparte='" + codContraparte + '\'' +
                 ", txtNroretencion='" + txtNroretencion + '\'' +

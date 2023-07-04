@@ -129,6 +129,7 @@ public class RendicionSimpleLogic extends RendicionSimpleItemLogic implements It
 
 
     public void editarRendicion(ScpRendicioncabecera rendicioncabecera) {
+        MainUI.get().getProcUtil().fixZeroCodRendicionCabeceraForCod(rendicioncabecera.getCodRendicioncabecera());
         view.getContainer().removeAllItems();
         moneda = rendicioncabecera.getCodTipomoneda();
         clearFields();

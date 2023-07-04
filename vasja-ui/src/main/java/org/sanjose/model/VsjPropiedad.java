@@ -81,8 +81,21 @@ import java.math.BigDecimal;
 						@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class),
 						@StoredProcedureParameter(mode = ParameterMode.OUT, type = BigDecimal.class)
 				}
+		),
+		@NamedStoredProcedureQuery(
+				name = "FixCodRendicionCabeceraCodDestino",
+				procedureName = "usp_scp_vsj_FixCodRendicionCabecera",
+				parameters = {
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class)
+				}
+		),
+		@NamedStoredProcedureQuery(
+				name = "FixCodRendicionCabecera",
+				procedureName = "usp_scp_vsj_FixCodRendicionCabeceraCod",
+				parameters = {
+						@StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class)
+				}
 		)
-
 }
 )
 public class VsjPropiedad implements Serializable {
