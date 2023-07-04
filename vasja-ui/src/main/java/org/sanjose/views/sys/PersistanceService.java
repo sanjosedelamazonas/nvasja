@@ -519,17 +519,17 @@ public class PersistanceService {
             if (!proySaldo.containsKey(det.getCodProyecto()))
                 proySaldo.put(det.getCodProyecto(), new BigDecimal(0));
             if (cabecera.getCodTipomoneda().equals(GenUtil.PEN)) {
-                proySaldo.merge(det.getCodProyecto(), det.getNumDebesol(), BigDecimal::subtract);
-                proySaldo.merge(det.getCodProyecto(), det.getNumHabersol(), BigDecimal::add);
+                proySaldo.merge(det.getCodProyecto(), (det.getNumDebesol()!=null ? det.getNumDebesol() : new BigDecimal(0)), BigDecimal::subtract);
+                proySaldo.merge(det.getCodProyecto(), (det.getNumHabersol()!=null ? det.getNumHabersol() : new BigDecimal(0)), BigDecimal::add);
             } else if (cabecera.getCodTipomoneda().equals(GenUtil.USD)) {
-                proySaldo.merge(det.getCodProyecto(), det.getNumDebedolar(), BigDecimal::subtract);
-                proySaldo.merge(det.getCodProyecto(), det.getNumHaberdolar(), BigDecimal::add);
+                proySaldo.merge(det.getCodProyecto(), (det.getNumDebedolar()!=null ? det.getNumDebedolar() : new BigDecimal(0)), BigDecimal::subtract);
+                proySaldo.merge(det.getCodProyecto(), (det.getNumHaberdolar()!=null ? det.getNumHaberdolar() : new BigDecimal(0)), BigDecimal::add);
             } else {
-                proySaldo.merge(det.getCodProyecto(), det.getNumDebemo(), BigDecimal::subtract);
-                proySaldo.merge(det.getCodProyecto(), det.getNumHabermo(), BigDecimal::add);
+                proySaldo.merge(det.getCodProyecto(), (det.getNumDebemo()!=null ? det.getNumDebemo() : new BigDecimal(0)), BigDecimal::subtract);
+                proySaldo.merge(det.getCodProyecto(), (det.getNumHabermo()!=null ? det.getNumHabermo() : new BigDecimal(0)), BigDecimal::add);
             }
             if (!isCtaContaLike14)
-                isCtaContaLike14 = det.getCodCtacontable().startsWith("14");
+                isCtaContaLike14 = (det.getCodCtacontable()!=null && det.getCodCtacontable().startsWith("14"));
         }
         for (String proy : proySaldo.keySet()) {
             if (proySaldo.get(proy).compareTo(new BigDecimal(0))!=0) return true;

@@ -25,6 +25,10 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     @EmbeddedId
     private ScpRendiciondetallePK id;
 
+
+    @Column(name="cod_rendicioncabecera", insertable=false, updatable=false)
+    private int codRendicioncabecera;
+
     @Column(name="cod_uactualiza")
     private String codUactualiza;
 
@@ -140,10 +144,10 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     private String codDepartamento;
     @Column(name = "flg_recuperaigv")
     private String flgRecuperaigv;
-    @Column(name = "por_igv")
-    private double porIgv;
-    @Column(name = "por_ies")
-    private double porIes;
+//    @Column(name = "por_igv")
+//    private double porIgv;
+//    @Column(name = "por_ies")
+//    private double porIes;
     @Column(name = "num_nroitem2")
     private Long numNroitem2;
     @Column(name = "cod_contraparte")
@@ -619,21 +623,21 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
         this.flgRecuperaigv = flgRecuperaigv;
     }
 
-    public double getPorIgv() {
-        return porIgv;
-    }
-
-    public void setPorIgv(double porIgv) {
-        this.porIgv = porIgv;
-    }
-
-    public double getPorIes() {
-        return porIes;
-    }
-
-    public void setPorIes(double porIes) {
-        this.porIes = porIes;
-    }
+//    public double getPorIgv() {
+//        return porIgv;
+//    }
+//
+//    public void setPorIgv(double porIgv) {
+//        this.porIgv = porIgv;
+//    }
+//
+//    public double getPorIes() {
+//        return porIes;
+//    }
+//
+//    public void setPorIes(double porIes) {
+//        this.porIes = porIes;
+//    }
 
     public Long getNumNroitem2() {
         return numNroitem2;
@@ -859,6 +863,13 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
         this.codTipomoneda = codTipomoneda;
     }
 
+    public int getCodRendicioncabecera() {
+        return codRendicioncabecera;
+    }
+
+    public void setCodRendicioncabecera(int codRendicioncabecera) {
+        this.codRendicioncabecera = codRendicioncabecera;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -871,11 +882,19 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
     public int hashCode() {
         return getId() != null ? getId().hashCode() : 0;
     }
+
     @Override
     public String toString() {
         return "ScpRendiciondetalle{" +
                 "id=" + id +
+                ", codRendicioncabecera=" + codRendicioncabecera +
+                ", codUactualiza='" + codUactualiza + '\'' +
+                ", codUregistro='" + codUregistro + '\'' +
+                ", fecFactualiza=" + fecFactualiza +
+                ", fecFregistro=" + fecFregistro +
+                ", codTipomoneda=" + codTipomoneda +
                 ", fecComprobante=" + fecComprobante +
+                ", codTipomov=" + codTipomov +
                 ", txtGlosaitem='" + txtGlosaitem + '\'' +
                 ", codDestino='" + codDestino + '\'' +
                 ", txtCheque='" + txtCheque + '\'' +
@@ -920,9 +939,9 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
                 ", codPais='" + codPais + '\'' +
                 ", codDepartamento='" + codDepartamento + '\'' +
                 ", flgRecuperaigv='" + flgRecuperaigv + '\'' +
-                ", porIgv=" + porIgv +
-                ", porIes=" + porIes +
-                ", numNroitem2='" + numNroitem2 + '\'' +
+//                ", porIgv=" + porIgv +
+//                ", porIes=" + porIes +
+                ", numNroitem2=" + numNroitem2 +
                 ", codContraparte='" + codContraparte + '\'' +
                 ", txtNroretencion='" + txtNroretencion + '\'' +
                 ", fecRetencion=" + fecRetencion +
@@ -943,6 +962,7 @@ public class ScpRendiciondetalle implements Serializable, Cloneable {
                 ", fecRendicion=" + fecRendicion +
                 ", numSaldo=" + numSaldo +
                 ", flgIm=" + flgIm +
+                ", scpRendicioncabecera=" + scpRendicioncabecera +
                 '}';
     }
 

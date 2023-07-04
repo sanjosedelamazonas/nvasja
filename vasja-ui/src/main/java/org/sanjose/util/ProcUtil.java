@@ -597,6 +597,7 @@ public class ProcUtil {
 
 
     public String checkIfcanBeDeleted(String codDestino, PersistanceService service) {
+        fixZeroCodRendicionCabeceraForDestino(codDestino);
         List<ScpCajabanco> comprobantes = service.getCajabancoRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
         List<ScpBancocabecera> bancoscabeceras = service.getBancocabeceraRep().findByCodDestino(codDestino);
         List<ScpBancodetalle> bancositems = service.getBancodetalleRep().findByCodDestinoOrCodDestinoitem(codDestino, codDestino);
@@ -726,4 +727,21 @@ public class ProcUtil {
         }
         return cambios;
     }
+
+    //@Transactional
+    public void fixZeroCodRendicionCabeceraForDestino(String codDestino) {
+        StoredProcedureQuery fixCodRendicionCabecera = em.createNamedStoredProcedureQuery("FixCodRendicionCabeceraCodDestino");
+        fixCodRendicionCabecera.setParameter(1, codDestino);
+        fixCodRendicionCabecera.execute();
+        em.close();
+    }
+
+
+    public void fixZeroCodRendicionCabeceraForCod(Integer codRendicion) {
+        StoredProcedureQuery fixCodRendicionCabecera = em.createNamedStoredProcedureQuery("FixCodRendicionCabecera");
+        fixCodRendicionCabecera.setParameter(1, codRendicion);
+        fixCodRendicionCabecera.execute();
+        em.close();
+    }
+
 }
