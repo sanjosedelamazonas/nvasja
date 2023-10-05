@@ -668,7 +668,7 @@ public class ProcUtil {
                 cambiadoCab = true;
                 cambios++;
             }
-            for (ScpBancodetalle det : vcb.getScpBancodetalles()) {
+            for (ScpBancodetalle det : service.getBancodetalleRep().findById_CodBancocabecera(vcb.getCodBancocabecera())) {
                 boolean cambiado = false;
                 if (det.getCodDestino().equalsIgnoreCase(codDestinoToReplace)) {
                     det.setCodDestino(codDestinoNew);
@@ -693,13 +693,13 @@ public class ProcUtil {
         List<ScpBancodetalle> bancositems = service.getBancodetalleRep().findByCodDestinoOrCodDestinoitem(codDestinoToReplace, codDestinoToReplace);
         for (ScpBancodetalle det : bancositems) {
             boolean cambiado = false;
-            if (det.getCodDestino().equalsIgnoreCase(codDestinoToReplace)) {
+            if (codDestinoToReplace.equalsIgnoreCase(det.getCodDestino())) {
                 det.setCodDestino(codDestinoNew);
                 cambiado = true;
                 //cambiadoCab = true;
                 cambios++;
             }
-            if (det.getCodDestinoitem().equalsIgnoreCase(codDestinoToReplace)) {
+            if (codDestinoToReplace.equalsIgnoreCase(det.getCodDestinoitem())) {
                 det.setCodDestinoitem(codDestinoNew);
                 cambiado = true;
                 //cambiadoCab = true;
@@ -711,7 +711,7 @@ public class ProcUtil {
 
 
         for (ScpRendicioncabecera vcb : rendicionescab) {
-            if (vcb.getCodDestino().equalsIgnoreCase(codDestinoToReplace)) {
+            if (codDestinoToReplace.equalsIgnoreCase(vcb.getCodDestino())) {
                 vcb.setCodDestino(codDestinoNew);
                 service.getRendicioncabeceraRep().save(vcb);
                 cambios++;
@@ -719,7 +719,7 @@ public class ProcUtil {
         }
 
         for (ScpRendiciondetalle vcb : rendicionitems) {
-            if (vcb.getCodDestino().equalsIgnoreCase(codDestinoToReplace)) {
+            if (codDestinoToReplace.equalsIgnoreCase(vcb.getCodDestino())) {
                 vcb.setCodDestino(codDestinoNew);
                 service.getRendiciondetalleRep().save(vcb);
                 cambios++;

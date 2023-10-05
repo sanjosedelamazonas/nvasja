@@ -71,7 +71,8 @@ $ sudo apt install libssl1.1
 
 Restore database on Ubuntu:
 
-/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -Q "RESTORE DATABASE [SCP] FROM DISK = N'/var/opt/mssql/data/bkp-2023-03-23_0.bak' WITH FILE = 1, NOUNLOAD, REPLACE, RECOVERY, STATS = 5, MOVE 'SCP_VASJA' TO '/var/opt/mssql/data/SCP_VASJA', MOVE 'SCP_VASJA_log' TO '/var/opt/mssql/data/SCP_VASJA_log'"
+docker cp BACKUP_SCP_FULL_10042023_024559.BAK vasjasql:/var/opt/mssql/data
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -Q "RESTORE DATABASE [SCP] FROM DISK = N'/var/opt/mssql/data/BACKUP_SCP_FULL_10042023_024559.BAK' WITH FILE = 1, NOUNLOAD, REPLACE, RECOVERY, STATS = 5, MOVE 'SCP_VASJA' TO '/var/opt/mssql/data/SCP_VASJA', MOVE 'SCP_VASJA_log' TO '/var/opt/mssql/data/SCP_VASJA_log'"
 
 CREATE LOGIN vasja WITH PASSWORD = 'vasja123'
 GO
