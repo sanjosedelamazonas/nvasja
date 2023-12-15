@@ -15,6 +15,7 @@ import org.sanjose.helper.ReportHelper;
 import org.sanjose.model.ScpBancocabecera;
 import org.sanjose.model.ScpBancodetalle;
 import org.sanjose.model.ScpPlancontable;
+import org.sanjose.model.ScpRendiciondetalle;
 import org.sanjose.util.*;
 import org.sanjose.validator.SaldoChecker;
 import org.sanjose.views.sys.Viewing;
@@ -197,9 +198,15 @@ public class BancoLogic extends BancoItemLogic {
         List<ScpBancodetalle> bancodetalleList = view.getService().getBancodetalleRep()
                 .findById_CodBancocabecera(vsjBancocabecera.getCodBancocabecera());
         view.initGrid();
+        bancodetalleList.sort(new Comparator<ScpBancodetalle>() {
+            @Override
+            public int compare(ScpBancodetalle o1, ScpBancodetalle o2) {
+                return Integer.compare(o1.getId().getNumItem(), o2.getId().getNumItem());
+            }
+        });
         if (!bancodetalleList.isEmpty()) {
             view.getContainer().addAll(bancodetalleList);
-            view.getContainer().sort(new Object[]{"txtCorrelativo"}, new boolean[]{true});
+            view.getContainer().sort(new Object[]{"Item"}, new boolean[]{true});
             view.setTotal(moneda);
             return Optional.of(bancodetalleList.toArray()[0]);
         }

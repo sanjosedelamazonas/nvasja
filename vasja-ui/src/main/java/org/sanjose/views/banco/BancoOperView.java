@@ -138,16 +138,16 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
         container = new BeanItemContainer(ScpBancodetalle.class, new ArrayList());
         gpContainer = new GeneratedPropertyContainer(container);
         gpContainer.addGeneratedProperty("Item",
-                new PropertyValueGenerator<String>() {
+                new PropertyValueGenerator<Integer>() {
                     @Override
-                    public String getValue(Item item, Object itemId,
+                    public Integer getValue(Item item, Object itemId,
                                            Object propertyId) {
-                        return String.valueOf(((ScpBancodetallePK) item.getItemProperty("id").getValue()).getNumItem());
+                        return Integer.valueOf(((ScpBancodetallePK) item.getItemProperty("id").getValue()).getNumItem());
                     }
 
                     @Override
-                    public Class<String> getType() {
-                        return String.class;
+                    public Class<Integer> getType() {
+                        return Integer.class;
                     }
                 });
 
@@ -155,7 +155,7 @@ public class BancoOperView extends BancoOperUI implements Viewing, SubWindowing 
         gridBanco.setEditorEnabled(false);
         gridBanco.sort("fecFregistro", SortDirection.DESCENDING);
 
-        gridBanco.getColumn("Item").setWidth(25);
+        gridBanco.getColumn("Item").setWidth(40);
         ViewUtil.setColumnNames(gridBanco, VISIBLE_COLUMN_NAMES_PEN, VISIBLE_COLUMN_IDS_PEN, NONEDITABLE_COLUMN_IDS);
         Arrays.asList(HIDDEN_COLUMN_IDS).forEach(colName ->  gridBanco.getColumn(colName).setHidden(true));
         ViewUtil.alignMontosInGrid(gridBanco);

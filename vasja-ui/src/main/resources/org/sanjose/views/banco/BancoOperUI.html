@@ -11,7 +11,7 @@
   <meta name="package-mapping" content="org_vaadin_ui:org.vaadin.ui">
  </head>
  <body>
-  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive width-full>
+  <vaadin-css-layout style-name="root-layout form-template-vivid" responsive size-full>
    <vaadin-vertical-layout _id="topVertLayout">
     <vaadin-horizontal-layout spacing _id="topButtons" :right>
      <vaadin-horizontal-layout spacing margin :right>
@@ -185,31 +185,31 @@
         </vaadin-vertical-layout>
        </vaadin-horizontal-layout>
       </vaadin-form-layout>
-      <vaadin-vertical-layout style-name="billing-formlayout" responsive _id="itemsVertLayout" :expand>
-       <vaadin-label style-name="header-label-small" plain-text _id="order_heading">
-         Operaciones de cheque 
-       </vaadin-label>
-       <vaadin-grid width-full height="131px" tabindex="50" _id="gridBanco"></vaadin-grid>
-       <vaadin-horizontal-layout spacing margin :right>
-        <vaadin-button plain-text _id="guardarBtn">
-          Guardar 
-        </vaadin-button>
-        <vaadin-button plain-text _id="newItemBtn">
-          Nuevo Item 
-        </vaadin-button>
-        <vaadin-button plain-text _id="modificarBtn">
-          Modificar 
-        </vaadin-button>
-        <vaadin-button plain-text _id="anularBtn">
-          Cerrar 
-        </vaadin-button>
-        <vaadin-button plain-text _id="eliminarBtn">
-          Eliminar 
-        </vaadin-button>
-       </vaadin-horizontal-layout>
-      </vaadin-vertical-layout>
      </vaadin-vertical-layout>
     </vaadin-horizontal-layout>
+    <vaadin-vertical-layout style-name="billing-formlayout" responsive _id="itemsVertLayout">
+     <vaadin-label style-name="header-label-small" plain-text _id="order_heading">
+       Operaciones de cheque 
+     </vaadin-label>
+     <vaadin-grid size-full tabindex="50" _id="gridBanco" :expand></vaadin-grid>
+     <vaadin-horizontal-layout spacing height-full margin :right :expand>
+      <vaadin-button plain-text _id="guardarBtn">
+        Guardar 
+      </vaadin-button>
+      <vaadin-button plain-text _id="newItemBtn">
+        Nuevo Item 
+      </vaadin-button>
+      <vaadin-button plain-text _id="modificarBtn">
+        Modificar 
+      </vaadin-button>
+      <vaadin-button plain-text _id="anularBtn">
+        Cerrar 
+      </vaadin-button>
+      <vaadin-button plain-text _id="eliminarBtn">
+        Eliminar 
+      </vaadin-button>
+     </vaadin-horizontal-layout>
+    </vaadin-vertical-layout>
    </vaadin-vertical-layout>
   </vaadin-css-layout>
  </body>

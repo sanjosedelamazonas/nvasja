@@ -681,7 +681,11 @@ class BancoItemLogic implements Serializable, ComprobanteWarnGuardar {
             if (item.getId() == null && item.getScpBancocabecera().getTxtCorrelativo() != null) {
                 log.debug("is NOT Edit in bindForm but ID is null");
                 view.getNumVoucher().setValue(item.getScpBancocabecera().getTxtCorrelativo());
-                view.getNumItem().setValue(String.valueOf(view.getContainer().size() + 1));
+                int maxId = 0;
+                for (ScpBancodetalle det : view.getContainer().getItemIds()) {
+                    maxId = Math.max(maxId, det.getId().getNumItem());
+                }
+                view.getNumItem().setValue(String.valueOf(maxId + 1));
             }
         }
         //setSaldos();

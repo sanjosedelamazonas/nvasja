@@ -598,7 +598,7 @@ public class ViewUtil {
 
 
     public static void openViewInNewWindowBanco(SubWindowing component) {
-        openViewInNewWindow(component, 1150, 640);
+        openViewInNewWindow(component, 1150, 900);
     }
 
     public static void openViewInNewWindow(SubWindowing component) {
@@ -614,6 +614,8 @@ public class ViewUtil {
             subWindow.setWidth(width, Sizeable.Unit.PIXELS);
         if (height==0)
             subWindow.setHeight(100, Sizeable.Unit.PERCENTAGE);
+        else if (height==-1)
+            subWindow.setHeightUndefined();
         else
             subWindow.setHeight(height, Sizeable.Unit.PIXELS);
         subWindow.setModal(true);
