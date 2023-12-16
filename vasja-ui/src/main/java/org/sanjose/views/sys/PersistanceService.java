@@ -180,7 +180,11 @@ public class PersistanceService {
         if (bancoItem.getId() == null) {
             ScpBancodetallePK id = new ScpBancodetallePK();
             id.setCodBancocabecera(cabecera.getCodBancocabecera());
-            id.setNumItem(bancodetalleRep.findById_CodBancocabecera(cabecera.getCodBancocabecera()).size() + 1);
+            int maxId = 0;
+            for (ScpBancodetalle det : bancodetalleRep.findById_CodBancocabecera(cabecera.getCodBancocabecera())) {
+                maxId = Math.max(maxId, det.getId().getNumItem());
+            }
+            id.setNumItem(maxId + 1);
             bancoItem.setId(id);
         }
 
