@@ -78,8 +78,11 @@ public class ConfigurationUtil {
 		defaultParamMap.put("MAIL_SMTP_PASS", "");
 		defaultParamMap.put("MAIL_DEBUG", "FALSE");
 
-		defaultParamMap.put("RUC_URL", "https://api.apis.net.pe/v1/");
+		//defaultParamMap.put("RUC_URL", "https://api.apis.net.pe/v1/");
+		defaultParamMap.put("RUC_URL", "https://api.apis.net.pe/v2/sunat/ruc");
+		defaultParamMap.put("DNI_URL", "https://api.apis.net.pe/v2/reniec/dni");
 		defaultParamMap.put("RUC_TOKEN", "apis-token-4157.-Md93S6Gnk2NWMJVkjTLK3PLPFqx4WhS");
+		defaultParamMap.put("RUC_VERSION", "v2");
 	}
 
 	public static Locale getLocale() {

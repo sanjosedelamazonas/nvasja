@@ -24,10 +24,12 @@ public class ConsultaRucDni {
     public static final String DNI = "dni";
 
     private RestTemplate restTemplate;
-    private String baseUrl;
+    private String baseUrlRuc;
+    private String baseUrlDni;
     private ConsultaRucDni() {
         String accessToken= "apis-token-4157.-Md93S6Gnk2NWMJVkjTLK3PLPFqx4WhS";
-        baseUrl = ConfigurationUtil.get("RUC_URL");
+        baseUrlRuc = ConfigurationUtil.get("RUC_URL");
+        baseUrlDni = ConfigurationUtil.get("DNI_URL");
         restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
             request.getHeaders().add("Authorization", "Bearer "+ ConfigurationUtil.get("RUC_TOKEN"));
             request.getHeaders().add("Referer", "http://apis.net.pe/api-ruc");
@@ -49,7 +51,13 @@ public class ConsultaRucDni {
     public Map<String, String> get(String type, String numero) throws ConsultaRucDniException {
         Map<String, String> map = new HashMap<>();
         try {
-            String json = restTemplate.getForObject(baseUrl + "/" + type + "?numero=" + numero, String.class);
+            String url = "";
+            if (type.equals("ruc")) {
+                url = ConfigurationUtil.get("RUC_VERSION").equals("v2") ? baseUrlRuc + "/full?numero=" + numero : baseUrlRuc + "/" + type + "?numero=" + numero;
+            } else {
+                url = ConfigurationUtil.get("RUC_VERSION").equals("v2") ? baseUrlDni + "?numero=" + numero : baseUrlDni + "/" + type + "?numero=" + numero;
+            }
+            String json = restTemplate.getForObject(url, String.class);
             ObjectMapper mapper = new ObjectMapper();
             map = mapper.readValue(json, new TypeReference<HashMap<String, String>>() {});
         } catch (HttpClientErrorException he) {
