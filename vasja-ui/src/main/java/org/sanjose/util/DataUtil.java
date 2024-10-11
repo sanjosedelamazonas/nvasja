@@ -2,6 +2,7 @@ package org.sanjose.util;
 
 import com.vaadin.ui.ComboBox;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.Role;
 import org.sanjose.bean.Caja;
 import org.sanjose.model.*;
 import org.sanjose.repo.ScpFinancieraRep;
@@ -68,6 +69,10 @@ public class DataUtil {
             // If is closed and has a saldo of "0.00" we can omit it
             if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
                 continue;
+            // Filtro para Gilmer
+            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith("10119"))
+                continue;
+            //
             cajas.add(caja);
         }
         return cajas;
@@ -93,6 +98,10 @@ public class DataUtil {
             // If is closed and has a saldo of "0.00" we can omit it
             if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
                 continue;
+            // Filtro para Gilmer
+            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith("10119"))
+                continue;
+            //
             cajas.add(caja);
         }
         return cajas;
@@ -113,7 +122,10 @@ public class DataUtil {
             // If is closed and has a saldo of "0.00" we can omit it
             if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
                 continue;
-
+            // Filtro para Gilmer
+            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith("10119"))
+                continue;
+            //
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
                     (caja.getIndTipomoneda().equals(_PEN) ? saldo : new BigDecimal(0.00)),
                     (caja.getIndTipomoneda().equals(_USD) ? saldo : new BigDecimal(0.00)),
@@ -139,6 +151,9 @@ public class DataUtil {
         return saldos;
     }
 
+    //public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
+
+
     public static List<Caja> getCajasList(ScpPlancontableRep planRepo, Date date) {
         List<Caja> cajas = new ArrayList<>();
         for (ScpPlancontable caja : getTodasCajas(date, planRepo)) {
@@ -152,6 +167,10 @@ public class DataUtil {
             // If is closed and has a saldo of "0.00" we can omit it
             if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0))==0)
                 continue;
+            // Filtro para Gilmer
+            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith("10119"))
+                continue;
+            //
 
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
                     (caja.getIndTipomoneda().equals(_PEN) ? saldo : new BigDecimal(0.00)),
@@ -189,6 +208,11 @@ public class DataUtil {
                     saldoFinal.compareTo(new BigDecimal(0))==0)
                 continue;
 
+            // Filtro para Gilmer
+            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith("10119"))
+                continue;
+            //
+            
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
                     (caja.getIndTipomoneda().equals(_PEN) ? saldoInicial : new BigDecimal(0.00)),
                     (caja.getIndTipomoneda().equals(_USD) ? saldoInicial : new BigDecimal(0.00)),
