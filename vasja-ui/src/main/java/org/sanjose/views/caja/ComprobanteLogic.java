@@ -552,7 +552,7 @@ class ComprobanteLogic implements Serializable {
                 beanItem.getBean().setNumDebesol(new BigDecimal(0));
                 beanItem.getBean().setNumHaberdolar(new BigDecimal(0));
                 beanItem.getBean().setNumDebedolar(new BigDecimal(0));
-                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(view.getDataFechaComprobante().getValue(), view.getService().getPlanRepo(), moneda), "txtDescctacontable");
+                DataFilterUtil.refreshComboBox(view.getSelCaja(), "id.codCtacontable", DataUtil.getCajas(fechaCajas, view.getService().getPlanRepo(), moneda), "txtDescctacontable");
                 fieldGroup.bind(view.getNumEgreso(), "numHabermo");
                 fieldGroup.bind(view.getNumIngreso(), "numDebemo");
                 saldoChecker.setProyectoField(view.getSaldoProyEUR());
