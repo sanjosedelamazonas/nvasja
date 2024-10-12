@@ -60,6 +60,7 @@ public class ConfigurationUtil {
 		defaultParamMap.put("REPORTS_COMPROBANTE_OPEN", "TRUE");
 		defaultParamMap.put("REPORTS_COMPROBANTE_PRINT", "FALSE");
 
+		defaultParamMap.put("CAJA_INTERNA_CTA_PREFIX", "10119");
 		defaultParamMap.put("REPORTE_CAJA_PREPARADO_POR", "Gilmer G�mez Ochoa");
 		defaultParamMap.put("REPORTE_CAJA_REVISADOR_POR", "Claudia Urrunaga R�os");
 		defaultParamMap.put("REPORTE_BANCOS_PREPARADO_POR", "Cinthia del Castillo Segovia");

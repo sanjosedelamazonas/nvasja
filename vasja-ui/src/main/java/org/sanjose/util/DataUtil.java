@@ -23,8 +23,6 @@ import static org.sanjose.util.GenUtil.*;
  */
 public class DataUtil {
 
-
-
     public static void setupAndBindproyectoPorFinanciera(String codProyecto, ComboBox selFuente,
                                                          Scp_ProyectoPorFinancieraRep projectoPorFinRepo,
                                                          ScpFinancieraRep financieraRepo) {
@@ -70,7 +68,7 @@ public class DataUtil {
             if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
                 continue;
             // Filtro para Gilmer
-            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith("10119"))
+            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith(ConfigurationUtil.get("CAJA_INTERNA_CTA_PREFIX")))
                 continue;
             //
             cajas.add(caja);
@@ -99,7 +97,7 @@ public class DataUtil {
             if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
                 continue;
             // Filtro para Gilmer
-            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith("10119"))
+            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith(ConfigurationUtil.get("CAJA_INTERNA_CTA_PREFIX")))
                 continue;
             //
             cajas.add(caja);
@@ -123,7 +121,7 @@ public class DataUtil {
             if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0)) == 0)
                 continue;
             // Filtro para Gilmer
-            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith("10119"))
+            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith(ConfigurationUtil.get("CAJA_INTERNA_CTA_PREFIX")))
                 continue;
             //
             cajas.add(new Caja(caja.getId().getCodCtacontable(), caja.getTxtDescctacontable(),
@@ -168,7 +166,7 @@ public class DataUtil {
             if (!caja.isNotClosedCuenta() && saldo.compareTo(new BigDecimal(0))==0)
                 continue;
             // Filtro para Gilmer
-            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith("10119"))
+            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith(ConfigurationUtil.get("CAJA_INTERNA_CTA_PREFIX")))
                 continue;
             //
 
@@ -209,7 +207,7 @@ public class DataUtil {
                 continue;
 
             // Filtro para Gilmer
-            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith("10119"))
+            if (Role.isOnlyCaja() && !caja.getId().getCodCtacontable().startsWith(ConfigurationUtil.get("CAJA_INTERNA_CTA_PREFIX")))
                 continue;
             //
             

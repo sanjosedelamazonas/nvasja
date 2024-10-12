@@ -17,6 +17,7 @@ import de.steinwedel.messagebox.MessageBox;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.Role;
 import org.sanjose.converter.*;
 import org.sanjose.helper.PrintHelper;
 import org.sanjose.helper.ReportHelper;
@@ -396,6 +397,14 @@ public class ViewUtil {
         container.addContainerFilter(
                 new Between(propertyId,
                         from, to));
+    }
+
+    public static void filterSoloCajaInterna(Container.Filterable container) {
+        String propertyId = "codCtacontable";
+        if (Role.isOnlyCaja()) {
+            container.addContainerFilter(new SimpleStringFilter(propertyId,
+                    ConfigurationUtil.get("CAJA_INTERNA_CTA_PREFIX"),true, true));
+        }
     }
 
     public static boolean isParent(Grid.RowReference rowReference) {

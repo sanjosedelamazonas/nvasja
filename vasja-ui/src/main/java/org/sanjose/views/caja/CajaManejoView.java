@@ -9,6 +9,7 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
+import org.sanjose.authentication.Role;
 import org.sanjose.model.ScpCajabanco;
 import org.sanjose.model.VsjItem;
 import org.sanjose.util.*;
@@ -135,6 +136,8 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
             } else {
                 container.removeContainerFilters("codCtacontable");
             }
+            // Gilmer filter
+            ViewUtil.filterSoloCajaInterna(container);
             viewLogic.setSaldoDelDia();
             viewLogic.setSaldosFinal();
             viewLogic.calcFooterSums();
@@ -155,6 +158,13 @@ public class CajaManejoView extends CajaManejoUI implements CajaManejoViewing, N
         ViewUtil.filterComprobantes(container, "fecFecha", fechaDesde, fechaHasta, this);
 
         ViewUtil.colorizeRows(gridCaja);
+        // Gilmer filter
+        ViewUtil.filterSoloCajaInterna(container);
+        if (Role.isOnlyCaja()) {
+            this.getNuevoComprobante().setEnabled(false);
+        } else {
+            this.getNuevoComprobante().setEnabled(true);
+        }
 
         gridCajaFooter = gridCaja.appendFooterRow();
 

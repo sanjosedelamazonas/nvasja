@@ -94,6 +94,7 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="REPORTE_REVISADOR_POR" class="java.lang.String"/>
 	<parameter name="REPORTE_PREPARADO_POR" class="java.lang.String"/>
+	<parameter name="CAJA_CTA_FILTER" class="java.lang.String"/>
 	<parameter name="DIARIO_FECHA_MAX" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
@@ -133,6 +134,7 @@
  caja.cod_ctacontable=pc.cod_ctacontable and 
   caja.txt_anoproceso=pc.txt_anoproceso and  
   caja.fec_fecha  BETWEEN $P{STR_FECHA_MIN} AND $P{STR_FECHA_MAX}
+  and caja.cod_ctacontable LIKE $P{CAJA_CTA_FILTER}
     order by Cargo asc,caja.cod_ctacontable,caja.fec_fecha,codigo,caja.cod_cajabanco]]>
 	</queryString>
 	<field name="tipo_cuenta" class="java.lang.String"/>
