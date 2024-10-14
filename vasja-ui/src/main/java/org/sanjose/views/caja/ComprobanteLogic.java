@@ -642,7 +642,15 @@ class ComprobanteLogic implements Serializable {
                 config = configs.get(0);
             }
         }
-        if (config!=null) view.getSelCaja().setValue(config.getCodCtacontable());
+        // Set according to found configuracion
+        if (config!=null && view.getSelCaja().getContainerDataSource().getItemIds().contains(config.getCodCtacontable())) {
+            view.getSelCaja().setValue(config.getCodCtacontable());
+        } else {
+            // If no configuracion found or the suggested caja is not on the list (Caja interna) then choose the only one available
+            if (view.getSelCaja().getContainerDataSource().size()==1) {
+                view.getSelCaja().setValue(view.getSelCaja().getContainerDataSource().getItemIds().toArray()[0]);
+            }
+        }
         setSaldoCaja();
     }
 
