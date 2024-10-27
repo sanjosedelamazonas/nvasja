@@ -94,8 +94,10 @@ public class DestinoView extends DestinoUI implements View {
                         txtNombreCompleta.setValue(GenUtil.capitalizeEachWord(consulta.get("nombre").toLowerCase()));
                     }
                     if (consulta.containsKey("nombres")) {
-                        ScpDestino dest = new ScpDestino();
                         txtNombreCompleta.setValue(GenUtil.capitalizeEachWord(consulta.get("nombres").toLowerCase()));
+                    }
+                    if (consulta.containsKey("razonSocial")) {
+                        txtNombreCompleta.setValue(GenUtil.capitalizeEachWord(consulta.get("razonSocial").toLowerCase()));
                     }
                     direccion.setValue(assembleDireccion(new String[] {"direccion", "distrito", "departamento", "provincia"}, consulta));
                     if (consulta.containsKey("tipoDocumento")) {

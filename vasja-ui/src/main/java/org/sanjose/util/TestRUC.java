@@ -21,8 +21,9 @@ public class TestRUC {
 
     public static void main(String[] args) {
         try {
-            System.out.println(ConsultaRucDni.getInstance().get(ConsultaRucDni.RUC, "20176709139"));
+            //System.out.println(ConsultaRucDni.getInstance().get(ConsultaRucDni.RUC, "20176709139"));
             System.out.println(ConsultaRucDni.getInstance().get(ConsultaRucDni.DNI, "29622162"));
+            //System.out.println(ConsultaRucDni.getInstance().get(ConsultaRucDni.RUC, "20605878840"));
         } catch (ConsultaRucDniException he) {
             System.out.println("Could not find...");
         }
