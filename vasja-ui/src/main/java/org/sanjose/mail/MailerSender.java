@@ -40,6 +40,23 @@ public class MailerSender {
     private PropiedadService propiedadService;
     //private VsjPropiedadRep propRepo;
 
+    public class ChunkList {
+
+        public <T> List<List<T>> chunkList(List<T> list, int chunkSize) {
+            if (chunkSize <= 0) {
+                throw new IllegalArgumentException("Chunk size must be positive");
+            }
+
+            List<List<T>> chunks = new ArrayList<>();
+            for (int i = 0; i < list.size(); i += chunkSize) {
+                int end = Math.min(list.size(), i + chunkSize);
+                chunks.add(list.subList(i, end));
+            }
+            return chunks;
+        }
+    }
+
+
     public MailerSender(PropiedadService propiedadService) {
         this.authTypes.put("OAUTH2", TransportStrategy.SMTP_OAUTH2);
         this.authTypes.put("SSL", TransportStrategy.SMTPS);
@@ -82,10 +99,16 @@ public class MailerSender {
         return this.mailer.sendMail(email);
     }
 
-    public List<EmailStatus> sendEmails(List<EmailDescription> emails) {
+
+    public List<EmailStatus> sendEmails(List<EmailDescription> emails) throws InterruptedException {
+        List<List<EmailDescription>> chunkedEmailList = new ChunkList().chunkList(emails, 5);
         List<EmailStatus> emailStatuses = new ArrayList<>();
-        for (EmailDescription ed : emails) {
-            emailStatuses.add(new EmailStatus(ed.getTo(), ed.getUsuario(), this.mailer.sendMail(ed.getEmail())));
+
+        for (List<EmailDescription> chunk : chunkedEmailList) {
+            for (EmailDescription ed : chunk) {
+                emailStatuses.add(new EmailStatus(ed.getTo(), ed.getUsuario(), this.mailer.sendMail(ed.getEmail())));
+            }
+            Thread.sleep(10000);
         }
         return emailStatuses;
     }

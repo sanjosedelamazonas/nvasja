@@ -147,59 +147,65 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                 txtLog.setValue(logRes.toString());
                 showProgress.setValue(0.5f);
             });
-            sendResults = ((MainUI) UI.getCurrent()).getMailerSender().sendEmails(emailDescs);
-            showProgress.setValue(0.7f);
-            List<CompletableFuture<String>> sendErrorsList = new ArrayList<>();
-            for (EmailStatus es : sendResults) {
-                CompletableFuture<String> sendErrors =
-                        es.getStatus().handle((String, ex) -> {
-                            if (ex != null) {
-                                //logRes.append("Problema al enviar mensaje a :"+ es.getTo() + "\n" + ex.getMessage() + "\n");
-                                //logRes.append(es.getTo() + ": Problema: " + ex.getMessage() + "\n");
-                                txtLog.setValue(logRes.toString());
-                                usuariosErrorList.add(es.getUsuario());
-                                return es.getTo() + ": Problema: " + ex.getMessage() + "\n";
-                            } else {
-                                //logRes.append(es.getTo() + ": Enviado!\n");
-                                return es.getTo() + ": Enviado!\n";
-                            }
-                        });
-                sendErrorsList.add(sendErrors);
-            }
-            ui.access(() -> {
-                logRes.append("Enviando" + emailDescs.size() + " mensajes."+"\n");
-                txtLog.setValue(logRes.toString());
-                showProgress.setValue(0.5f);
-            });
-            for (CompletableFuture<String> se: sendErrorsList) {
-                se.join();
-                try {
-                    String msg = se.get();
-                    logRes.append(msg);
-                    ui.access(() -> {
-                        txtLog.setValue(logRes.toString());
-                    });
-                } catch (InterruptedException | ExecutionException e) {
-                    ui.access(() -> {
-                        logRes.append("Problem: " + e.getLocalizedMessage());
-                        txtLog.setValue(logRes.toString());
-                    });
-                    e.printStackTrace();
+            try {
+                sendResults = ((MainUI) UI.getCurrent()).getMailerSender().sendEmails(emailDescs);
+                showProgress.setValue(0.7f);
+                List<CompletableFuture<String>> sendErrorsList = new ArrayList<>();
+                for (EmailStatus es : sendResults) {
+                    CompletableFuture<String> sendErrors =
+                            es.getStatus().handle((String, ex) -> {
+                                if (ex != null) {
+                                    //logRes.append("Problema al enviar mensaje a :"+ es.getTo() + "\n" + ex.getMessage() + "\n");
+                                    //logRes.append(es.getTo() + ": Problema: " + ex.getMessage() + "\n");
+                                    txtLog.setValue(logRes.toString());
+                                    usuariosErrorList.add(es.getUsuario());
+                                    return es.getTo() + ": Problema: " + ex.getMessage() + "\n";
+                                } else {
+                                    //logRes.append(es.getTo() + ": Enviado!\n");
+                                    return es.getTo() + ": Enviado!\n";
+                                }
+                            });
+                    sendErrorsList.add(sendErrors);
                 }
+                ui.access(() -> {
+                    logRes.append("Enviando" + emailDescs.size() + " mensajes."+"\n");
+                    txtLog.setValue(logRes.toString());
+                    showProgress.setValue(0.5f);
+                });
+                for (CompletableFuture<String> se: sendErrorsList) {
+                    se.join();
+                    try {
+                        String msg = se.get();
+                        logRes.append(msg);
+                        ui.access(() -> {
+                            txtLog.setValue(logRes.toString());
+                        });
+                    } catch (InterruptedException | ExecutionException e) {
+                        ui.access(() -> {
+                            logRes.append("Problem: " + e.getLocalizedMessage());
+                            txtLog.setValue(logRes.toString());
+                        });
+                        e.printStackTrace();
+                    }
+                }
+                logRes.append("Todos reportes han sido procesados!\n\n");
+                if (!usuariosErrorList.isEmpty()) {
+                    logRes.append("Error al enviar reportes a los siguientes usuarios:\n");
+                    logRes.append(String.join(",", usuariosErrorList) + "\n\n");
+                }
+                ui.access(() -> {
+                    btnEnviar.setEnabled(true);
+                    txtLog.setValue(logRes.toString());
+                    showProgress.setVisible(false);
+                });
+                log.info("Finished sending reports");
+                completableFuture.complete("Hello");
+                return null;
+            } catch (InterruptedException ie) {
+                log.error("Problem waiting in-between sending messages in a bulk!");
+                logRes.append("Error al enviar reportes, Tiempo de espera interrompio.\n");
+                return null;
             }
-            logRes.append("Todos reportes han sido procesados!\n\n");
-            if (!usuariosErrorList.isEmpty()) {
-                logRes.append("Error al enviar reportes a los siguientes usuarios:\n");
-                logRes.append(String.join(",", usuariosErrorList) + "\n\n");
-            }
-            ui.access(() -> {
-                btnEnviar.setEnabled(true);
-                txtLog.setValue(logRes.toString());
-                showProgress.setVisible(false);
-            });
-            log.info("Finished sending reports");
-            completableFuture.complete("Hello");
-            return null;
         });
 
         return completableFuture;
