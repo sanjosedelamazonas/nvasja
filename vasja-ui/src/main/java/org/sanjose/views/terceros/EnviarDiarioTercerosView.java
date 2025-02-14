@@ -132,7 +132,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         UI ui = UI.getCurrent();
         showProgress.setVisible(true);
         btnEnviar.setEnabled(false);
-        Executors.newFixedThreadPool(4).submit(() -> {
+        Executors.newFixedThreadPool(2).submit(() -> {
             List<EmailStatus> sendResults;
             List<String> usuariosErrorList = new ArrayList<>();
             Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros(true);

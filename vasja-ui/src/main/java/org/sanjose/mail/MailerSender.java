@@ -3,6 +3,7 @@ package org.sanjose.mail;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.apache.commons.text.StringSubstitutor;
+import org.sanjose.helper.ChunkList;
 import org.sanjose.util.ConfigurationUtil;
 import org.sanjose.views.sys.PropiedadService;
 import org.simplejavamail.api.email.Email;
@@ -39,23 +40,6 @@ public class MailerSender {
     @Autowired
     private PropiedadService propiedadService;
     //private VsjPropiedadRep propRepo;
-
-    public class ChunkList {
-
-        public <T> List<List<T>> chunkList(List<T> list, int chunkSize) {
-            if (chunkSize <= 0) {
-                throw new IllegalArgumentException("Chunk size must be positive");
-            }
-
-            List<List<T>> chunks = new ArrayList<>();
-            for (int i = 0; i < list.size(); i += chunkSize) {
-                int end = Math.min(list.size(), i + chunkSize);
-                chunks.add(list.subList(i, end));
-            }
-            return chunks;
-        }
-    }
-
 
     public MailerSender(PropiedadService propiedadService) {
         this.authTypes.put("OAUTH2", TransportStrategy.SMTP_OAUTH2);
