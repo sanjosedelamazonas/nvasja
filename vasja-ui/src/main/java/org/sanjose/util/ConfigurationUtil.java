@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,6 +52,10 @@ public class ConfigurationUtil {
 		defaultParamMap.put("REPORTS_SOURCE_FOLDER","");
 		defaultParamMap.put("REPORTS_SOURCE_FOLDER_UNIX", "/pol/dev/nvasja/vasja-reports/reports");
 		defaultParamMap.put("REPORTS_SOURCE_FOLDER_WIN", "C:\\vasja_caja2\\vasja-reports\\reports\\");
+		/* Email logs */
+		defaultParamMap.put("EMAIL_LOG_DIR", "");
+		defaultParamMap.put("EMAIL_LOG_DIR_UNIX", "/pol/dev/vasja/nvasja/emaillogs");
+		defaultParamMap.put("EMAIL_LOG_DIR_WIN", "C:\\vasjacaja\\emaillogs");
 		defaultParamMap.put("REPORTS_IMAGE_SERVLET",
 				"../../servlets/image?image=");
 		defaultParamMap.put("REPORTS_WINDOW_MAXIMIZE", "TRUE");
@@ -154,6 +161,28 @@ public class ConfigurationUtil {
 			return get("REPORTS_SOURCE_FOLDER_UNIX").trim() + File.separator;
 		}
 	}
+
+	public static String getEmailLogDirectory() {
+		String logDir = null;
+		if (!GenUtil.strNullOrEmpty(get("EMAIL_LOG_DIR"))) {
+			logDir = get("EMAIL_LOG_DIR").trim() + File.separator;
+		} else {
+			if (getOsName().startsWith("Win")) {
+				logDir = get("EMAIL_LOG_DIR_WIN").trim() + File.separator;
+			} else {
+				logDir = get("EMAIL_LOG_DIR_UNIX").trim() + File.separator;
+			}
+		}
+		if (logDir != null) {
+			try {
+				Files.createDirectories(Paths.get(logDir));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return logDir;
+	}
+
 
 	public static Boolean is(String name) {
 		return get(name) != null && (get(name).equalsIgnoreCase("TRUE") || get(name).equalsIgnoreCase("1"));

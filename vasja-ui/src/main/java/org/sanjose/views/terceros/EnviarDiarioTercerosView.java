@@ -1,5 +1,9 @@
 package org.sanjose.views.terceros;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 import com.vaadin.data.Property;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
@@ -12,6 +16,7 @@ import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.poi.util.TempFile;
 import org.sanjose.MainUI;
+import org.sanjose.authentication.CurrentUser;
 import org.sanjose.helper.EmailAttachment;
 import org.sanjose.mail.EmailDescription;
 import org.sanjose.mail.EmailStatus;
@@ -33,6 +38,8 @@ import java.util.concurrent.Executors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static org.sanjose.util.ConfigurationUtil.get;
+
 /**          A
  * A view for performing create-read-update-delete operations on products.
  *
@@ -46,6 +53,8 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         return VIEW_NAME;
     }
     private static final Logger log = LoggerFactory.getLogger(EnviarDiarioTercerosView.class);
+
+    private ch.qos.logback.classic.Logger emaillog = null;
     private PersistanceService service;
     private StringBuilder logRes;
 
@@ -60,6 +69,10 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         this.service = service;
         setSizeFull();
         addStyleName("crud-view");
+    }
+
+    public EnviarDiarioTercerosView() {
+        this.service = service;
     }
 
     @Override
@@ -127,7 +140,29 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         //btnGenerarNoEnviados.addClickListener( o -> generateNoEnviadosAsOneReport());
     }
 
+    private void outLog(String txt) {
+        outLog(txt, "info");
+    }
+
+    private void outLog(String txt, String level) {
+        logRes.append(txt);
+        if (txt.endsWith("\n"))
+            txt = txt.substring(0,txt.length() - 1);{
+        }
+        if (emaillog!=null) {
+            if (level=="err") {
+                emaillog.error(txt);
+            }
+            else {
+                emaillog.info(txt);
+            }
+        }
+    }
+
+
     public CompletableFuture<String> doEnviarAsync() {
+        // Setup email logger:
+        emaillog = setupLogFile();
         CompletableFuture<String> completableFuture = new CompletableFuture<>();
         UI ui = UI.getCurrent();
         showProgress.setVisible(true);
@@ -137,13 +172,13 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             List<String> usuariosErrorList = new ArrayList<>();
             Map<MsgUsuario, List<ScpDestino>> terceros = prepareListOfTerceros(true);
             ui.access(() -> {
-                logRes.append("Generado lista de terceros para enviar... " + terceros.keySet().size() + " usuarios"+"\n");
+                outLog("Generado lista de terceros para enviar... " + terceros.keySet().size() + " usuarios"+"\n");
                 txtLog.setValue(logRes.toString());
                 showProgress.setValue(0.1f);
             });
             List<EmailDescription> emailDescs = generateEmails(terceros, fechaInicial.getValue(), fechaFinal.getValue(), service, ui);
             ui.access(() -> {
-                logRes.append("Generado " + emailDescs.size() + " mensajes."+"\n");
+                outLog("Generado " + emailDescs.size() + " mensajes."+"\n");
                 txtLog.setValue(logRes.toString());
                 showProgress.setValue(0.5f);
             });
@@ -168,7 +203,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                     sendErrorsList.add(sendErrors);
                 }
                 ui.access(() -> {
-                    logRes.append("Enviando" + emailDescs.size() + " mensajes."+"\n");
+                    outLog("Enviando " + emailDescs.size() + " mensajes."+"\n");
                     txtLog.setValue(logRes.toString());
                     showProgress.setValue(0.5f);
                 });
@@ -176,19 +211,19 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                     se.join();
                     try {
                         String msg = se.get();
-                        logRes.append(msg);
+                        outLog(msg);
                         ui.access(() -> {
                             txtLog.setValue(logRes.toString());
                         });
                     } catch (InterruptedException | ExecutionException e) {
                         ui.access(() -> {
-                            logRes.append("Problem: " + e.getLocalizedMessage());
+                            outLog("Problem: " + e.getLocalizedMessage(), "err");
                             txtLog.setValue(logRes.toString());
                         });
                         e.printStackTrace();
                     }
                 }
-                logRes.append("Todos reportes han sido procesados!\n\n");
+                outLog("Todos reportes han sido procesados!\n\n");
                 if (!usuariosErrorList.isEmpty()) {
                     logRes.append("Error al enviar reportes a los siguientes usuarios:\n");
                     logRes.append(String.join(",", usuariosErrorList) + "\n\n");
@@ -203,7 +238,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
                 return null;
             } catch (InterruptedException ie) {
                 log.error("Problem waiting in-between sending messages in a bulk!");
-                logRes.append("Error al enviar reportes, Tiempo de espera interrompio.\n");
+                outLog("Error al enviar reportes, Tiempo de espera interrompio.\n", "err");
                 return null;
             }
         });
@@ -215,14 +250,14 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         List<EmailDescription> emails = new ArrayList<>();
         for (MsgUsuario usuario : trcMap.keySet()) {
             ui.access(() -> {
-                logRes.append("Generando para usuario: " + usuario.getTxtUsuario()+"\n");
+                outLog("Generando para usuario: " + usuario.getTxtUsuario()+"\n");
                 txtLog.setValue(logRes.toString());
             });
             log.info("Generating report for user: " + usuario.getTxtUsuario() + " " + fechaDesde + " " + fechaHasta);
             List<AttachmentResource> atres = new ArrayList<>();
             for (ScpDestino dst : trcMap.get(usuario)) {
                 ui.access(() -> {
-                    logRes.append("Tercero: " + dst.getCodDestino()+"\n");
+                    outLog("Tercero: " + dst.getCodDestino()+"\n");
                     txtLog.setValue(logRes.toString());
                 });
                 EmailAttachment ea = TercerosUtil.generateTerceroOperacionesReport(fechaDesde, fechaHasta,
@@ -234,7 +269,7 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             //log.info("Generating report for: " + dst.getCodDestino() + " " + fechaDesde + " " + fechaHasta);
             emails.add(new EmailDescription(usuario.getTxtCorreo(), usuario.getTxtUsuario(), EmailBuilder.startingBlank()
                     .to(usuario.getTxtCorreo())
-                    .from("Vicariato San Jose del Amazonas", ConfigurationUtil.get("MAIL_FROM"))
+                    .from("Vicariato San Jose del Amazonas", get("MAIL_FROM"))
                     .withSubject("VASJA Reporte")
                     .withHTMLText(((MainUI) UI.getCurrent()).getMailerSender().genFromTemplate("REPORTE_TERCERO", toReplace))
                     .withAttachments(atres)
@@ -254,6 +289,48 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
 //        }
 //    }
 //
+
+    public ch.qos.logback.classic.Logger setupLogFile() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+        String fileName = ConfigurationUtil.getEmailLogDirectory() + File.separator + "emails_" + CurrentUser.get() + "_" + sdf.format(System.currentTimeMillis())+ ".log";
+        return setupEmailLogger(fileName);
+    }
+
+    public ch.qos.logback.classic.Logger setupEmailLogger(String logFilePath) {
+        LoggerContext context = new LoggerContext();
+        context.reset();
+        JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(context);
+        try {
+            configurator.doConfigure(createLogbackConfig(logFilePath));
+        } catch (JoranException je) {
+            System.err.println("Error configuring logback: " + je.getMessage());
+        }
+        StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+        emaillog = context.getLogger("Emails");
+        return emaillog;
+    }
+
+    private static File createLogbackConfig(String logFilePath) {
+        String config = "<configuration>" +
+                        "  <appender name=\"FILE\" class=\"ch.qos.logback.core.FileAppender\">" +
+                        "    <file>" + logFilePath + "</file>" +
+                        "    <encoder>" +
+                        "      <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>" +
+                        "    </encoder>" +
+                        "  </appender>" +
+                        "  <root level=\"debug\">" +
+                        "    <appender-ref ref=\"FILE\" />" +
+                        "  </root>" +
+                        "</configuration>";
+        File configFile = new File("logback.xml");
+        try {
+            java.nio.file.Files.write(configFile.toPath(), config.getBytes());
+        } catch (java.io.IOException e) {
+            System.err.println("Error creating logback configuration file: " + e.getMessage());
+        }
+        return configFile;
+    }
 
     public void setupBtnGenerarNoEnviados() {
         StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
@@ -308,7 +385,6 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         else
             allDownloader.setFileDownloadResource(resource);
     }
-
 
     private InputStream generateReportesOnePdf(Map<MsgUsuario, List<ScpDestino>> trcMap, Date fechaDesde, Date fechaHasta, PersistanceService service, UI ui) throws JRException, IOException {
         showProgress.setVisible(true);
@@ -432,9 +508,13 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
             trcMap.put(us, dsts);
         } else if (txtUsuariosList.getValue()!=null) {
             String[] usuarios = txtUsuariosList.getValue().split(",");
-            Set<String> usuariosSet = new HashSet<>();
+            List<String> usuariosSet = new ArrayList<>();
             for (String u : usuarios) {
-                MsgUsuario us = service.getMsgUsuarioRep().findByTxtUsuario(selUsuario.getValue().toString());
+                if (!usuariosSet.contains(u.trim()))
+                    usuariosSet.add(u.trim());
+            }
+            for (String u : usuariosSet) {
+                MsgUsuario us = service.getMsgUsuarioRep().findByTxtUsuario(u);
                 trcMap.put(us, service.getDestinoRepo().findByIndTipodestinoAndActivoAndTxtUsuarioLike(
                         '3', true, u.trim().toLowerCase()));
             }
@@ -500,4 +580,11 @@ public class EnviarDiarioTercerosView extends EnviarDiarioTercerosUI implements 
         updateBtnGenerarSetResource(true);
         updateBtnGenerarSetResource(false);
     }
+
+//    public static void main(String[] args) {
+//        String customLogFilePath = "my-custom-log_2.log";
+//        EnviarDiarioTercerosView enviarDiarioTercerosView = new EnviarDiarioTercerosView();
+//        enviarDiarioTercerosView.setupEmailLogger(customLogFilePath);
+//        enviarDiarioTercerosView.emaillog.info("This is a test log message to {}", customLogFilePath);
+//    }
 }
