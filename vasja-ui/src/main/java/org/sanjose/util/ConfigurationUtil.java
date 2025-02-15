@@ -86,6 +86,10 @@ public class ConfigurationUtil {
 		defaultParamMap.put("MAIL_SMTP_PASS", "");
 		defaultParamMap.put("MAIL_DEBUG", "FALSE");
 
+		// Problem with Email server:
+		defaultParamMap.put("EMAILS_SENDING_DELAY_MS", "10000");
+		defaultParamMap.put("EMAILS_SENDING_BATCH_SIZE", "5");
+
 		//defaultParamMap.put("RUC_URL", "https://api.apis.net.pe/v1/");
 		defaultParamMap.put("RUC_URL", "https://api.apis.net.pe/v2/sunat/ruc");
 		defaultParamMap.put("DNI_URL", "https://api.apis.net.pe/v2/reniec/dni");

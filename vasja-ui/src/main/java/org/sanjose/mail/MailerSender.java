@@ -85,14 +85,14 @@ public class MailerSender {
 
 
     public List<EmailStatus> sendEmails(List<EmailDescription> emails) throws InterruptedException {
-        List<List<EmailDescription>> chunkedEmailList = new ChunkList().chunkList(emails, 5);
+        List<List<EmailDescription>> chunkedEmailList = new ChunkList().chunkList(emails, Integer.valueOf(ConfigurationUtil.get("EMAILS_SENDING_BATCH_SIZE")));
         List<EmailStatus> emailStatuses = new ArrayList<>();
 
         for (List<EmailDescription> chunk : chunkedEmailList) {
             for (EmailDescription ed : chunk) {
                 emailStatuses.add(new EmailStatus(ed.getTo(), ed.getUsuario(), this.mailer.sendMail(ed.getEmail())));
             }
-            Thread.sleep(10000);
+            Thread.sleep(Integer.valueOf(ConfigurationUtil.get("EMAILS_SENDING_DELAY_MS")));
         }
         return emailStatuses;
     }
