@@ -27,7 +27,6 @@ public class ConsultaRucDni {
     private String baseUrlRuc;
     private String baseUrlDni;
     private ConsultaRucDni() {
-        String accessToken= "apis-token-4157.-Md93S6Gnk2NWMJVkjTLK3PLPFqx4WhS";
         baseUrlRuc = ConfigurationUtil.get("RUC_URL");
         baseUrlDni = ConfigurationUtil.get("DNI_URL");
         restTemplate = new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {

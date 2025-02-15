@@ -6,6 +6,7 @@ import org.jsoup.Jsoup;
 import org.sanjose.model.ScpTipocambio;
 import org.sanjose.model.ScpTipocambioPK;
 import org.sanjose.repo.ScpTipocambioRep;
+import org.sanjose.views.dict.ConsultaRucDniException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class TipoCambio {
 
     private static Map<Character, String> monedaNombres = new HashMap<>();
     private static Map<Character, String> monedaSimbolos = new HashMap<>();
+    private static Map<Character, String> monedaSimbolosApi = new HashMap<>();
 
     private Character moneda;
     private BigDecimal compra;
@@ -40,6 +42,8 @@ public class TipoCambio {
         monedaNombres.put(EUR, "Euro");
         monedaSimbolos.put(USD, "02");
         monedaSimbolos.put(EUR, "66");
+        monedaSimbolosApi.put(USD, "USD");
+        monedaSimbolosApi.put(EUR, "EUR");
         get();
     }
 
@@ -88,7 +92,7 @@ public class TipoCambio {
     }
 
 
-    public void get() throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar {
+    public void getFromSGB() throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
         try {
             String stUrl = EXCHANGE_RATE_URL_API.replace("{0}", sdf.format(fecha));
@@ -108,8 +112,14 @@ public class TipoCambio {
             for (org.jsoup.nodes.Element row : rows) {
                 org.jsoup.select.Elements columns = row.select("td");
                 for (org.jsoup.nodes.Element column : columns) {
-                    if ("FECHA".equals(column.text()))
-                        continue;
+                    if ("FECHA".equals(column.text())) {
+                        if (columns.get(2).text().trim().equals(sdf.format(fecha))) {
+                            continue;
+                        } else {
+                            // Wrong date!
+                            throw new TipoCambioNoSePuedeBajar("El tipo cambio bajado no es valido, las fechas no estan de acuerdo: " + columns.get(2).text() + " en lugar de: " +sdf.format(fecha));
+                        }
+                    }
                     if (sdf.format(fecha).equalsIgnoreCase(column.text()) && columns.get(1).text() != null && columns.get(1).text().contains(monedaNombres.get(moneda))) {
                         setCompra(new BigDecimal(columns.get(2).text()));
                         setVenta(new BigDecimal(columns.get(3).text()));
@@ -123,6 +133,33 @@ public class TipoCambio {
             throw new TipoCambioNoSePuedeBajar("No se podia bajar el tipo de cambio para la fecha: " + sdf.format(fecha) + "\n"  +e.getMessage(), fecha);
         }
     }
+
+
+    public void getFromApisNetPe() throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
+        try {
+            Map<String, String> map = ConsultaTipoCambio.getInstance().get(fecha, monedaSimbolosApi.get(moneda));
+            System.out.println(map);
+            if (map.get("moneda").equals(monedaSimbolosApi.get(moneda))) {
+                setCompra(new BigDecimal(map.get("precioCompra")));
+                setVenta(new BigDecimal(map.get("precioVenta")));
+            }
+            if (compra == null || venta == null)
+                throw new TipoCambioNoExiste("Tipo de cambio no existe para esta fecha: " + sdf.format(fecha));
+        } catch (ConsultaRucDniException e) {
+            throw new TipoCambioNoSePuedeBajar("No se podia bajar el tipo de cambio para la fecha: " + sdf.format(fecha) + "\n"  +e.getMessage(), fecha);
+        }
+    }
+
+    public void get() throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar {
+        try {
+            getFromApisNetPe();
+        } catch (Exception e) {
+            log.error("Getting TipoCambio from ApisNet failed, trying from SGB");
+            getFromSGB();
+        }
+    }
+
 
     public Character getMoneda() {
         return moneda;
