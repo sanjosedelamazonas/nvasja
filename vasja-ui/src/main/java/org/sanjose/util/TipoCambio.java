@@ -49,8 +49,13 @@ public class TipoCambio {
 
     public static Map<Character, TipoCambio> actualizaTipoCambioSBS(Date fecha) throws TipoCambioNoExiste, TipoCambioNoSePuedeBajar {
         Map<Character, TipoCambio> tipos = new HashMap<>();
-        tipos.put(USD, new TipoCambio(fecha, USD));
-        tipos.put(EUR, new TipoCambio(fecha, EUR));
+        try {
+            tipos.put(USD, new TipoCambio(fecha, USD));
+            Thread.sleep(Integer.valueOf(ConfigurationUtil.get("TIPO_CAMBIO_DELAY_MS")));
+            tipos.put(EUR, new TipoCambio(fecha, EUR));
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted waiting for another tipo cambio");
+        }
         return tipos;
     }
 

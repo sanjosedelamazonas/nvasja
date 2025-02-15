@@ -160,6 +160,11 @@ public class TipoCambioManejoView extends TipoCambioManejoUI implements Viewing 
                 ScpTipocambio tcc = getService().getTipocambioRep().save(tc);
                 tcToRefresh.add(tcc);
             }
+            try {
+                Thread.sleep(Integer.valueOf(ConfigurationUtil.get("TIPO_CAMBIO_DELAY_MS")));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         for (ScpTipocambio tc : tcToRefresh) {
             grid.getContainerDataSource().removeItem(tc);

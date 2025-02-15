@@ -83,6 +83,7 @@ public class ConfigurationUtil {
 		defaultParamMap.put("RUC_URL", "https://api.apis.net.pe/v2/sunat/ruc");
 		defaultParamMap.put("DNI_URL", "https://api.apis.net.pe/v2/reniec/dni");
 		defaultParamMap.put("TIPO_CAMBIO_URL", "https://api.apis.net.pe/v2/sbs/tipo-cambio?date={0}&currency={1}");
+		defaultParamMap.put("TIPO_CAMBIO_DELAY_MS", "300");
 		defaultParamMap.put("RUC_TOKEN", "apis-token-4157.-Md93S6Gnk2NWMJVkjTLK3PLPFqx4WhS");
 		defaultParamMap.put("RUC_VERSION", "v2");
 	}
