@@ -1,11 +1,9 @@
-package org.sanjose;
+package org.sanjose.test;
 
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 import org.sanjose.bean.VsjOperaciontercero;
-import org.sanjose.helper.ReportHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
