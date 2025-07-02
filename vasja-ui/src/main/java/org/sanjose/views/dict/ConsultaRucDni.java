@@ -49,6 +49,7 @@ public class ConsultaRucDni {
 
     public Map<String, String> get(String type, String numero) throws ConsultaRucDniException {
         Map<String, String> map = new HashMap<>();
+        Map<String, Object> jsonMap = new HashMap<>();
         try {
             String url = "";
             if (type.equals("ruc")) {
@@ -58,7 +59,13 @@ public class ConsultaRucDni {
             }
             String json = restTemplate.getForObject(url, String.class);
             ObjectMapper mapper = new ObjectMapper();
-            map = mapper.readValue(json, new TypeReference<HashMap<String, String>>() {});
+            jsonMap = mapper.readValue(json, new TypeReference<HashMap<String, Object>>() {});
+            // Remove "localesAnexos" if it exists
+            jsonMap.remove("localesAnexos");
+
+            for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
+                map.put(entry.getKey(), entry.getValue().toString());
+            }
         } catch (HttpClientErrorException he) {
             throw new ConsultaRucDniException("Could not find " + type.toUpperCase() + " " + numero);
         } catch (Exception e) {
